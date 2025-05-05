@@ -1,0 +1,105 @@
+/* Projects */
+.project-item {
+  margin-bottom: 30px;
+}
+
+.project-item h3 {
+  font-size: 1.4em;
+  color: #f11414;
+}
+
+.featured-projects a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.featured-projects a:hover {
+  color: #555;
+  border-color: #555;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 2rem;
+  color: #333;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.section {
+  margin: 3rem 0;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.project-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.project-card a {
+  text-decoration: none;
+  color: #2196f3;
+  font-weight: bold;
+}
+
+.project-card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Button-like links */
+.project-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.project-link:hover {
+  background: #555;
+}
+
+/* Dark Mode Support overrides for Projects */
+@media (prefers-color-scheme: dark) {
+  .featured-projects a {
+    color: #f4f4f4;
+    border-color: #f4f4f4;
+  }
+
+  .project-link {
+    background: #444;
+  }
+
+  .project-link:hover {
+    background: #666;
+  }
+}

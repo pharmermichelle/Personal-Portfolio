@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whack-a-Bug: Debugging Simulator</title>
+    <link rel="stylesheet" href="whackgame.css" />
+  </head>
+  <body>
+    <h1>Whack-a-Bug: Debugging Simulator</h1>
+    <div class="how-to">
+      <p>
+        🛠️ Debugging never looked this fun! Click the green bugs to squash
+        simple bugs and earn points!
+      </p>
+      <p>
+        🐞 Red bugs (Legacy Bugs) are more annoying, but they're worth more
+        points. They're harder to hit, though...
+      </p>
+      <p>
+        🚨 Feature Creep is real! Click the "Feature Creep" button to add more
+        bugs and delays to your project!
+      </p>
+    </div>
+
+    <div id="game">
+      <div class="hole"><div class="bug"></div></div>
+      <div class="hole"><div class="bug"></div></div>
+      <div class="hole"><div class="bug"></div></div>
+      <div class="hole"><div class="bug"></div></div>
+      <div class="hole"><div class="bug"></div></div>
+      <div class="hole"><div class="bug"></div></div>
+    </div>
+
+    <div id="scoreboard">
+      Score: <span id="score">0</span> | Time Left: <span id="time">20</span>s
+    </div>
+
+    <div id="high-score">High Score: <span id="high-score-value">0</span></div>
+
+    <div id="feature-creep" class="feature-creep">
+      🚨 Feature Creep! More Bugs Incoming! 🚨
+    </div>
+
+    <div class="controls">
+      <button id="start-btn">Start</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+    <script src="whackgame.js"></script>
+  </body>
+</html>

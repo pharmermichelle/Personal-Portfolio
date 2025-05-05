@@ -1,0 +1,106 @@
+body {
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
+  background: #121212;
+  color: #f0f0f0;
+  padding: 2rem;
+}
+
+h1 {
+  margin-bottom: 1rem;
+  font-size: 3rem;
+  color: #00ff00;
+  text-shadow: 2px 2px 5px #000;
+}
+
+#game {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 15px;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+.hole {
+  width: 100px;
+  height: 100px;
+  background: #333;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #00ff00;
+}
+
+.bug,
+.bug-red {
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  transition: top 0.3s ease;
+  font-size: 50px; /* Adjust size of emoji */
+  line-height: 0;
+  text-align: center;
+}
+
+.bug {
+  content: "🐞"; /* Green bug emoji */
+}
+
+.bug-red {
+  content: "🪲"; /* Red bug emoji */
+}
+
+.up .bug,
+.up .bug-red {
+  top: 10px;
+}
+
+#scoreboard {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+#high-score {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.feature-creep {
+  font-size: 1.5rem;
+  color: #ff0000;
+  cursor: pointer;
+  text-decoration: underline;
+  display: none;
+  background: url("images/feature-creep.png") no-repeat;
+  background-size: contain;
+}
+
+.controls {
+  margin-top: 2rem;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin: 0 10px;
+  cursor: pointer;
+  background-color: #444;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #00ff00;
+}
+
+.how-to {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #aaa;
+  text-shadow: 1px 1px 3px rgba(0, 255, 0, 0.6);
+}
+
+.how-to p {
+  margin: 10px 0;
+}

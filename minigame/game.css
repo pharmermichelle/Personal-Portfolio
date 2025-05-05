@@ -1,0 +1,67 @@
+body {
+  font-family: "Georgia", serif;
+  background: #f9f0d9;
+  color: #333;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+#game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  height: 90vh;
+}
+
+.game-container {
+  background: #fff7e6;
+  padding: 10px;
+  border: 4px solid #c9a368;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  background-size: cover;
+  background-position: center;
+}
+
+#whimsical {
+  background-image: url("whimsical.jpg"); /* whimsical forest image */
+}
+
+#horror {
+  background-image: url("horror.jpg"); /* spooky but PG background */
+}
+
+#steampunk {
+  background-image: url("steampunk.jpg"); /* gears and old maps */
+}
+
+#it-support {
+  background-image: url("it.jpg"); /* messy computer desk image */
+}
+
+button {
+  background: #c9a368;
+  color: #fff;
+  padding: 8px 16px;
+  margin: 6px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #b1874d;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

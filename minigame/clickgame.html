@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clicker Game</title>
+    <link rel="stylesheet" href="clickgame.css" />
+  </head>
+  <body>
+    <h1>🧙‍♂️ Wizard's Mana Forge</h1>
+    <p>Gather mana to power your arcane inventions!</p>
+    <button id="click-btn">Channel Mana</button>
+
+    <div id="stats">
+      <p>
+        <strong>Mana:</strong> <span id="coin-count">0</span><br /><strong
+          >Mana per second:</strong
+        >
+        <span id="cps">0</span><br />
+        <strong>Total Mana Channeled:</strong>
+        <span id="total-mana-collected">0</span>
+      </p>
+    </div>
+
+    <div id="golem-container" style="margin-top: 1rem"></div>
+
+    <div id="instructions-toggle">📜 How to Play</div>
+    <div id="instructions-box" class="hidden">
+      <h3>🧙‍♂️ How to Play</h3>
+      <p><strong>TL;DR:</strong></p>
+      <ul>
+        <li>
+          Click <strong>Channel Mana</strong> to earn mana and summon golems.
+        </li>
+        <li>Summon 10 golems to become the <em>Supreme Wizard</em>!</li>
+        <li>
+          Every 500 mana triggers a <strong>Mana Surge</strong>, doubling clicks
+          for 15s.
+        </li>
+        <li>
+          Use the <strong>Mystic Tome</strong> for a temporary boost of double
+          mana per click (15s duration, 10s cooldown).
+        </li>
+        <li>
+          Upgrade golems to increase your
+          <strong>mana per second (CPS)</strong>.
+        </li>
+        <li>
+          Spend mana wisely and use boosts at the right time to progress faster!
+        </li>
+      </ul>
+    </div>
+
+    <div id="game-container">
+      <button id="upgrade-btn">Summon Auto-Scribe Golem (Cost: 50 mana)</button>
+      <button id="powerup-btn">Use Mystic Tome (Cost: 100 mana)</button>
+
+      <p>Use your mana wisely to unlock powerful upgrades!</p>
+      <p>Can you become the most powerful wizard in the realm?</p>
+    </div>
+
+    <footer>
+      <p>
+        &copy; 2025 Michelle. All rights reserved. Artwork created by Michelle
+        with help from AI
+      </p>
+    </footer>
+
+    <script src="clickgame.js"></script>
+  </body>
+</html>

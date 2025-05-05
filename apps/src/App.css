@@ -1,0 +1,49 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+h1,
+h2,
+h3 {
+  color: #2c3e50;
+}
+
+/* Container styling */
+.event-list,
+.feedback-board {
+  margin: 30px 0;
+}
+
+/* Cards */
+.event-card,
+.feedback-card {
+  background-color: #fff;
+  border: 1px solid #dce3ed;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Event Card Link */
+.details-link {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  color: #3498db;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.details-link:hover {
+  color: #1d6fa5;
+}
+
+/* Feedback styling */
+.feedback-card p {
+  margin: 5px 0;
+}
