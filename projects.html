@@ -24,103 +24,114 @@
       </div>
     </section>
 
-    <section class="projects section">
-      <h2>Featured Projects</h2>
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3>AI-Generated Portrait Experiment</h3>
-          <p>
-            A creative experiment using AI to generate a portrait based on my
-            personality and past conversations.
-          </p>
-          <a href="conversation.html" class="project-link"
-            >View AI Conversation</a
-          >
-        </div>
+    <header>
+      <nav class="project-filter-nav">
+        <ul>
+          <li><button data-filter="all" class="active">Everything</button></li>
+          <li><button data-filter="games">Games I've Built</button></li>
+          <li><button data-filter="ai">AI Projects</button></li>
+          <li><button data-filter="writing">Stories & Writing</button></li>
+          <li><button data-filter="webdev">Built for the Web</button></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section class="projects section">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+          <div class="project-card" data-tags="creative writing ai">
+            <h3>AI-Generated Portrait Experiment</h3>
+            <p>
+              A creative experiment using AI to generate a portrait based on my
+              personality and past conversations.
+            </p>
+            <a href="conversation.html" class="project-link"
+              >View AI Conversation</a
+            >
+          </div>
 
-        <div class="project-card">
-          <h3>Short Story Generator</h3>
-          <p>
-            A web app that creates fun, randomized short stories using AI-driven
-            text generation and user prompts.
-          </p>
-          <a
-            href="https://aimadlibstory.netlify.app/"
-            target="_blank"
-            class="project-link"
-            >Visit Short Story Generator</a
-          >
-        </div>
+          <div class="project-card" data-tags="writing ai">
+            <h3>Short Story Generator</h3>
+            <p>
+              A web app that creates fun, randomized short stories using
+              AI-driven text generation and user prompts.
+            </p>
+            <a
+              href="https://aimadlibstory.netlify.app/"
+              target="_blank"
+              class="project-link"
+              >Visit Short Story Generator</a
+            >
+          </div>
 
-        <div class="project-card">
-          <h3>Weather Forecast App</h3>
-          <p>
-            It uses the OpenWeather API to fetch and display current weather
-            data for any location.
-          </p>
-          <a
-            href="https://wondrous-selkie-8cc803.netlify.app/"
-            target="_blank"
-            class="project-link"
-            >Check Your Weather</a
-          >
-        </div>
+          <div class="project-card" data-tags="webdev">
+            <h3>Weather Forecast App</h3>
+            <p>
+              It uses the OpenWeather API to fetch and display current weather
+              data for any location.
+            </p>
+            <a
+              href="https://wondrous-selkie-8cc803.netlify.app/"
+              target="_blank"
+              class="project-link"
+              >Check Your Weather</a
+            >
+          </div>
 
-        <div class="project-card">
-          <h3>Choose Your Own Adventure Game</h3>
-          <p>
-            A text-based, interactive story game built with HTML, CSS, and
-            JavaScript. Players navigate different story paths through dynamic
-            choices, showcasing DOM manipulation and event handling.
-          </p>
-          <a href="minigame/game.html" class="project-link"
-            >Start Your Adventure</a
-          >
-        </div>
+          <div class="project-card" data-tags="games writing">
+            <h3>Choose Your Own Adventure Game</h3>
+            <p>
+              A text-based, interactive story game built with HTML, CSS, and
+              JavaScript. Players navigate different story paths through dynamic
+              choices, showcasing DOM manipulation and event handling.
+            </p>
+            <a href="minigame/game.html" class="project-link"
+              >Start Your Adventure</a
+            >
+          </div>
 
-        <div class="project-card">
-          <h3>Wizard's Mana Forge</h3>
-          <p>
-            A fantasy-themed clicker game built with HTML, CSS, and JavaScript.
-            Channel mana, summon golems, and trigger arcane boosts in this fun
-            DOM-manipulation project.
-          </p>
-          <a href="minigame/clickgame.html" class="project-link">Play Now</a>
-        </div>
+          <div class="project-card" data-tags="games">
+            <h3>Wizard's Mana Forge</h3>
+            <p>
+              A fantasy-themed clicker game built with HTML, CSS, and
+              JavaScript. Channel mana, summon golems, and trigger arcane boosts
+              in this fun DOM-manipulation project.
+            </p>
+            <a href="minigame/clickgame.html" class="project-link">Play Now</a>
+          </div>
 
-        <div class="project-card">
-          <h3>HTML-based Mini Game</h3>
-          <p>
-            A simple browser-based game with interactive HTML/CSS/JS. Great for
-            practicing DOM manipulation.
-          </p>
-          <a href="minigame/whackgame.html" class="project-link">Play Now</a>
-        </div>
+          <div class="project-card" data-tags="games">
+            <h3>Whack-a-Bug</h3>
+            <p>
+              A simple browser-based game with interactive HTML/CSS/JS. Players
+              click on bugs to score points and avoid missing them. Features a
+              timer and score tracker.
+            </p>
+            <a href="minigame/whackgame.html" class="project-link">Play Now</a>
+          </div>
 
-        <div class="project-card">
-          <h3>The AI Sidekick Chronicles</h3>
-          <p>
-            How I used AI to plan the perfect, tailored weekend roadtrip. A
-            showcase in creative and practical AI use.
-          </p>
-          <a href="ai-hockey-trip.html" class="project-link"
-            >AI Tailored Weekend</a
-          >
+          <div class="project-card" data-tags="creative writing ai">
+            <h3>AI Trip Planner</h3>
+            <p>
+              How I used AI to plan the perfect, tailored weekend roadtrip. A
+              showcase in creative and practical AI use.
+            </p>
+            <a href="ai-hockey-trip.html" class="project-link"
+              >AI Tailored Weekend</a
+            >
+          </div>
+          <div class="project-card" data-tags="webdev">
+            <h3>World Clock</h3>
+            <p>
+              Showcases the current time in different cities around the world.
+            </p>
+            <a href="https://clockwork-earth.netlify.app/" class="project-link"
+              >What's the Time?</a
+            >
+          </div>
         </div>
-
-        <div class="project-card">
-          <h3>AI Sidekick Blog</h3>
-          <p>
-            A blog-style narrative capturing quirky, thoughtful conversations
-            between me and my AI assistant.
-          </p>
-          <a href="ai-blog.html" class="project-link"
-            >Read AI Sidekick Chronicles</a
-          >
-        </div>
-      </div>
-    </section>
-
+      </section>
+    </main>
     <section class="projects section">
       <h2>More Projects</h2>
       <p>Additional web development projects coming soon!</p>
