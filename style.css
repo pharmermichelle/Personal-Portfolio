@@ -81,6 +81,10 @@ nav a {
 .button:hover {
   background: #ff6b81;
 }
+.subList {
+  list-style-type: circle;
+  margin-left: 2em;
+}
 
 /* Sections */
 section {

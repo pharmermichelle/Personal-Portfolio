@@ -1,0 +1,157 @@
+/* Hero Section */
+.hero {
+  background: #222;
+  color: #f4f4f4;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.hero-content h1 {
+  margin-bottom: 10px;
+}
+
+.tagline,
+.hero-content .tagline {
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.hero-buttons {
+  margin-top: 20px;
+}
+.button {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 12px 24px;
+  background: #6f4e37;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background: #715a49;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80vh;
+  border-radius: 8px;
+}
+
+.close {
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+}
+.subList {
+  list-style-type: circle;
+  margin-left: 2em;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 20px;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+h1,
+h2,
+h3 {
+  color: #6f4e37; /* Coffee brown */
+}
+ul {
+  list-style-type: square;
+  padding-left: 20px;
+}
+.section {
+  margin-bottom: 40px;
+}
+a {
+  color: #2196f3;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.highlight {
+  background-color: #ffff99;
+}
+.media-thumbnail {
+  max-width: 350px;
+  margin-bottom: 16px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.media-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  padding: 8px 12px;
+}
+.media-row {
+  display: flex;
+  gap: 10%;
+  justify-content: left;
+  flex-wrap: wrap;
+}
+
+.media-thumbnail img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.media-thumbnail {
+  flex: 1 1 auto; /* Adjusts width of each item */
+  max-width: 240px; /* Optional: set a max width */
+}
