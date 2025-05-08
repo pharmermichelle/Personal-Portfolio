@@ -1,17 +1,3 @@
-.project-filter-nav button.active {
-  background-color: rgb(146, 182, 254);
-  color: #181818;
-  padding: 6px;
-  border-radius: 5px;
-}
-
-.project-filter-nav button {
-  background-color: #8b949b;
-  color: rgb(1, 1, 1);
-  padding: 6px;
-  border-radius: 5px;
-}
-
 /* Projects */
 .project-item {
   margin-bottom: 30px;
@@ -46,6 +32,10 @@ body {
 h1,
 h2 {
   text-align: center;
+}
+header h1 {
+  font-size: 1.8rem;
+  color: #2196f3;
 }
 
 .section {

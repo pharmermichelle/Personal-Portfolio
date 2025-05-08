@@ -1,0 +1,58 @@
+.resume-nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  gap: 1.5rem;
+}
+
+.resume-nav a {
+  text-decoration: none;
+  font-weight: bold;
+  color: rgb(146, 182, 254);
+  transition: color 0.3s ease;
+}
+
+.resume-nav a:hover {
+  color: #007acc;
+}
+
+section.experience {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: rgb(146, 182, 254);
+    margin-bottom: 20px;
+  }
+}
+/* Job Titles and Company Names */
+.job h3 {
+  font-size: 1.4rem;
+  color: rgb(230, 57, 70); /* Red color for job titles */
+  margin-bottom: 5px;
+}
+
+.job p strong {
+  color: rgb(230, 57, 70); /* Red color for company name */
+}
+
+/* Paragraph Styling */
+.job p {
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  color: rgb(146, 182, 254);
+}
+
+/* Add a little padding to paragraphs for readability */
+.job p:last-child {
+  margin-bottom: 0;
+}
+#download-resume {
+  margin: 20px;
+  padding: 10px 20px;
+}

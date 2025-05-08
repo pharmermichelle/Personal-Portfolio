@@ -1,14 +1,19 @@
 /* Hero Section */
+/* Hero Section - Coffee Themed */
 .hero {
-  background: #222;
+  background-color: #9e7a51;
+  background-image: url("images/argyleWall.png");
   color: #f4f4f4;
   padding: 60px 20px;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid #e6d3c1;
 }
 
 .hero h1 {
   font-size: 3em;
   margin-bottom: 10px;
+  color: #fff8f0;
 }
 
 .hero-content h1 {
@@ -19,26 +24,59 @@
 .hero-content .tagline {
   font-size: 1.3em;
   margin-bottom: 20px;
-  color: #ccc;
+  color: #fff8f0bf;
 }
 
-.hero-buttons {
-  margin-top: 20px;
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2em;
+  }
 }
-.button {
-  display: inline-block;
-  margin: 0 10px;
-  padding: 12px 24px;
-  background: #6f4e37;
-  color: #fff;
+
+/* Nav Bar */
+.live-ops-nav {
+  position: sticky;
+  top: 0;
+  background-color: #fff8f0;
+  padding: 10px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.live-ops-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.live-ops-nav a {
   text-decoration: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background 0.3s ease;
+  color: #6b4c35;
+  font-weight: 600;
+  padding: 8px 12px;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
 }
 
-.button:hover {
-  background: #715a49;
+.live-ops-nav a:hover {
+  background-color: #e6d3c1;
+}
+
+/* Optional: Highlight link when section is in view */
+.live-ops-nav a.active {
+  background-color: #d3b8a1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .live-ops-nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 /* Modal Styles */
@@ -86,16 +124,38 @@
 
 body {
   font-family: Arial, sans-serif;
-  line-height: 1.6;
-  margin: 20px;
-  padding: 0;
-  background-color: #f9f9f9;
+  background: url("images/argyleWall.png") repeat fixed;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size: auto; /* Prevents stretching */
+  background-color: #9e7a51;
   color: #333;
+  margin: 0;
+  padding: 0;
 }
+.content-box {
+  background-color: rgba(255, 248, 240, 0.85); /* light coffee w/ opacity */
+  padding: 20px;
+  margin: 40px auto;
+  border-radius: 12px;
+  max-width: 900px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 h1,
 h2,
 h3 {
-  color: #6f4e37; /* Coffee brown */
+  color: #fff8f0;
+}
+#sub-header {
+  color: #fff8f0bf;
+  font-size: 1rem;
+}
+
+div h1,
+div h2,
+div h3 {
+  color: #6b4c35;
 }
 ul {
   list-style-type: square;
