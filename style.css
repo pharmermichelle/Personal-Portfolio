@@ -80,6 +80,7 @@ nav a {
 
 .button:hover {
   background: #ff6b81;
+  color: #fff;
 }
 .subList {
   list-style-type: circle;
