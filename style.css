@@ -376,3 +376,14 @@ footer {
     background: #666;
   }
 }
+a {
+  color: #e63946;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+a:hover {
+  color: #ff6b81;
+  text-decoration: underline;
+}

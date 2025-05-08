@@ -1,12 +1,14 @@
 .project-filter-nav button.active {
-  background-color: #0077cc;
-  color: white;
-  border-radius: 3px;
+  background-color: rgb(146, 182, 254);
+  color: #181818;
+  padding: 6px;
+  border-radius: 5px;
 }
 
 .project-filter-nav button {
   background-color: #8b949b;
-  color: white;
+  color: rgb(1, 1, 1);
+  padding: 6px;
   border-radius: 5px;
 }
 
@@ -63,14 +65,14 @@ h2 {
   background: #fff;
   border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 6px 1px rgba(33, 150, 243, 0.2); /* Light blue shadow */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: center;
 }
 
 .project-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 10px 2px rgba(33, 150, 243, 0.3);
 }
 
 .project-card a {
