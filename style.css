@@ -39,6 +39,18 @@ nav a {
 }
 
 /* Hero Section */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2em;
+  }
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Vertical space between buttons */
+    align-items: center; /* Optional: centers the buttons */
+  }
+}
+
 .hero {
   background: #222;
   color: #f4f4f4;
