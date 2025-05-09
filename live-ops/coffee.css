@@ -200,7 +200,7 @@ a:hover {
 }
 .media-row {
   display: flex;
-  gap: 10%;
+  gap: 4%;
   justify-content: left;
   flex-wrap: wrap;
 }
