@@ -6,17 +6,38 @@
 .tweet-thumbnail {
   position: relative;
   cursor: pointer;
+  max-width: 300px;
+  max-height: 300px;
   aspect-ratio: 1 / 1;
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
-  background: #f2f2f2;
+  background: #2a4952;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(42, 73, 82, 0.2); /* soft themed shadow */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
+
+.tweet-thumbnail:hover {
+  border: 1px solid #39c0d6; /* highlight color */
+  box-shadow: 0 0 5px rgba(57, 192, 214, 0.4), 0 0 15px rgba(57, 192, 214, 0.3),
+    0 0 25px rgba(57, 192, 214, 0.2);
+  transform: translateY(-2px); /* subtle lift on hover */
+}
+
 .tweet-thumbnail img {
-  width: 100%;
-  height: 100%;
+  max-width: 240px;
+  max-height: 240px;
   object-fit: cover;
   display: block;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.tweet-thumbnail:hover img {
+  transform: scale(1.05);
 }
 
 .tweet-embed {
