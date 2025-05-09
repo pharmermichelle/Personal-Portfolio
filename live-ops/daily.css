@@ -1,0 +1,243 @@
+.tweet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.tweet-thumbnail {
+  position: relative;
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f2f2f2;
+}
+.tweet-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tweet-embed {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.tweet-embed:hover {
+  transform: scale(1.02);
+}
+
+/* Hero Section */
+
+.hero {
+  background-color: #e0f7fa;
+  background-image: url("images/archesWall.png");
+  color: #2a4952;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid #d7efff;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  color: #2a4952;
+}
+
+.hero-content h1 {
+  margin-bottom: 10px;
+}
+
+.tagline,
+.hero-content .tagline {
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  color: #4a6a73;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2em;
+  }
+}
+
+/* Nav Bar */
+.live-ops-nav {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.live-ops-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.live-ops-nav a {
+  text-decoration: none;
+  color: #2a4952;
+  font-weight: 600;
+  padding: 8px 12px;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.live-ops-nav a:hover {
+  background-color: #d7efff;
+}
+
+/* Optional: Highlight link when section is in view */
+.live-ops-nav a.active {
+  background-color: #b3dce8;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .live-ops-nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80vh;
+  border-radius: 8px;
+}
+
+.close {
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+}
+.subList {
+  list-style-type: circle;
+  margin-left: 2em;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: url("images/archesWall.png") repeat fixed;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size: auto;
+  background-color: #e0f7fa /* Light cyan background */;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.content-box {
+  background-color: rgba(
+    240,
+    248,
+    255,
+    0.94
+  ); /* Alice Blue with transparency */
+  padding: 20px;
+  margin: 40px auto;
+  border-radius: 12px;
+  max-width: 900px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2,
+h3 {
+  color: #2a4952;
+}
+
+#sub-header {
+  color: #4a6a73;
+  font-size: 1rem;
+}
+
+div h1,
+div h2,
+div h3 {
+  color: #2a4952;
+}
+ul {
+  list-style-type: square;
+  padding-left: 20px;
+}
+.section {
+  margin-bottom: 40px;
+}
+a {
+  color: #2196f3;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.highlight {
+  background-color: #ffff99;
+}
+.media-thumbnail {
+  max-width: 350px;
+  margin-bottom: 16px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+.media-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  padding: 8px 12px;
+}
+.media-row {
+  display: flex;
+  gap: 4%;
+  justify-content: left;
+  flex-wrap: wrap;
+}
