@@ -198,20 +198,110 @@ a:hover {
   border-radius: 50%;
   padding: 8px 12px;
 }
+
+/* General styling for media thumbnails */
 .media-row {
   display: flex;
-  gap: 4%;
-  justify-content: left;
   flex-wrap: wrap;
-}
-
-.media-thumbnail img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
 }
 
 .media-thumbnail {
-  flex: 1 1 auto; /* Adjusts width of each item */
-  max-width: 240px; /* Optional: set a max width */
+  flex: 1 1 300px;
+  max-width: 500px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
+}
+
+.media-thumbnail img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.media-thumbnail:hover {
+  border: 1px solid #d9a066; /* caramel highlight */
+  box-shadow: 0 0 5px rgba(217, 160, 102, 0.4),
+    0 0 15px rgba(217, 160, 102, 0.3), 0 0 25px rgba(217, 160, 102, 0.2);
+  transform: translateY(-2px);
+}
+
+.media-thumbnail img:hover {
+  transform: scale(1.03);
+}
+.media-row iframe {
+  flex: 1 1 400px;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+.media-row2 {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(250px, 1fr)
+  ); /* 3-wide responsive grid */
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.media-thumbnail2 {
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-thumbnail2 img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.media-thumbnail2:hover {
+  border: 1px solid #d9a066;
+  box-shadow: 0 0 5px rgba(217, 160, 102, 0.4),
+    0 0 15px rgba(217, 160, 102, 0.3), 0 0 25px rgba(217, 160, 102, 0.2);
+  transform: translateY(-2px);
+}
+
+.media-thumbnail2 img:hover {
+  transform: scale(1.03);
+}
+
+/* Themed link style for bottom links */
+.footer-links a {
+  color: #6b3e26; /* Coffee-brown or theme color */
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #4a2a1c; /* Darker shade on hover */
+  text-decoration: underline;
 }
