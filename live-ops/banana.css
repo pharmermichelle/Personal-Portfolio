@@ -1,18 +1,45 @@
+:root {
+  --banana-peel: #fce87e;
+  --banana-flesh: #fffde0;
+  --banana-highlight: #f7d660;
+  --banana-hover: #fae38c;
+  --banana-subtle: #fbe98e;
+  --banana-cream: rgba(255, 253, 220, 0.95);
+  --banana-border: #d9cba7;
+  --banana-background: #fff9d9;
+  --banana-border-hover: #f2e4a3;
+  --banana-glow: rgba(242, 228, 163, 0.3);
+  --banana-glow-mid: rgba(242, 228, 163, 0.2);
+  --banana-glow-light: rgba(242, 228, 163, 0.4);
+
+  --text-dark: #4b3d2a;
+  --text-medium: #5b4c33;
+  --text-light: #3b3021;
+
+  --link-yellow: #f2b100;
+  --link-hover: #c29000;
+  --highlight-yellow: #ffff99;
+}
+
 /* Hero Section - Banana Themed */
 .hero {
-  background-color: #fce87e; /* Banana peel yellow */
+  background-color: var(--banana-peel);
   background-image: url("images/diagonalWall.png");
-  color: #4b3d2a;
+  color: var(--text-dark);
   padding: 60px 20px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-bottom: 2px solid #f7d660;
+  border-bottom: 2px solid var(--banana-highlight);
 }
 
-.hero h1 {
-  font-size: 3em;
-  margin-bottom: 10px;
-  color: #4b3d2a;
+.hero h1,
+div h1,
+div h2,
+div h3,
+h1,
+h2,
+h3 {
+  color: var(--text-dark);
 }
 
 .hero-content h1 {
@@ -20,13 +47,14 @@
 }
 
 .tagline,
-.hero-content .tagline {
+.hero-content .tagline,
+#sub-header {
   font-size: 1.3em;
   margin-bottom: 20px;
-  color: #5b4c33;
+  color: var(--text-medium);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 350px) {
   .hero h1 {
     font-size: 2em;
   }
@@ -36,7 +64,7 @@
 .live-ops-nav {
   position: sticky;
   top: 0;
-  background-color: #fffde0; /* Banana flesh */
+  background-color: var(--banana-flesh);
   padding: 10px 0;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -54,7 +82,7 @@
 
 .live-ops-nav a {
   text-decoration: none;
-  color: #4b3d2a;
+  color: var(--text-dark);
   font-weight: 600;
   padding: 8px 12px;
   transition: background-color 0.3s ease;
@@ -62,15 +90,14 @@
 }
 
 .live-ops-nav a:hover {
-  background-color: #fae38c;
+  background-color: var(--banana-hover);
 }
 
 .live-ops-nav a.active {
-  background-color: #f7d660;
+  background-color: var(--banana-highlight);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 350px) {
   .live-ops-nav ul {
     flex-direction: column;
     align-items: center;
@@ -125,36 +152,19 @@
 body {
   font-family: Arial, sans-serif;
   background: url("images/diagonalWall.png") repeat fixed;
-  background-color: #fbe98e; /* Subtle yellow */
-  color: #3b3021;
+  background-color: var(--banana-subtle);
+  color: var(--text-light);
   margin: 0;
   padding: 0;
 }
 
 .content-box {
-  background-color: rgba(255, 253, 220, 0.95); /* banana cream tone */
+  background-color: var(--banana-cream);
   padding: 20px;
   margin: 40px auto;
   border-radius: 12px;
   max-width: 900px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1,
-h2,
-h3 {
-  color: #4b3d2a;
-}
-
-#sub-header {
-  color: #5b4c33;
-  font-size: 1rem;
-}
-
-div h1,
-div h2,
-div h3 {
-  color: #4b3d2a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1), 0 0 12px var(--banana-glow);
 }
 
 ul {
@@ -167,20 +177,69 @@ ul {
 }
 
 a {
-  color: #f2b100;
+  color: var(--link-yellow);
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
-  color: #c29000;
+  color: var(--link-hover);
 }
 
 .highlight {
-  background-color: #ffff99;
+  background-color: var(--highlight-yellow);
 }
 
-/* Media Display */
+/* Tweet Thumbnail */
+.tweet-thumbnail {
+  flex: 1 1 300px;
+  max-width: 350px;
+  cursor: pointer;
+  margin: 1rem 0;
+  border: 2px solid var(--banana-border);
+  border-radius: 12px;
+  background-color: var(--banana-cream);
+  box-shadow: 0 4px 10px var(--banana-glow-mid);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+.tweet-thumbnail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.tweet-thumbnail:hover {
+  background-color: var(--banana-hover);
+  border-color: var(--banana-border-hover);
+  box-shadow: 0 6px 12px var(--banana-glow-light);
+}
+#tweetModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 250, 205, 0.9); /* banana-tinted backdrop */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#tweetEmbedContainer {
+  background: var(--banana-flesh);
+  border: 3px solid var(--banana-border);
+  border-radius: 20px;
+  padding: 1rem;
+  max-width: 90%;
+  box-shadow: 0 8px 20px var(--banana-glow-light);
+}
+
+/* Media Thumbnails */
 .media-thumbnail {
   max-width: 350px;
   margin-bottom: 16px;
@@ -188,34 +247,65 @@ a:hover {
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
+  flex: 1 1 300px;
+  max-width: 350px;
+  border: 1px solid var(--banana-border);
+  background: var(--banana-background);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
-.media-thumbnail img {
+.media-thumbnail img,
+img {
   width: 100%;
   height: auto;
-  display: block;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px var(--banana-glow-mid);
 }
 
-.play-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: white;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  padding: 8px 12px;
+.media-thumbnail:hover {
+  border: 1px solid var(--banana-border-hover);
+  box-shadow: 0 0 5px var(--banana-glow-light), 0 0 15px var(--banana-glow),
+    0 0 25px var(--banana-glow-mid);
+  transform: translateY(-2px);
+}
+
+.media-thumbnail img:hover,
+img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px var(--banana-glow-light);
 }
 
 .media-row {
   display: flex;
-  gap: 10%;
-  justify-content: left;
   flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
 }
 
-.media-thumbnail {
-  flex: 1 1 auto;
-  max-width: 240px;
+.media-row iframe {
+  flex: 1 1 400px;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  border: 1px solid var(--banana-border);
+}
+
+.content-box ul {
+  list-style: disc inside;
+  padding-left: 1rem;
+}
+
+.content-box ul li {
+  margin-bottom: 10px;
+}
+
+.content-box ul li > .tweet-thumbnail {
+  margin-top: 10px;
 }

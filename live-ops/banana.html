@@ -91,13 +91,10 @@
             cones and chocolate bar)
           </li>
           <li>Coordinated social and Discord announcements</li>
-          <li>
-            <div class="tweet-thumbnail">
-              <img src="images/bananatweet2img.png" alt="Tweet Thumbnail" />
-              <div class="play-overlay">▶</div>
-            </div>
-          </li>
         </ul>
+        <div class="tweet-thumbnail" data-tweet="">
+          <img src="images/bananatweet2img.png" alt="Tweet Thumbnail" />
+        </div>
 
         <h3>Phase 2: Craft Expansion</h3>
         <ul>
@@ -105,13 +102,11 @@
           <li>
             Legacy NFTs (Bakery, Ice Cream Parlor) repurposed to boost value
           </li>
-          <li>
-            <div class="tweet-thumbnail">
-              <img src="images/bananatweet1img.png" alt="Tweet Thumbnail" />
-              <div class="play-overlay">▶</div>
-            </div>
-          </li>
         </ul>
+
+        <div class="tweet-thumbnail" data-tweet="">
+          <img src="images/bananatweet1img.png" alt="Tweet Thumbnail" />
+        </div>
 
         <h3>Phase 3: Monetization</h3>
         <ul>
@@ -184,11 +179,50 @@
         </p>
       </section>
     </main>
+    <script>
+      const imageModal = document.getElementById("imageModal");
+      const imageModalImg = document.getElementById("modalImg");
+      const imageClose = document.getElementById("closeModal");
 
-    <script
-      async
-      src="https://platform.twitter.com/widgets.js"
-      charset="utf-8"
-    ></script>
+      imageClose.addEventListener("click", function () {
+        imageModal.style.display = "none";
+      });
+
+      imageModal.addEventListener("click", function (e) {
+        if (e.target === imageModal) {
+          imageModal.style.display = "none";
+        }
+      });
+
+      document.querySelectorAll(".media-thumbnail img").forEach((img) => {
+        img.addEventListener("click", function () {
+          imageModal.style.display = "block";
+          imageModalImg.src = this.src;
+          imageModalImg.alt = this.alt;
+        });
+      });
+      const tweetModal = document.getElementById("tweetModal");
+      const tweetEmbedContainer = document.getElementById(
+        "tweetEmbedContainer"
+      );
+
+      function closeTweetModal() {
+        tweetModal.style.display = "none";
+        tweetEmbedContainer.innerHTML = "";
+      }
+
+      document.querySelectorAll(".tweet-thumbnail").forEach((thumbnail) => {
+        thumbnail.addEventListener("click", () => {
+          const tweetUrl = thumbnail.getAttribute("data-tweet");
+          tweetEmbedContainer.innerHTML = `<blockquote class="twitter-tweet"><a href="${tweetUrl}"></a></blockquote>`;
+          tweetModal.style.display = "flex";
+          if (window.twttr) {
+            window.twttr.widgets.load(tweetEmbedContainer);
+          }
+        });
+      });
+
+      tweetModal.addEventListener("click", closeTweetModal);
+    </script>
   </body>
 </html>
