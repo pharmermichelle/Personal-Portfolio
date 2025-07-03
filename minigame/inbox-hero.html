@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox Hero</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+      }
+
+      h1 {
+        margin-top: 1rem;
+      }
+
+      #game-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 90%;
+        max-width: 500px;
+        margin-top: 1rem;
+        text-align: center;
+      }
+
+      #message-box {
+        background: #e3e3e3;
+        border-radius: 8px;
+        padding: 1rem;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-around;
+      }
+
+      button {
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .approve {
+        background: #4caf50;
+        color: white;
+      }
+      .delete {
+        background: #f44336;
+        color: white;
+      }
+      .moderate {
+        background: #ff9800;
+        color: white;
+      }
+
+      #score {
+        margin-top: 1rem;
+        font-weight: bold;
+      }
+
+      .flash-green {
+        background: #c8e6c9 !important;
+      }
+
+      .flash-red {
+        background: #ffcdd2 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📥 Inbox Hero</h1>
+
+    <div id="game-container">
+      <div id="message-box">Press a button to begin!</div>
+
+      <div class="buttons">
+        <button class="approve" onclick="handleAction('approve')">
+          ✅ Approve
+        </button>
+        <button class="delete" onclick="handleAction('delete')">
+          ❌ Delete
+        </button>
+        <button class="moderate" onclick="handleAction('moderate')">
+          🛠️ Moderate
+        </button>
+      </div>
+
+      <div id="score">Score: 0</div>
+    </div>
+
+    <script>
+      const messages = [
+        { text: "I love this community! Great job mods!", type: "approve" },
+        { text: "BUY FOLLOWERS NOW!!!", type: "delete" },
+        { text: "You're all trash, uninstall the game", type: "moderate" },
+        { text: "This update was awesome!", type: "approve" },
+        { text: "I found a bug! Where do I report it?", type: "approve" },
+        { text: "lol ur mom", type: "moderate" },
+        { text: "Here's a link to free cheats", type: "delete" },
+        { text: "Thanks for the help earlier!", type: "approve" },
+        { text: "This mod is power-tripping hard", type: "moderate" },
+      ];
+
+      let currentMessage = null;
+      let score = 0;
+      let intervalId = null;
+
+      const messageBox = document.getElementById("message-box");
+      const scoreBox = document.getElementById("score");
+
+      function showMessage() {
+        const random = messages[Math.floor(Math.random() * messages.length)];
+        currentMessage = random;
+        messageBox.textContent = random.text;
+      }
+
+      function handleAction(action) {
+        if (!currentMessage) return;
+
+        if (action === currentMessage.type) {
+          score += 10;
+          flashMessage("green");
+        } else {
+          score -= 5;
+          flashMessage("red");
+        }
+
+        scoreBox.textContent = `Score: ${score}`;
+        currentMessage = null;
+        messageBox.textContent = "Waiting for next message...";
+      }
+
+      function flashMessage(color) {
+        const className = color === "green" ? "flash-green" : "flash-red";
+        messageBox.classList.add(className);
+        setTimeout(() => messageBox.classList.remove(className), 300);
+      }
+
+      function startGame() {
+        showMessage();
+        intervalId = setInterval(showMessage, 4000);
+      }
+
+      startGame();
+    </script>
+  </body>
+</html>

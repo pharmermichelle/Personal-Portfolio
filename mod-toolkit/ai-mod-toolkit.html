@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mod Toolkit</title>
+    <link rel="stylesheet" href="ai-mod-toolkit.css" />
+  </head>
+  <body class="light-theme">
+    <header>
+      <h1>🛠️ Mod Toolkit</h1>
+      <button id="themeToggle">Switch Theme</button>
+    </header>
+
+    <div class="container">
+      <aside>
+        <button class="tab-button" data-tab="prompts">
+          🎲 Prompt Generator
+        </button>
+        <button class="tab-button" data-tab="responses">
+          💬 Quick Responses
+        </button>
+        <button class="tab-button" data-tab="rules">📜 Rules Builder</button>
+      </aside>
+
+      <main>
+        <section id="prompts" class="tab-content active">
+          <h2>Prompt Generator</h2>
+
+          <label for="promptType">Choose prompt type:</label>
+          <select id="promptType">
+            <option value="community">💬 Community Question</option>
+            <option value="event">🎮 Game Event Idea</option>
+            <option value="topic">🧠 Thoughtful Topic</option>
+          </select>
+
+          <div id="prompt-card">
+            <p id="prompt-text">Click the button to get your first prompt!</p>
+            <div class="prompt-buttons">
+              <button id="generatePrompt">🎲 Generate Prompt</button>
+              <button id="copyPrompt">📋 Copy</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="responses" class="tab-content">
+          <h2>Quick Responses</h2>
+          <p>Coming soon!</p>
+        </section>
+
+        <section id="rules" class="tab-content">
+          <h2>Rules Builder</h2>
+          <p>Coming soon!</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="ai-mod-toolkit.js"></script>
+  </body>
+</html>
