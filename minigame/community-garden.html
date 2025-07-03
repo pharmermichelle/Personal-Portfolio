@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Garden</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #e0f7e9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        margin-top: 1rem;
+        color: #2e7d32;
+      }
+
+      #garden-container {
+        width: 90%;
+        max-width: 700px;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      #map-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 60px);
+        grid-template-rows: repeat(5, 60px);
+        gap: 5px;
+        margin-top: 1rem;
+      }
+
+      .map-tile {
+        width: 60px;
+        height: 60px;
+        background: #d8f3dc;
+        border: 1px solid #ccc;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .draggable-item {
+        cursor: grab;
+      }
+
+      #inventory {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      #log,
+      #achievement,
+      #wood-display,
+      #health-bar,
+      #merge-guide {
+        margin-top: 1rem;
+        width: 100%;
+      }
+
+      #log {
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: left;
+        max-height: 150px;
+        overflow-y: auto;
+        font-size: 0.9rem;
+      }
+
+      .achievement {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffeb3b;
+        padding: 0.5rem;
+      }
+
+      #health-bar {
+        background: #ddd;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #health-fill {
+        height: 100%;
+        background: #66bb6a;
+        width: 100%;
+        transition: width 0.3s;
+      }
+
+      #merge-guide {
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🌿 Community Garden</h1>
+    <div id="garden-container">
+      <p>
+        Grow your community garden through positive actions! Merge plants to
+        upgrade them, gather 🌲 wood, and build your dream garden.
+      </p>
+      <button onclick="performAction('approve')">Approve Message</button>
+      <button onclick="performAction('resolve')">Resolve Conflict</button>
+      <button onclick="performAction('clean')">Delete Spam</button>
+      <button onclick="performAction('mistake')">Make a Mistake</button>
+      <button onclick="spendWood()">🏠 Use 20 Wood to Build a House</button>
+
+      <div id="health-bar"><div id="health-fill"></div></div>
+      <div id="wood-display">🌲 Wood: 0</div>
+      <div id="inventory"></div>
+      <div id="map-grid"></div>
+      <div id="log"></div>
+      <div id="achievement"></div>
+      <div id="merge-guide"></div>
+    </div>
+
+    <script>
+      const mergeMap = {
+        approve: "leaf",
+        resolve: "leaf",
+        clean: "leaf",
+        leaf: "sprout",
+        sprout: "bush",
+        bush: "tree",
+        tree: "house",
+        house: "store",
+        store: "car",
+        car: "building",
+        building: "park",
+        park: "cityhall",
+        cityhall: "community",
+      };
+
+      const plantImages = {
+        approve: "🌿",
+        resolve: "🌿",
+        clean: "🌿",
+        leaf: "🍃",
+        sprout: "🌱",
+        bush: "🌾",
+        tree: "🌳",
+        house: "🏠",
+        store: "🏪",
+        car: "🚗",
+        building: "🏢",
+        park: "🏞️",
+        cityhall: "🏛️",
+        community: "🫂",
+      };
+
+      const mergeDescriptions = {
+        leaf: "🍃 Leaf — A new idea or effort",
+        sprout: "🌱 Sprout — Early growth",
+        bush: "🌾 Bush — Growing collaboration",
+        tree: "🌳 Tree — Community stability",
+        house: "🏠 House — A safe hub",
+        store: "🏪 Store — Resource sharing",
+        car: "🚗 Car — Community outreach",
+        building: "🏢 Building — Infrastructure",
+        park: "🏞️ Park — Shared joy",
+        cityhall: "🏛️ City Hall — Community rules",
+        community: "🫂 Community — A thriving culture",
+      };
+
+      const gardenState = JSON.parse(
+        localStorage.getItem("communityGarden")
+      ) || {
+        plants: [],
+        log: [],
+        achievements: [],
+        health: 100,
+        wood: 0,
+        map: Array(25).fill(null),
+      };
+
+      function saveGarden() {
+        localStorage.setItem("communityGarden", JSON.stringify(gardenState));
+      }
+
+      function updateMap() {
+        const map = document.getElementById("map-grid");
+        map.innerHTML = "";
+        gardenState.map.forEach((item, index) => {
+          const tile = document.createElement("div");
+          tile.classList.add("map-tile");
+          tile.dataset.index = index;
+          tile.ondragover = (e) => e.preventDefault();
+          tile.ondrop = (e) => {
+            const type = e.dataTransfer.getData("text/plain");
+            gardenState.map[index] = type;
+            saveGarden();
+            updateMap();
+          };
+          tile.textContent = item ? plantImages[item] : "⬜";
+          map.appendChild(tile);
+        });
+      }
+
+      function updateInventory() {
+        const inventory = document.getElementById("inventory");
+        inventory.innerHTML = "";
+        gardenState.plants.forEach((p, index) => {
+          const div = document.createElement("div");
+          div.textContent = plantImages[p.type];
+          div.className = "plant draggable-item";
+          div.draggable = true;
+          div.ondragstart = (e) => e.dataTransfer.setData("text/plain", p.type);
+          inventory.appendChild(div);
+        });
+      }
+
+      function updateMergeGuide() {
+        const guide = document.getElementById("merge-guide");
+        guide.innerHTML =
+          "<strong>Merge Recipes:</strong><br>" +
+          Object.values(mergeDescriptions).join("<br>");
+      }
+
+      function updateLog() {
+        const logBox = document.getElementById("log");
+        logBox.innerHTML =
+          "<strong>Recent Activity:</strong><br>" +
+          gardenState.log
+            .slice(-5)
+            .reverse()
+            .map((item) => `- ${item}`)
+            .join("<br>");
+      }
+
+      function updateHealthBar() {
+        document.getElementById("health-fill").style.width =
+          gardenState.health + "%";
+      }
+
+      function updateWoodDisplay() {
+        document.getElementById(
+          "wood-display"
+        ).textContent = `🌲 Wood: ${gardenState.wood}`;
+      }
+
+      function showAchievement(message) {
+        if (!gardenState.achievements.includes(message)) {
+          gardenState.achievements.push(message);
+          document.getElementById(
+            "achievement"
+          ).innerHTML = `<div class='achievement'>🏆 ${message}</div>`;
+        }
+      }
+
+      function spendWood() {
+        if (gardenState.wood >= 20) {
+          gardenState.wood -= 20;
+          gardenState.plants.push({ type: "house", date: Date.now() });
+          gardenState.log.push("Used 20 wood to build a house! 🏠");
+          showAchievement("Built your first house! Great work!");
+          saveGarden();
+          updateInventory();
+          updateMap();
+          updateLog();
+          updateWoodDisplay();
+        } else {
+          alert("Not enough wood! You need 20 wood to build a house.");
+        }
+      }
+
+      function performAction(type) {
+        if (type === "mistake") {
+          gardenState.health = Math.max(0, gardenState.health - 10);
+          gardenState.log.push("Made a mistake. Community health decreased.");
+        } else {
+          const plant = { type: mergeMap[type] || type, date: Date.now() };
+          gardenState.plants.push(plant);
+          gardenState.log.push(`Planted a ${type} plant.`);
+          gardenState.health = Math.min(100, gardenState.health + 5);
+          gardenState.wood += 1;
+
+          let changed = true;
+          while (changed) {
+            changed = false;
+            for (const baseType of Object.keys(mergeMap)) {
+              const matches = gardenState.plants.filter(
+                (p) => p.type === baseType
+              );
+              if (matches.length >= 3) {
+                gardenState.plants = gardenState.plants.filter(
+                  (p) => p.type !== baseType
+                );
+                gardenState.plants.push({
+                  type: mergeMap[baseType],
+                  date: Date.now(),
+                });
+                gardenState.log.push(
+                  `Three ${baseType} merged into a ${mergeMap[baseType]}!`
+                );
+                changed = true;
+                break;
+              }
+            }
+          }
+        }
+        saveGarden();
+        updateInventory();
+        updateMap();
+        updateLog();
+        updateHealthBar();
+        updateWoodDisplay();
+      }
+
+      updateInventory();
+      updateMap();
+      updateLog();
+      updateHealthBar();
+      updateWoodDisplay();
+      updateMergeGuide();
+    </script>
+  </body>
+</html>

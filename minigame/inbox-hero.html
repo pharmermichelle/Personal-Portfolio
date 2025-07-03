@@ -47,6 +47,7 @@
       .buttons {
         display: flex;
         justify-content: space-around;
+        margin-bottom: 1rem;
       }
 
       button {
@@ -71,8 +72,9 @@
         color: white;
       }
 
-      #score {
-        margin-top: 1rem;
+      #score,
+      #lives {
+        margin-top: 0.5rem;
         font-weight: bold;
       }
 
@@ -83,10 +85,97 @@
       .flash-red {
         background: #ffcdd2 !important;
       }
+
+      #log {
+        text-align: left;
+        margin-top: 1rem;
+        max-height: 150px;
+        overflow-y: auto;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      .log-item {
+        margin-bottom: 0.25rem;
+      }
+
+      .correct {
+        color: green;
+      }
+
+      .incorrect {
+        color: red;
+      }
+
+      #game-over {
+        font-size: 1.5rem;
+        color: red;
+        margin-top: 1rem;
+      }
     </style>
   </head>
   <body>
     <h1>📥 Inbox Hero</h1>
+    <div
+      id="instructions-toggle"
+      style="max-width: 500px; width: 90%; margin: 1rem auto"
+    >
+      <button
+        onclick="toggleInstructions()"
+        style="
+          width: 100%;
+          padding: 10px;
+          font-size: 1rem;
+          border: none;
+          border-radius: 5px;
+          background-color: #007bff;
+          color: white;
+          cursor: pointer;
+        "
+      >
+        ℹ️ How to Moderate
+      </button>
+      <div
+        id="instructions-content"
+        style="
+          display: none;
+          background: #fff;
+          border: 1px solid #ccc;
+          padding: 15px;
+          border-radius: 6px;
+          margin-top: 0.5rem;
+          font-size: 0.95rem;
+          color: #333;
+        "
+      >
+        👋 Welcome to <strong>Inbox Hero</strong> — where you play as the
+        frontline moderator for a vibrant community! Your goal isn't just speed
+        — it's judgment. <br /><br />
+        As messages fly in, decide how to handle each one based on tone, intent,
+        and impact:
+        <br /><br />
+        ✅ <strong>Approve</strong> — Supportive, curious, or respectful
+        messages. Approve things that uplift others or add value — even if
+        they're critical, as long as they're kind.<br /><br />
+
+        ❌ <strong>Delete</strong> — Spam, scams, copy-pasta, or anything that
+        feels automated, off-topic, or dangerous. You’ll know it when you see it
+        — no one wants to click suspicious links.<br /><br />
+
+        🛠️ <strong>Moderate</strong> — Hurtful, sarcastic, or hostile content.
+        If it attacks people, stirs drama, or breaks the vibe, step in. Mods
+        don’t punish — they protect the space.<br /><br />
+
+        💡 <strong>Pro Tip:</strong> Not everything needs action. Look for
+        intent. Is the message trying to help, or trying to harm? Be fair. Be
+        quick. Be kind. <br /><br />
+        You have <strong>3 lives</strong>. Lose one for every mistake. Stay
+        sharp and keep the inbox safe!
+      </div>
+    </div>
 
     <div id="game-container">
       <div id="message-box">Press a button to begin!</div>
@@ -104,27 +193,72 @@
       </div>
 
       <div id="score">Score: 0</div>
+      <div id="lives">Lives: ❤️❤️❤️</div>
+      <div id="log"><strong>Action Log:</strong></div>
+      <div id="game-over"></div>
     </div>
 
     <script>
       const messages = [
+        // Positive / Approve
         { text: "I love this community! Great job mods!", type: "approve" },
-        { text: "BUY FOLLOWERS NOW!!!", type: "delete" },
-        { text: "You're all trash, uninstall the game", type: "moderate" },
         { text: "This update was awesome!", type: "approve" },
         { text: "I found a bug! Where do I report it?", type: "approve" },
-        { text: "lol ur mom", type: "moderate" },
-        { text: "Here's a link to free cheats", type: "delete" },
         { text: "Thanks for the help earlier!", type: "approve" },
+        { text: "I love how positive this chat is", type: "approve" },
+        { text: "Why did my post get deleted?", type: "approve" },
+        { text: "Hey mods, you’re doing a great job 💖", type: "approve" },
+        { text: "Just wanted to say this game rocks!", type: "approve" },
+        { text: "Good luck everyone! Have fun out there!", type: "approve" },
+        { text: "This community has the best vibes ✨", type: "approve" },
+        {
+          text: "Got some great tips from this thread, thank you!",
+          type: "approve",
+        },
+        { text: "Is there a way to report bugs or feedback?", type: "approve" },
+
+        // Spam / Delete
+        { text: "BUY FOLLOWERS NOW!!!", type: "delete" },
+        { text: "Here's a link to free cheats", type: "delete" },
+        { text: "Visit spammysite.com for coins!", type: "delete" },
+        { text: "Use code SCAM123 for free V-Bucks", type: "delete" },
+        {
+          text: "🔥 Click here for hot singles in your area 🔥",
+          type: "delete",
+        },
+        { text: "Get rich quick! No effort required!", type: "delete" },
+        { text: "DM me for instant rank boost!", type: "delete" },
+        { text: "100% win rate bot. Just click the link!", type: "delete" },
+        { text: "Stream this new NFT scam drop here", type: "delete" },
+        { text: "OnlyFans leak thread – must click now!", type: "delete" },
+        { text: "FREE skins at shadygames.ru", type: "delete" },
+
+        // Toxic / Moderate
+        { text: "You're all trash, uninstall the game", type: "moderate" },
+        { text: "lol ur mom", type: "moderate" },
         { text: "This mod is power-tripping hard", type: "moderate" },
+        { text: "kys", type: "moderate" },
+        { text: "You all suck at this game", type: "moderate" },
+        { text: "Report: player xyz is cheating", type: "moderate" },
+        { text: "Mods are ruining the community", type: "moderate" },
+        { text: "L + ratio + banned", type: "moderate" },
+        { text: "What a clown dev team", type: "moderate" },
+        { text: "This entire game is a joke, lol", type: "moderate" },
+        { text: "You sound stupid, get off this thread", type: "moderate" },
+        { text: "Imagine thinking this game is good 💀", type: "moderate" },
+        { text: "Hope this whole game crashes and burns", type: "moderate" },
       ];
 
       let currentMessage = null;
       let score = 0;
+      let lives = 3;
       let intervalId = null;
 
       const messageBox = document.getElementById("message-box");
       const scoreBox = document.getElementById("score");
+      const livesBox = document.getElementById("lives");
+      const logBox = document.getElementById("log");
+      const gameOverBox = document.getElementById("game-over");
 
       function showMessage() {
         const random = messages[Math.floor(Math.random() * messages.length)];
@@ -133,19 +267,38 @@
       }
 
       function handleAction(action) {
-        if (!currentMessage) return;
+        if (!currentMessage || lives <= 0) return;
 
-        if (action === currentMessage.type) {
+        const correct = action === currentMessage.type;
+        const logEntry = document.createElement("div");
+        logEntry.classList.add("log-item");
+
+        if (correct) {
           score += 10;
           flashMessage("green");
+          logEntry.classList.add("correct");
+          logEntry.textContent = `✅ Correct: "${currentMessage.text}"`;
         } else {
           score -= 5;
+          lives -= 1;
           flashMessage("red");
+          logEntry.classList.add("incorrect");
+          logEntry.textContent = `❌ Wrong: "${currentMessage.text}"`;
         }
 
+        logBox.appendChild(logEntry);
+        logBox.scrollTop = logBox.scrollHeight;
+
         scoreBox.textContent = `Score: ${score}`;
+        updateLivesDisplay();
+
         currentMessage = null;
         messageBox.textContent = "Waiting for next message...";
+
+        if (lives === 0) {
+          clearInterval(intervalId);
+          gameOverBox.textContent = "💀 Game Over! Refresh to play again.";
+        }
       }
 
       function flashMessage(color) {
@@ -154,12 +307,23 @@
         setTimeout(() => messageBox.classList.remove(className), 300);
       }
 
+      function updateLivesDisplay() {
+        livesBox.textContent = `Lives: ${"❤️".repeat(lives)}${"🤍".repeat(
+          3 - lives
+        )}`;
+      }
+
       function startGame() {
         showMessage();
         intervalId = setInterval(showMessage, 4000);
       }
 
       startGame();
+      function toggleInstructions() {
+        const content = document.getElementById("instructions-content");
+        content.style.display =
+          content.style.display === "none" ? "block" : "none";
+      }
     </script>
   </body>
 </html>
