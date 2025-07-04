@@ -7,7 +7,9 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background: #e0f7e9;
+        background: url("https://www.transparenttextures.com/patterns/green-dust-and-scratches.png")
+            repeat,
+          #dcedc8;
         margin: 0;
         padding: 0;
         display: flex;
@@ -22,69 +24,80 @@
 
       #garden-container {
         width: 90%;
-        max-width: 700px;
-        background: #ffffff;
+        max-width: 900px;
+        background: #ffffffcc;
         border-radius: 10px;
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
         text-align: center;
+        position: relative;
+      }
+
+      #button-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 1rem;
+      }
+
+      .good-button {
+        background-color: #81c784;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .bad-button {
+        background-color: #e57373;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
       }
 
       #map-grid {
         display: grid;
-        grid-template-columns: repeat(5, 60px);
-        grid-template-rows: repeat(5, 60px);
         gap: 5px;
-        margin-top: 1rem;
+        margin: 1rem auto;
+        grid-template-columns: repeat(auto-fill, 60px);
+        justify-content: center;
       }
 
       .map-tile {
         width: 60px;
         height: 60px;
-        background: #d8f3dc;
+        background: #f1f8e9;
         border: 1px solid #ccc;
         font-size: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-
-      .draggable-item {
-        cursor: grab;
-      }
-
-      #inventory {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-      }
-
-      #log,
-      #achievement,
-      #wood-display,
-      #health-bar,
-      #merge-guide {
-        margin-top: 1rem;
-        width: 100%;
+        cursor: pointer;
+        user-select: none;
       }
 
       #log {
         background: #f0f0f0;
-        padding: 1rem;
+        padding: 0.25rem;
         border-radius: 6px;
         text-align: left;
-        max-height: 150px;
+        max-height: 50px;
         overflow-y: auto;
-        font-size: 0.9rem;
+        font-size: 0.7rem;
+        width: 100%;
+        margin-top: 0.5rem;
       }
 
-      .achievement {
-        background-color: #fff3cd;
-        border-left: 4px solid #ffeb3b;
-        padding: 0.5rem;
+      #health-bar,
+      #resource-display,
+      #community-health-container,
+      #merge-guide {
+        margin-top: 1rem;
+        width: 100%;
       }
 
       #health-bar {
@@ -101,11 +114,43 @@
         transition: width 0.3s;
       }
 
+      #community-health-bar {
+        background: #ddd;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+
+      #community-health-fill {
+        height: 100%;
+        background: #42a5f5;
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      #kpi-container {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+        width: 250px;
+      }
+
+      #kpi {
+        background: #fff8e1;
+        padding: 0.5rem;
+        border: 1px solid #ffecb3;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
       #merge-guide {
         background: #fff;
         border: 1px solid #ccc;
-        padding: 1rem;
-        border-radius: 6px;
+        padding: 0.5rem;
         font-size: 0.85rem;
         text-align: left;
       }
@@ -115,222 +160,243 @@
     <h1>🌿 Community Garden</h1>
     <div id="garden-container">
       <p>
-        Grow your community garden through positive actions! Merge plants to
-        upgrade them, gather 🌲 wood, and build your dream garden.
+        Build your community by making positive decisions. Each choice you make
+        will impact how your garden grows.
       </p>
-      <button onclick="performAction('approve')">Approve Message</button>
-      <button onclick="performAction('resolve')">Resolve Conflict</button>
-      <button onclick="performAction('clean')">Delete Spam</button>
-      <button onclick="performAction('mistake')">Make a Mistake</button>
-      <button onclick="spendWood()">🏠 Use 20 Wood to Build a House</button>
+      <div id="button-grid"></div>
 
       <div id="health-bar"><div id="health-fill"></div></div>
-      <div id="wood-display">🌲 Wood: 0</div>
-      <div id="inventory"></div>
+      <div id="resource-display">🤝 Community Points: 0</div>
+      <div id="community-health-container">
+        <strong>Community Health:</strong>
+        <div id="community-health-bar">
+          <div id="community-health-fill"></div>
+        </div>
+      </div>
+
+      <button onclick="expandGrid()">
+        🌾 Spend 10 Points to Expand Garden
+      </button>
+
       <div id="map-grid"></div>
-      <div id="log"></div>
-      <div id="achievement"></div>
       <div id="merge-guide"></div>
+      <div id="log"></div>
+    </div>
+    <div id="kpi-container">
+      <div id="kpi"></div>
     </div>
 
     <script>
-      const mergeMap = {
-        approve: "leaf",
-        resolve: "leaf",
-        clean: "leaf",
-        leaf: "sprout",
-        sprout: "bush",
-        bush: "tree",
-        tree: "house",
-        house: "store",
-        store: "car",
-        car: "building",
-        building: "park",
-        park: "cityhall",
-        cityhall: "community",
+      let resources = 0;
+      let communityHealth = 0;
+      const maxCommunityHealth = 100;
+      let growthScore = 0;
+      let gridSize = 3;
+      const KPIs = [10, 25, 50, 75, 100];
+      let reachedKPIs = new Set();
+      let currentGoals = new Set();
+      const plantStages = [
+        "🌱",
+        "🌿",
+        "🌷",
+        "🌳",
+        "🏡",
+        "🏪",
+        "🚗",
+        "🏢",
+        "🏞️",
+        "🏛️",
+        "🫂",
+      ];
+
+      const stageDescriptions = {
+        "🌱": "Baby Plant",
+        "🌿": "Leafy Growth",
+        "🌷": "Flowering Plant",
+        "🌳": "Tree",
+        "🏡": "House",
+        "🏪": "Store",
+        "🚗": "Community Outreach",
+        "🏢": "Building",
+        "🏞️": "Park",
+        "🏛️": "City Hall",
+        "🫂": "Thriving Community",
       };
 
-      const plantImages = {
-        approve: "🌿",
-        resolve: "🌿",
-        clean: "🌿",
-        leaf: "🍃",
-        sprout: "🌱",
-        bush: "🌾",
-        tree: "🌳",
-        house: "🏠",
-        store: "🏪",
-        car: "🚗",
-        building: "🏢",
-        park: "🏞️",
-        cityhall: "🏛️",
-        community: "🫂",
-      };
+      const actions = [
+        { type: "approve", label: "Approve Message", isGood: true },
+        { type: "resolve", label: "Resolve Conflict", isGood: true },
+        { type: "clean", label: "Delete Spam", isGood: true },
+        { type: "mistake", label: "Post Rude Comment", isGood: false },
+        { type: "mistake", label: "Ignore Feedback", isGood: false },
+        { type: "mistake", label: "Accuse Someone", isGood: false },
+      ];
 
-      const mergeDescriptions = {
-        leaf: "🍃 Leaf — A new idea or effort",
-        sprout: "🌱 Sprout — Early growth",
-        bush: "🌾 Bush — Growing collaboration",
-        tree: "🌳 Tree — Community stability",
-        house: "🏠 House — A safe hub",
-        store: "🏪 Store — Resource sharing",
-        car: "🚗 Car — Community outreach",
-        building: "🏢 Building — Infrastructure",
-        park: "🏞️ Park — Shared joy",
-        cityhall: "🏛️ City Hall — Community rules",
-        community: "🫂 Community — A thriving culture",
-      };
+      const mapGrid = document.getElementById("map-grid");
+      const mergeGuide = document.getElementById("merge-guide");
+      let tiles = [];
 
-      const gardenState = JSON.parse(
-        localStorage.getItem("communityGarden")
-      ) || {
-        plants: [],
-        log: [],
-        achievements: [],
-        health: 100,
-        wood: 0,
-        map: Array(25).fill(null),
-      };
-
-      function saveGarden() {
-        localStorage.setItem("communityGarden", JSON.stringify(gardenState));
-      }
-
-      function updateMap() {
-        const map = document.getElementById("map-grid");
-        map.innerHTML = "";
-        gardenState.map.forEach((item, index) => {
+      function createGrid() {
+        mapGrid.innerHTML = "";
+        mapGrid.style.gridTemplateColumns = `repeat(${gridSize}, 60px)`;
+        const total = gridSize * gridSize;
+        for (let i = 0; i < total; i++) {
+          if (!tiles[i]) tiles[i] = "⬜";
           const tile = document.createElement("div");
-          tile.classList.add("map-tile");
-          tile.dataset.index = index;
-          tile.ondragover = (e) => e.preventDefault();
-          tile.ondrop = (e) => {
-            const type = e.dataTransfer.getData("text/plain");
-            gardenState.map[index] = type;
-            saveGarden();
-            updateMap();
-          };
-          tile.textContent = item ? plantImages[item] : "⬜";
-          map.appendChild(tile);
+          tile.className = "map-tile";
+          tile.dataset.index = i;
+          tile.textContent = tiles[i];
+          tile.onclick = () => tryMerge(i);
+          mapGrid.appendChild(tile);
+        }
+      }
+
+      function expandGrid() {
+        if (resources >= 10) {
+          resources -= 10;
+          gridSize += 1;
+          createGrid();
+          log(
+            `🌾 Spent 10 Community Points to expand your garden to ${gridSize}x${gridSize}!`
+          );
+          updateResourceDisplay();
+        } else {
+          log("🚫 Not enough Community Points to expand the garden.");
+        }
+      }
+
+      function randomizeButtons() {
+        const grid = document.getElementById("button-grid");
+        grid.innerHTML = "";
+        const shuffled = [...actions]
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 6);
+        shuffled.forEach((action) => {
+          const btn = document.createElement("button");
+          btn.textContent = action.label;
+          btn.onclick = () => performAction(action);
+          btn.className = action.isGood ? "good-button" : "bad-button";
+          grid.appendChild(btn);
         });
       }
 
-      function updateInventory() {
-        const inventory = document.getElementById("inventory");
-        inventory.innerHTML = "";
-        gardenState.plants.forEach((p, index) => {
-          const div = document.createElement("div");
-          div.textContent = plantImages[p.type];
-          div.className = "plant draggable-item";
-          div.draggable = true;
-          div.ondragstart = (e) => e.dataTransfer.setData("text/plain", p.type);
-          inventory.appendChild(div);
+      function performAction(action) {
+        const index = tiles.findIndex((t) => t === "⬜");
+
+        if (action.isGood) {
+          resources += 5;
+          communityHealth += 10;
+          growthScore++;
+          if (index !== -1) {
+            tiles[index] = plantStages[0];
+          }
+          log(
+            `🌱 ${action.label}. Points: ${resources}, Growth: ${growthScore}`
+          );
+        } else {
+          resources = Math.max(0, resources - 5);
+          communityHealth = Math.max(0, communityHealth - 10);
+          const liveIndex = tiles.findIndex((t) => plantStages.includes(t));
+          if (liveIndex !== -1) {
+            tiles[liveIndex] = "💀";
+          }
+          log(`💔 ${action.label}. Mistake made. Points: ${resources}`);
+        }
+
+        updateCommunityHealth();
+        updateResourceDisplay();
+        updateKPI();
+        createGrid();
+      }
+
+      function tryMerge(index) {
+        const current = tiles[index];
+        const stage = plantStages.indexOf(current);
+        if (stage !== -1 && stage < plantStages.length - 1) {
+          const upgradeCost = (stage + 1) * 5;
+          if (resources >= upgradeCost) {
+            resources -= upgradeCost;
+            tiles[index] = plantStages[stage + 1];
+            log(`✨ Upgraded tile ${index + 1} to ${plantStages[stage + 1]}`);
+            updateResourceDisplay();
+            updateKPI();
+            createGrid();
+          } else {
+            log(`🚫 Not enough Community Points. Need ${upgradeCost}`);
+          }
+        }
+      }
+
+      function updateCommunityHealth() {
+        const fill = document.getElementById("community-health-fill");
+        fill.style.width =
+          Math.min((communityHealth / maxCommunityHealth) * 100, 100) + "%";
+      }
+
+      function updateResourceDisplay() {
+        document.getElementById(
+          "resource-display"
+        ).textContent = `🤝 Community Points: ${resources}`;
+      }
+
+      function updateKPI() {
+        const box = document.getElementById("kpi");
+        let msg = "<strong>Community Goals (KPIs):</strong><br>";
+
+        KPIs.forEach((kpi) => {
+          const met = growthScore >= kpi;
+          if (met) {
+            reachedKPIs.add(kpi);
+            currentGoals.add(kpi);
+            msg += `✅ Maintain ${kpi} growth<br>`;
+          } else {
+            currentGoals.delete(kpi);
+            msg += `⬜ Maintain ${kpi} growth<br>`;
+          }
         });
+
+        const requirements = [
+          { emoji: "🚗", count: 2, label: "Outreach vehicles" },
+          { emoji: "🏢", count: 2, label: "Buildings" },
+          { emoji: "🏞️", count: 1, label: "Park" },
+          { emoji: "🏛️", count: 1, label: "City Hall" },
+          { emoji: "🫂", count: 1, label: "Thriving Community" },
+        ];
+
+        requirements.forEach((req) => {
+          const count = tiles.filter((t) => t === req.emoji).length;
+          if (count >= req.count) {
+            msg += `✅ ${req.label}<br>`;
+            currentGoals.add(req.label);
+          } else {
+            msg += `⬜ ${req.label}<br>`;
+            currentGoals.delete(req.label);
+          }
+        });
+
+        box.innerHTML = msg;
       }
 
       function updateMergeGuide() {
-        const guide = document.getElementById("merge-guide");
-        guide.innerHTML =
-          "<strong>Merge Recipes:</strong><br>" +
-          Object.values(mergeDescriptions).join("<br>");
+        let guide = "<strong>Merge Guide:</strong><br>";
+        for (let i = 0; i < plantStages.length - 1; i++) {
+          guide += `${plantStages[i]} → ${plantStages[i + 1]} — ${
+            stageDescriptions[plantStages[i + 1]]
+          }<br>`;
+        }
+        mergeGuide.innerHTML = guide;
       }
 
-      function updateLog() {
+      function log(message) {
         const logBox = document.getElementById("log");
-        logBox.innerHTML =
-          "<strong>Recent Activity:</strong><br>" +
-          gardenState.log
-            .slice(-5)
-            .reverse()
-            .map((item) => `- ${item}`)
-            .join("<br>");
+        logBox.innerHTML += `<p>${message}</p>`;
+        logBox.scrollTop = logBox.scrollHeight;
       }
 
-      function updateHealthBar() {
-        document.getElementById("health-fill").style.width =
-          gardenState.health + "%";
-      }
-
-      function updateWoodDisplay() {
-        document.getElementById(
-          "wood-display"
-        ).textContent = `🌲 Wood: ${gardenState.wood}`;
-      }
-
-      function showAchievement(message) {
-        if (!gardenState.achievements.includes(message)) {
-          gardenState.achievements.push(message);
-          document.getElementById(
-            "achievement"
-          ).innerHTML = `<div class='achievement'>🏆 ${message}</div>`;
-        }
-      }
-
-      function spendWood() {
-        if (gardenState.wood >= 20) {
-          gardenState.wood -= 20;
-          gardenState.plants.push({ type: "house", date: Date.now() });
-          gardenState.log.push("Used 20 wood to build a house! 🏠");
-          showAchievement("Built your first house! Great work!");
-          saveGarden();
-          updateInventory();
-          updateMap();
-          updateLog();
-          updateWoodDisplay();
-        } else {
-          alert("Not enough wood! You need 20 wood to build a house.");
-        }
-      }
-
-      function performAction(type) {
-        if (type === "mistake") {
-          gardenState.health = Math.max(0, gardenState.health - 10);
-          gardenState.log.push("Made a mistake. Community health decreased.");
-        } else {
-          const plant = { type: mergeMap[type] || type, date: Date.now() };
-          gardenState.plants.push(plant);
-          gardenState.log.push(`Planted a ${type} plant.`);
-          gardenState.health = Math.min(100, gardenState.health + 5);
-          gardenState.wood += 1;
-
-          let changed = true;
-          while (changed) {
-            changed = false;
-            for (const baseType of Object.keys(mergeMap)) {
-              const matches = gardenState.plants.filter(
-                (p) => p.type === baseType
-              );
-              if (matches.length >= 3) {
-                gardenState.plants = gardenState.plants.filter(
-                  (p) => p.type !== baseType
-                );
-                gardenState.plants.push({
-                  type: mergeMap[baseType],
-                  date: Date.now(),
-                });
-                gardenState.log.push(
-                  `Three ${baseType} merged into a ${mergeMap[baseType]}!`
-                );
-                changed = true;
-                break;
-              }
-            }
-          }
-        }
-        saveGarden();
-        updateInventory();
-        updateMap();
-        updateLog();
-        updateHealthBar();
-        updateWoodDisplay();
-      }
-
-      updateInventory();
-      updateMap();
-      updateLog();
-      updateHealthBar();
-      updateWoodDisplay();
+      createGrid();
+      randomizeButtons();
       updateMergeGuide();
+      setInterval(randomizeButtons, 5000);
     </script>
   </body>
 </html>
