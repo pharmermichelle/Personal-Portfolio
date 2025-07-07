@@ -10,12 +10,9 @@ const images = {
   buggy3: new Image(),
   crab: new Image(),
   cat: new Image(),
-  palm: new Image(),
-  ball: new Image(),
-  toy: new Image(),
-  tooth: new Image(),
   croc: new Image(),
   speaker: new Image(),
+  tooth: new Image(),
   backgroundBeach: [],
   backgroundVendor: [],
 };
@@ -25,12 +22,9 @@ images.buggy2.src = "./assets/buggy2.png";
 images.buggy3.src = "./assets/buggy3.png";
 images.crab.src = "./assets/crab.png";
 images.cat.src = "./assets/cat.png";
-images.palm.src = "./assets/palm_tree.png";
-images.ball.src = "./assets/beach_ball.png";
-images.toy.src = "./assets/shell.png";
-images.tooth.src = "./assets/shark_tooth_glow.png";
 images.croc.src = "./assets/croc.png";
 images.speaker.src = "./assets/speaker.png";
+images.tooth.src = "./assets/shark_tooth_glow.png";
 
 // Background assets
 const beachAssets = ["palm_tree.png"];
@@ -41,86 +35,15 @@ beachAssets.forEach((src) => {
   img.src = `./assets/${src}`;
   images.backgroundBeach.push(img);
 });
-
 vendorAssets.forEach((src) => {
   const img = new Image();
   img.src = `./assets/${src}`;
   images.backgroundVendor.push(img);
 });
 
+// --- GAME STATE ---
 let beachDecor = [];
 let vendorDecor = [];
-
-function spawnBackgroundDecor() {
-  // Left beach decor (drift left)
-  if (Math.random() < 0.02) {
-    const xStart = 130 + Math.random() * 20;
-    beachDecor.push({
-      img: randomFrom(images.backgroundBeach),
-      x: xStart,
-      y: -50,
-      speedY: 1,
-      driftX: -0.2, // Outward drift
-    });
-  }
-  // Right vendor decor (drift right)
-  if (Math.random() < 0.02) {
-    const xStart = 650 + Math.random() * 20;
-    vendorDecor.push({
-      img: randomFrom(images.backgroundVendor),
-      x: xStart,
-      y: -50,
-      speedY: 1,
-      driftX: 0.2, // Outward drift
-    });
-  }
-}
-
-function updateBackgroundDecor() {
-  beachDecor.forEach((d) => {
-    d.y += d.speedY;
-    d.x += d.driftX * d.speedY;
-  });
-  vendorDecor.forEach((d) => {
-    d.y += d.speedY;
-    d.x += d.driftX * d.speedY;
-  });
-
-  beachDecor = beachDecor.filter((d) => d.y < canvas.height + 100);
-  vendorDecor = vendorDecor.filter((d) => d.y < canvas.height + 100);
-}
-
-function drawBackgroundDecor() {
-  beachDecor.forEach((d) => ctx.drawImage(d.img, d.x, d.y, 40, 40));
-  vendorDecor.forEach((d) => ctx.drawImage(d.img, d.x, d.y, 60, 60));
-}
-
-function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// Car with upgrade logic
-const car = {
-  lane: 1,
-  y: 300,
-  width: 60,
-  height: 60,
-  get x() {
-    return lanes[this.lane];
-  },
-  get img() {
-    if (toothCount >= 12) return images.buggy3;
-    if (toothCount >= 8) return images.buggy2;
-    return images.buggy1;
-  },
-  moveLeft() {
-    if (this.lane > 0) this.lane--;
-  },
-  moveRight() {
-    if (this.lane < lanes.length - 1) this.lane++;
-  },
-};
-
 let obstacles = [];
 let powerups = [];
 let spawnTimer = 0;
@@ -129,8 +52,7 @@ let score = 0;
 let gameOver = false;
 let toothCount = 0;
 
-const baseSpeed = 2.5;
-
+const baseSpeed = 1.5;
 const obstacleTypes = [
   { name: "crab", img: images.crab, width: 40, height: 40, speed: baseSpeed },
   { name: "cat", img: images.cat, width: 50, height: 45, speed: baseSpeed + 1 },
@@ -144,73 +66,10 @@ const obstacleTypes = [
   },
 ];
 
-function spawnObstacle() {
-  const lane = Math.floor(Math.random() * lanes.length);
-  const type = randomFrom(obstacleTypes);
-  let driftX = 0;
-
-  // More dramatic outward drift for left/right lanes
-  if (lane === 0) driftX = -0.6; // stronger leftward
-  else if (lane === 2) driftX = 0.6; // stronger rightward
-
-  obstacles.push({
-    ...type,
-    x: lanes[lane],
-    y: -type.height,
-    driftX: driftX,
-  });
+// --- UTILITIES ---
+function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
-
-function spawnTooth() {
-  const lane = Math.floor(Math.random() * lanes.length);
-  powerups.push({
-    img: images.tooth,
-    width: 30,
-    height: 30,
-    speed: 2,
-    x: lanes[lane],
-    y: -40,
-  });
-}
-
-function updateObstacles() {
-  obstacles.forEach((obj) => {
-    obj.y += obj.speed;
-    obj.x += obj.driftX * obj.speed;
-  });
-
-  obstacles = obstacles.filter((obj) => {
-    if (obj.y > canvas.height) {
-      score += 1;
-      return false;
-    }
-    return true;
-  });
-}
-
-function updatePowerups() {
-  powerups.forEach((p) => (p.y += p.speed));
-  powerups = powerups.filter((p) => {
-    if (p.y > canvas.height) return false;
-    if (checkCollision(car, p)) {
-      score += 10;
-      toothCount++;
-      return false;
-    }
-    return true;
-  });
-}
-
-function drawObstacles() {
-  obstacles.forEach((obj) =>
-    ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height)
-  );
-}
-
-function drawPowerups() {
-  powerups.forEach((p) => ctx.drawImage(p.img, p.x, p.y, p.width, p.height));
-}
-
 function checkCollision(a, b) {
   return (
     a.x < b.x + b.width &&
@@ -220,32 +79,161 @@ function checkCollision(a, b) {
   );
 }
 
-function drawGameOver() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#fff";
-  ctx.font = "40px sans-serif";
-  ctx.fillText("Game Over!", canvas.width / 2 - 120, canvas.height / 2);
+// --- SPAWN / UPDATE DECOR ---
+function spawnBackgroundDecor() {
+  if (Math.random() < 0.02) {
+    beachDecor.push({
+      img: randomFrom(images.backgroundBeach),
+      x: 130 + Math.random() * 20,
+      y: -50,
+      speed: 1,
+      driftX: -0.9,
+    });
+  }
+  if (Math.random() < 0.02) {
+    vendorDecor.push({
+      img: randomFrom(images.backgroundVendor),
+      x: 650 + Math.random() * 20,
+      y: -50,
+      speed: 1,
+      driftX: 0.9,
+    });
+  }
+}
+function updateBackgroundDecor() {
+  beachDecor.forEach((d) => {
+    d.y += d.speed;
+    d.x += d.driftX * d.speed; // LESS CURVY
+    const scale = 1 + (d.y / canvas.height) * 0.5;
+    const width = 40 * scale;
+    const height = 40 * scale;
+    if (checkCollision(car, { x: d.x, y: d.y, width, height })) {
+      gameOver = true;
+    }
+  });
+
+  vendorDecor.forEach((d) => {
+    d.y += d.speed;
+    d.x += d.driftX * d.speed; // LESS CURVY
+    const scale = 1 + (d.y / canvas.height) * 0.5;
+    const width = 60 * scale;
+    const height = 60 * scale;
+    if (checkCollision(car, { x: d.x, y: d.y, width, height })) {
+      gameOver = true;
+    }
+  });
+
+  beachDecor = beachDecor.filter((d) => d.y < canvas.height + 100);
+  vendorDecor = vendorDecor.filter((d) => d.y < canvas.height + 100);
 }
 
-function drawScore() {
-  ctx.fillStyle = "#000";
-  ctx.font = "20px sans-serif";
-  ctx.fillText("Score: " + score, 20, 30);
+// --- SPAWN / UPDATE OBSTACLES ---
+function spawnObstacle() {
+  const lane = Math.floor(Math.random() * lanes.length);
+  const type = randomFrom(obstacleTypes);
+  let driftX = 0;
+  if (lane === 0) driftX = -0.6;
+  if (lane === 2) driftX = 0.6;
+  obstacles.push({
+    x: lanes[lane],
+    y: -type.height,
+    width: type.width,
+    height: type.height,
+    img: type.img,
+    speed: type.speed,
+    driftX: driftX,
+  });
+}
+function updateObstacles() {
+  obstacles.forEach((o) => {
+    o.y += o.speed;
+    o.x += o.driftX * o.speed * (o.y / canvas.height);
+  });
+  obstacles = obstacles.filter((o) => {
+    if (o.y > canvas.height) {
+      score++;
+      return false;
+    }
+    return true;
+  });
+}
+
+// --- SPAWN / UPDATE POWERUPS ---
+function spawnTooth() {
+  const lane = Math.floor(Math.random() * lanes.length);
+  let driftX = 0;
+  if (lane === 0) driftX = -0.6;
+  if (lane === 2) driftX = 0.6;
+  powerups.push({
+    img: images.tooth,
+    width: 30,
+    height: 30,
+    speed: 2,
+    x: lanes[lane],
+    y: -40,
+    driftX: driftX,
+  });
+}
+function updatePowerups() {
+  powerups.forEach((p) => {
+    p.y += p.speed;
+    p.x += p.driftX * p.speed * (p.y / canvas.height);
+  });
+  powerups = powerups.filter((p) => {
+    if (p.y > canvas.height) return false;
+    if (checkCollision(car, p)) {
+      toothCount++;
+      score += 10;
+      return false;
+    }
+    return true;
+  });
+}
+
+// --- DRAW FUNCTIONS ---
+function drawBackgroundDecor() {
+  beachDecor.forEach((d) => {
+    const scale = 1 + (d.y / canvas.height) * 0.5;
+    ctx.drawImage(d.img, d.x, d.y, 40 * scale, 40 * scale);
+  });
+  vendorDecor.forEach((d) => {
+    const scale = 1 + (d.y / canvas.height) * 0.5;
+    ctx.drawImage(d.img, d.x, d.y, 60 * scale, 60 * scale);
+  });
+}
+
+function drawObstacles() {
+  obstacles.forEach((o) => {
+    const scale = 1 + (o.y / canvas.height) * 0.5;
+    ctx.drawImage(o.img, o.x, o.y, o.width * scale, o.height * scale);
+  });
+}
+
+function drawPowerups() {
+  powerups.forEach((p) => {
+    const scale = 1 + (p.y / canvas.height) * 0.5;
+    ctx.drawImage(p.img, p.x, p.y, p.width * scale, p.height * scale);
+  });
 }
 
 function drawCar() {
-  ctx.drawImage(car.img, car.x, car.y, car.width, car.height);
+  const img =
+    toothCount >= 12
+      ? images.buggy3
+      : toothCount >= 8
+      ? images.buggy2
+      : images.buggy1;
+  ctx.drawImage(img, car.x, car.y, car.width, car.height);
 }
 
 function drawPowerupBar() {
-  const barX = 20;
-  const barY = 50;
-  const maxTeeth = 12;
-  const toothSize = 20;
-  ctx.fillStyle = "#333";
+  const barX = 20,
+    barY = 50,
+    toothSize = 20,
+    max = 12;
+  ctx.fillStyle = "#000";
   ctx.fillText("Teeth:", barX, barY - 5);
-  for (let i = 0; i < maxTeeth; i++) {
+  for (let i = 0; i < max; i++) {
     ctx.strokeStyle = "#666";
     ctx.strokeRect(barX + i * (toothSize + 2), barY, toothSize, toothSize);
     if (i < toothCount) {
@@ -255,41 +243,65 @@ function drawPowerupBar() {
   }
 }
 
+function drawScore() {
+  ctx.fillStyle = "#000";
+  ctx.font = "20px sans-serif";
+  ctx.fillText("Score: " + score, 20, 30);
+}
+
+function drawGameOver() {
+  ctx.fillStyle = "rgba(0,0,0,0.7)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#fff";
+  ctx.font = "40px sans-serif";
+  ctx.fillText("Game Over!", canvas.width / 2 - 120, canvas.height / 2);
+}
+
+// --- CAR DEFINITION ---
+const car = {
+  lane: 1,
+  y: 300,
+  width: 60,
+  height: 60,
+  get x() {
+    return lanes[this.lane];
+  },
+  moveLeft() {
+    if (this.lane > 0) this.lane--;
+  },
+  moveRight() {
+    if (this.lane < lanes.length - 1) this.lane++;
+  },
+};
+
+// --- ROAD ---
 function drawRoad() {
-  // Base boardwalk color
   ctx.fillStyle = "#d6b88f";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Simulate vertical perspective: planks taper narrower toward the top
-  const plankCount = 20;
-  const bottomPlankWidth = 40;
-  const topPlankWidth = 10;
-
-  for (let i = 0; i < plankCount; i++) {
-    const t = i / plankCount;
-    const xBottom = i * bottomPlankWidth;
-    const xTop =
-      i * topPlankWidth + (canvas.width - topPlankWidth * plankCount) / 2;
-
+  // vertical tapered planks
+  const planks = 20,
+    w0 = 40,
+    w1 = 10;
+  for (let i = 0; i < planks; i++) {
+    const xB = i * w0;
+    const xT = i * w1 + (canvas.width - planks * w1) / 2;
     ctx.beginPath();
-    ctx.moveTo(xTop, 0);
-    ctx.lineTo(xTop + topPlankWidth, 0);
-    ctx.lineTo(xBottom + bottomPlankWidth, canvas.height);
-    ctx.lineTo(xBottom, canvas.height);
+    ctx.moveTo(xT, 0);
+    ctx.lineTo(xT + w1, 0);
+    ctx.lineTo(xB + w0, canvas.height);
+    ctx.lineTo(xB, canvas.height);
     ctx.closePath();
-
-    // Alternate color for plank shading
-    ctx.fillStyle = i % 2 === 0 ? "#e5c79c" : "#cba474";
+    ctx.fillStyle = i % 2 ? "#cba474" : "#e5c79c";
     ctx.fill();
   }
 }
 
-function gameLoop(timestamp) {
+// --- MAIN LOOP ---
+function gameLoop(ts) {
   if (gameOver) {
     drawGameOver();
     return;
   }
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawRoad();
   drawBackgroundDecor();
@@ -299,14 +311,13 @@ function gameLoop(timestamp) {
   drawScore();
   drawPowerupBar();
 
-  if (timestamp - spawnTimer > 1500) {
+  if (ts - spawnTimer > 1500) {
     spawnObstacle();
-    spawnTimer = timestamp;
+    spawnTimer = ts;
   }
-
-  if (timestamp - toothTimer > 4000) {
+  if (ts - toothTimer > 4000) {
     spawnTooth();
-    toothTimer = timestamp;
+    toothTimer = ts;
   }
 
   spawnBackgroundDecor();
@@ -314,31 +325,27 @@ function gameLoop(timestamp) {
   updateObstacles();
   updatePowerups();
 
-  for (let obj of obstacles) {
-    if (checkCollision(car, obj)) {
+  for (const o of obstacles) {
+    if (checkCollision(car, o)) {
       gameOver = true;
     }
   }
-
   requestAnimationFrame(gameLoop);
 }
 
-// Controls
+// --- INPUT ---
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") car.moveLeft();
   if (e.key === "ArrowRight") car.moveRight();
 });
-document
-  .getElementById("leftBtn")
-  .addEventListener("click", () => car.moveLeft());
-document
-  .getElementById("rightBtn")
-  .addEventListener("click", () => car.moveRight());
-document
-  .getElementById("leftBtn")
-  .addEventListener("touchstart", () => car.moveLeft());
-document
-  .getElementById("rightBtn")
-  .addEventListener("touchstart", () => car.moveRight());
+["click", "touchstart"].forEach((evt) => {
+  document
+    .getElementById("leftBtn")
+    .addEventListener(evt, () => car.moveLeft());
+  document
+    .getElementById("rightBtn")
+    .addEventListener(evt, () => car.moveRight());
+});
 
+// --- START ---
 requestAnimationFrame(gameLoop);
