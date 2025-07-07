@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  background: #e0f7fa;
+  font-family: sans-serif;
+  touch-action: none;
+}
+
+canvas {
+  display: block;
+  margin: auto;
+  background: linear-gradient(to bottom, #87ceeb, #f9e4b7);
+  border: 3px solid #444;
+}
+
+.controls {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.controls button {
+  font-size: 2rem;
+  padding: 10px 20px;
+  margin: 0 20px;
+  border-radius: 10px;
+  background: #ffe082;
+  border: none;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
