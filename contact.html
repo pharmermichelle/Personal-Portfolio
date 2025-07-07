@@ -18,8 +18,20 @@
         </p>
         <div class="hero-buttons">
           <a href="index.html" class="button">About Me</a>
-          <a href="projects.html" class="button">View My Web Dev Projects</a>
-          <a href="resume.html" class="button">Experience & Resume</a>
+          <a
+            href="projects.html"
+            class="button"
+            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Projects Button' });"
+          >
+            View My Web Dev Projects
+          </a>
+          <a
+            href="resume.html"
+            class="button"
+            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
+          >
+            Experience & Resume
+          </a>
           <a href="#contact-form" class="button">Get in Touch</a>
         </div>
       </div>
