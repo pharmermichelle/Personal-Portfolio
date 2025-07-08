@@ -1,9 +1,12 @@
+/* Resume Nav */
+.resume-nav {
+  margin: 40px auto;
+}
 .resume-nav ul {
   display: flex;
   justify-content: center;
   list-style: none;
   padding: 0;
-  margin: 1rem 0;
   gap: 1.5rem;
 }
 
@@ -13,46 +16,89 @@
   color: rgb(146, 182, 254);
   transition: color 0.3s ease;
 }
-
 .resume-nav a:hover {
   color: #007acc;
 }
 
-section.experience {
-  padding: 20px;
+/* Accordion */
+.accordion {
+  margin: 15px auto;
   max-width: 800px;
-  margin: 0 auto;
-
-  h2 {
-    text-align: center;
-    font-size: 2rem;
-    color: rgb(146, 182, 254);
-    margin-bottom: 20px;
-  }
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px #e63946;
+  background: #181818;
 }
-/* Job Titles and Company Names */
-.job h3 {
-  font-size: 1.4rem;
-  color: rgb(230, 57, 70); /* Red color for job titles */
-  margin-bottom: 5px;
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.accordion-header:hover {
+  background-color: #d62839;
+}
+.accordion-header::after {
+  content: "▸";
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+.accordion-header.open::after {
+  transform: rotate(90deg);
+}
+.accordion-panel {
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+.accordion-panel.open {
+  opacity: 1;
+  padding: 20px;
+  margin-bottom: 40px;
 }
 
-.job p strong {
-  color: rgb(230, 57, 70); /* Red color for company name */
+/* Section Headings */
+.accordion-panel h4 {
+  margin: 0 0 10px;
+  font-weight: bold;
+  color: #e63946;
 }
 
-/* Paragraph Styling */
+/* Paragraphs */
+.accordion-panel p,
 .job p {
-  font-size: 0.8rem;
-  margin-bottom: 10px;
+  font-size: 0.9rem;
   color: rgb(146, 182, 254);
+  margin-bottom: 10px;
 }
-
-/* Add a little padding to paragraphs for readability */
 .job p:last-child {
   margin-bottom: 0;
 }
-#download-resume {
-  margin: 20px;
-  padding: 10px 20px;
+
+/* Job Titles */
+.job h3,
+.job h4 {
+  color: rgb(230, 57, 70);
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.job h3 {
+  font-size: 1.4rem;
+}
+.job h4 {
+  font-size: 1.2rem;
+}
+.job p strong {
+  color: rgb(95, 146, 250);
 }

@@ -29,3 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hero = document.querySelector(".split-hero");
+  if (hero) {
+    setTimeout(() => {
+      hero.classList.add("visible");
+    }, 100); // Small delay for smoother entrance
+  }
+});

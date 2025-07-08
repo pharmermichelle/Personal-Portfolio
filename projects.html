@@ -23,35 +23,36 @@ gtag("config", "G-9D74M6L9M7");
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <section class="hero">
-      <div class="hero-content">
+    <section class="hero split-hero">
+      <div class="hero-image">
+        <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
+      </div>
+      <div class="hero-text">
         <h1>Michelle Waite</h1>
         <p class="tagline">
-          Community Builder & Web Generalist <br />
-          Passionate about games, open-source, and making tech more human.
+          Community Builder & Web Generalist<br />
+          Passionate about games, open-source, and making tech more human.<br />
           AI-curious and always creating.
         </p>
         <div class="hero-buttons">
           <a href="index.html" class="button">Return Home</a>
-        </a>
-        <a
-          href="resume.html"
-          class="button"
-          onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
-        >
-          Experience & Resume
-        </a>
-        <a
-          href="contact.html"
-          class="button"
-          onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Contact Button' });"
-        >
-          Contact Me
-        </a>
+          <a
+            href="resume.html"
+            class="button"
+            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
+          >
+            Experience & Resume
+          </a>
+          <a
+            href="contact.html"
+            class="button"
+            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Contact Button' });"
+          >
+            Contact Me
+          </a>
         </div>
       </div>
     </section>
-
     <header>
       <nav class="project-filter-nav">
         <ul>
@@ -60,7 +61,6 @@ gtag("config", "G-9D74M6L9M7");
           <li><button data-filter="ai">AI Projects</button></li>
           <li><button data-filter="writing">Stories & Writing</button></li>
           <li><button data-filter="webdev">Built for the Web</button></li>
-
         </ul>
       </nav>
     </header>

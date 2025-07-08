@@ -8,6 +8,24 @@ nav a:focus {
   max-width: 100px;
 }
 
+.button {
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.button:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.split-hero {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.split-hero.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* General Reset & Base Styles */
 body {
   font-family: "Segoe UI", Arial, sans-serif;
@@ -42,15 +60,80 @@ nav a {
 }
 
 /* Hero Section */
+/* New Hero Layout */
+.split-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  padding: 80px 40px;
+  color: #f4f4f4;
+  gap: 60px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, #181818, #222),
+    url("/images/noise-texture.png");
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+.hero-image img {
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text {
+  max-width: 600px;
+}
+
+.hero-text h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.hero-text .tagline {
+  font-size: 1.25em;
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.hero-buttons .button {
+  width: fit-content;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-buttons {
+    align-items: center;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .split-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-image img {
+    width: 200px;
+    height: 200px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 2em;
-  }
-  .hero-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Vertical space between buttons */
-    align-items: center; /* Optional: centers the buttons */
   }
 }
 
@@ -77,10 +160,6 @@ nav a {
   color: #ccc;
 }
 
-.hero-buttons {
-  margin-top: 20px;
-}
-
 .button {
   display: inline-block;
   margin: 0 10px;
@@ -104,7 +183,7 @@ nav a {
 
 /* Sections */
 section {
-  padding: 40px 20px;
+  padding: 10px 20px;
   margin: 0 auto;
   max-width: 1200px;
   border-radius: 8px;
@@ -114,7 +193,7 @@ section {
 
 h1,
 h2 {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 /* About Section */
@@ -241,13 +320,9 @@ h2 {
 }
 
 .skills-list li {
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #eee;
   text-align: left;
-}
-
-.skills-list li:last-child {
-  border-bottom: none;
 }
 
 .skills-list strong {
@@ -275,21 +350,8 @@ h2 {
   margin-bottom: 20px;
 }
 
-.resume-intro,
-.experience,
-.certifications,
-.skills {
-  margin: 40px auto;
-  max-width: 800px;
-  padding: 0 20px;
-}
-
-.resume-intro p,
-.experience p,
-.skills li,
-.certifications li {
-  font-size: 1.1em;
-  line-height: 1.6;
+section + section {
+  margin-top: 40px;
 }
 
 .resume-download {
@@ -403,7 +465,19 @@ a:hover {
   color: #ff6b81;
   text-decoration: underline;
 }
-#download-resume {
-  margin: 20px;
+
+/* Download Button */
+#download-resume,
+.resume-download {
+  display: inline-block;
+  margin: 40px auto;
   padding: 10px 20px;
+  background-color: #e63946;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
+.resume-download:hover,
+#download-resume:hover {
+  background-color: #d62839;
 }
