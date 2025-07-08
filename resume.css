@@ -68,7 +68,7 @@
   margin-bottom: 40px;
 }
 
-/* Section Headings */
+/* Accordian Headings */
 .accordion-panel h4 {
   margin: 0 0 10px;
   font-weight: bold;
@@ -76,29 +76,8 @@
 }
 
 /* Paragraphs */
-.accordion-panel p,
-.job p {
+.accordion-panel p {
   font-size: 0.9rem;
   color: rgb(146, 182, 254);
   margin-bottom: 10px;
-}
-.job p:last-child {
-  margin-bottom: 0;
-}
-
-/* Job Titles */
-.job h3,
-.job h4 {
-  color: rgb(230, 57, 70);
-  margin-top: 0;
-  margin-bottom: 5px;
-}
-.job h3 {
-  font-size: 1.4rem;
-}
-.job h4 {
-  font-size: 1.2rem;
-}
-.job p strong {
-  color: rgb(95, 146, 250);
 }
