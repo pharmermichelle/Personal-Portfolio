@@ -1,99 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-   <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
-    <!-- Google tag (gtag.js) -->
-<script
-async
-src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
-></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag() {
-  dataLayer.push(arguments);
-}
-gtag("js", new Date());
-
-gtag("config", "G-9D74M6L9M7");
-</script>
-<meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Planning a Trip with AI - My Experience</title>
+    <meta name="description" content="How I used AI to plan a fun, budget-friendly hockey road trip.">
+    <meta property="og:title" content="Planning a Trip with AI - Michelle Waite" />
+    <meta property="og:description" content="How I used AI to plan a fun, budget-friendly hockey road trip." />
+    <meta property="og:image" content="https://michellew.io/images/ai-trip-thumbnail.png" />
+    <meta property="og:url" content="https://michellew.io/ai-trip.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+  
     <link rel="stylesheet" href="style.css" />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-        color: #333;
-      }
-      header {
-        background-color: #2c3e50;
-        color: white;
-        padding: 10px 0;
-        text-align: center;
-      }
-      header h1 {
-        margin: 0;
-        font-size: 2.5em;
-      }
-      .container {
-        padding: 20px;
-        margin: 0 auto;
-        max-width: 1200px;
-      }
-      h2 {
-        color: #3498db;
-        margin-bottom: 20px;
-      }
-      .step {
-        margin-bottom: 40px;
-      }
-      .interactive-section {
-        background-color: #ecf0f1;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-      .button {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .button:hover {
-        background-color: #2980b9;
-      }
-      .input-field {
-        margin: 10px 0;
-        padding: 10px;
-        width: 100%;
-        max-width: 400px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .results {
-        display: none;
-        margin-top: 20px;
-        background-color: #fff;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-      footer {
-        background-color: #2c3e50;
-        color: white;
-        text-align: center;
-        padding: 15px 0;
-        margin-top: 50px;
-      }
-    </style>
+    <link rel="icon" type="image/png" href="images/portfolio-icon.png" />
+  
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-9D74M6L9M7');
+    </script>
   </head>
+  
   <body>
     <body>
     <section class="hero">
@@ -194,57 +125,28 @@ gtag("config", "G-9D74M6L9M7");
             Want to see how much your trip could cost? Input your trip details
             below and AI will estimate your expenses!
           </p>
-          <input
-            type="number"
-            id="ticketCost"
-            class="input-field"
-            placeholder="Enter entertainment budget (per event)"
-          />
-          <input
-            type="number"
-            id="hotelCost"
-            class="input-field"
-            placeholder="Enter hotel cost per night"
-          />
-          <input
-            type="number"
-            id="carCost"
-            class="input-field"
-            placeholder="Enter rental car/ flight cost"
-          />
-          <input
-            type="number"
-            id="gasCost"
-            class="input-field"
-            placeholder="Enter estimated gas cost"
-          />
-          <input
-            type="number"
-            id="foodCost"
-            class="input-field"
-            placeholder="Enter food budget per day"
-          />
-          <input
-            type="number"
-            id="totalDays"
-            class="input-field"
-            placeholder="Enter total number of days"
-          />
-          <input
-            type="number"
-            id="totalNights"
-            class="input-field"
-            placeholder="Enter total number of nights"
-          />
-
-          <button class="button" onclick="calculateBudget()">
-            Calculate Total Trip Cost
-          </button>
-
-          <div class="results" id="results">
-            <h4>Your Estimated Trip Cost:</h4>
-            <p id="totalCost"></p>
+          <div class="interactive-section">
+            <h3>Try It Yourself: AI-Powered Budget Estimator</h3>
+            <p>Want to see how much your trip could cost? Input your trip details below and AI will estimate your expenses!</p>
+          
+            <div class="input-wrapper">
+              <input type="number" id="ticketCost" class="input-field" placeholder="Enter entertainment budget (per event)" />
+              <input type="number" id="hotelCost" class="input-field" placeholder="Enter hotel cost per night" />
+              <input type="number" id="carCost" class="input-field" placeholder="Enter rental car/ flight cost" />
+              <input type="number" id="gasCost" class="input-field" placeholder="Enter estimated gas cost" />
+              <input type="number" id="foodCost" class="input-field" placeholder="Enter food budget per day" />
+              <input type="number" id="totalDays" class="input-field" placeholder="Enter total number of days" />
+              <input type="number" id="totalNights" class="input-field" placeholder="Enter total number of nights" />
+            </div>
+          
+            <button class="button" onclick="calculateBudget()">Calculate Total Trip Cost</button>
+          
+            <div class="results" id="results">
+              <h4>Your Estimated Trip Cost:</h4>
+              <p id="totalCost"></p>
+            </div>
           </div>
+          
         </div>
 
         <div class="step">

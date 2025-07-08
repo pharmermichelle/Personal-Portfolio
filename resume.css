@@ -1,3 +1,23 @@
+/* Light Mode Variables */
+body.light-mode {
+  --accent-color: #e63946;
+  --accent-color-hover: #ff6b81;
+  --accordion-bg: white;
+  --text-color: #111;
+  --header-text: white;
+  --hover-bg: #f0f0f0;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --accent-color: #e63946;
+  --accent-color-hover: #d62839;
+  --accordion-bg: #181818;
+  --text-color: rgb(146, 182, 254);
+  --header-text: white;
+  --hover-bg: #232228;
+}
+
 /* Resume Nav */
 .resume-nav {
   margin: 40px auto;
@@ -9,15 +29,14 @@
   padding: 0;
   gap: 1.5rem;
 }
-
 .resume-nav a {
   text-decoration: none;
   font-weight: bold;
-  color: rgb(146, 182, 254);
+  color: var(--text-color);
   transition: color 0.3s ease;
 }
 .resume-nav a:hover {
-  color: #007acc;
+  color: var(--accent-color-hover);
 }
 
 /* Accordion */
@@ -26,8 +45,8 @@
   max-width: 800px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 6px #e63946;
-  background: #181818;
+  background: var(--accordion-bg);
+  box-shadow: 0 2px 6px var(--accent-color);
 }
 .accordion-header {
   display: flex;
@@ -38,14 +57,14 @@
   padding: 15px 20px;
   font-size: 1.1rem;
   font-weight: bold;
-  background-color: #e63946;
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--header-text);
   border: none;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 .accordion-header:hover {
-  background-color: #d62839;
+  background-color: var(--accent-color-hover);
 }
 .accordion-header::after {
   content: "▸";
@@ -68,16 +87,49 @@
   margin-bottom: 40px;
 }
 
-/* Accordian Headings */
+/* Headings & Paragraphs */
 .accordion-panel h4 {
   margin: 0 0 10px;
   font-weight: bold;
-  color: #e63946;
+  color: var(--accent-color);
 }
-
-/* Paragraphs */
 .accordion-panel p {
   font-size: 0.9rem;
-  color: rgb(146, 182, 254);
+  color: var(--text-color);
   margin-bottom: 10px;
+}
+
+/* Skills & Experience */
+.skills-list {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1em;
+}
+.skills-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.skills-list strong {
+  color: var(--accent-color);
+  display: inline-block;
+  min-width: 200px;
+}
+.skills-list li:hover {
+  background-color: var(--hover-bg);
+  color: rgb(146, 182, 254);
+}
+
+.skills-list li:hover strong {
+  color: var(--accent-color-hover);
+}
+
+.experience ul,
+.skills ul {
+  list-style: none;
+  padding: 0;
+}
+.experience li,
+.skills li {
+  margin-bottom: 20px;
 }

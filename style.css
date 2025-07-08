@@ -1,3 +1,5 @@
+/* File: style.css */
+
 .button:focus,
 .project-link:focus,
 nav a:focus {
@@ -6,24 +8,6 @@ nav a:focus {
 }
 .logo {
   max-width: 100px;
-}
-
-.button {
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-.button:hover {
-  transform: translateY(-2px) scale(1.02);
-}
-
-.split-hero {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.split-hero.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* General Reset & Base Styles */
@@ -60,8 +44,11 @@ nav a {
 }
 
 /* Hero Section */
-/* New Hero Layout */
+
 .split-hero {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,46 +67,23 @@ nav a {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.hero-image {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.split-hero.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
-
-.hero-image img {
-  width: 140px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.hero-text {
-  flex: 1;
-  max-width: 600px;
-}
-
-.hero-text h1 {
-  font-size: 2.2em;
-  margin-bottom: 8px;
-}
-
-.hero-text .tagline {
-  font-size: 1.05em;
-  color: #ccc;
-  line-height: 1.4;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 20px;
-}
-
 /* Responsive styles */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2em;
+  }
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Vertical space between buttons */
+    align-items: center; /* Optional: centers the buttons */
+  }
+}
+
 @media (max-width: 768px) {
   .split-hero {
     flex-direction: column;
@@ -143,6 +107,21 @@ nav a {
   }
 }
 
+.hero-image {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
 .hero {
   background: #222;
   color: #f4f4f4;
@@ -154,6 +133,15 @@ nav a {
   font-size: 3em;
   margin-bottom: 10px;
 }
+.hero-text {
+  flex: 1;
+  max-width: 600px;
+}
+
+.hero-text h1 {
+  font-size: 2.2em;
+  margin-bottom: 8px;
+}
 
 .hero-content h1 {
   margin-bottom: 10px;
@@ -164,6 +152,15 @@ nav a {
   font-size: 1.3em;
   margin-bottom: 20px;
   color: #ccc;
+  line-height: 1.4;
+}
+
+.hero-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .button {
@@ -175,12 +172,13 @@ nav a {
   text-decoration: none;
   border-radius: 6px;
   font-weight: bold;
-  transition: background 0.3s ease;
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
 .button:hover {
   background: #ff6b81;
   color: #fff;
+  transform: translateY(-2px) scale(1.02);
 }
 .subList {
   list-style-type: circle;
@@ -199,7 +197,7 @@ section {
 
 h1,
 h2 {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 /* About Section */
@@ -257,18 +255,20 @@ h2 {
 }
 
 .cert-badge {
-  width: 80px;
+  max-width: 50px;
+  min-width: 10px;
   transition: all 0.3s ease;
   display: block;
 }
 
 .certification a:hover .cert-badge {
-  transform: scale(1.2);
+  transform: scale(1.8);
+  opacity: 0.8;
   z-index: 10;
 }
 
 .cert-badge:hover {
-  transform: scale(1.5);
+  transform: scale(1.8);
   opacity: 0.7;
   cursor: pointer;
 }
@@ -318,42 +318,11 @@ h2 {
   margin: 10px 0;
 }
 
-/* Skills & Experience */
-.skills-list {
-  list-style: none;
-  padding: 0;
-  font-size: 1.1em;
-}
-
-.skills-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+/* About Me */
+p.about-subtext {
+  max-width: 760px;
   text-align: left;
-}
-
-.skills-list strong {
-  color: #e63946;
-  display: inline-block;
-  min-width: 200px;
-}
-
-.skills-list li:hover {
-  background-color: #232228;
-}
-
-.skills-list li:hover strong {
-  color: #ff6b81;
-}
-
-.experience ul,
-.skills ul {
-  list-style: none;
-  padding: 0;
-}
-
-.experience li,
-.skills li {
-  margin-bottom: 20px;
+  line-height: 1.6;
 }
 
 section + section {
@@ -400,6 +369,36 @@ section + section {
   opacity: 1;
   transform: translateY(0);
 }
+/* Download Button */
+#download-resume,
+.resume-download {
+  display: inline-block;
+  margin: 0px auto;
+  padding: 10px 20px;
+  background-color: #e63946;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
+.resume-download:hover,
+#download-resume:hover {
+  background-color: #d62839;
+}
+
+/* Hockey Page */
+.input-wrapper {
+  background-color: #fdfdfd;
+  border: 2px solid #3498db;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin: 20px auto; /* Centers it horizontally */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px; /* Keeps it neat on large screens */
+  width: 100%;
+}
 
 /* Footer */
 footer {
@@ -409,57 +408,6 @@ footer {
   margin-top: 60px;
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #181818;
-    color: rgb(146, 182, 254);
-  }
-
-  section {
-    background-color: #222;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  }
-
-  header,
-  footer {
-    background: #111;
-    color: #f4f4f4;
-  }
-
-  nav a {
-    color: #f4f4f4;
-  }
-
-  .nav-button {
-    display: inline-block;
-    padding: 10px 18px;
-    background: #444;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s ease;
-  }
-
-  .nav-button:hover {
-    background: #666;
-  }
-
-  .featured-projects a {
-    color: #f4f4f4;
-    border-color: #f4f4f4;
-  }
-
-  .project-link {
-    background: #444;
-  }
-
-  .project-link:hover {
-    background: #666;
-  }
-}
 a {
   color: #e63946;
   text-decoration: none;
@@ -472,18 +420,104 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Download Button */
-#download-resume,
-.resume-download {
-  display: inline-block;
-  margin: 40px auto;
-  padding: 10px 20px;
-  background-color: #e63946;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
+/* Manual Dark Mode */
+body.dark-mode {
+  background-color: #181818;
+  color: rgb(146, 182, 254);
 }
-.resume-download:hover,
-#download-resume:hover {
+
+body.dark-mode section {
+  background-color: #222;
+  color: rgb(146, 182, 254);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .button {
+  background-color: #444;
+  color: white;
+}
+
+body.dark-mode .button:hover {
+  background-color: #666;
+}
+
+body.dark-mode header,
+body.dark-mode footer {
+  background-color: #111;
+  color: #f4f4f4;
+}
+
+.theme-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #e63946;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: #ff6b81;
+  transform: translateY(-2px);
+}
+
+body.dark-mode .theme-toggle-btn {
+  background: #444;
+  color: white;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+  background: #666;
+}
+
+/* Manual Light Mode */
+body.light-mode {
+  background-color: #9eb8d2;
+  color: #111;
+}
+
+body.light-mode section {
+  background: linear-gradient(135deg, #7faedd, #b2d9fa);
+  box-shadow: 0 2px 10px rgba(2, 59, 109, 0.05);
+}
+
+body.light-mode header,
+body.light-mode footer {
+  background: linear-gradient(135deg, #7faedd, #b2d9fa);
+  color: #111;
+}
+
+body.light-mode .button {
   background-color: #d62839;
+  color: white;
+}
+body.light-mode .button:hover {
+  background-color: #ff6b81;
+}
+body.light-mode .split-hero {
+  background: linear-gradient(135deg, #7faedd, #b2d9fa);
+  background-blend-mode: normal;
+  color: #111;
+}
+
+body.light-mode .split-hero .tagline {
+  color: #333;
+}
+
+body.light-mode .hero-image img {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); /* Slight contrast */
+}
+
+body:not(.dark-mode):not(.light-mode) {
+  /* This applies only when no manual class is set */
+  background-color: #7faedd;
+  color: #333;
 }

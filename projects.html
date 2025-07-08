@@ -30,6 +30,14 @@ gtag("config", "G-9D74M6L9M7");
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <button
+    id="theme-toggle"
+    class="theme-toggle-btn"
+    aria-label="Toggle Dark Mode"
+  >
+    🌙 Dark Mode
+  </button>
+  <main>
     <section class="hero split-hero">
       <div class="hero-image">
         <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
@@ -60,19 +68,17 @@ gtag("config", "G-9D74M6L9M7");
         </div>
       </div>
     </section>
-    <header>
-      <nav class="project-filter-nav">
-        <ul>
-          <li><button data-filter="all" class="active">Everything</button></li>
-          <li><button data-filter="games">Games I've Built</button></li>
-          <li><button data-filter="ai">AI Projects</button></li>
-          <li><button data-filter="writing">Stories & Writing</button></li>
-          <li><button data-filter="webdev">Built for the Web</button></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
+
+
       <section class="projects section">
+        <nav class="project-filter-nav">
+          <ul>
+            <li><button data-filter="all" class="active">Everything</button></li>
+            <li><button data-filter="games">Games I've Built</button></li>
+            <li><button data-filter="ai">AI Projects</button></li>
+            <li><button data-filter="writing">Stories & Writing</button></li>
+            <li><button data-filter="webdev">Built for the Web</button></li>
+          </ul>
         <h2>Featured Projects</h2>
         <div class="projects-grid">
           <div class="project-card" data-tags="creative writing ai">
@@ -194,7 +200,7 @@ gtag("config", "G-9D74M6L9M7");
             >
           </div>
       </section>
-    </main>
+
     <section class="projects section">
       <h2>More Projects</h2>
       <p>Additional web development projects coming soon!</p>
@@ -203,6 +209,7 @@ gtag("config", "G-9D74M6L9M7");
         <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a>.
       </p>
     </section>
+  </main>
     <footer>
       <p>
         Hosted on
@@ -218,7 +225,7 @@ gtag("config", "G-9D74M6L9M7");
     </footer>
   </body>
   <script src="index.js"></script>
-  S
+  
   <script
     src="https://kit.fontawesome.com/a076d05399.js"
     crossorigin="anonymous"

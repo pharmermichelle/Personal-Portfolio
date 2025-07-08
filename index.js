@@ -38,3 +38,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 100); // Small delay for smoother entrance
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("theme-toggle");
+
+  // Load saved theme
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  } else if (savedTheme === "light") {
+    document.body.classList.add("light-mode");
+  }
+
+  // Update button label
+  function updateButtonLabel() {
+    if (document.body.classList.contains("dark-mode")) {
+      toggleBtn.innerText = "☀️ Light Mode";
+    } else {
+      toggleBtn.innerText = "🌙 Dark Mode";
+    }
+  }
+
+  updateButtonLabel();
+
+  toggleBtn.addEventListener("click", () => {
+    if (document.body.classList.contains("dark-mode")) {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+      localStorage.setItem("theme", "light");
+    } else {
+      document.body.classList.remove("light-mode");
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    }
+
+    updateButtonLabel();
+  });
+});
