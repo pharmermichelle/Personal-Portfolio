@@ -17,28 +17,55 @@ const images = {
   backgroundVendor: [],
 };
 
-images.buggy1.src = "./assets/buggy.png";
-images.buggy2.src = "./assets/buggy2.png";
-images.buggy3.src = "./assets/buggy3.png";
-images.crab.src = "./assets/crab.png";
-images.cat.src = "./assets/cat.png";
-images.croc.src = "./assets/croc.png";
-images.speaker.src = "./assets/speaker.png";
-images.tooth.src = "./assets/shark_tooth_glow.png";
-
-// Background assets
 const beachAssets = ["palm_tree.png"];
 const vendorAssets = ["vendor_1.png"];
 
+let loadedImages = 0;
+let totalImages = 8 + beachAssets.length + vendorAssets.length;
+
+function tryStartGame() {
+  loadedImages++;
+  if (loadedImages === totalImages) {
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+function loadImage(img, src, targetArray = null) {
+  img.src = src;
+  img.onload = tryStartGame;
+  if (targetArray) {
+    targetArray.push(img);
+  }
+}
+
+let resetBtn = {
+  x: canvas.width / 2 - 75,
+  y: canvas.height / 2 + 40,
+  width: 150,
+  height: 40,
+  visible: false,
+};
+
+// Load buggy images
+loadImage(images.buggy1, "./assets/buggy.png");
+loadImage(images.buggy2, "./assets/buggy2.png");
+loadImage(images.buggy3, "./assets/buggy3.png");
+
+// Load other object images
+loadImage(images.crab, "./assets/crab.png");
+loadImage(images.cat, "./assets/cat.png");
+loadImage(images.croc, "./assets/croc.png");
+loadImage(images.speaker, "./assets/speaker.png");
+loadImage(images.tooth, "./assets/shark_tooth_glow.png");
+
+// Load background assets
 beachAssets.forEach((src) => {
   const img = new Image();
-  img.src = `./assets/${src}`;
-  images.backgroundBeach.push(img);
+  loadImage(img, `./assets/${src}`, images.backgroundBeach);
 });
 vendorAssets.forEach((src) => {
   const img = new Image();
-  img.src = `./assets/${src}`;
-  images.backgroundVendor.push(img);
+  loadImage(img, `./assets/${src}`, images.backgroundVendor);
 });
 
 // --- GAME STATE ---
@@ -255,6 +282,17 @@ function drawGameOver() {
   ctx.fillStyle = "#fff";
   ctx.font = "40px sans-serif";
   ctx.fillText("Game Over!", canvas.width / 2 - 120, canvas.height / 2);
+
+  // Draw Reset Button
+  ctx.fillStyle = "#fcd12a";
+  ctx.fillRect(resetBtn.x, resetBtn.y, resetBtn.width, resetBtn.height);
+  ctx.strokeStyle = "#000";
+  ctx.strokeRect(resetBtn.x, resetBtn.y, resetBtn.width, resetBtn.height);
+  ctx.fillStyle = "#000";
+  ctx.font = "20px sans-serif";
+  ctx.fillText("Play Again", resetBtn.x + 30, resetBtn.y + 26);
+
+  resetBtn.visible = true;
 }
 
 // --- CAR DEFINITION ---
@@ -332,6 +370,17 @@ function gameLoop(ts) {
   }
   requestAnimationFrame(gameLoop);
 }
+function resetGame() {
+  obstacles = [];
+  powerups = [];
+  beachDecor = [];
+  vendorDecor = [];
+  score = 0;
+  toothCount = 0;
+  gameOver = false;
+  resetBtn.visible = false;
+  requestAnimationFrame(gameLoop);
+}
 
 // --- INPUT ---
 document.addEventListener("keydown", (e) => {
@@ -347,5 +396,18 @@ document.addEventListener("keydown", (e) => {
     .addEventListener(evt, () => car.moveRight());
 });
 
-// --- START ---
-requestAnimationFrame(gameLoop);
+canvas.addEventListener("click", (e) => {
+  if (!resetBtn.visible) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  if (
+    mx >= resetBtn.x &&
+    mx <= resetBtn.x + resetBtn.width &&
+    my >= resetBtn.y &&
+    my <= resetBtn.y + resetBtn.height
+  ) {
+    resetGame();
+  }
+});
