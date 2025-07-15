@@ -575,3 +575,18 @@ canvas.addEventListener("click", (e) => {
     resetGame();
   }
 });
+function updateScoreDropdown() {
+  const dropdown = document.getElementById("highScores");
+  if (!dropdown) return; // Avoid error if not found
+
+  dropdown.innerHTML = "";
+  highScores.forEach(({ initials, score }) => {
+    const option = document.createElement("option");
+    option.textContent = `${initials} - ${score}`;
+    dropdown.appendChild(option);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateScoreDropdown();
+});
