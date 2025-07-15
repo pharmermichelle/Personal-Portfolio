@@ -576,14 +576,14 @@ canvas.addEventListener("click", (e) => {
   }
 });
 function updateScoreDropdown() {
-  const dropdown = document.getElementById("highScores");
-  if (!dropdown) return; // Avoid error if not found
+  const list = document.getElementById("highScoresList");
+  if (!list) return;
 
-  dropdown.innerHTML = "";
+  list.innerHTML = "";
   highScores.forEach(({ initials, score }) => {
-    const option = document.createElement("option");
-    option.textContent = `${initials} - ${score}`;
-    dropdown.appendChild(option);
+    const li = document.createElement("li");
+    li.textContent = `${initials} - ${score}`;
+    list.appendChild(li);
   });
 }
 
