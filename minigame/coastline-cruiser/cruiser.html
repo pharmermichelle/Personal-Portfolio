@@ -31,12 +31,25 @@
         🐊🐈 Avoid the obstacles! 🦈 Collect shark teeth for powerups!
       </p>
     </div>
+    <div class="scoreboard">
+      <label for="highScores">🏆 Top 5 Scores:</label>
+      <select id="highScores" disabled></select>
+    </div>
 
     <canvas id="gameCanvas" width="800" height="400"></canvas>
     <div class="controls">
       <button id="leftBtn">⬅️</button>
       <button id="rightBtn">➡️</button>
     </div>
+    <div
+      class="initials-entry"
+      style="display: none; text-align: center; margin-top: 10px"
+    >
+      <label for="playerInitials">Enter Your Initials:</label>
+      <input type="text" id="playerInitials" maxlength="3" placeholder="ABC" />
+      <button onclick="submitScore()">Submit</button>
+    </div>
+
     <script src="cruiser.js"></script>
   </body>
 </html>

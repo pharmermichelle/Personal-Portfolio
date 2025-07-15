@@ -49,3 +49,22 @@ canvas {
   border: none;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
+.scoreboard {
+  text-align: center;
+  margin: 10px auto;
+  font-family: sans-serif;
+}
+
+#highScores {
+  font-size: 1rem;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.initials-entry input {
+  padding: 5px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  width: 60px;
+  margin-left: 5px;
+}

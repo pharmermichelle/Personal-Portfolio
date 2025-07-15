@@ -21,6 +21,10 @@ const images = {
 const beachAssets = ["palm_tree.png"];
 const vendorAssets = ["vendor_1.png"];
 
+const highScoresKey = "coastlineHighScores";
+let highScores = JSON.parse(localStorage.getItem(highScoresKey)) || [];
+updateScoreDropdown();
+
 let loadedImages = 0;
 let totalImages = 8 + beachAssets.length + vendorAssets.length;
 
@@ -304,7 +308,7 @@ function drawPowerupBar() {
 function drawScore() {
   ctx.fillStyle = "#000";
   ctx.font = "20px sans-serif";
-  ctx.fillText("Score: " + score, 20, 30);
+  ctx.fillText("Score: " + score, 20, 24);
 }
 
 function drawGameOver() {
@@ -324,6 +328,7 @@ function drawGameOver() {
   ctx.fillText("Play Again", resetBtn.x + 30, resetBtn.y + 26);
 
   resetBtn.visible = true;
+  document.querySelector(".initials-entry").style.display = "block";
 }
 
 // --- CAR DEFINITION ---
@@ -411,6 +416,34 @@ function resetGame() {
   gameOver = false;
   resetBtn.visible = false;
   requestAnimationFrame(gameLoop);
+}
+
+// --- Leaderboard ---
+function submitScore() {
+  const initialsInput = document.getElementById("playerInitials");
+  const initials = initialsInput.value.toUpperCase().slice(0, 3);
+
+  if (!initials) return;
+
+  highScores.push({ initials, score });
+  highScores.sort((a, b) => b.score - a.score);
+  highScores = highScores.slice(0, 5); // Keep only top 5
+
+  localStorage.setItem(highScoresKey, JSON.stringify(highScores));
+  updateScoreDropdown();
+
+  document.querySelector(".initials-entry").style.display = "none";
+  initialsInput.value = "";
+}
+function updateScoreDropdown() {
+  const dropdown = document.getElementById("highScores");
+  dropdown.innerHTML = "";
+
+  highScores.forEach(({ initials, score }) => {
+    const option = document.createElement("option");
+    option.textContent = `${initials} - ${score}`;
+    dropdown.appendChild(option);
+  });
 }
 
 // --- INPUT ---
