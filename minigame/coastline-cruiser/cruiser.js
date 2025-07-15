@@ -1,7 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const lanes = [200, 350, 500];
+const lanes = [100, 350, 625];
+const spawnLanes = [225, 350, 450];
 
 // Load images
 const images = {
@@ -111,7 +112,7 @@ function spawnBackgroundDecor() {
   if (Math.random() < 0.02) {
     beachDecor.push({
       img: randomFrom(images.backgroundBeach),
-      x: 130 + Math.random() * 20,
+      x: lanes[0] + Math.random() * 30, // beach
       y: -50,
       speed: 1,
       driftX: -0.9,
@@ -120,7 +121,7 @@ function spawnBackgroundDecor() {
   if (Math.random() < 0.02) {
     vendorDecor.push({
       img: randomFrom(images.backgroundVendor),
-      x: 650 + Math.random() * 20,
+      x: lanes[2] + Math.random() * 30, // vendor
       y: -50,
       speed: 1,
       driftX: 0.9,
@@ -134,7 +135,15 @@ function updateBackgroundDecor() {
     const scale = 1 + (d.y / canvas.height) * 0.5;
     const width = 40 * scale;
     const height = 40 * scale;
-    if (checkCollision(car, { x: d.x, y: d.y, width, height })) {
+    const padding = 15;
+    if (
+      checkCollision(car, {
+        x: d.x - padding,
+        y: d.y - padding,
+        width: width + padding * 2,
+        height: height + padding * 2,
+      })
+    ) {
       gameOver = true;
     }
   });
@@ -145,7 +154,15 @@ function updateBackgroundDecor() {
     const scale = 1 + (d.y / canvas.height) * 0.5;
     const width = 60 * scale;
     const height = 60 * scale;
-    if (checkCollision(car, { x: d.x, y: d.y, width, height })) {
+    const padding = 15;
+    if (
+      checkCollision(car, {
+        x: d.x - padding,
+        y: d.y - padding,
+        width: width + padding * 2,
+        height: height + padding * 2,
+      })
+    ) {
       gameOver = true;
     }
   });
@@ -156,13 +173,17 @@ function updateBackgroundDecor() {
 
 // --- SPAWN / UPDATE OBSTACLES ---
 function spawnObstacle() {
-  const lane = Math.floor(Math.random() * lanes.length);
+  const lane = Math.floor(Math.random() * spawnLanes.length);
   const type = randomFrom(obstacleTypes);
+
   let driftX = 0;
-  if (lane === 0) driftX = -0.6;
-  if (lane === 2) driftX = 0.6;
+  if (lane === 0) driftX = -0.5;
+  if (lane === 2) driftX = 0.5;
+
+  const laneCenter = spawnLanes[lane] + car.width / 2 - type.width / 2;
+
   obstacles.push({
-    x: lanes[lane],
+    x: laneCenter,
     y: -type.height,
     width: type.width,
     height: type.height,
@@ -171,10 +192,11 @@ function spawnObstacle() {
     driftX: driftX,
   });
 }
+
 function updateObstacles() {
   obstacles.forEach((o) => {
     o.y += o.speed;
-    o.x += o.driftX * o.speed * (o.y / canvas.height);
+    o.x += o.driftX * o.speed;
   });
   obstacles = obstacles.filter((o) => {
     if (o.y > canvas.height) {
@@ -187,24 +209,29 @@ function updateObstacles() {
 
 // --- SPAWN / UPDATE POWERUPS ---
 function spawnTooth() {
-  const lane = Math.floor(Math.random() * lanes.length);
+  const lane = Math.floor(Math.random() * spawnLanes.length);
+
   let driftX = 0;
   if (lane === 0) driftX = -0.6;
   if (lane === 2) driftX = 0.6;
+
+  const laneCenter = spawnLanes[lane] + car.width / 2 - 15;
+
   powerups.push({
     img: images.tooth,
     width: 30,
     height: 30,
     speed: 2,
-    x: lanes[lane],
+    x: laneCenter,
     y: -40,
     driftX: driftX,
   });
 }
+
 function updatePowerups() {
   powerups.forEach((p) => {
     p.y += p.speed;
-    p.x += p.driftX * p.speed * (p.y / canvas.height);
+    p.x += p.driftX * p.speed;
   });
   powerups = powerups.filter((p) => {
     if (p.y > canvas.height) return false;
@@ -256,16 +283,20 @@ function drawCar() {
 function drawPowerupBar() {
   const barX = 20,
     barY = 50,
-    toothSize = 20,
+    toothSize = 25,
     max = 12;
+
   ctx.fillStyle = "#000";
-  ctx.fillText("Teeth:", barX, barY - 5);
+  ctx.font = "20px sans-serif";
+  ctx.fillText("Teeth:", barX, barY - 10);
+
   for (let i = 0; i < max; i++) {
-    ctx.strokeStyle = "#666";
-    ctx.strokeRect(barX + i * (toothSize + 2), barY, toothSize, toothSize);
+    const x = barX + i * (toothSize + 4);
     if (i < toothCount) {
-      ctx.fillStyle = "#fcd12a";
-      ctx.fillRect(barX + i * (toothSize + 2), barY, toothSize, toothSize);
+      ctx.drawImage(images.tooth, x, barY, toothSize, toothSize);
+    } else {
+      ctx.strokeStyle = "#999";
+      ctx.strokeRect(x, barY, toothSize, toothSize);
     }
   }
 }
@@ -299,8 +330,8 @@ function drawGameOver() {
 const car = {
   lane: 1,
   y: 300,
-  width: 60,
-  height: 60,
+  width: 110,
+  height: 110,
   get x() {
     return lanes[this.lane];
   },
