@@ -4,6 +4,8 @@ const ctx = canvas.getContext("2d");
 const lanes = [100, 350, 625];
 const spawnLanes = [225, 350, 450];
 
+const baseSpeed = 1.0;
+
 // Load images
 const images = {
   buggy1: new Image(),
@@ -13,6 +15,8 @@ const images = {
   cat: new Image(),
   croc: new Image(),
   speaker: new Image(),
+  guy: new Image(),
+  trash: new Image(),
   tooth: new Image(),
   backgroundBeach: [],
   backgroundVendor: [],
@@ -61,7 +65,67 @@ loadImage(images.crab, "./assets/crab.png");
 loadImage(images.cat, "./assets/cat.png");
 loadImage(images.croc, "./assets/croc.png");
 loadImage(images.speaker, "./assets/speaker.png");
+loadImage(images.trash, "./assets/trash.png");
+loadImage(images.guy, "./assets/guy.png");
 loadImage(images.tooth, "./assets/shark_tooth_glow.png");
+
+const obstacleTypesLevel1 = [
+  { name: "crab", img: images.crab, width: 40, height: 40, speed: baseSpeed },
+  {
+    name: "cat",
+    img: images.cat,
+    width: 50,
+    height: 45,
+    speed: baseSpeed + 0.5,
+  },
+  { name: "croc", img: images.croc, width: 60, height: 40, speed: baseSpeed },
+  {
+    name: "speaker",
+    img: images.speaker,
+    width: 50,
+    height: 50,
+    speed: baseSpeed,
+  },
+];
+
+const obstacleTypesLevel2 = [
+  { name: "crab", img: images.crab, width: 40, height: 40, speed: baseSpeed },
+  {
+    name: "speaker",
+    img: images.speaker,
+    width: 50,
+    height: 50,
+    speed: baseSpeed,
+  },
+  {
+    name: "cat",
+    img: images.cat,
+    width: 50,
+    height: 45,
+    speed: baseSpeed + 0.5,
+  },
+  {
+    name: "croc",
+    img: images.croc,
+    width: 60,
+    height: 40,
+    speed: baseSpeed + 0.2,
+  },
+  {
+    name: "trash",
+    img: images.trash,
+    width: 60,
+    height: 60,
+    speed: baseSpeed - 0.2,
+  },
+  {
+    name: "guy",
+    img: images.guy,
+    width: 80,
+    height: 90,
+    speed: baseSpeed - 0.2,
+  },
+];
 
 // Load background assets
 beachAssets.forEach((src) => {
@@ -84,7 +148,6 @@ let score = 0;
 let gameOver = false;
 let toothCount = 0;
 
-const baseSpeed = 1.5;
 const obstacleTypes = [
   { name: "crab", img: images.crab, width: 40, height: 40, speed: baseSpeed },
   { name: "cat", img: images.cat, width: 50, height: 45, speed: baseSpeed + 1 },
@@ -95,6 +158,20 @@ const obstacleTypes = [
     width: 50,
     height: 50,
     speed: baseSpeed,
+  },
+  {
+    name: "trash",
+    img: images.trash,
+    width: 60,
+    height: 60,
+    speed: baseSpeed - 0.2,
+  },
+  {
+    name: "guy",
+    img: images.guy,
+    width: 80,
+    height: 90,
+    speed: baseSpeed - 0.2,
   },
 ];
 
@@ -109,6 +186,15 @@ function checkCollision(a, b) {
     a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
+}
+
+// LEVEL DESIGN
+let level = 1;
+
+function updateLevel() {
+  if (toothCount >= 9) level = 3;
+  else if (toothCount >= 5) level = 2;
+  else level = 1;
 }
 
 // --- SPAWN / UPDATE DECOR ---
@@ -178,11 +264,15 @@ function updateBackgroundDecor() {
 // --- SPAWN / UPDATE OBSTACLES ---
 function spawnObstacle() {
   const lane = Math.floor(Math.random() * spawnLanes.length);
+  const types = level >= 2 ? obstacleTypesLevel2 : obstacleTypesLevel1;
   const type = randomFrom(obstacleTypes);
 
   let driftX = 0;
   if (lane === 0) driftX = -0.5;
   if (lane === 2) driftX = 0.5;
+
+  // Modify speed by level
+  const speedMultiplier = level === 3 ? 1.5 : level === 2 ? 1.2 : 1;
 
   const laneCenter = spawnLanes[lane] + car.width / 2 - type.width / 2;
 
@@ -192,7 +282,7 @@ function spawnObstacle() {
     width: type.width,
     height: type.height,
     img: type.img,
-    speed: type.speed,
+    speed: type.speed * speedMultiplier,
     driftX: driftX,
   });
 }
@@ -276,9 +366,9 @@ function drawPowerups() {
 
 function drawCar() {
   const img =
-    toothCount >= 12
+    toothCount >= 9
       ? images.buggy3
-      : toothCount >= 8
+      : toothCount >= 4
       ? images.buggy2
       : images.buggy1;
   ctx.drawImage(img, car.x, car.y, car.width, car.height);
@@ -288,7 +378,7 @@ function drawPowerupBar() {
   const barX = 20,
     barY = 50,
     toothSize = 25,
-    max = 12;
+    max = 9;
 
   ctx.fillStyle = "#000";
   ctx.font = "20px sans-serif";
@@ -309,6 +399,7 @@ function drawScore() {
   ctx.fillStyle = "#000";
   ctx.font = "20px sans-serif";
   ctx.fillText("Score: " + score, 20, 24);
+  ctx.fillText("Level: " + level, 700, 30);
 }
 
 function drawGameOver() {
@@ -334,9 +425,10 @@ function drawGameOver() {
 // --- CAR DEFINITION ---
 const car = {
   lane: 1,
-  y: 300,
-  width: 110,
-  height: 110,
+  y: 250,
+  width: 160,
+  height: 160,
+  promptedInitials: false,
   get x() {
     return lanes[this.lane];
   },
@@ -384,6 +476,7 @@ function gameLoop(ts) {
   drawPowerups();
   drawScore();
   drawPowerupBar();
+  updateLevel();
 
   if (ts - spawnTimer > 1500) {
     spawnObstacle();
@@ -402,6 +495,12 @@ function gameLoop(ts) {
   for (const o of obstacles) {
     if (checkCollision(car, o)) {
       gameOver = true;
+      if (!car.promptedInitials) {
+        setTimeout(() => {
+          submitScore();
+        }, 100); // Small delay to allow the game over screen to render
+        car.promptedInitials = true;
+      }
     }
   }
   requestAnimationFrame(gameLoop);
@@ -415,14 +514,15 @@ function resetGame() {
   toothCount = 0;
   gameOver = false;
   resetBtn.visible = false;
+  car.promptedInitials = false;
   requestAnimationFrame(gameLoop);
 }
 
 // --- Leaderboard ---
 function submitScore() {
-  const initialsInput = document.getElementById("playerInitials");
-  const initials = initialsInput.value.toUpperCase().slice(0, 3);
-
+  const initials = prompt(
+    "You made the high score! Enter your initials (3 letters):"
+  );
   if (!initials) return;
 
   highScores.push({ initials, score });
@@ -436,13 +536,13 @@ function submitScore() {
   initialsInput.value = "";
 }
 function updateScoreDropdown() {
-  const dropdown = document.getElementById("highScores");
-  dropdown.innerHTML = "";
+  const list = document.getElementById("highScoresList");
+  list.innerHTML = "";
 
   highScores.forEach(({ initials, score }) => {
-    const option = document.createElement("option");
-    option.textContent = `${initials} - ${score}`;
-    dropdown.appendChild(option);
+    const li = document.createElement("li");
+    li.textContent = `${initials} - ${score}`;
+    list.appendChild(li);
   });
 }
 

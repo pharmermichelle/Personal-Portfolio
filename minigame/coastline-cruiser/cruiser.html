@@ -32,22 +32,14 @@
       </p>
     </div>
     <div class="scoreboard">
-      <label for="highScores">🏆 Top 5 Scores:</label>
-      <select id="highScores" disabled></select>
+      <h3>🏆 Top 5 Scores:</h3>
+      <ul id="highScoresList" class="high-score-list"></ul>
     </div>
 
     <canvas id="gameCanvas" width="800" height="400"></canvas>
     <div class="controls">
       <button id="leftBtn">⬅️</button>
       <button id="rightBtn">➡️</button>
-    </div>
-    <div
-      class="initials-entry"
-      style="display: none; text-align: center; margin-top: 10px"
-    >
-      <label for="playerInitials">Enter Your Initials:</label>
-      <input type="text" id="playerInitials" maxlength="3" placeholder="ABC" />
-      <button onclick="submitScore()">Submit</button>
     </div>
 
     <script src="cruiser.js"></script>
