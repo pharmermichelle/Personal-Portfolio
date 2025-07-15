@@ -419,7 +419,6 @@ function drawGameOver() {
   ctx.fillText("Play Again", resetBtn.x + 30, resetBtn.y + 26);
 
   resetBtn.visible = true;
-  document.querySelector(".initials-entry").style.display = "block";
 }
 
 // --- CAR DEFINITION ---
@@ -532,11 +531,11 @@ function submitScore() {
   localStorage.setItem(highScoresKey, JSON.stringify(highScores));
   updateScoreDropdown();
 
-  document.querySelector(".initials-entry").style.display = "none";
   initialsInput.value = "";
 }
 function updateScoreDropdown() {
   const list = document.getElementById("highScoresList");
+  if (!list) return;
   list.innerHTML = "";
 
   highScores.forEach(({ initials, score }) => {
