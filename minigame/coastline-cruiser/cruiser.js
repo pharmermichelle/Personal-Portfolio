@@ -147,6 +147,10 @@ let toothTimer = 0;
 let score = 0;
 let gameOver = false;
 let toothCount = 0;
+let lastUpgradeLevel = 1;
+let upgradeAnimationTimer = 0;
+let floatingTexts = [];
+const upgradeAnimationDuration = 30; // Frames (~0.5 seconds)
 
 const obstacleTypes = [
   { name: "crab", img: images.crab, width: 40, height: 40, speed: baseSpeed },
@@ -188,12 +192,25 @@ function checkCollision(a, b) {
   );
 }
 
+function spawnFloatingText(text, x, y, color = "#000", baseSize = 28) {
+  floatingTexts.push({
+    text,
+    x,
+    y,
+    alpha: 1,
+    life: 60,
+    color,
+    size: baseSize,
+    scale: 1.5,
+  });
+}
+
 // LEVEL DESIGN
 let level = 1;
 
 function updateLevel() {
   if (toothCount >= 9) level = 3;
-  else if (toothCount >= 5) level = 2;
+  else if (toothCount >= 4) level = 2;
   else level = 1;
 }
 
@@ -295,10 +312,34 @@ function updateObstacles() {
   obstacles = obstacles.filter((o) => {
     if (o.y > canvas.height) {
       score++;
+      spawnFloatingText("+1", o.x, canvas.height - 40, "#00aa00");
       return false;
     }
     return true;
   });
+}
+
+function updateFloatingTexts() {
+  floatingTexts.forEach((ft) => {
+    ft.y -= 0.8;
+    ft.alpha -= 0.02;
+    ft.life--;
+    if (ft.scale > 1) ft.scale -= 0.02;
+  });
+  floatingTexts = floatingTexts.filter((ft) => ft.life > 0 && ft.alpha > 0);
+}
+
+function drawFloatingTexts() {
+  floatingTexts.forEach((ft) => {
+    ctx.globalAlpha = ft.alpha;
+    ctx.fillStyle = ft.color;
+    ctx.font = `bold ${ft.size * ft.scale}px sans-serif`;
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.strokeText(ft.text, ft.x, ft.y);
+    ctx.fillText(ft.text, ft.x, ft.y);
+  });
+  ctx.globalAlpha = 1.0;
 }
 
 // --- SPAWN / UPDATE POWERUPS ---
@@ -331,6 +372,14 @@ function updatePowerups() {
     if (p.y > canvas.height) return false;
     if (checkCollision(car, p)) {
       toothCount++;
+      spawnFloatingText("+10", p.x, p.y, "#0077cc");
+      const newLevel = toothCount >= 9 ? 3 : toothCount >= 5 ? 2 : 1;
+
+      if (newLevel > lastUpgradeLevel) {
+        lastUpgradeLevel = newLevel;
+        upgradeAnimationTimer = upgradeAnimationDuration;
+      }
+
       score += 10;
       return false;
     }
@@ -371,7 +420,23 @@ function drawCar() {
       : toothCount >= 4
       ? images.buggy2
       : images.buggy1;
-  ctx.drawImage(img, car.x, car.y, car.width, car.height);
+
+  let scale = 1;
+  if (upgradeAnimationTimer > 0) {
+    const progress = upgradeAnimationTimer / upgradeAnimationDuration;
+    scale = 1 + 0.3 * Math.sin(progress * Math.PI); // pop effect
+  }
+
+  const drawWidth = car.width * scale;
+  const drawHeight = car.height * scale;
+  const drawX = car.x - (drawWidth - car.width) / 2;
+  const drawY = car.y - (drawHeight - car.height) / 2;
+
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+
+  if (upgradeAnimationTimer > 0) {
+    upgradeAnimationTimer--;
+  }
 }
 
 function drawPowerupBar() {
@@ -415,8 +480,8 @@ function drawGameOver() {
   ctx.strokeStyle = "#000";
   ctx.strokeRect(resetBtn.x, resetBtn.y, resetBtn.width, resetBtn.height);
   ctx.fillStyle = "#000";
-  ctx.font = "20px sans-serif";
-  ctx.fillText("Play Again", resetBtn.x + 30, resetBtn.y + 26);
+  ctx.font = "16px sans-serif";
+  ctx.fillText("Play Again (enter)", resetBtn.x + 10, resetBtn.y + 26);
 
   resetBtn.visible = true;
 }
@@ -475,6 +540,7 @@ function gameLoop(ts) {
   drawPowerups();
   drawScore();
   drawPowerupBar();
+  drawFloatingTexts();
   updateLevel();
 
   if (ts - spawnTimer > 1500) {
@@ -490,14 +556,19 @@ function gameLoop(ts) {
   updateBackgroundDecor();
   updateObstacles();
   updatePowerups();
+  updateFloatingTexts();
 
   for (const o of obstacles) {
     if (checkCollision(car, o)) {
       gameOver = true;
       if (!car.promptedInitials) {
-        setTimeout(() => {
-          submitScore();
-        }, 100); // Small delay to allow the game over screen to render
+        const lowestTopScore =
+          highScores.length < 5 ? 0 : highScores[highScores.length - 1].score;
+        if (score > lowestTopScore) {
+          setTimeout(() => {
+            submitScore();
+          }, 100);
+        }
         car.promptedInitials = true;
       }
     }
@@ -557,6 +628,11 @@ document.addEventListener("keydown", (e) => {
   document
     .getElementById("rightBtn")
     .addEventListener(evt, () => car.moveRight());
+});
+document.addEventListener("keydown", (e) => {
+  if (resetBtn.visible && e.key === "Enter") {
+    resetGame();
+  }
 });
 
 canvas.addEventListener("click", (e) => {
