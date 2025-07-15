@@ -11,6 +11,29 @@ canvas {
   background: linear-gradient(to bottom, #87ceeb, #f9e4b7);
   border: 3px solid #444;
 }
+.game-header {
+  text-align: center;
+  font-family: sans-serif;
+  margin: 20px auto 10px;
+  max-width: 800px;
+  padding: 10px 20px;
+  background: #fff8e1;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.game-header h1 {
+  font-size: 1.8rem;
+  margin: 0 0 5px;
+  color: #2e3c43;
+}
+
+.game-header p {
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.4;
+  color: #444;
+}
 
 .controls {
   text-align: center;
