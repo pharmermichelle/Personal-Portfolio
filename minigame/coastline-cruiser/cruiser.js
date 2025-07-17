@@ -1,4 +1,16 @@
 const canvas = document.getElementById("gameCanvas");
+// Resize canvas based on screen size
+function resizeCanvas() {
+  const screenWidth = window.innerWidth;
+  const scale = screenWidth / 800;
+  canvas.width = 800;
+  canvas.height = 400;
+  canvas.style.transform = `scale(${scale})`;
+  canvas.style.transformOrigin = "top left";
+  document.body.style.height = `${400 * scale + 100}px`; // extra space for buttons
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 const ctx = canvas.getContext("2d");
 
 const lanes = [100, 350, 625];
@@ -663,5 +675,20 @@ function updateScoreDropdown() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  let touchStartX = null;
+
+  canvas.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+
+  canvas.addEventListener("touchend", (e) => {
+    if (touchStartX === null) return;
+    const deltaX = e.changedTouches[0].screenX - touchStartX;
+
+    if (deltaX > 40) car.moveRight();
+    else if (deltaX < -40) car.moveLeft();
+
+    touchStartX = null;
+  });
   updateScoreDropdown();
 });

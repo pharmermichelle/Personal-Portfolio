@@ -1,13 +1,18 @@
 body {
   margin: 0;
+  padding: 0;
+  touch-action: manipulation;
   background: #e0f7fa;
   font-family: sans-serif;
-  touch-action: none;
+  text-align: center;
 }
 
 canvas {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
   display: block;
-  margin: auto;
+  margin: 0 auto;
   background: linear-gradient(to bottom, #87ceeb, #f9e4b7);
   border: 3px solid #444;
 }
@@ -41,9 +46,10 @@ canvas {
 }
 
 .controls button {
-  font-size: 2rem;
-  padding: 10px 20px;
-  margin: 0 20px;
+  cursor: pointer;
+  font-size: 32px;
+  padding: 20px 30px;
+  margin: 10px;
   border-radius: 10px;
   background: #ffe082;
   border: none;
