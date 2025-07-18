@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acorn Ascent - Level 1</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>Acorn Ascent</h1>
+    <div id="hud">
+      <div>Level: <span id="level">1</span></div>
+      <div>
+        <img src="assets/acorn.png" id="acorn" />: <span id="acorns">0</span>
+      </div>
+
+      <button onclick="restartLevel()">Restart</button>
+    </div>
+    <div
+      id="instructions"
+      style="
+        margin: 20px auto;
+        max-width: 600px;
+        text-align: center;
+        color: #fff;
+      "
+    >
+      <h2>How to Play</h2>
+      <p>
+        There are 10 levels. Solve each puzzle to help Chip climb the tree and
+        bring home his acorns!
+      </p>
+      <p>Click a piece to pick it up, then click again to place it.</p>
+    </div>
+
+    <div id="game-wrapper">
+      <canvas id="gameCanvas" width="360" height="360"></canvas>
+      <div id="sidebar">
+        <h2>Pieces</h2>
+        <div id="pieces-panel"></div>
+      </div>
+    </div>
+    <img src="assets/moon.png" id="moon" />
+    <img src="assets/chip.png" id="chip" />
+    <div id="final-screen" style="display: none">
+      <img src="assets/final-scene.png" id="final-scene" />
+      <button id="play-again-btn" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
