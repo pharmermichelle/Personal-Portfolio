@@ -86,9 +86,12 @@ body.light-mode .project-link:hover {
   margin-bottom: 30px;
 }
 
-.project-item h3 {
-  font-size: 1.4em;
-  color: #e63946;
+body.light-mode .project-card h3 {
+  color: #102841;
+}
+
+body.dark-mode .project-card h3 {
+  color: #102841;
 }
 
 .featured-projects a {

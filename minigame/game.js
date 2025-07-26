@@ -279,6 +279,33 @@ const stories = {
       text: "You step outside, the cool night air refreshing against your skin. The cat curls up in your arms, purring softly. You may never know what your friends found in the library, but you feel a strange sense of calm wash over you.",
       options: [{ text: "Start Over", next: "start" }],
     },
+    followWhispers: {
+      text: "You follow the susurrus between the stacks until you find a tall, cracked mirror. For a moment, you think you see a family watching you from the other side… and the black cat sitting at their feet.",
+      options: [
+        { text: "Reach toward the glass", next: "reachHand" },
+        {
+          text: "Find your friends in the library",
+          next: "whisperingLibraryCatIntro",
+        },
+      ],
+    },
+
+    decipherSymbols: {
+      text: "You and your friends trace the symbols. They describe a ritual of release—requiring the cat as a living anchor. The last line: 'Hands must meet, worlds must part.'",
+      options: [
+        { text: "Go find the cat", next: "whisperingLibraryCatIntro" },
+        { text: "Try the ritual at the mirror", next: "reachHand" },
+      ],
+    },
+
+    tellAboutCat: {
+      text: "You explain everything—the cat, the mirror, the hand. Your friends exchange a look. 'Then it’s part of the ritual,' one says, pointing to the page. 'We need it to set them free.'",
+      options: [
+        { text: "Head to the mirror together", next: "reachHand" },
+        { text: "Take the cat outside instead", next: "takeCatOutside" },
+      ],
+    },
+
     fallDownStairs: {
       text: "Heart hammering, you whirl to flee. Your foot slips—gravity yanks you down the staircase. You land hard, the house groaning with your every breathless move.",
       options: [
@@ -312,7 +339,7 @@ const stories = {
     },
   },
 
-  itSupport: {
+  itsupport: {
     start: {
       text: "A furious customer calls. Their computer won't turn on. They insist it’s your fault.",
       options: [
