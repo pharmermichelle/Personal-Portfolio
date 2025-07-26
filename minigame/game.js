@@ -339,7 +339,7 @@ const stories = {
     },
   },
 
-  itsupport: {
+  itSupport: {
     start: {
       text: "A furious customer calls. Their computer won't turn on. They insist it’s your fault.",
       options: [
