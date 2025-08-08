@@ -1,0 +1,356 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #ffddee;
+  background-size: cover;
+  display: block;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #333;
+  image-rendering: pixelated;
+  background: #d9d4c7;
+}
+
+#gameContainer {
+  width: 720px;
+  height: 480px;
+  border: none;
+  z-index: 1;
+  background: transparent;
+  position: relative;
+  background-color: transparent;
+  margin-top: 0;
+  padding-top: 10px;
+}
+
+#gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0;
+}
+
+#gameArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+#topHUD {
+  display: flex;
+  gap: 12px;
+  padding: 6px 16px;
+  background: #111;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 0 0 12px 12px;
+  width: 100%;
+  max-width: 720px;
+  justify-content: center;
+}
+
+.highlight {
+  background: #ff0;
+  color: #000;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+#levelName {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+button {
+  background: #eee;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ddd;
+}
+
+/* Reusable side panels */
+.panel-upgrade {
+  background: #fff;
+  border: 2px solid #0077ff;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.panel-upgrade {
+  width: 220px;
+  min-height: 160px;
+  max-height: 240px;
+}
+
+#inventoryDisplay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 10;
+  border: 2px solid #9c27b0;
+}
+
+.backpack-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #6a1b9a;
+}
+
+.backpack-icon {
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+.backpack-empty {
+  font-size: 14px;
+  color: #888;
+}
+
+.backpack-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.item-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+#upgradeTopBar {
+  width: 100%;
+  background: #eef6ff;
+  padding: 12px 20px;
+  text-align: center;
+  border-bottom: 2px solid #0077ff;
+  z-index: 2;
+  position: static;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+  backdrop-filter: blur(4px);
+}
+
+#upgradePanel {
+  gap: 20px;
+  justify-content: space-between;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+.upgrade-option {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+#upgradePanel button.highlight {
+  background: #fff952;
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 6px #ff0;
+}
+
+#upgradePanel button {
+  background-color: #fffbcc;
+  border: 1px solid #d4b900;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#upgradePanel button:hover {
+  background-color: #fff38a;
+}
+
+#upgradePanel h2,
+#upgradePanel h3 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #0077ff;
+  text-align: center;
+}
+
+#upgradePanel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  text-align: center;
+}
+
+#upgradePanel li {
+  margin-bottom: 8px;
+}
+
+.upgrade-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 160px;
+  padding: 8px;
+}
+
+.upgrade-group h3 {
+  margin-bottom: 6px;
+  font-size: 16px;
+  color: #0077ff;
+}
+
+/* 🟡 Cage Info - Minimal */
+.cage-panel {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  background: none;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+.item-icon,
+.popup-message {
+  font-family: "Segoe UI Emoji", "Segoe UI", sans-serif;
+}
+
+@media (max-width: 800px) {
+  #gameArea {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #topHUD {
+    flex-wrap: wrap;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  #upgradePanel {
+    width: 90%;
+    margin-top: 8px;
+    border-radius: 12px;
+    height: auto;
+    position: static;
+    border-left: none;
+  }
+}
+/* 🟣 Action Feed Popups */
+#actionFeed {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.action-popup {
+  background: #fdf6e3;
+  color: #5e2a84;
+  padding: 8px 14px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 2px solid #aa00ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+  font-size: 15px;
+  font-family: "Comic Neue", "Segoe UI", sans-serif;
+  animation: fadeOutPopup 4.5s ease-in-out forwards;
+}
+
+.action-popup.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.popup-message {
+  background: rgba(100, 0, 150, 0.9);
+  color: white;
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  animation: fadeOut 3s forwards;
+  transition: opacity 1s ease-out;
+}
+
+@keyframes fadeOutPopup {
+  0% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+@media (max-width: 600px) {
+  #upgradePanel {
+    flex-direction: column;
+    align-items: center;
+  }
+  .upgrade-group {
+    width: 100%;
+    max-width: 300px;
+  }
+}

@@ -54,6 +54,55 @@
   background-color: #ff6b81;
 }
 
+/* Connect Pge */
+.post-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+img.social-icon,
+.post-button img,
+.social-link img {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+.post-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #e63946;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.post-button:hover {
+  background-color: #ff6b81;
+  transform: translateY(-2px);
+}
+
+.post-button img {
+  width: 20px;
+  height: 20px;
+}
+
+img.video-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: 25%;
+  transition: transform 0.3s ease;
+}
+.video-thumb:hover {
+  transform: scale(1.1);
+}
 /* Footer Social Links */
 footer .social-links {
   list-style: none;

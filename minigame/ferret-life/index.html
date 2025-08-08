@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ferret Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="upgradeTopBar">
+      <div id="upgradePanel">
+        <div class="upgrade-group">
+          <h3>💡 Upgrades</h3>
+          <div class="upgrade-option">
+            ⚡ Speed +0.5 → 🍎 x3 / x6 / x10<br />
+            <button id="upgradeSpeedBtn">Upgrade Speed</button>
+          </div>
+          <div class="upgrade-option">
+            📦 Capacity +1 → 🪙 x2<br />
+            <button id="upgradeCapBtn">Upgrade Capacity</button>
+          </div>
+        </div>
+
+        <div class="upgrade-group">
+          <h3>🧲 Powerups</h3>
+          <div class="upgrade-option">
+            Magnet Boost → 🧶 x10 & 🪙 x5<br />
+            <button id="magnetBoostBtn">Activate Magnet</button>
+          </div>
+        </div>
+
+        <div class="upgrade-group">
+          <h3>🎯 Level Completion</h3>
+          <div class="upgrade-option" id="levelGoal">
+            Collect 10 🍎, 5 🧶, and 5 🪙<br />
+            <button id="moveToNextLevelBtn" disabled>Move to Next Room</button>
+          </div>
+        </div>
+
+        <div id="upgradeOptions"></div>
+      </div>
+    </div>
+
+    <br />
+
+    <!-- 🎮 Game Canvas + Overlays -->
+    <div id="gameWrapper">
+      <div id="gameArea">
+        <div id="gameContainer">
+          <canvas id="gameCanvas" width="720" height="480"></canvas>
+          <div id="levelName">🏠 Round 1 – Living Room</div>
+
+          <div id="actionFeed"></div>
+          <div id="inventoryDisplay" class="panel-inventory"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js" type="module" defer></script>
+  </body>
+</html>

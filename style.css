@@ -1,3 +1,15 @@
+:root {
+  --silver-gradient: linear-gradient(
+    145deg,
+    #ffffff 0%,
+    #dcdcdc 20%,
+    #b4b4b4 40%,
+    #8a8a8a 60%,
+    #dcdcdc 80%,
+    #ffffff 100%
+  );
+}
+
 /* File: style.css */
 
 .button:focus,
@@ -19,11 +31,14 @@ nav a:focus {
 
 /* General Reset & Base Styles */
 body {
+  background: var(--silver-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--text-color);
   font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
-  color: #333;
+
   text-align: center;
 }
 
@@ -48,6 +63,35 @@ nav a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+}
+
+.has-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  width: 300px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 100;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.has-tooltip:hover .custom-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 /* Hero Section */
@@ -146,20 +190,20 @@ nav a {
 }
 
 .hero-text h1 {
-  font-size: 2.2em;
+  font-size: 1.6em;
   margin-bottom: 8px;
 }
 
 .hero-content h1 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .tagline,
 .hero-content .tagline {
-  font-size: 1.3em;
-  margin-bottom: 20px;
+  font-size: 1em;
+  margin-bottom: 10px;
   color: #ccc;
-  line-height: 1.4;
+  line-height: 1.1em;
 }
 
 .hero-buttons {

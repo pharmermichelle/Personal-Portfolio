@@ -38,6 +38,7 @@ gtag("config", "G-9D74M6L9M7");
     🌙 Dark Mode
   </button>
   <main>
+
     <section class="hero split-hero">
       <div class="hero-image">
         <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
@@ -71,29 +72,19 @@ gtag("config", "G-9D74M6L9M7");
       </div>
     </section>
 
-
-      <section class="projects section">
+    <section class="projects section">
         <nav class="project-filter-nav">
+          <p>Filter by: </p>
           <ul>
             <li><button data-filter="all" class="active">Everything</button></li>
-            <li><button data-filter="games">Games I've Built</button></li>
-            <li><button data-filter="ai">AI Projects</button></li>
-            <li><button data-filter="writing">Stories & Writing</button></li>
-            <li><button data-filter="webdev">Built for the Web</button></li>
+            <li><button data-filter="games">Games</button></li>
+            <li><button data-filter="writing">Creative Writing</button></li>
+            <li><button data-filter="webdev">Web Development</button></li>
+            <li><button data-filter="fav"><strong>Personal Favorites</strong></button></li>
           </ul>
-        <h2>Featured Projects</h2>
+ 
         <div class="projects-grid">
-          <div class="project-card" data-tags="creative writing ai">
-            <h3>AI-Generated Portrait Experiment</h3>
-            <p>
-              A creative experiment using AI to generate a portrait based on my
-              personality and past conversations.
-            </p>
-            <a href="conversation.html" class="project-link"
-              >View AI Conversation</a
-            >
-          </div>
-          <div class="project-card" data-tags="writing ai">
+          <div class="project-card" data-tags="writing webdev fav">
             <h3>Short Story Generator</h3>
             <p>
               A web app that creates fun, randomized short stories using
@@ -104,6 +95,16 @@ gtag("config", "G-9D74M6L9M7");
               target="_blank"
               class="project-link"
               >Visit Short Story Generator</a
+            >
+          </div>
+          <div class="project-card" data-tags="writing">
+            <h3>Gen-AI Portrait Experiment</h3>
+            <p>
+              A creative experiment using AI to generate a portrait based on my
+              personality and past conversations.
+            </p>
+            <a href="conversation.html" class="project-link"
+              >View AI Conversation</a
             >
           </div>
           <div class="project-card" data-tags="webdev">
@@ -130,7 +131,7 @@ gtag("config", "G-9D74M6L9M7");
               >Start Your Adventure</a
             >
           </div>
-          <div class="project-card" data-tags="games">
+          <div class="project-card" data-tags="games fav">
             <h3>Wizard's Mana Forge</h3>
             <p>
               A fantasy-themed clicker game built with HTML, CSS, and
@@ -148,7 +149,7 @@ gtag("config", "G-9D74M6L9M7");
             </p>
             <a href="minigame/whackgame.html" class="project-link">Play Now</a>
           </div>
-          <div class="project-card" data-tags="creative writing ai">
+          <div class="project-card" data-tags="writing webdev">
             <h3>AI Trip Planner</h3>
             <p>
               How I used AI to plan the perfect, tailored weekend roadtrip. A
@@ -158,7 +159,7 @@ gtag("config", "G-9D74M6L9M7");
               >AI Tailored Weekend</a
             >
           </div>
-          <div class="project-card" data-tags="webdev">
+          <div class="project-card" data-tags="webdev fav">
             <h3>World Clock</h3>
             <p>
               Showcases the current time in different cities around the world.
@@ -167,7 +168,7 @@ gtag("config", "G-9D74M6L9M7");
               >What's the Time?</a
             >
           </div>
-          <div class="project-card" data-tags="games community">
+          <div class="project-card" data-tags="games">
             <h3>Inbox Hero</h3>
             <p>
               A fun, interactive game where players manage a community inbox,
@@ -178,7 +179,7 @@ gtag("config", "G-9D74M6L9M7");
               >Check it out!</a
             >
           </div>
-          <div class="project-card" data-tags="games community">
+          <div class="project-card" data-tags="games">
               <h3>Community Garden</h3>
               <p>
                 A fun, interactive game where players take positive actions to
@@ -201,7 +202,7 @@ gtag("config", "G-9D74M6L9M7");
               >Check it out!</a
             >
           </div>
-          <div class="project-card" data-tags="games">
+          <div class="project-card" data-tags="games fav">
             <h3>Bugged Out!</h3>
             <p>
               A pastel tower defense game where players stop waves of desert bugs using upgradeable towers.
@@ -209,7 +210,7 @@ gtag("config", "G-9D74M6L9M7");
             </p>
             <a href="minigame\bugged-out\index.html" class="project-link">Play Bugged Out</a>
           </div>
-          <div class="project-card" data-tags="games">
+          <div class="project-card" data-tags="games fav">
   <h3>Acorn Ascent</h3>
   <p>
     Help Chip the chipmunk climb the tree by solving grid-based shape puzzles!
@@ -217,8 +218,9 @@ gtag("config", "G-9D74M6L9M7");
     Click, drag, and think ahead.
   </p>
   <a href="minigame/acorn-ascent/index.html" class="project-link">Play Acorn Ascent</a>
-</div>
-    
+          </div>
+        </div>
+    </section>
 
     <section class="projects section">
       <h2>More Projects</h2>
@@ -228,12 +230,11 @@ gtag("config", "G-9D74M6L9M7");
         <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a>.
       </p>
     </section>
-  </main>
     <footer>
       <p>
-        Hosted on
+        View code on
         <a href="https://github.com/pharmermichelle" target="_blank"
-          >GitHub Pages</a
+          >GitHub</a
         >
         | Created by
         <a href="linkedin.com/in/michelle-waite/" target="_blank">Michelle</a>
@@ -242,6 +243,8 @@ gtag("config", "G-9D74M6L9M7");
         <a href="contact.html">Contact</a> | <a href="resume.html">Resume</a>
       </p>
     </footer>
+  </main>
+
   </body>
   <script src="index.js"></script>
   
