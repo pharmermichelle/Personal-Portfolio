@@ -3,27 +3,27 @@
   <head>
     <title>Michelle Waite | Web Dev Projects</title>
     <meta
-    property="og:description"
-    content="Explore Michelle's portfolio of creative, web-based projects and tools."
-  />
-  <meta property="og:image" content="images\portfolio-icon.png" />
-  <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
+      property="og:description"
+      content="Explore Michelle's portfolio of creative, web-based projects and tools."
+    />
+    <meta property="og:image" content="images\portfolio-icon.png" />
+    <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
     <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
     <!-- Google tag (gtag.js) -->
-<script
-async
-src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
-></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag() {
-  dataLayer.push(arguments);
-}
-gtag("js", new Date());
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-gtag("config", "G-9D74M6L9M7");
-</script>
-<meta charset="UTF-8" />
+      gtag("config", "G-9D74M6L9M7");
+    </script>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projects - Michelle's Portfolio</title>
     <link rel="stylesheet" href="projects.css" />
@@ -31,59 +31,66 @@ gtag("config", "G-9D74M6L9M7");
   </head>
   <body>
     <button
-    id="theme-toggle"
-    class="theme-toggle-btn"
-    aria-label="Toggle Dark Mode"
-  >
-    🌙 Dark Mode
-  </button>
-  <main>
-
-    <section class="hero split-hero">
-      <div class="hero-image">
-        <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
-      </div>
-      <div class="hero-text">
-        <h1>Michelle Waite</h1>
-        <p class="tagline">
-          Community Builder & Web Generalist<br />
-          Passionate about games, open-source, and making tech more human.<br />
-          AI-curious and always creating.
-        </p>
-        <div class="sticky-nav-wrapper">
-        <div class="hero-buttons">
-          <a href="index.html" class="button">Return Home</a>
-          <a
-            href="resume.html"
-            class="button"
-            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
-          >
-            Experience & Resume
-          </a>
-          <a
-            href="contact.html"
-            class="button"
-            onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Contact Button' });"
-          >
-            Contact Me
-          </a>
+      id="theme-toggle"
+      class="theme-toggle-btn"
+      aria-label="Toggle Dark Mode"
+    >
+      🌙 Dark Mode
+    </button>
+    <main>
+      <section class="hero split-hero">
+        <div class="hero-image">
+          <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
         </div>
-      </div>
-      </div>
-    </section>
+        <div class="hero-text">
+          <h1>Michelle Waite</h1>
+          <p class="tagline">
+            Community Builder & Web Generalist<br />
+            Passionate about games, open-source, and making tech more human.<br />
+            AI-curious and always creating.
+          </p>
+          <div class="sticky-nav-wrapper">
+            <div class="hero-buttons">
+              <a href="index.html" class="button">Return Home</a>
+              <a
+                href="resume.html"
+                class="button"
+                onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
+              >
+                Experience & Resume
+              </a>
+              <a
+                href="contact.html"
+                class="button"
+                onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Contact Button' });"
+              >
+                Contact Me
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <section class="projects section">
+      <section class="projects section">
         <nav class="project-filter-nav">
-          <p>Filter by: </p>
+          <p>Filter by:</p>
           <ul>
-            <li><button data-filter="all" class="active">Everything</button></li>
+            <li>
+              <button data-filter="all" class="active">Everything</button>
+            </li>
             <li><button data-filter="games">Games</button></li>
             <li><button data-filter="writing">Creative Writing</button></li>
             <li><button data-filter="webdev">Web Development</button></li>
-            <li><button data-filter="fav"><strong>Personal Favorites</strong></button></li>
+            <li>
+              <button data-filter="fav">
+                <strong>Personal Favorites</strong>
+              </button>
+            </li>
           </ul>
- 
+        </nav>
+
         <div class="projects-grid">
+          <!-- Story Generator -->
           <div class="project-card" data-tags="writing webdev fav">
             <h3>Short Story Generator</h3>
             <p>
@@ -98,23 +105,42 @@ gtag("config", "G-9D74M6L9M7");
             >
           </div>
           <!-- Acorn Ascent -->
-<div class="project-card" data-tags="games fav">
-  <h3>Acorn Ascent</h3>
-  <p>Grid-based shape puzzles. 10 levels of increasing difficulty.</p>
-  <div class="card-actions">
-    <a href="minigame/acorn-ascent/index.html" class="project-link">Play Acorn Ascent</a>
-    <a href="socials.html#acorn-ascent" class="project-link secondary-link">See Socials posts →</a>
-  </div></div>
-  <!-- Ferret Life -->
-<div class="project-card" data-tags="games">
-  <h3>Ferret Life</h3>
-  <p>Slice-of-life ferret sim (WIP). Care, explore, and cause adorable chaos.</p>
-  <div class="card-actions">
-    <a href="minigame/ferret-life/index.html" class="project-link">Play (WIP)</a>
-    <a href="socials.html#ferret-life" class="project-link secondary-link">See Socials posts →</a>
-  </div>
-</div>
-  <!-- AI Portrait -->
+          <div class="project-card" data-tags="games fav">
+            <h3>Acorn Ascent</h3>
+            <p>
+              Grid-based shape puzzles. 10 levels of increasing difficulty.
+              Featured on Hope & Hotfixes Episode 3.
+            </p>
+            <div class="card-actions">
+              <a href="minigame/acorn-ascent/index.html" class="project-link"
+                >Play Acorn Ascent</a
+              >
+              <a
+                href="socials.html#acorn-ascent"
+                class="project-link secondary-link"
+                >Hope & Hotfixes →</a
+              >
+            </div>
+          </div>
+          <!-- Ferret Life -->
+          <div class="project-card" data-tags="games">
+            <h3>Ferret Life</h3>
+            <p>
+              Slice-of-life ferret sim (WIP). Care, explore, and cause adorable
+              chaos. Featured on Hope & Hotfixes Episode 4.
+            </p>
+            <div class="card-actions">
+              <a href="minigame/ferret-life/index.html" class="project-link"
+                >Play (WIP)</a
+              >
+              <a
+                href="socials.html#ferret-life"
+                class="project-link secondary-link"
+                >Hope & Hotfixes →</a
+              >
+            </div>
+          </div>
+          <!-- AI Portrait -->
           <div class="project-card" data-tags="writing">
             <h3>Gen-AI Portrait Experiment</h3>
             <p>
@@ -125,6 +151,7 @@ gtag("config", "G-9D74M6L9M7");
               >View AI Conversation</a
             >
           </div>
+          <!-- Weather Forecast App -->
           <div class="project-card" data-tags="webdev">
             <h3>Weather Forecast App</h3>
             <p>
@@ -138,16 +165,19 @@ gtag("config", "G-9D74M6L9M7");
               >Check Your Weather</a
             >
           </div>
+          <!-- CYO Adventure -->
           <div class="project-card" data-tags="games writing">
             <h3>Choose Your Adventure</h3>
             <p>
-              A text-based, story game. Players navigate different story paths through dynamic
-              choices, showcasing DOM manipulation and event handling.
+              A text-based, story game. Players navigate different story paths
+              through dynamic choices, showcasing DOM manipulation and event
+              handling.
             </p>
             <a href="minigame/game.html" class="project-link"
               >Start Your Adventure</a
             >
           </div>
+          <!-- Wizard's Mana Forge -->
           <div class="project-card" data-tags="games fav">
             <h3>Wizard's Mana Forge</h3>
             <p>
@@ -157,6 +187,7 @@ gtag("config", "G-9D74M6L9M7");
             </p>
             <a href="minigame/clickgame.html" class="project-link">Play Now</a>
           </div>
+          <!-- Whack-a-Bug -->
           <div class="project-card" data-tags="games">
             <h3>Whack-a-Bug</h3>
             <p>
@@ -166,6 +197,7 @@ gtag("config", "G-9D74M6L9M7");
             </p>
             <a href="minigame/whackgame.html" class="project-link">Play Now</a>
           </div>
+          <!-- AI Trip Planner -->
           <div class="project-card" data-tags="writing webdev">
             <h3>AI Trip Planner</h3>
             <p>
@@ -176,6 +208,7 @@ gtag("config", "G-9D74M6L9M7");
               >AI Tailored Weekend</a
             >
           </div>
+          <!-- World Clock -->
           <div class="project-card" data-tags="webdev fav">
             <h3>World Clock</h3>
             <p>
@@ -185,6 +218,7 @@ gtag("config", "G-9D74M6L9M7");
               >What's the Time?</a
             >
           </div>
+          <!-- Inbox Hero -->
           <div class="project-card" data-tags="games">
             <h3>Inbox Hero</h3>
             <p>
@@ -198,72 +232,94 @@ gtag("config", "G-9D74M6L9M7");
           </div>
           <!-- Community Garden -->
           <div class="project-card" data-tags="games">
-              <h3>Community Garden</h3>
-              <p>
-                A fun, interactive game where players take positive actions to
-                grow a virtual garden. Approve messages, resolve conflicts, and
-                clean up spam to earn flowers, trees, and more. Test your
-                community management skills in this engaging mini-game.
-              </p>
-              <a href="minigame\community-garden.html" class="project-link"
-                >Check it out!</a
-              >
+            <h3>Community Garden</h3>
+            <p>
+              A fun, interactive game where players take positive actions to
+              grow a virtual garden. Approve messages, resolve conflicts, and
+              clean up spam to earn flowers, trees, and more. Test your
+              community management skills in this engaging mini-game.
+            </p>
+            <a href="minigame\community-garden.html" class="project-link"
+              >Check it out!</a
+            >
           </div>
-<!-- Coastline Cruiser -->
-<div class="project-card" data-tags="games">
-  <h3>Coastline Cruiser</h3>
-  <p>Navigate a buggy along a coastline, avoid obstacles, collect points.</p>
-  <div class="card-actions">
-    <a href="minigame/coastline-cruiser/cruiser.html" class="project-link">Play Now</a>
-    <a href="socials.html#coastline-cruiser" class="project-link secondary-link">See Socials posts →</a>
-  </div>
-</div>
-<!-- Bugged Out -->
-<div class="project-card" data-tags="games fav">
-  <h3>Bugged Out!</h3>
-  <p>Pastel tower defense vs. waves of desert bugs. Upgrade and survive!</p>
-  <div class="card-actions">
-    <a href="minigame/bugged-out/index.html" class="project-link">Play Bugged Out</a>
-    <a href="socials.html#bugged-out" class="project-link secondary-link">See Socials posts →</a>
-  </div>
-</div>
+          <!-- Coastline Cruiser -->
+          <div class="project-card" data-tags="games">
+            <h3>Coastline Cruiser</h3>
+            <p>
+              Navigate a buggy along a coastline, avoid obstacles, collect
+              points. Featured on Hope & Hotfixes Episode 1.
+            </p>
+            <div class="card-actions">
+              <a
+                href="minigame/coastline-cruiser/cruiser.html"
+                class="project-link"
+                >Play Now</a
+              >
+              <a
+                href="socials.html#coastline-cruiser"
+                class="project-link secondary-link"
+                >Hope & Hotfixes →</a
+              >
+            </div>
+          </div>
+          <!-- Bugged Out -->
+          <div class="project-card" data-tags="games fav">
+            <h3>Bugged Out!</h3>
+            <p>
+              Pastel tower defense vs. waves of desert bugs. Upgrade and
+              survive! Featured on Hope & Hotfixes Episode 2.
+            </p>
+            <div class="card-actions">
+              <a href="minigame/bugged-out/index.html" class="project-link"
+                >Play Bugged Out</a
+              >
+              <a
+                href="socials.html#bugged-out"
+                class="project-link secondary-link"
+                >Hope & Hotfixes →</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
 
-</div>
-    </section>
-
-    <section class="projects section">
-      <h2>More Projects</h2>
-      <p>Additional web development projects coming soon!</p>
-      <p>
-        In the meantime, feel free to check out my full portfolio on
-        <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a>.
-      </p>
-    </section>
-    <footer>
-      <a href="index.html">← Back to Home</a>
-      <p>
+      <section class="projects section">
+        <h2>More Projects</h2>
+        <p>Additional web development projects coming soon!</p>
+        <p>
+          In the meantime, feel free to check out my full portfolio on
+          <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a
+          >.
+        </p>
+      </section>
+      <footer>
+        <a href="index.html">← Back to Home</a>
+        <p></p>
         <h2>Get in Touch</h2>
-      <p>
-        Have a project in mind or just want to chat about games, tech, or
-        community? I’d love to hear from you!
-      </p>
-      <p>
-        Email me at
-        <a href="mailto: michelle@michellew.io"> michelle@michellew.io
-          </a></p><p>Created by
-        <a href="linkedin.com/in/michelle-waite/" target="_blank">Michelle</a> | 
-        <a href="https://github.com/pharmermichelle" target="_blank"
-          >GitHub</a
-        >
-      |
-        <a href="contact.html">Contact</a> | <a href="resume.html">Resume</a>
-      </p>
-    </footer>
-  </main>
-
+        <p>
+          Have a project in mind or just want to chat about games, tech, or
+          community? I’d love to hear from you!
+        </p>
+        <p>
+          Email me at
+          <a href="mailto: michelle@michellew.io"> michelle@michellew.io </a>
+        </p>
+        <p>
+          Created by
+          <a href="linkedin.com/in/michelle-waite/" target="_blank">Michelle</a>
+          |
+          <a href="https://github.com/pharmermichelle" target="_blank"
+            >GitHub</a
+          >
+          |
+          <a href="contact.html">Contact</a> | <a href="resume.html">Resume</a>
+        </p>
+      </footer>
+    </main>
   </body>
   <script src="index.js"></script>
-  
+
   <script
     src="https://kit.fontawesome.com/a076d05399.js"
     crossorigin="anonymous"
