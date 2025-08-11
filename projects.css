@@ -94,6 +94,23 @@ body.dark-mode .project-card h3 {
   color: #102841;
 }
 
+.card-actions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+.project-link.secondary-link {
+  font-weight: 600;
+  opacity: 0.8;
+}
+.project-link.secondary-link:hover {
+  opacity: 1;
+}
+
 .featured-projects a {
   text-decoration: none;
   color: #333;
@@ -133,7 +150,7 @@ h2 {
   background: linear-gradient(135deg, #7faedd, #b2d9fa);
   border-radius: 10px;
   border: 2px solid rgba(33, 150, 243, 0.2);
-  padding: 1rem;
+  padding: 4px;
   box-shadow: 0 0 6px 1px rgba(33, 150, 243, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: center;
@@ -156,13 +173,16 @@ h2 {
 }
 
 .project-link {
+  flex: 0 1 auto;
+  text-align: center;
+  white-space: nowrap;
   display: inline-block;
-  margin-top: 10px;
-  padding: 10px 20px;
+  margin-top: 4px;
+  padding: 4px;
   background: #333;
   color: white;
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 8px;
   transition: background 0.3s ease;
 }
 

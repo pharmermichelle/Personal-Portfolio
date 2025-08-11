@@ -1,0 +1,250 @@
+/* Section backgrounds */
+#ferret-life.hnh-bg {
+  --hnh-bg-image: url("images/ferret-thumb.png");
+}
+#acorn-ascent.hnh-bg {
+  --hnh-bg-image: url("images/acorn-thumb.png");
+}
+#coastline-cruiser.hnh-bg {
+  --hnh-bg-image: url("images/cruiser-thumbnail.png");
+}
+#bugged-out.hnh-bg {
+  --hnh-bg-image: url("images/bugged-thumb.png");
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+}
+
+/* Base “image as background” pattern for Hope & Hotfixes sections */
+.hnh-bg {
+  position: relative;
+  overflow: hidden; /* keeps pseudo bg clipped to rounded corners */
+  border-radius: 12px;
+  /* override the global section background just for these */
+  background: transparent;
+  color: #fff;
+  isolation: isolate; /* ensures z-index layering is predictable */
+}
+
+/* Full-bleed background layer */
+.hnh-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1; /* sit behind the content */
+  background-position: center;
+  background-size: cover; /* key for smooth scaling across sizes */
+  background-repeat: no-repeat;
+  /* subtle dark gradient overlay for readability */
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.35),
+      rgba(0, 0, 0, 0.45)
+    ),
+    var(--hnh-bg-image, none);
+  transform: translateZ(0); /* helps some GPUs with rendering */
+}
+
+/* Give the block some height even if content is short */
+.hnh-bg {
+  padding: 40px 20px;
+  min-height: 320px;
+}
+
+/* center inner content, not the whole section */
+.hnh-bg > p,
+.hnh-bg > h2,
+.hnh-bg .post-links {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 1) Un-dim this section’s background (full color) */
+.hnh-bg--no-dim::before {
+  background-image: var(--hnh-bg-image, none); /* no gradient overlay */
+}
+body.dark-mode .hnh-bg--no-dim::before,
+body.light-mode .hnh-bg--no-dim::before {
+  background-image: var(--hnh-bg-image, none); /* force no dim in both modes */
+}
+
+/* 4) Play Now chip with game icon */
+.play-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px auto 10px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px) saturate(120%);
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+.play-chip img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: block;
+  image-rendering: auto; /* keep it crisp */
+}
+.play-chip:hover {
+  background: rgba(230, 57, 70, 0.85);
+  border-color: rgba(230, 57, 70, 1);
+  transform: translateY(-1px);
+}
+.play-chip span {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* brand colors for hover */
+:root {
+  --x: #000000;
+  --fb: #1877f2;
+  --li: #0a66c2;
+  --glass-bg: rgba(20, 20, 20, 0.35);
+}
+
+/* premium glass card with gradient border */
+.overlay-card.modern {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px) saturate(140%);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Compact + centered card */
+.overlay-card {
+  position: relative;
+  max-width: 720px; /* tweak width here */
+  margin: 0 auto;
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: #fff;
+
+  /* glass panel */
+  border: 1px solid transparent; /* needed for the gradient border trick */
+  background-image:
+    /* layer 1: panel fill (goes inside the border) */ linear-gradient(
+      rgba(20, 20, 20, 0.55),
+      rgba(20, 20, 20, 0.55)
+    ),
+    /* layer 2: the gradient stroke */
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.6),
+        rgba(255, 255, 255, 0.08)
+      );
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* iOS Safari */
+}
+
+/* Optional: hover lift */
+.overlay-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile width */
+@media (max-width: 768px) {
+  .overlay-card {
+    max-width: 92%;
+  }
+}
+
+/* two-column row: title + icon group */
+.episode-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.episode-row h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #eef3ff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.link-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* circular ghost icon buttons */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: transparent;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.icon-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: grayscale(0) brightness(1.1);
+}
+
+/* subtle lift */
+.icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* platform hovers */
+.icon-btn[data-platform="x"]:hover {
+  background: var(--x);
+  border-color: var(--x);
+}
+.icon-btn[data-platform="fb"]:hover {
+  background: var(--fb);
+  border-color: var(--fb);
+}
+.icon-btn[data-platform="li"]:hover {
+  background: var(--li);
+  border-color: var(--li);
+}
+.icon-btn[data-platform]:hover img {
+  filter: brightness(100);
+}
+
+/* divider between rows */
+.divider {
+  height: 1px;
+  margin: 10px 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+/* responsive: stack gracefully */
+@media (max-width: 560px) {
+  .episode-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .link-group {
+    justify-content: flex-start;
+  }
+}

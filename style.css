@@ -13,7 +13,6 @@
 /* File: style.css */
 
 .button:focus,
-.project-link:focus,
 nav a:focus {
   outline: 2px solid #ff6b81;
   outline-offset: 2px;
@@ -130,8 +129,8 @@ nav a {
   .hero-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Vertical space between buttons */
-    align-items: center; /* Optional: centers the buttons */
+    gap: 15px;
+    align-items: center;
   }
 }
 
@@ -453,10 +452,10 @@ section + section {
 
 /* Footer */
 footer {
-  background: #333;
-  color: white;
-  padding: 20px;
-  margin-top: 60px;
+  background-color: transparent;
+  color: #000000;
+  padding: 4px;
+  margin-top: 40px;
 }
 
 a {
@@ -490,12 +489,6 @@ body.dark-mode .button {
 
 body.dark-mode .button:hover {
   background-color: #666;
-}
-
-body.dark-mode header,
-body.dark-mode footer {
-  background-color: #111;
-  color: #f4f4f4;
 }
 
 .theme-toggle-btn {
