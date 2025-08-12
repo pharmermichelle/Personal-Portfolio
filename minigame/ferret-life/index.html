@@ -22,28 +22,11 @@
   </head>
   <body>
     <div id="upgradeTopBar">
+      <div id="upgradeHeader">🛠️ Upgrades (press E / click)</div>
+
       <div id="upgradePanel">
-        <div class="upgrade-group">
-          <h3>💡 Upgrades</h3>
-          <div class="upgrade-option">
-            ⚡ Speed +0.5 → 🍎 x3 / x6 / x10<br />
-            <button id="upgradeSpeedBtn">Upgrade Speed</button>
-          </div>
-          <div class="upgrade-option">
-            📦 Capacity +1 → 🪙 x2<br />
-            <button id="upgradeCapBtn">Upgrade Capacity</button>
-          </div>
-        </div>
-
-        <div class="upgrade-group">
-          <h3>🧲 Powerups</h3>
-          <div class="upgrade-option">
-            Magnet Boost → 🧶 x10 & 🪙 x5<br />
-            <button id="magnetBoostBtn">Activate Magnet</button>
-          </div>
-        </div>
-
-        <div class="upgrade-group">
+        <!-- Column 1: Level Completion (static so updateLevelSummary() can target #levelGoal) -->
+        <div class="upgrade-group" id="levelGoalGroup">
           <h3>🎯 Level Completion</h3>
           <div class="upgrade-option" id="levelGoal">
             Collect 10 🍎, 5 🧶, and 5 🪙<br />
@@ -51,11 +34,13 @@
           </div>
         </div>
 
-        <div id="upgradeOptions"></div>
+        <!-- Column 2: Upgrades (filled by renderUpgradeOptions) -->
+        <div class="upgrade-group" id="upgradesGroup"></div>
+
+        <!-- Column 3: Powerups (filled by renderUpgradeOptions) -->
+        <div class="upgrade-group" id="powerupsGroup"></div>
       </div>
     </div>
-
-    <br />
 
     <!-- 🎮 Game Canvas + Overlays -->
     <div id="gameWrapper">

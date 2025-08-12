@@ -3,12 +3,74 @@ import { TILE_SIZE, TILE } from "./maps.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const goal = { apple: 10, yarn: 5, coin: 5 };
+const nextBtn = document.getElementById("moveToNextLevelBtn");
+const goalDiv = document.getElementById("levelGoal");
+
+function updateLevelSummary() {
+  if (!goalDiv || !nextBtn) return;
+
+  goalDiv.innerHTML = `
+    Collect 10 🍎, 5 🧶, and 5 🪙<br/>
+    <strong>Now:</strong>
+    🍎 ${globalStash.apple}/${goal.apple} ·
+    🧶 ${globalStash.yarn}/${goal.yarn} ·
+    🪙 ${globalStash.coin}/${goal.coin}<br/>
+    <button id="moveToNextLevelBtn" ${
+      globalStash.apple >= goal.apple &&
+      globalStash.yarn >= goal.yarn &&
+      globalStash.coin >= goal.coin
+        ? ""
+        : "disabled"
+    }>Move to Next Room</button>
+  `;
+
+  // Re-bind the button after innerHTML update
+  const btn = goalDiv.querySelector("#moveToNextLevelBtn");
+  if (btn)
+    btn.addEventListener("click", () => {
+      if (currentLevelIndex < LEVELS.length - 1) {
+        gotoLevel(currentLevelIndex + 1);
+        showActionMessage("➡️ Moved to next room!");
+      }
+    });
+}
+
 let levelName;
 
 // Import levels
 import { LEVELS } from "./levels.js";
 let currentLevelIndex = 0;
 let currentRoom = LEVELS[currentLevelIndex].room;
+let solidRects = [];
+function rebuildSolids() {
+  solidRects = [];
+
+  // Walls
+  for (let y = 0; y < currentRoom.height; y++) {
+    for (let x = 0; x < currentRoom.width; x++) {
+      if (currentRoom.tiles[y][x] === TILE.WALL) {
+        solidRects.push({
+          x: x * TILE_SIZE,
+          y: y * TILE_SIZE,
+          w: TILE_SIZE,
+          h: TILE_SIZE,
+        });
+      }
+    }
+  }
+
+  // Decorations block movement too
+  (currentRoom.decorations || []).forEach((d) => {
+    solidRects.push({
+      x: d.x * TILE_SIZE,
+      y: d.y * TILE_SIZE,
+      w: TILE_SIZE,
+      h: TILE_SIZE,
+    });
+  });
+}
+rebuildSolids();
 
 let justPressedEnter = false;
 let itemTimer = 0;
@@ -87,7 +149,7 @@ const player = {
   y: TILE_SIZE * 2,
   w: 48,
   h: 48,
-  speed: 2,
+  speed: 1,
   color: "#8B4513",
   inventory: [],
   capacity: 1,
@@ -106,25 +168,52 @@ const upgradeState = {
 };
 
 const keys = {};
-window.addEventListener("keydown", (e) => {
-  if (!keys[e.key]) keys[e.key] = true;
+// run once during init
+function setupControls() {
+  window.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
 
-  if (e.key === " " && !justPressedEnter) {
-    justPressedEnter = true;
-
-    if (upgradePanelOpen) {
-      closeUpgradePanel(); // toggle close on Space
-    } else if (isInCage(player)) {
-      depositInventory(); // deposit first so counts are current
-      openUpgradePanel(); // then render panel with fresh counts
+    // Open/close with E or U
+    if (k === "e" || k === "u") {
+      // optional gating by cage:
+      // if (!isInCage(player)) return;
+      depositInventory();
+      toggleUpgradePanel();
     }
-  }
-});
 
-window.addEventListener("keyup", (e) => {
-  delete keys[e.key];
-  if (e.key === " ") justPressedEnter = false;
-});
+    // Space = close if open, or open-if-in-cage
+    if (e.key === " ") {
+      e.preventDefault();
+      if (upgradePanelOpen) {
+        closeUpgradePanel();
+      } else if (isInCage(player)) {
+        depositInventory();
+        openUpgradePanel();
+      }
+    }
+
+    // movement flags
+    if (!keys[e.key]) keys[e.key] = true;
+  });
+
+  window.addEventListener("keyup", (e) => {
+    delete keys[e.key];
+    if (e.key === " ") justPressedEnter = false;
+  });
+
+  // Click to open (add this ONCE, not after space)
+  const topBar = document.getElementById("upgradeTopBar");
+  if (topBar) {
+    topBar.style.cursor = "pointer";
+    topBar.title = "Click to open upgrades (E)";
+    topBar.addEventListener("click", () => {
+      // optional cage gate:
+      // if (!isInCage(player)) return;
+      depositInventory();
+      toggleUpgradePanel();
+    });
+  }
+}
 
 // --- Utility ---
 function rectsOverlap(a, b) {
@@ -145,15 +234,18 @@ function getTileAtPixel(px, py) {
 }
 
 function willCollide(nx, ny, w, h) {
-  // Check the four corners against walls
-  const corners = [
-    { x: nx, y: ny },
-    { x: nx + w, y: ny },
-    { x: nx, y: ny + h },
-    { x: nx + w, y: ny + h },
-  ];
-  for (const c of corners) {
-    if (getTileAtPixel(c.x, c.y) === TILE.WALL) return true;
+  // Out of bounds = solid
+  if (
+    nx < 0 ||
+    ny < 0 ||
+    nx + w > currentRoom.width * TILE_SIZE ||
+    ny + h > currentRoom.height * TILE_SIZE
+  )
+    return true;
+
+  const rect = { x: nx, y: ny, w, h };
+  for (const s of solidRects) {
+    if (rectsOverlap(rect, s)) return true;
   }
   return false;
 }
@@ -164,7 +256,30 @@ export function showActionMessage(text) {
   message.className = "action-popup";
   message.textContent = text;
 
-  document.getElementById("actionFeed").appendChild(message); // ✅ Add this
+  const feed = document.getElementById("actionFeed");
+  feed.appendChild(message);
+
+  // remove after CSS animation ends (fallback timeout just in case)
+  const cleanup = () => message.remove();
+  message.addEventListener("animationend", cleanup, { once: true });
+  setTimeout(cleanup, 5000);
+}
+
+function gotoLevel(idx) {
+  currentLevelIndex = idx;
+  currentRoom = LEVELS[currentLevelIndex].room;
+
+  // Reset player position; keep your stash so progress carries over
+  player.x = TILE_SIZE * 2;
+  player.y = TILE_SIZE * 2;
+
+  // Clear world items and rebuild solids for the new room
+  collectibles = [];
+  rebuildSolids();
+
+  // Make sure UI reflects the new room
+  drawHUD();
+  updateLevelSummary();
 }
 
 // --- Upgrade Panel ---
@@ -172,66 +287,115 @@ let upgradePanelOpen = false;
 
 function openUpgradePanel() {
   upgradePanelOpen = true;
-  document.getElementById("upgradePanel").style.display = "block";
+  const panel = document.getElementById("upgradePanel");
+  panel.style.display = "grid";
   renderUpgradeOptions();
   drawHUD();
 }
 
 function closeUpgradePanel() {
   upgradePanelOpen = false;
+  document.getElementById("upgradePanel").style.display = "none";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("upgradePanel").style.display = "none"; // start hidden
+  drawHUD();
+  gameLoop();
+  updateInventoryDisplay();
+  renderUpgradeOptions();
+});
+
+function toggleUpgradePanel() {
+  if (upgradePanelOpen) closeUpgradePanel();
+  else openUpgradePanel();
 }
 
 function renderUpgradeOptions() {
-  const options = document.getElementById("upgradeOptions");
-  options.innerHTML = "";
+  const upgradesEl = document.getElementById("upgradesGroup");
+  const powerupsEl = document.getElementById("powerupsGroup");
+  if (!upgradesEl || !powerupsEl) return;
 
-  const speedCost = [3, 6, 10][upgradeState.speed] || "Maxed";
+  // reset column headers
+  upgradesEl.innerHTML = `<h3>💡 Upgrades</h3>`;
+  powerupsEl.innerHTML = `<h3>🎧 Powerups</h3>`;
+
+  // --- costs & checks
+  const speedCost = [3, 6, 10][upgradeState.speed]; // undefined when maxed
   const canUpgradeSpeed =
-    globalStash.apple >= speedCost && speedCost !== "Maxed";
+    Number.isFinite(speedCost) && globalStash.apple >= speedCost;
 
   const capCost = 2;
   const canUpgradeCap = globalStash.coin >= capCost;
 
-  const speedDiv = document.createElement("div");
-  speedDiv.innerHTML = `⚡ Speed Lv. ${upgradeState.speed} → ${
-    upgradeState.speed + 1
-  } (Need ${speedCost} 🍎)
-    <button ${
-      canUpgradeSpeed ? "" : "disabled"
-    } onclick="upgradeSpeed()">Upgrade</button>`;
-
-  const capDiv = document.createElement("div");
-  capDiv.innerHTML = `📦 Capacity: ${player.capacity} → ${
-    player.capacity + 1
-  } (Need ${capCost} 🪙)
-    <button ${
-      canUpgradeCap ? "" : "disabled"
-    } onclick="upgradeCapacity()">Upgrade</button>`;
-
-  const magnetCost = {
-    yarn: 10,
-    coin: 5,
-  };
-
-  const hasMagnetMaterials =
+  const magnetCost = { yarn: 10, coin: 5 };
+  const canMagnet =
     globalStash.yarn >= magnetCost.yarn && globalStash.coin >= magnetCost.coin;
 
-  const magnetDiv = document.createElement("div");
-  magnetDiv.innerHTML = `🧲 Magnet Boost (Pulls items for 30s)<br>
-Requires ${magnetCost.yarn} 🧶 and ${magnetCost.coin} 🪙<br>
-<button ${
-    hasMagnetMaterials ? "" : "disabled"
-  } onclick="activateMagnetBoost()">Craft & Activate</button>`;
+  // helpers
+  const makeDiv = (html) => {
+    const d = document.createElement("div");
+    d.className = "upgrade-option";
+    d.innerHTML = html;
+    return d;
+  };
+  const makeBtn = (label, disabled, onClick) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.disabled = !!disabled;
+    if (!disabled) {
+      b.classList.add("highlight");
+      b.addEventListener("click", onClick);
+    }
+    return b;
+  };
 
-  document
-    .querySelectorAll("#upgradeOptions button:not([disabled])")
-    .forEach((btn) => {
-      btn.classList.add("highlight");
-    });
+  // --- column 2: Upgrades
+  const speedText = Number.isFinite(speedCost)
+    ? `⚡ Speed Lv. ${upgradeState.speed} → ${
+        upgradeState.speed + 1
+      } (Need ${speedCost} 🍎)`
+    : `⚡ Speed (Maxed)`;
+  const speedDiv = makeDiv(speedText);
+  speedDiv.append(
+    makeBtn("Upgrade", !canUpgradeSpeed, () => {
+      upgradeSpeed();
+      renderUpgradeOptions();
+      updateLevelSummary();
+      drawHUD();
+    })
+  );
 
-  options.appendChild(magnetDiv);
-  options.appendChild(speedDiv);
-  options.appendChild(capDiv);
+  const capDiv = makeDiv(
+    `📦 Capacity: ${player.capacity} → ${
+      player.capacity + 1
+    } (Need ${capCost} 🪙)`
+  );
+  capDiv.append(
+    makeBtn("Upgrade", !canUpgradeCap, () => {
+      upgradeCapacity();
+      renderUpgradeOptions();
+      updateLevelSummary();
+      drawHUD();
+    })
+  );
+
+  upgradesEl.append(speedDiv, capDiv);
+
+  // --- column 3: Powerups
+  const magnetDiv = makeDiv(
+    `🧲 Magnet Boost (Pulls items for 30s)<br/>Requires ${magnetCost.yarn} 🧶 and ${magnetCost.coin} 🪙`
+  );
+  magnetDiv.append(
+    makeBtn("Craft & Activate", !canMagnet, () => {
+      activateMagnetBoost();
+      renderUpgradeOptions();
+      updateLevelSummary();
+      drawHUD();
+    })
+  );
+
+  powerupsEl.append(magnetDiv);
 }
 
 function upgradeSpeed() {
@@ -276,6 +440,12 @@ function upgradeCapacity() {
   }
 }
 
+// ---- expose upgrade handlers for inline onclicks (module scope fix) ----
+window.upgradeSpeed = upgradeSpeed;
+window.upgradeCapacity = upgradeCapacity;
+window.activateMagnetBoost = activateMagnetBoost;
+window.closeUpgradePanel = closeUpgradePanel;
+
 // --- Cage logic ---
 function isInCage(p) {
   const cage = currentRoom.cageRect;
@@ -293,41 +463,12 @@ function depositInventory() {
     console.log("Deposited:", player.inventory);
     logAction(`Deposited: ${player.inventory.join(", ")}`);
     updateInventoryDisplay();
-
+    updateLevelSummary();
+    renderUpgradeOptions();
+    drawHUD();
     player.inventory = [];
   } else {
     console.log("Backpack empty.");
-  }
-}
-
-function attemptUpgrades() {
-  let upgraded = false;
-
-  // Upgrade Speed (Apples)
-  const speedCosts = [3, 6, 10]; // Levels 1-3
-  const nextSpeed = upgradeState.speed;
-  if (
-    nextSpeed < speedCosts.length &&
-    globalStash.apple >= speedCosts[nextSpeed]
-  ) {
-    globalStash.apple -= speedCosts[nextSpeed];
-    upgradeState.speed++;
-    player.speed += 0.5;
-    upgraded = true;
-    console.log(`Speed upgraded to level ${upgradeState.speed}`);
-  }
-
-  // Upgrade Capacity (Coins)
-  if (globalStash.coin >= 2) {
-    globalStash.coin -= 2;
-    upgradeState.capacity++;
-    player.capacity++;
-    upgraded = true;
-    console.log(`Backpack capacity increased to ${player.capacity}`);
-  }
-
-  if (!upgraded) {
-    console.log("Not enough resources for upgrade.");
   }
 }
 
@@ -390,10 +531,6 @@ function update() {
     if (!willCollide(player.x, player.y + vy, player.w, player.h))
       player.y += vy;
   }
-  // expose to inline onclick (module scope fix)
-  window.upgradeSpeed = upgradeSpeed;
-  window.upgradeCapacity = upgradeCapacity;
-  window.closeUpgradePanel = closeUpgradePanel;
 
   if (magnetBoostActive && magnetBoostTimer > 0) {
     magnetBoostTimer--;
@@ -445,6 +582,7 @@ function update() {
   if (nowInCage && !wasInCage) {
     depositInventory();
   }
+  // Update wasInCage state
   wasInCage = nowInCage;
 }
 
@@ -529,18 +667,20 @@ function drawPlayer() {
 
 function drawHUD() {
   const cage = currentRoom.cageRect;
-  const padding = 10;
-  const lineHeight = 22;
-  const startX = cage.x + cage.w - 90;
-  const startY = cage.y + cage.h - 110;
 
-  const boxWidth = 90;
-  const boxHeight = lineHeight * 5 + padding * 2;
+  // --- draw the mini-HUD INSIDE the cage ---
+  ctx.save(); // keep canvas state clean
 
-  // Draw text info
+  // anchor inside the cage, centered
+  const lineHeight = 18;
+  const startX = Math.floor(cage.x + cage.w / 2); // center of cage
+  const startY = Math.floor(cage.y + 8); // a bit down from top
+
   ctx.fillStyle = "#888";
-
   ctx.font = "16px Segoe UI";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+
   const lines = [
     `🧺 ${player.inventory.length}/${player.capacity}`,
     `🍎 ${globalStash.apple}`,
@@ -548,22 +688,21 @@ function drawHUD() {
     `🪙 ${globalStash.coin}`,
     `⚡ ${upgradeState.speed}`,
   ];
+
   lines.forEach((line, i) => {
     ctx.fillText(line, startX, startY + i * lineHeight);
   });
 
-  // Draw cage hint
+  // bottom hint INSIDE the cage
   if (isInCage(player)) {
     ctx.fillStyle = "#0077ff";
-    ctx.font = "bold 14px Segoe UI";
-    ctx.fillText(
-      "Press Space to upgrade!",
-      startX,
-      startY + lines.length * lineHeight + 5
-    );
+    ctx.font = "bold 12px Segoe UI";
+    ctx.fillText("Space to upgrade", startX, cage.y + cage.h - 18);
   }
 
-  // Fix: define levelName before using it
+  ctx.restore(); // <-- restores textAlign/textBaseline/etc.
+
+  // --- DOM HUD bits (unchanged) ---
   const levelName = document.getElementById("levelName");
   if (levelName) {
     levelName.textContent = LEVELS[currentLevelIndex].name;
@@ -586,9 +725,10 @@ function gameLoop() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  setupControls(); // <-- make sure this runs once
+  renderUpgradeOptions(); // build buttons before any clicks
+  updateInventoryDisplay();
+  updateLevelSummary();
   drawHUD();
   gameLoop();
-
-  updateInventoryDisplay();
-  renderUpgradeOptions();
 });

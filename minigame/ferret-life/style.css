@@ -88,23 +88,6 @@ button:hover {
   background: #ddd;
 }
 
-/* Reusable side panels */
-.panel-upgrade {
-  background: #fff;
-  border: 2px solid #0077ff;
-  border-radius: 6px;
-  padding: 10px;
-  font-family: "Segoe UI", sans-serif;
-  font-size: 14px;
-  overflow-y: auto;
-}
-
-.panel-upgrade {
-  width: 220px;
-  min-height: 160px;
-  max-height: 240px;
-}
-
 #inventoryDisplay {
   position: absolute;
   bottom: 12px;
@@ -155,24 +138,47 @@ button:hover {
   padding: 12px 20px;
   text-align: center;
   border-bottom: 2px solid #0077ff;
-  z-index: 2;
-  position: static;
+  top: 0;
+  z-index: 1000;
+  position: sticky;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 12px;
   backdrop-filter: blur(4px);
 }
 
+#upgradeHeader {
+  font-weight: 700;
+  color: #0077ff;
+  margin-bottom: 6px;
+}
+
 #upgradePanel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
   gap: 20px;
-  justify-content: space-between;
   max-width: 960px;
   margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
   font-weight: bold;
   font-size: 14px;
   color: #333;
 }
+
+#upgradePanel .upgrade-group {
+  flex: 1 1 300px; /* grow, shrink, base width */
+  min-width: 260px; /* prevents squishing too much */
+}
+
+@media (max-width: 900px) {
+  #upgradePanel {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  #upgradePanel {
+    grid-template-columns: 1fr;
+  }
+}
+
 .upgrade-option {
   font-weight: bold;
   font-size: 14px;
@@ -267,15 +273,6 @@ button:hover {
     font-size: 14px;
     gap: 8px;
   }
-
-  #upgradePanel {
-    width: 90%;
-    margin-top: 8px;
-    border-radius: 12px;
-    height: auto;
-    position: static;
-    border-left: none;
-  }
 }
 /* 🟣 Action Feed Popups */
 #actionFeed {
@@ -342,15 +339,5 @@ button:hover {
   100% {
     opacity: 0;
     transform: translateY(-20px);
-  }
-}
-@media (max-width: 600px) {
-  #upgradePanel {
-    flex-direction: column;
-    align-items: center;
-  }
-  .upgrade-group {
-    width: 100%;
-    max-width: 300px;
   }
 }
