@@ -18,14 +18,42 @@ const MAX_POWER = 260;
 const POWER_SCALE = 5.0;
 
 // --- Use your own art by setting these to URLs or data-URLs
-const PLAYER_IMG_URL = null; // e.g. './assets/skater.png'
-const GOALIE_IMG_URL = null; // e.g. './assets/goalie.png'
+const PLAYER_IMG_URL = "images/starter-skater.png";
+const GOALIE_IMG_URL = "images/starter-goalie.png";
+
+const TEAM_STYLE = {
+  jersey: "#b23b3b", // primary sweater
+  trim: "#ffd166", // stripes/accent
+  helmet: "#0b1222",
+  gloves: "#7a1e1e",
+  pants: "#0f172a",
+  stickWood: "#cfa77a",
+  blade: "#22252b",
+  tape: "#dfe7f3",
+};
 
 const ASSETS = { player: null, goalie: null };
 if (PLAYER_IMG_URL)
   loadImage(PLAYER_IMG_URL).then((img) => (ASSETS.player = img));
 if (GOALIE_IMG_URL)
   loadImage(GOALIE_IMG_URL).then((img) => (ASSETS.goalie = img));
+
+// Where the image is “held” when rotated: the point that should sit over the puck.
+// Tweak anchorX/anchorY if the blade doesn't line up perfectly in your PNG.
+const SKATER_SPRITE = {
+  scale: 0.1, // size on canvas (adjust to taste)
+  anchorX: 88, // pixels from the image's left to the blade/impact point
+  anchorY: 54, // pixels from the image's top to the blade/impact point
+  baseRotation: 0, // radians. If your PNG faces up, use -Math.PI/2; if left, use Math.PI
+};
+// Goalie PNG render settings (center-anchored)
+const GOALIE_SPRITE = {
+  scale: 0.12, // size on canvas — tweak to fit your rink
+  anchorFx: 0.5, // 0..1: horizontal anchor (0.5 = image center)
+  anchorFy: 0.5, // 0..1: vertical anchor (0.5 = image center)
+  baseRotation: Math.PI, // make the goalie face LEFT toward the shooter
+};
+
 function loadImage(src) {
   return new Promise((res, rej) => {
     const i = new Image();
@@ -97,6 +125,15 @@ const LEVELS = [level1(), level2(), level3()];
 let levelIndex = 0;
 
 // ---- Entities ----
+function aimVector() {
+  const px = state.puck.x,
+    py = state.puck.y;
+  const dx = px - mouse.x,
+    dy = py - mouse.y;
+  const len = Math.hypot(dx, dy) || 0.0001;
+  return { ux: dx / len, uy: dy / len, len };
+}
+
 function movingRect({ x, y, w, h, axis = "x", min, max, speed }) {
   return {
     x,
@@ -143,6 +180,7 @@ const state = {
   canShoot: true,
   swing: { t: 0, angle: 0 },
   lastShotAngle: 0,
+  phase: "play", // "play" | "scored"
 };
 
 // Goalie
@@ -220,8 +258,8 @@ canvas.addEventListener("mouseup", (e) => {
       state.puck.vy = diry * v;
       strokes++;
       state.swing.t = 0.2;
-      state.swing.angle = Math.atan2(dy, dx);
-
+      const uAngle = Math.atan2(dy, dx); // shot direction (mouse -> puck)
+      state.swing.angle = uAngle - Math.PI;
       state.lastShotAngle = state.swing.angle;
     }
   }
@@ -342,27 +380,48 @@ function update(dt) {
     p.vx = p.vy = 0;
   }
 
+  if (state.phase === "scored") {
+    // freeze puck and goalie while banner fades
+    state.puck.vx = state.puck.vy = 0;
+    return; // skip the rest of update during transition
+  }
+
   // Collisions
   collideBoards(p);
   for (const o of L.obstacles) collideCircleRect(p, o, RESTITUTION_OBS);
 
   // Goalie update + collision
   goalie.update(dt);
-  collideCircleRect(p, goalie, 0.25); // pads absorb more
+  // Convert center -> top-left for the collider
+  collideCircleRect(
+    p,
+    {
+      x: goalie.x - goalie.w / 2,
+      y: goalie.y - goalie.h / 2,
+      w: goalie.w,
+      h: goalie.h,
+    },
+    0.25
+  );
 
   // Goal check
-  if (inGoal(p)) {
+  if (inGoal(p) && state.phase !== "scored") {
+    state.phase = "scored";
     const total = strokes;
     best[levelIndex] = Math.min(best[levelIndex] ?? Infinity, total);
     banner.text = `GOAL! Strokes: ${total}  ${
       total <= L.par ? "⛳ Under Par!" : ""
     }`;
-    banner.t = 1.8;
-    p.x = LEVELS[levelIndex].goal.x + PUCK_R + 2;
+    banner.t = 1.2;
+
+    // place puck safely inside net and stop it
+    p.x = LEVELS[levelIndex].goal.x + PUCK_R + 6;
     p.vx = p.vy = 0;
+
     setTimeout(() => {
       nextLevel();
-    }, 800);
+      state.phase = "play";
+    }, 900);
   }
 }
 
@@ -510,8 +569,11 @@ function drawAimGuide() {
     dy = py - mouse.y,
     len = Math.hypot(dx, dy);
   const maxLen = Math.min(len, MAX_POWER / POWER_SCALE);
-  const ax = px - (dx / len) * maxLen,
-    ay = py - (dy / len) * maxLen;
+
+  if (len < 0.001) return;
+  const ax = px + (dx / len) * maxLen;
+  const ay = py + (dy / len) * maxLen;
+
   ctx.strokeStyle = "#9fd4ff";
   ctx.lineWidth = 3;
   ctx.setLineDash([8, 6]);
@@ -529,103 +591,73 @@ function drawAimGuide() {
   ctx.strokeRect(px - 40, py - 46, 80, 8);
 }
 function drawSkater(x, y) {
-  // Angle of the actual shot direction (puck -> away from mouse)
-  const shot = Math.atan2(y - mouse.y, x - mouse.x);
-  const angle = mouse.aiming ? shot : state.lastShotAngle;
+  // Pool-style: place skater behind the puck as you aim
+  let sx = x,
+    sy = y,
+    angle = state.lastShotAngle;
+  if (mouse.aiming && speed(state.puck) < 3) {
+    const { ux, uy } = aimVector();
+    const offset = 42; // distance the skater sits behind the puck while aiming
+    sx = x - ux * offset;
+    sy = y - uy * offset;
+    angle = Math.atan2(y - mouse.y, x - mouse.x) - Math.PI; // face shot direction
+  }
+
+  // Subtle whole-sprite swing (keep small since it's a single PNG)
   const t = clamp(state.swing.t / 0.2, 0, 1);
+  const swing = -0.15 + 0.3 * t;
+
   ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-  ctx.translate(-18, 4);
+  ctx.translate(sx, sy);
+  ctx.rotate(angle + swing + SKATER_SPRITE.baseRotation);
+
   if (ASSETS.player) {
-    const img = ASSETS.player,
-      scale = 0.6,
-      iw = img.naturalWidth,
-      ih = img.naturalHeight;
-    ctx.drawImage(
-      img,
-      -iw * scale * 0.5,
-      -ih * scale * 0.7,
-      iw * scale,
-      ih * scale
-    );
+    const img = ASSETS.player;
+    const s = SKATER_SPRITE.scale;
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    const ox = SKATER_SPRITE.anchorX * s; // offset so anchor sits at (0,0)
+    const oy = SKATER_SPRITE.anchorY * s;
+
+    // Optional: ensure smooth scaling
+    // ctx.imageSmoothingEnabled = true;
+
+    ctx.drawImage(img, -ox, -oy, iw * s, ih * s);
   } else {
-    ctx.fillStyle = "rgba(0,0,0,.18)";
-    ctx.beginPath();
-    ctx.ellipse(0, 26, 26, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Fallback if image hasn’t loaded yet (tiny dot)
     ctx.fillStyle = "#b23b3b";
-    ctx.strokeStyle = "#0d0d12";
-    ctx.lineWidth = 2.5;
-    roundRect(-10, -30, 24, 32, 8, true, true);
     ctx.beginPath();
-    ctx.arc(2, -38, 8, 0, Math.PI * 2);
-    ctx.fillStyle = "#f2d1a8";
+    ctx.arc(0, 0, 6, 0, Math.PI * 2);
     ctx.fill();
-    ctx.stroke();
-    ctx.strokeStyle = "#b23b3b";
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(-8, -22);
-    ctx.lineTo(-14, -12 - 8 * t);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(14, -22);
-    ctx.lineTo(20, -6 + 8 * t);
-    ctx.stroke();
-    ctx.strokeStyle = "#cfa77a";
-    ctx.lineWidth = 6;
-    const swing = -0.7 + 1.1 * t;
-    ctx.save();
-    ctx.rotate(swing);
-    ctx.beginPath();
-    ctx.moveTo(-8, 6);
-    ctx.lineTo(-62, 2);
-    ctx.stroke();
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = "#111";
-    ctx.beginPath();
-    ctx.moveTo(-62, 2);
-    ctx.lineTo(-76, 6);
-    ctx.stroke();
-    ctx.restore();
   }
+
   ctx.restore();
 }
+
 function drawGoalie(g) {
-  if (ASSETS.goalie) {
-    const img = ASSETS.goalie,
-      scale = 0.7,
-      iw = img.naturalWidth,
-      ih = img.naturalHeight;
-    ctx.drawImage(
-      img,
-      g.x - iw * scale + 20,
-      g.y - ih * scale * 0.5,
-      iw * scale,
-      ih * scale
-    );
-    return;
-  }
   ctx.save();
-  ctx.fillStyle = "#2b3d64";
-  ctx.strokeStyle = "#0d1628";
-  ctx.lineWidth = 2.2;
-  roundRect(g.x - 20, g.y - g.h / 2, 40, g.h, 8, true, true);
-  ctx.fillStyle = "#f1d899";
-  roundRect(g.x - 35, g.y - 42, 22, 84, 6, true, false);
-  roundRect(g.x + 13, g.y - 42, 22, 84, 6, true, false);
-  ctx.fillStyle = "#b23b3b";
-  roundRect(g.x - 46, g.y - 16, 18, 26, 6, true, false);
-  ctx.fillStyle = "#b23b3b";
-  roundRect(g.x + 28, g.y - 16, 18, 26, 6, true, false);
-  ctx.beginPath();
-  ctx.arc(g.x, g.y - 58, 12, 0, Math.PI * 2);
-  ctx.fillStyle = "#b23b3b";
-  ctx.fill();
+  ctx.translate(g.x, g.y); // our goalie.x/y is the center
+  ctx.rotate(GOALIE_SPRITE.baseRotation);
+
+  if (ASSETS.goalie) {
+    const img = ASSETS.goalie;
+    const s = GOALIE_SPRITE.scale;
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    const ox = iw * GOALIE_SPRITE.anchorFx * s;
+    const oy = ih * GOALIE_SPRITE.anchorFy * s;
+
+    // Render PNG centered on goalie.x/y
+    ctx.drawImage(img, -ox, -oy, iw * s, ih * s);
+  } else {
+    // (Optional) very small fallback so we still see something if image hasn't loaded yet
+    ctx.fillStyle = "#83a8ff";
+    ctx.fillRect(-g.w / 2, -g.h / 2, g.w, g.h);
+  }
+
   ctx.restore();
 }
+
 function roundRect(x, y, w, h, r, fill, stroke) {
   const rr = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
