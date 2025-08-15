@@ -1,4 +1,7 @@
 /* Section backgrounds */
+#hockey-shooter.hnh-bg {
+  --hnh-bg-image: url("images/hockey-thumb.png");
+}
 #ferret-life.hnh-bg {
   --hnh-bg-image: url("images/ferret-thumb.png");
 }

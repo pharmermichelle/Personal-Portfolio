@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9D74M6L9M7");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hockey Mini Shooter</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <canvas
+        id="game"
+        width="980"
+        height="560"
+        aria-label="Rink Putt canvas"
+      ></canvas>
+      <div class="hud">
+        Aim: <kbd>click & drag</kbd> from the puck • Release to shoot • Reset:
+        <kbd>R</kbd> • Next level: <kbd>N</kbd>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
