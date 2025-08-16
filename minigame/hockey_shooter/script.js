@@ -73,7 +73,16 @@ const HUD_BEHAVIOR = {
   showDelay: 0.2,
 };
 
-// Shot presets: power + max + friction + UI color
+// --- Accuracy helpers (add above SHOTS) ---
+const DEG = Math.PI / 180;
+function rotate2D(x, y, ang) {
+  const c = Math.cos(ang),
+    s = Math.sin(ang);
+  return { x: x * c - y * s, y: x * s + y * c };
+}
+
+// Shot presets: power + max + friction + UI color + cone + needsSkill
+// cone = half-angle in radians (±cone around aim direction)
 const SHOTS = {
   pass: {
     label: "Pass",
@@ -81,13 +90,26 @@ const SHOTS = {
     maxPower: 320,
     friction: 520,
     color: "#6dc1ff",
+    cone: 0 * DEG,
+    needsSkill: false,
   },
+  wrist: {
+    label: "Wrist Shot",
+    powerScale: 14.8,
+    maxPower: 576,
+    friction: 936,
+    color: "#7cffb2",
+    cone: 2 * DEG,
+    needsSkill: false,
+  }, // fast launch, same range as Pass
   slap: {
     label: "Slapshot",
     powerScale: 10.5,
     maxPower: 470,
     friction: 400,
     color: "#ffc157",
+    cone: 12 * DEG,
+    needsSkill: true,
   },
   clear: {
     label: "Clear",
@@ -95,6 +117,8 @@ const SHOTS = {
     maxPower: 660,
     friction: 440,
     color: "#ff6b6b",
+    cone: 16 * DEG,
+    needsSkill: true,
   },
 };
 
@@ -107,7 +131,13 @@ const btnClear = document.getElementById("btnClear");
 });
 
 // HUD hit areas populated each frame by drawHUD()
-const HUD_HITS = { bounds: null, pass: null, slap: null, clear: null };
+const HUD_HITS = {
+  bounds: null,
+  pass: null,
+  wrist: null,
+  slap: null,
+  clear: null,
+};
 
 function ptInRect(px, py, r) {
   return r && px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h;
@@ -720,11 +750,20 @@ const state = {
   canShoot: true,
   swing: { t: 0, angle: 0 },
   lastShotAngle: 0,
-  phase: "play", // "play" | "scored"
-  shotMode: "pass", // "pass" | "slap" | "clear"
+  phase: "play",
+  shotMode: "pass", // "pass" | "wrist" | "slap" | "clear"
   slapsLeft: 1, // once per level
   clearsLeft: 1, // once per level
   hudPinned: false,
+
+  // timing minigame for cone accuracy (used by slap/clear)
+  skill: {
+    active: false,
+    phase: 0, // drives oscillator
+    pos: 0, // -1..1 (0 = center/best)
+    speed: 6.5, // how fast the marker swings
+    pending: null, // {dirx, diry, v, S, mode}
+  },
 };
 
 // Goalie
@@ -819,6 +858,81 @@ function resetLevel(idx = levelIndex) {
 }
 resetLevel(0);
 // ---- Sounds ----
+// --- Puck hit sound ---
+const HIT_SOUNDS = {
+  pass: "sounds/puck-hit_pass.wav",
+  wrist: "sounds/puck-hit_wrist.wav",
+  slap: "sounds/puck-hit_slap.wav",
+  clear: "sounds/puck-hit_clear.wav",
+};
+
+// Preload + allow overlapping plays via clone
+const hitPads = {};
+for (const k in HIT_SOUNDS) {
+  const a = new Audio(HIT_SOUNDS[k]);
+  a.volume = 0.85;
+  hitPads[k] = a;
+}
+function playPuckHit(kind) {
+  const base = hitPads[kind] || hitPads.wrist;
+  const a = base.cloneNode(true);
+  a.volume = base.volume;
+  a.play().catch(() => {});
+}
+
+const HIT_VOL = { pass: 0.55, wrist: 0.6, slap: 0.7, clear: 0.65 };
+const HIT_RATE = { pass: 1.0, wrist: 1.05, slap: 0.92, clear: 0.95 };
+
+let puckHitPool = [];
+let puckHitIndex = 0;
+
+try {
+  if (PUCK_HIT_URL) {
+    const N = 5; // small pool so rapid shots don't cut off
+    for (let i = 0; i < N; i++) {
+      const a = new Audio(PUCK_HIT_URL);
+      a.volume = 0.6;
+      puckHitPool.push(a);
+    }
+  }
+} catch (e) {}
+
+function playPuckHit(kind = "pass") {
+  if (puckHitPool.length) {
+    const a = puckHitPool[puckHitIndex++ % puckHitPool.length];
+    a.currentTime = 0;
+    a.volume = HIT_VOL[kind] ?? 0.6;
+    a.playbackRate = HIT_RATE[kind] ?? 1.0;
+    a.play().catch(puckHitFallback);
+  } else {
+    puckHitFallback();
+  }
+}
+
+// Tiny synthesized fallback if the file can't play (blocked/missing)
+function puckHitFallback() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    const g = ac.createGain();
+    const o1 = ac.createOscillator();
+    const o2 = ac.createOscillator();
+    o1.type = "triangle";
+    o1.frequency.value = 90; // body thump
+    o2.type = "square";
+    o2.frequency.value = 180; // stick snap
+    g.gain.setValueAtTime(0.0001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.5, ac.currentTime + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.08);
+    o1.connect(g);
+    o2.connect(g);
+    g.connect(ac.destination);
+    o1.start();
+    o2.start();
+    o1.stop(ac.currentTime + 0.09);
+    o2.stop(ac.currentTime + 0.09);
+  } catch {}
+}
 
 const GOAL_HORN_URL = "sounds/goal-horn.wav";
 let goalHorn = null;
@@ -968,10 +1082,16 @@ canvas.addEventListener("mousedown", (e) => {
   const mx = (e.clientX - r.left) * (canvas.width / r.width);
   const my = (e.clientY - r.top) * (canvas.height / r.height);
 
+  // If a timing minigame is up, any click locks it in.
+  if (state.skill.active) {
+    resolveSkill();
+    return;
+  }
+
   // 1) Try jumbotron buttons first
   if (HUD_HITS.bounds && ptInRect(mx, my, HUD_HITS.bounds)) {
-    // Swallow click if it's anywhere on the board (prevents aiming by accident)
     if (ptInRect(mx, my, HUD_HITS.pass)) armShot("pass");
+    else if (ptInRect(mx, my, HUD_HITS.wrist)) armShot("wrist");
     else if (ptInRect(mx, my, HUD_HITS.slap) && state.slapsLeft > 0)
       armShot("slap");
     else if (ptInRect(mx, my, HUD_HITS.clear) && state.clearsLeft > 0)
@@ -1000,28 +1120,13 @@ canvas.addEventListener("mouseup", (e) => {
       const dirx = dx / len,
         diry = dy / len;
       const v = Math.min(S.maxPower, S.powerScale * len);
-      state.puck.vx = dirx * v;
-      state.puck.vy = diry * v;
-      state.puck.friction = S.friction;
 
-      strokes++;
-      state.swing.t = 0.2;
-      const uAngle = Math.atan2(dy, dx); // shot direction (mouse -> puck)
-      state.swing.angle = uAngle - Math.PI;
-      state.lastShotAngle = state.swing.angle;
-      // Consume one-time shots and revert to Pass
-      if (state.shotMode === "slap") {
-        state.slapsLeft--;
-        state.shotMode = "pass";
-        banner.text = "Slapshot!";
-        banner.t = 0.8;
-        updateShotButtons();
-      } else if (state.shotMode === "clear") {
-        state.clearsLeft--;
-        state.shotMode = "pass";
-        banner.text = "Clear!";
-        banner.t = 0.8;
-        updateShotButtons();
+      if (S.needsSkill) {
+        // Defer direction within the cone to the timing minigame.
+        startSkillCheck({ dirx, diry, v, S, mode: state.shotMode });
+      } else {
+        // Immediate shots (Pass, Wrist) — you can still give Wrist a tiny cone (already tiny).
+        launchShot(dirx, diry, v, S, state.shotMode);
       }
     }
   }
@@ -1029,9 +1134,25 @@ canvas.addEventListener("mouseup", (e) => {
   mouse.aiming = false;
   state.aiming = false;
 });
+
 addEventListener("keydown", (e) => {
+  // Resolve skill check with keyboard too
+  if (state.skill.active) {
+    if (e.key === " " || e.key === "Enter") {
+      resolveSkill();
+      return;
+    }
+    if (e.key === "Escape") {
+      // worst case
+      const pos = state.skill.pos >= 0 ? 1 : -1;
+      resolveSkill(pos);
+      return;
+    }
+  }
+
   if (e.key === "r" || e.key === "R") resetLevel();
   if (e.key === "n" || e.key === "N") nextLevel();
+
   if (e.key === "1") {
     state.shotMode = "pass";
     banner.text = "Shot armed: Pass";
@@ -1058,6 +1179,13 @@ addEventListener("keydown", (e) => {
     banner.t = 0.9;
     updateShotButtons();
   }
+  if (e.key === "4") {
+    state.shotMode = "wrist";
+    banner.text = "Shot armed: Wrist Shot";
+    banner.t = 0.8;
+    // updateShotButtons() only knows pass/slap/clear; it's fine to leave it.
+  }
+
   if (e.key === "h" || e.key === "H") {
     state.hudPinned = !state.hudPinned;
     banner.text = state.hudPinned ? "HUD pinned" : "HUD auto-hide";
@@ -1128,6 +1256,58 @@ function collideBoards(p) {
     p.vx = -p.vx * RESTITUTION_WALL;
   }
 }
+function launchShot(dirx, diry, v, S, mode) {
+  playPuckHit(mode);
+  state.puck.vx = dirx * v;
+  state.puck.vy = diry * v;
+  state.puck.friction = S.friction;
+
+  strokes++;
+  state.swing.t = 0.2;
+  const uAngle = Math.atan2(diry, dirx);
+  state.swing.angle = uAngle - Math.PI;
+  state.lastShotAngle = state.swing.angle;
+
+  // consume one-time shots
+  if (mode === "slap") {
+    state.slapsLeft--;
+    state.shotMode = "pass";
+    banner.text = "Slapshot!";
+    banner.t = 0.8;
+    updateShotButtons();
+  } else if (mode === "clear") {
+    state.clearsLeft--;
+    state.shotMode = "pass";
+    banner.text = "Clear!";
+    banner.t = 0.8;
+    updateShotButtons();
+  }
+}
+
+function startSkillCheck(pending) {
+  state.skill.active = true;
+  state.skill.phase = 0;
+  state.skill.pos = 0;
+  state.skill.pending = pending;
+  banner.text = "Timing! Click the center for accuracy";
+  banner.t = 0.9;
+}
+
+function resolveSkill(posOverride = null) {
+  if (!state.skill.active || !state.skill.pending) return;
+  const pos = posOverride ?? state.skill.pos; // -1..1
+  const err = Math.min(1, Math.abs(pos)); // 0 best … 1 worst
+  const sign = pos >= 0 ? 1 : -1; // left/right side
+  const { dirx, diry, v, S, mode } = state.skill.pending;
+
+  const delta = (S.cone || 0) * err * sign; // angle offset
+  const r = rotate2D(dirx, diry, delta);
+  launchShot(r.x, r.y, v, S, mode);
+
+  state.skill.active = false;
+  state.skill.pending = null;
+}
+
 // Did the puck cross the vertical goal line this frame?
 function crossedGoalLine(prevX, prevY, x, y) {
   const g = LEVELS[levelIndex].goal;
@@ -1188,6 +1368,12 @@ function onGoalScored() {
 
 function update(dt) {
   const L = LEVELS[levelIndex];
+
+  // Skill check marker oscillation
+  if (state.skill.active) {
+    state.skill.phase += dt * (state.skill.speed || 6.5);
+    state.skill.pos = Math.sin(state.skill.phase); // -1..1
+  }
 
   // Obstacles and swing timer
   for (const o of L.obstacles) if (o.update) o.update(dt);
@@ -1294,6 +1480,7 @@ function render() {
   drawPuck(state.puck);
   drawGoalie(goalie);
   drawHUD();
+  drawSkillCheck();
   if (banner.t > 0) {
     banner.t -= 1 / 60;
     ctx.save();
@@ -1310,6 +1497,64 @@ function render() {
 }
 
 // ---- Drawing helpers ----
+function drawSkillCheck() {
+  if (!state.skill.active || !state.skill.pending) return;
+
+  const barW = 260,
+    barH = 16;
+  const x = W / 2 - barW / 2;
+  const y = 80; // below jumbotron
+
+  ctx.save();
+  // bezel
+  roundRectPath(x - 8, y - 12, barW + 16, barH + 24, 10);
+  ctx.fillStyle = "rgba(10,19,38,0.9)";
+  ctx.fill();
+  ctx.strokeStyle = "#2c3e6b";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // bar
+  roundRectPath(x, y, barW, barH, barH / 2);
+  const g = ctx.createLinearGradient(x, y, x + barW, y);
+  g.addColorStop(0, "#0f1b32");
+  g.addColorStop(0.5, "#6dc1ff");
+  g.addColorStop(1, "#0f1b32");
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.strokeStyle = "#8fb1ff";
+  ctx.stroke();
+
+  // center line
+  ctx.strokeStyle = "rgba(255,255,255,0.6)";
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x + barW / 2, y - 6);
+  ctx.lineTo(x + barW / 2, y + barH + 6);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // slider dot at pos (-1..1)
+  const px = x + (state.skill.pos * 0.5 + 0.5) * barW;
+  ctx.fillStyle = "#eaf3ff";
+  ctx.beginPath();
+  ctx.arc(px, y + barH / 2, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // caption
+  ctx.fillStyle = "#cfe2ff";
+  ctx.font = "600 13px system-ui, Segoe UI, Roboto";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "bottom";
+  ctx.fillText(
+    "Accuracy – click when the dot hits the center",
+    x + barW / 2,
+    y - 6
+  );
+
+  ctx.restore();
+}
+
 function drawGoalNet(g) {
   ctx.save();
 
@@ -1392,18 +1637,17 @@ function drawAimGuide() {
   const pts = predictShotPath(S);
   if (!pts || pts.length < 2) return;
 
+  // dashed predicted path
   ctx.strokeStyle = S.color;
   ctx.lineWidth = 3;
   ctx.setLineDash([8, 6]);
   ctx.beginPath();
   ctx.moveTo(pts[0].x, pts[0].y);
-  for (let i = 1; i < pts.length; i++) {
-    ctx.lineTo(pts[i].x, pts[i].y);
-  }
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Keep your power bar (still useful feedback for pull strength)
+  // power bar
   const px = state.puck.x,
     py = state.puck.y;
   const dx = px - mouse.x,
@@ -1416,6 +1660,26 @@ function drawAimGuide() {
   ctx.fillRect(px - 40, py - 46, 80 * pwr, 8);
   ctx.strokeStyle = "#8bb9ff";
   ctx.strokeRect(px - 40, py - 46, 80, 8);
+
+  // accuracy cone (if any)
+  if (S.cone > 0) {
+    const ux = dx / (len || 1),
+      uy = dy / (len || 1);
+    const L = 160; // triangle length
+    const left = rotate2D(ux, uy, -S.cone);
+    const right = rotate2D(ux, uy, S.cone);
+
+    ctx.save();
+    ctx.globalAlpha = 0.45;
+    ctx.fillStyle = S.color;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(px + left.x * L, py + left.y * L);
+    ctx.lineTo(px + right.x * L, py + right.y * L);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
 }
 
 function drawIceBackground() {
@@ -1546,7 +1810,12 @@ function drawHUD() {
   const y = hudY;
   // if fully hidden, swallow clicks and bail
   if (y <= -(h - 2)) {
-    HUD_HITS.bounds = HUD_HITS.pass = HUD_HITS.slap = HUD_HITS.clear = null;
+    HUD_HITS.bounds =
+      HUD_HITS.pass =
+      HUD_HITS.wrist =
+      HUD_HITS.slap =
+      HUD_HITS.clear =
+        null;
     return;
   }
 
@@ -1626,6 +1895,13 @@ function drawHUD() {
       armed: state.shotMode === "pass",
     },
     {
+      key: "wrist",
+      text: "Wrist Shot",
+      color: SHOTS.wrist.color,
+      disabled: false,
+      armed: state.shotMode === "wrist",
+    },
+    {
       key: "slap",
       text: `Slapshot (${state.slapsLeft})`,
       color: SHOTS.slap.color,
@@ -1661,33 +1937,10 @@ function drawHUD() {
     bx += bw + gap;
   });
   HUD_HITS.pass = hits.pass;
+  HUD_HITS.wrist = hits.wrist;
   HUD_HITS.slap = hits.slap;
   HUD_HITS.clear = hits.clear;
 
-  ctx.restore();
-}
-
-// pill helper used by drawHUD()
-function drawPill(x, y, w, h, color, armed, disabled, label) {
-  ctx.save();
-  const r = h / 2;
-  roundRectPath(x, y, w, h, r);
-  const g = ctx.createLinearGradient(0, y, 0, y + h);
-  g.addColorStop(0, armed ? "#183055" : "#12213c");
-  g.addColorStop(1, armed ? "#132746" : "#0b1429");
-  ctx.fillStyle = g;
-  ctx.fill();
-
-  ctx.lineWidth = armed ? 3 : 2;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-
-  if (disabled) ctx.globalAlpha = 0.35;
-  ctx.fillStyle = "#eaf3ff";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = "600 13px system-ui, Segoe UI, Roboto";
-  ctx.fillText(label, x + w / 2, y + h / 2 + 0.5);
   ctx.restore();
 }
 
