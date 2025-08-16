@@ -22,15 +22,33 @@
   </head>
   <body>
     <div class="wrap">
+      <!-- NEW: top HUD (same look/text as bottom) -->
+      <div class="hud hud--top">
+        Aim: <kbd>click &amp; drag</kbd> from the puck • Release to shoot •
+        Shots: <kbd>1</kbd>=Pass • <kbd>2</kbd>=Slapshot • <kbd>3</kbd>=Clear •
+        Jumbotron: <kbd>H</kbd> pin/unpin • Reset: <kbd>R</kbd> • Next level:
+        <kbd>N</kbd>
+      </div>
+
+      <div class="toolbar">
+        <button id="btnPass">Pass</button>
+        <button id="btnSlap">Slapshot (1)</button>
+        <button id="btnClear">Clear (1)</button>
+      </div>
+
       <canvas
         id="game"
         width="980"
         height="560"
         aria-label="Rink Putt canvas"
       ></canvas>
+
+      <!-- Updated bottom HUD to match the top -->
       <div class="hud">
-        Aim: <kbd>click & drag</kbd> from the puck • Release to shoot • Reset:
-        <kbd>R</kbd> • Next level: <kbd>N</kbd>
+        Aim: <kbd>click &amp; drag</kbd> from the puck • Release to shoot •
+        Shots: <kbd>1</kbd>=Pass • <kbd>2</kbd>=Slapshot • <kbd>3</kbd>=Clear •
+        Jumbotron: <kbd>H</kbd> pin/unpin • Reset: <kbd>R</kbd> • Next level:
+        <kbd>N</kbd>
       </div>
     </div>
 

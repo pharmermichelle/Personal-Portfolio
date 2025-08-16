@@ -6,20 +6,226 @@
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-
+const DEBUG_GOAL = false;
 const W = canvas.width,
   H = canvas.height;
 const WALL = 22;
 const PUCK_R = 12;
-const FRICTION = 520;
+const NET_STYLE = {
+  post: "#c43131", // red posts/crossbar
+  postWidth: 5, // thickness of posts
+  mesh: "#e9f4ff", // netting color
+  meshAlpha: 0.55, // transparency of the mesh
+  cell: 6, // grid spacing
+  backTint: "rgba(240,250,255,0.28)", // subtle white inside
+  shadow: "rgba(0,0,0,0.12)", // soft floor shadow
+};
+
 const RESTITUTION_WALL = 0.82;
 const RESTITUTION_OBS = 0.6;
-const MAX_POWER = 260;
-const POWER_SCALE = 5.0;
+// Goalie behavior knobs (make shots easier by default)
+const GOALIE_TUNING = {
+  patrolSpeed: 90, // back-and-forth speed while idle
+  trackSpeed: 180, // max chase speed when a shot is coming
+  trackStartX: 0.72, // only chase once puck is past 72% of the rink
+  endPauseMin: 0.35, // pause at ends to open a lane
+  endPauseMax: 0.75,
+};
+const JUMBOTRON = {
+  corner: 14, // rounded corner radius
+  height: 102, // scoreboard body height
+  maxWidth: 620, // cap so it doesn't touch the boards
+  marginTop: 10, // distance from canvas top
+  bodyTop: "#0f1b32", // gradient top
+  bodyBot: "#0a1326", // gradient bottom
+  rim: "#2c3e6b", // bezel stroke
+  accent: "#6dc1ff", // thin glowing strip
+  text: "#eaf3ff", // main text
+  subText: "#cfe2ff", // small text
+  cable: "rgba(255,255,255,0.18)", // hanger cables
+  glass: "rgba(255,255,255,0.06)", // glass sheen
+  led: "#98c8ff", // tiny LEDs along the top
+};
+
+// Jumbotron behavior (hide only when the PUCK is under it)
+// Hysteresis for HUD auto-hide (bigger margin to hide, smaller to show)
+const HUD_PROX = {
+  hide: 28, // grow the shown HUD rect by this many px when deciding to HIDE
+  show: 10, // grow the shown HUD rect by this many px when deciding to SHOW
+  bottomExtra: 14, // a little space below the HUD
+};
+
+// HUD animation/visibility state
+let hudY = JUMBOTRON.marginTop;
+let hudTargetY = JUMBOTRON.marginTop;
+let hudRevealT = 0; // cooldown timer before we allow showing again
+let hudVisible = true; // logical visibility (prevents ping-pong)
+const HUD_POS = {
+  shownY: JUMBOTRON.marginTop,
+  hiddenY: -(JUMBOTRON.height + 14),
+};
+
+const HUD_BEHAVIOR = {
+  autoHide: true,
+  proximityGrow: 24, // grow the HUD rect by this many px for sensitivity
+  bottomExtra: 14, // a little extra room below the HUD
+  animSpeed: 10,
+  showDelay: 0.2,
+};
+
+// Shot presets: power + max + friction + UI color
+const SHOTS = {
+  pass: {
+    label: "Pass",
+    powerScale: 8.2,
+    maxPower: 320,
+    friction: 520,
+    color: "#6dc1ff",
+  },
+  slap: {
+    label: "Slapshot",
+    powerScale: 10.5,
+    maxPower: 470,
+    friction: 400,
+    color: "#ffc157",
+  },
+  clear: {
+    label: "Clear",
+    powerScale: 14.7,
+    maxPower: 660,
+    friction: 440,
+    color: "#ff6b6b",
+  },
+};
+
+// --- Shot buttons (clickable UI)
+const btnPass = document.getElementById("btnPass");
+const btnSlap = document.getElementById("btnSlap");
+const btnClear = document.getElementById("btnClear");
+[btnPass, btnSlap, btnClear].forEach((b) => {
+  if (b) b.style.display = "none";
+});
+
+// HUD hit areas populated each frame by drawHUD()
+const HUD_HITS = { bounds: null, pass: null, slap: null, clear: null };
+
+function ptInRect(px, py, r) {
+  return r && px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h;
+}
+
+const GOALIE_GAP = PUCK_R + 2;
+function goalieXOnLine(g) {
+  // goal-line plane is g.x. Keep goalie center so his RIGHT edge sits just left of that plane.
+  return g.x - goalie.w / 2 - GOALIE_GAP;
+}
+
+// --- Predict path for the current pull + shot settings (ignores moving obs motion)
+function predictShotPath(S) {
+  const L = LEVELS[levelIndex];
+  const px = state.puck.x,
+    py = state.puck.y;
+
+  // Direction from mouse → puck (same as your shot code)
+  const dx = px - mouse.x,
+    dy = py - mouse.y;
+  const len = Math.hypot(dx, dy);
+  if (len < 0.001) return null;
+
+  const ux = dx / len,
+    uy = dy / len;
+  const v0 = Math.min(S.maxPower, S.powerScale * len);
+
+  // Make a throwaway puck we can mutate safely
+  const p = { x: px, y: py, vx: ux * v0, vy: uy * v0 };
+
+  const pts = [{ x: px, y: py }];
+  const dt = 1 / 120; // sim step
+  const maxTime = 3.0; // cap the horizon
+  const minPointGap = 12; // thin the polyline
+  let t = 0;
+
+  while (t < maxTime) {
+    const sp = Math.hypot(p.vx, p.vy);
+    if (sp < 0.5) break;
+
+    const dirx = p.vx / sp,
+      diry = p.vy / sp;
+    const dec = (S.friction || SHOTS.pass.friction) * dt;
+    const newSpeed = Math.max(0, sp - dec);
+    p.vx = dirx * newSpeed;
+    p.vy = diry * newSpeed;
+
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+
+    // Collide with boards exactly like the game
+    collideBoards(p);
+
+    // Obstacles (use current positions; no moving updates here)
+    for (const o of L.obstacles) collideCircleRect(p, o, RESTITUTION_OBS);
+
+    // Goalie (use current center-anchored rect)
+    collideCircleRect(
+      p,
+      {
+        x: goalie.x - goalie.w / 2,
+        y: goalie.y - goalie.h / 2,
+        w: goalie.w,
+        h: goalie.h,
+      },
+      0.25
+    );
+
+    // Add points every few pixels to keep it light
+    const last = pts[pts.length - 1];
+    if (Math.hypot(p.x - last.x, p.y - last.y) > minPointGap) {
+      pts.push({ x: p.x, y: p.y });
+    }
+
+    // Bail if we wander way off-canvas (e.g., through the goal mouth)
+    if (p.x < -50 || p.x > W + 50 || p.y < -50 || p.y > H + 50) break;
+
+    t += dt;
+  }
+  return pts;
+}
+
+function updateShotButtons() {
+  if (!btnPass || !btnSlap || !btnClear) return; // UI not present
+
+  btnPass.classList.toggle("armed", state.shotMode === "pass");
+
+  btnSlap.disabled = state.slapsLeft <= 0;
+  btnSlap.textContent = `Slapshot (${state.slapsLeft})`;
+  btnSlap.classList.toggle("armed", state.shotMode === "slap");
+
+  btnClear.disabled = state.clearsLeft <= 0;
+  btnClear.textContent = `Clear (${state.clearsLeft})`;
+  btnClear.classList.toggle("armed", state.shotMode === "clear");
+}
+function rand(a, b) {
+  return a + Math.random() * (b - a);
+}
+
+function armShot(mode) {
+  state.shotMode = mode;
+  banner.text = `Shot armed: ${SHOTS[mode].label}`;
+  banner.t = 0.9;
+  updateShotButtons();
+}
+
+btnPass?.addEventListener("click", () => armShot("pass"));
+btnSlap?.addEventListener("click", () => {
+  if (state.slapsLeft > 0) armShot("slap");
+});
+btnClear?.addEventListener("click", () => {
+  if (state.clearsLeft > 0) armShot("clear");
+});
 
 // --- Use your own art by setting these to URLs or data-URLs
 const PLAYER_IMG_URL = "images/starter-skater.png";
 const GOALIE_IMG_URL = "images/starter-goalie.png";
+const ICE_BG_URL = "images/rink-bg.png";
 
 const TEAM_STYLE = {
   jersey: "#b23b3b", // primary sweater
@@ -37,21 +243,21 @@ if (PLAYER_IMG_URL)
   loadImage(PLAYER_IMG_URL).then((img) => (ASSETS.player = img));
 if (GOALIE_IMG_URL)
   loadImage(GOALIE_IMG_URL).then((img) => (ASSETS.goalie = img));
+if (ICE_BG_URL) loadImage(ICE_BG_URL).then((img) => (ASSETS.bg = img));
 
-// Where the image is “held” when rotated: the point that should sit over the puck.
 // Tweak anchorX/anchorY if the blade doesn't line up perfectly in your PNG.
 const SKATER_SPRITE = {
-  scale: 0.1, // size on canvas (adjust to taste)
+  scale: 0.1,
   anchorX: 88, // pixels from the image's left to the blade/impact point
   anchorY: 54, // pixels from the image's top to the blade/impact point
-  baseRotation: 0, // radians. If your PNG faces up, use -Math.PI/2; if left, use Math.PI
+  baseRotation: 0,
 };
 // Goalie PNG render settings (center-anchored)
 const GOALIE_SPRITE = {
-  scale: 0.12, // size on canvas — tweak to fit your rink
+  scale: 0.1,
   anchorFx: 0.5, // 0..1: horizontal anchor (0.5 = image center)
   anchorFy: 0.5, // 0..1: vertical anchor (0.5 = image center)
-  baseRotation: Math.PI, // make the goalie face LEFT toward the shooter
+  baseRotation: Math.PI,
 };
 
 function loadImage(src) {
@@ -68,7 +274,7 @@ function level1() {
   return {
     par: 3,
     start: { x: WALL + 100, y: H * 0.7 },
-    goal: { x: W - WALL - 30, y: H * 0.45 - 50, w: 30, h: 100 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
     obstacles: [
       { x: 360, y: 360, w: 120, h: 22 },
       { x: 520, y: 230, w: 120, h: 22 },
@@ -79,7 +285,7 @@ function level2() {
   return {
     par: 4,
     start: { x: WALL + 120, y: H * 0.48 },
-    goal: { x: W - WALL - 30, y: H * 0.5 - 55, w: 30, h: 110 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
     obstacles: [
       { x: 380, y: 160, w: 22, h: 150 },
       { x: 380, y: 360, w: 22, h: 150 },
@@ -100,7 +306,7 @@ function level3() {
   return {
     par: 5,
     start: { x: WALL + 100, y: H * 0.75 },
-    goal: { x: W - WALL - 30, y: H * 0.33 - 45, w: 30, h: 90 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
     obstacles: [
       { x: 280, y: 120, w: 22, h: 260 },
       { x: 280, y: 120, w: 240, h: 22 },
@@ -121,7 +327,328 @@ function level3() {
     ],
   };
 }
-const LEVELS = [level1(), level2(), level3()];
+function level4() {
+  // "Window Gate" — weave through a box and time a sweeping crossbar
+  return {
+    par: 5,
+    start: { x: WALL + 110, y: H * 0.66 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Box corridor
+      { x: 300, y: 140, w: 22, h: 240 },
+      { x: 560, y: 160, w: 22, h: 220 },
+      { x: 322, y: 120, w: 238, h: 22 },
+      { x: 322, y: 380, w: 238, h: 22 },
+
+      // Moving gate inside the box (up/down)
+      movingRect({
+        x: 360,
+        y: 180,
+        w: 160,
+        h: 22,
+        axis: "y",
+        min: 160,
+        max: 340,
+        speed: 160,
+      }),
+
+      // Sweeping crossbar before the slot to the goal (left/right)
+      movingRect({
+        x: 620,
+        y: 260,
+        w: 180,
+        h: 22,
+        axis: "x",
+        min: 600,
+        max: 780,
+        speed: 180,
+      }),
+    ],
+  };
+}
+
+function level5() {
+  // "Twin Posts" — staggered pillars + a narrow goal approach
+  return {
+    par: 6,
+    start: { x: WALL + 110, y: H * 0.42 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Staggered statics to force bank shots
+      { x: 260, y: 120, w: 22, h: 160 },
+      { x: 420, y: 280, w: 22, h: 160 },
+      { x: 580, y: 120, w: 22, h: 160 },
+      { x: 740, y: 280, w: 22, h: 160 },
+
+      // Two moving vertical posts (up/down) mid-rink
+      movingRect({
+        x: 500,
+        y: 170,
+        w: 22,
+        h: 180,
+        axis: "y",
+        min: 140,
+        max: 360,
+        speed: 130,
+      }),
+      movingRect({
+        x: 620,
+        y: 330,
+        w: 22,
+        h: 180,
+        axis: "y",
+        min: 160,
+        max: 360,
+        speed: 170,
+      }),
+
+      // Funnel near goal (top & bottom ledges)
+      { x: 740, y: 150, w: 130, h: 22 },
+      { x: 740, y: 330, w: 130, h: 22 },
+    ],
+  };
+}
+
+function level6() {
+  // "Cross Traffic" — two horizontal sweepers crossing lanes
+  return {
+    par: 6,
+    start: { x: WALL + 90, y: H * 0.7 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // A gentle S-corridor to line you up
+      { x: 240, y: 140, w: 260, h: 22 },
+      { x: 240, y: 398, w: 260, h: 22 },
+      { x: 240, y: 140, w: 22, h: 140 },
+      { x: 480, y: 280, w: 22, h: 140 },
+
+      // Two horizontal movers sweeping left/right at different lanes
+      movingRect({
+        x: 260,
+        y: 180,
+        w: 200,
+        h: 22,
+        axis: "x",
+        min: 260,
+        max: 760,
+        speed: 200,
+      }),
+      movingRect({
+        x: 760,
+        y: 360,
+        w: 180,
+        h: 22,
+        axis: "x",
+        min: 300,
+        max: 760,
+        speed: 140,
+      }),
+    ],
+  };
+}
+
+function level7() {
+  // "Screened Goalie" — plinko posts + moving blocker near the mouth
+  return {
+    par: 7,
+    start: { x: WALL + 110, y: H * 0.58 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Plinko field (staggered narrow posts)
+      { x: 300, y: 150, w: 18, h: 120 },
+      { x: 360, y: 290, w: 18, h: 120 },
+      { x: 420, y: 150, w: 18, h: 120 },
+      { x: 480, y: 290, w: 18, h: 120 },
+      { x: 540, y: 150, w: 18, h: 120 },
+      { x: 600, y: 290, w: 18, h: 120 },
+      { x: 660, y: 150, w: 18, h: 120 },
+
+      // Narrow chute to the goal
+      { x: 720, y: 160, w: 100, h: 22 },
+      { x: 720, y: 338, w: 100, h: 22 },
+
+      // Mobile screen just before the mouth (up/down)
+      movingRect({
+        x: 860,
+        y: 220,
+        w: 22,
+        h: 160,
+        axis: "y",
+        min: 160,
+        max: 360,
+        speed: 180,
+      }),
+    ],
+  };
+}
+
+function level8() {
+  // "Double Doors" — two vertically sliding gates you need to desync
+  return {
+    par: 7,
+    start: { x: WALL + 100, y: H * 0.32 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Framing corridor
+      { x: 260, y: 110, w: 22, h: 260 },
+      { x: 520, y: 190, w: 22, h: 260 },
+      { x: 282, y: 110, w: 216, h: 22 },
+      { x: 282, y: 370, w: 216, h: 22 },
+
+      // Two vertical doors (up/down) offset in timing
+      movingRect({
+        x: 420,
+        y: 160,
+        w: 160,
+        h: 22,
+        axis: "y",
+        min: 140,
+        max: 300,
+        speed: 150,
+      }),
+      movingRect({
+        x: 420,
+        y: 300,
+        w: 160,
+        h: 22,
+        axis: "y",
+        min: 200,
+        max: 360,
+        speed: 170,
+      }),
+
+      // Final skinny channel before goal
+      { x: 700, y: 150, w: 140, h: 22 },
+      { x: 700, y: 330, w: 140, h: 22 },
+    ],
+  };
+}
+
+function level9() {
+  // "Traffic Jam" — three movers in sequence + tight endgame
+  return {
+    par: 8,
+    start: { x: WALL + 110, y: H * 0.72 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Early zig walls
+      { x: 240, y: 160, w: 22, h: 160 },
+      { x: 240, y: 320, w: 240, h: 22 },
+      { x: 480, y: 200, w: 22, h: 160 },
+
+      // Three movers to time
+      movingRect({
+        x: 300,
+        y: 200,
+        w: 160,
+        h: 22,
+        axis: "x",
+        min: 260,
+        max: 560,
+        speed: 190,
+      }),
+      movingRect({
+        x: 560,
+        y: 260,
+        w: 22,
+        h: 180,
+        axis: "y",
+        min: 160,
+        max: 360,
+        speed: 160,
+      }),
+      movingRect({
+        x: 640,
+        y: 340,
+        w: 180,
+        h: 22,
+        axis: "x",
+        min: 520,
+        max: 760,
+        speed: 180,
+      }),
+
+      // Tight choke near goal
+      { x: 780, y: 160, w: 100, h: 22 },
+      { x: 780, y: 338, w: 100, h: 22 },
+    ],
+  };
+}
+
+function level10() {
+  // "Gauntlet" — alternating horizontal/vertical sweepers
+  return {
+    par: 9,
+    start: { x: WALL + 100, y: H * 0.5 },
+    goal: { x: W - WALL - 30, y: H * 0.5 - 65, w: 30, h: 130 },
+    obstacles: [
+      // Entry frame
+      { x: 220, y: 120, w: 22, h: 260 },
+      { x: 220, y: 380, w: 280, h: 22 },
+      { x: 500, y: 120, w: 22, h: 260 },
+
+      // Alternating sweepers
+      movingRect({
+        x: 260,
+        y: 170,
+        w: 180,
+        h: 22,
+        axis: "x",
+        min: 260,
+        max: 720,
+        speed: 200,
+      }),
+      movingRect({
+        x: 420,
+        y: 220,
+        w: 22,
+        h: 160,
+        axis: "y",
+        min: 160,
+        max: 360,
+        speed: 170,
+      }),
+      movingRect({
+        x: 520,
+        y: 300,
+        w: 200,
+        h: 22,
+        axis: "x",
+        min: 420,
+        max: 820,
+        speed: 210,
+      }),
+      movingRect({
+        x: 760,
+        y: 220,
+        w: 22,
+        h: 160,
+        axis: "y",
+        min: 160,
+        max: 360,
+        speed: 190,
+      }),
+
+      // Final slot
+      { x: 820, y: 160, w: 80, h: 22 },
+      { x: 820, y: 338, w: 80, h: 22 },
+    ],
+  };
+}
+
+const LEVELS = [
+  level1(),
+  level2(),
+  level3(),
+  level4(),
+  level5(),
+  level6(),
+  level7(),
+  level8(),
+  level9(),
+  level10(),
+];
+
 let levelIndex = 0;
 
 // ---- Entities ----
@@ -132,6 +659,19 @@ function aimVector() {
     dy = py - mouse.y;
   const len = Math.hypot(dx, dy) || 0.0001;
   return { ux: dx / len, uy: dy / len, len };
+}
+
+function puckOverlapsHud(grow) {
+  const w = Math.min(W - WALL * 2 - 24, JUMBOTRON.maxWidth);
+  const h = JUMBOTRON.height;
+  const x = (W - w) / 2;
+  const y = HUD_POS.shownY; // check against the SHOWN position only (static)
+
+  const gx = grow + PUCK_R; // include puck radius
+  const withinX = state.puck.x >= x - gx && state.puck.x <= x + w + gx;
+  const withinY =
+    state.puck.y >= y - gx && state.puck.y <= y + h + gx + HUD_PROX.bottomExtra;
+  return withinX && withinY;
 }
 
 function movingRect({ x, y, w, h, axis = "x", min, max, speed }) {
@@ -175,44 +715,88 @@ let strokes = 0;
 let best = [];
 
 const state = {
-  puck: { x: 0, y: 0, vx: 0, vy: 0 },
+  puck: { x: 0, y: 0, vx: 0, vy: 0, friction: SHOTS.pass.friction },
   aiming: false,
   canShoot: true,
   swing: { t: 0, angle: 0 },
   lastShotAngle: 0,
   phase: "play", // "play" | "scored"
+  shotMode: "pass", // "pass" | "slap" | "clear"
+  slapsLeft: 1, // once per level
+  clearsLeft: 1, // once per level
+  hudPinned: false,
 };
 
 // Goalie
 const goalie = {
   x: 0,
   y: 0,
-  w: 26,
+  w: 36,
   h: 90,
-  vy: 0,
-  maxSpeed: 260,
+  dir: 1, // patrol direction: +1 down, -1 up
+  pause: 0, // time left to pause at an end
+  mode: "patrol",
+
   reset() {
     const g = LEVELS[levelIndex].goal;
-    this.x = g.x - 12;
+    this.x = goalieXOnLine(g);
     this.y = g.y + g.h / 2;
+    this.dir = Math.random() < 0.5 ? -1 : 1;
+    this.pause = 0;
+    this.mode = "patrol";
   },
+
   update(dt) {
     const g = LEVELS[levelIndex].goal;
-    const mouthTop = g.y + 10,
-      mouthBot = g.y + g.h - 10;
+    const mouthTop = g.y + 10;
+    const mouthBot = g.y + g.h - 10;
     const p = state.puck;
-    const approaching = p.vx > 60 && p.x > W * 0.55;
-    let targetY;
-    if (approaching)
-      targetY = clamp(p.y, mouthTop + this.h / 2, mouthBot - this.h / 2);
-    else {
-      const t = performance.now() / 1000;
-      targetY = g.y + g.h / 2 + Math.sin(t * 1.3) * (g.h / 2 - this.h / 2 - 12);
-      targetY = clamp(targetY, mouthTop + this.h / 2, mouthBot - this.h / 2);
+
+    // Start tracking only when a real shot is coming and it's in the mouth
+    const approaching =
+      p.vx > 80 &&
+      p.x > W * GOALIE_TUNING.trackStartX &&
+      p.y > mouthTop &&
+      p.y < mouthBot;
+
+    this.mode = approaching ? "track" : "patrol";
+
+    if (this.mode === "track") {
+      // Chase puck Y (slower than before so shots can beat him)
+      const targetY = clamp(p.y, mouthTop + this.h / 2, mouthBot - this.h / 2);
+      const vy = clamp(
+        (targetY - this.y) * 6,
+        -GOALIE_TUNING.trackSpeed,
+        GOALIE_TUNING.trackSpeed
+      );
+      this.y += vy * dt;
+    } else {
+      // Patrol up/down with little pauses at each end
+      if (this.pause > 0) {
+        this.pause -= dt;
+      } else {
+        this.y += this.dir * GOALIE_TUNING.patrolSpeed * dt;
+
+        if (this.y - this.h / 2 < mouthTop) {
+          this.y = mouthTop + this.h / 2;
+          this.dir = 1;
+          this.pause = rand(
+            GOALIE_TUNING.endPauseMin,
+            GOALIE_TUNING.endPauseMax
+          );
+        } else if (this.y + this.h / 2 > mouthBot) {
+          this.y = mouthBot - this.h / 2;
+          this.dir = -1;
+          this.pause = rand(
+            GOALIE_TUNING.endPauseMin,
+            GOALIE_TUNING.endPauseMax
+          );
+        }
+      }
     }
-    const dy = targetY - this.y;
-    this.vy = clamp(dy * 4, -this.maxSpeed, this.maxSpeed);
-    this.y += this.vy * dt;
+
+    // Keep the goalie on the goal line with a small gap to the line
+    this.x = goalieXOnLine(g);
   },
 };
 
@@ -227,8 +811,150 @@ function resetLevel(idx = levelIndex) {
   state.swing.t = 0;
   strokes = 0;
   goalie.reset();
+  state.slapsLeft = 1;
+  state.clearsLeft = 1;
+  state.shotMode = "pass";
+  state.puck.friction = SHOTS.pass.friction;
+  updateShotButtons();
 }
 resetLevel(0);
+// ---- Sounds ----
+
+const GOAL_HORN_URL = "sounds/goal-horn.wav";
+let goalHorn = null;
+try {
+  if (GOAL_HORN_URL) {
+    goalHorn = new Audio(GOAL_HORN_URL);
+    goalHorn.volume = 0.55;
+  }
+} catch (e) {}
+
+const goalFX = { t: 0, dur: 1.6, hornPlayed: false, sweep: 0 };
+function beepHornFallback() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    const o1 = ac.createOscillator();
+    const o2 = ac.createOscillator();
+    const g = ac.createGain();
+    o1.type = "square";
+    o1.frequency.value = 130;
+    o2.type = "sawtooth";
+    o2.frequency.value = 98;
+    g.gain.setValueAtTime(0.0001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.5, ac.currentTime + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1.2);
+    o1.connect(g);
+    o2.connect(g);
+    g.connect(ac.destination);
+    o1.start();
+    o2.start();
+    o1.stop(ac.currentTime + 1.25);
+    o2.stop(ac.currentTime + 1.25);
+  } catch {}
+}
+
+const horn = new Audio(GOAL_HORN_URL);
+
+function playGoalHorn() {
+  horn.currentTime = 0;
+  horn.volume = 0.85; // tweak to taste
+  horn.play().catch(() => {}); // ignore autoplay block
+}
+
+function startGoalFX() {
+  goalFX.t = goalFX.dur;
+  goalFX.hornPlayed = false;
+  goalFX.sweep = 0;
+  // Try real horn, fall back to synth if blocked/missing
+  if (goalHorn) {
+    try {
+      goalHorn.currentTime = 0;
+      goalHorn.play().catch(beepHornFallback);
+    } catch {
+      beepHornFallback();
+    }
+  } else {
+    beepHornFallback();
+  }
+}
+
+function drawGoalFX() {
+  if (goalFX.t <= 0) return;
+  const gRect = LEVELS[levelIndex].goal;
+  const progress = 1 - goalFX.t / goalFX.dur;
+
+  ctx.save();
+
+  // A) quick white strobe (adds energy)
+  const strobe = Math.max(0, Math.sin(progress * Math.PI * 12)) * 0.12;
+  if (strobe > 0.002) {
+    ctx.fillStyle = `rgba(255,255,255,${strobe})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // B) pulsing red lamp glow behind the net
+  ctx.globalCompositeOperation = "lighter";
+  const cx = gRect.x + gRect.w * 0.5 + 6;
+  [gRect.y + 10, gRect.y + gRect.h - 10].forEach((cy, i) => {
+    const r = 120 + 50 * Math.sin(progress * 6 + i);
+    const a = 0.18 + 0.12 * Math.sin(progress * 10 + i);
+    const rad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    rad.addColorStop(0, `rgba(255,56,56,${a})`);
+    rad.addColorStop(1, `rgba(255,56,56,0)`);
+    ctx.fillStyle = rad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // C) sweeping spotlights from the rafters
+  const sweep = progress * Math.PI * 2;
+  const origins = [
+    { x: W * 0.2, y: -60, phase: 0 },
+    { x: W * 0.8, y: -60, phase: Math.PI },
+  ];
+  origins.forEach((o) => {
+    const ang = Math.sin(sweep + o.phase) * 0.6 + Math.PI / 2;
+    const len = Math.max(W, H) * 1.2;
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    ctx.rotate(ang);
+    const beamW = 220;
+    const grad = ctx.createLinearGradient(0, 0, len, 0);
+    grad.addColorStop(0.0, "rgba(255,255,255,0.22)");
+    grad.addColorStop(0.4, "rgba(255,255,255,0.12)");
+    grad.addColorStop(1.0, "rgba(255,255,255,0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0, -beamW * 0.2);
+    ctx.lineTo(len, -beamW * 0.5);
+    ctx.lineTo(len, beamW * 0.5);
+    ctx.lineTo(0, beamW * 0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // D) big GOAL! text with glow/wobble
+  ctx.globalCompositeOperation = "source-over";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = `900 92px system-ui, Segoe UI, Roboto`;
+  const wob = Math.sin(progress * 10) * 6;
+  const ty = H * 0.22 + wob;
+
+  ctx.lineWidth = 24;
+  ctx.strokeStyle = "rgba(255,70,70,0.35)";
+  ctx.strokeText("GOAL!", W / 2, ty);
+  ctx.lineWidth = 14;
+  ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.strokeText("GOAL!", W / 2, ty);
+  ctx.fillStyle = "#ffefef";
+  ctx.fillText("GOAL!", W / 2, ty);
+
+  ctx.restore();
+}
 
 // ---- Input ----
 let mouse = { x: 0, y: 0, down: false, aiming: false };
@@ -238,29 +964,65 @@ canvas.addEventListener("mousemove", (e) => {
   mouse.y = (e.clientY - r.top) * (canvas.height / r.height);
 });
 canvas.addEventListener("mousedown", (e) => {
+  const r = canvas.getBoundingClientRect();
+  const mx = (e.clientX - r.left) * (canvas.width / r.width);
+  const my = (e.clientY - r.top) * (canvas.height / r.height);
+
+  // 1) Try jumbotron buttons first
+  if (HUD_HITS.bounds && ptInRect(mx, my, HUD_HITS.bounds)) {
+    // Swallow click if it's anywhere on the board (prevents aiming by accident)
+    if (ptInRect(mx, my, HUD_HITS.pass)) armShot("pass");
+    else if (ptInRect(mx, my, HUD_HITS.slap) && state.slapsLeft > 0)
+      armShot("slap");
+    else if (ptInRect(mx, my, HUD_HITS.clear) && state.clearsLeft > 0)
+      armShot("clear");
+    return;
+  }
+
+  // 2) Otherwise proceed with aiming logic
   mouse.down = true;
+  mouse.x = mx;
+  mouse.y = my;
   const d = dist(mouse.x, mouse.y, state.puck.x, state.puck.y);
   if (d <= PUCK_R + 14 && speed(state.puck) < 3) {
     mouse.aiming = true;
     state.aiming = true;
   }
 });
+
 canvas.addEventListener("mouseup", (e) => {
   if (mouse.aiming) {
     const dx = state.puck.x - mouse.x,
       dy = state.puck.y - mouse.y;
     const len = Math.hypot(dx, dy);
     if (len > 4) {
+      const S = SHOTS[state.shotMode];
       const dirx = dx / len,
         diry = dy / len;
-      const v = Math.min(MAX_POWER, POWER_SCALE * len);
+      const v = Math.min(S.maxPower, S.powerScale * len);
       state.puck.vx = dirx * v;
       state.puck.vy = diry * v;
+      state.puck.friction = S.friction;
+
       strokes++;
       state.swing.t = 0.2;
       const uAngle = Math.atan2(dy, dx); // shot direction (mouse -> puck)
       state.swing.angle = uAngle - Math.PI;
       state.lastShotAngle = state.swing.angle;
+      // Consume one-time shots and revert to Pass
+      if (state.shotMode === "slap") {
+        state.slapsLeft--;
+        state.shotMode = "pass";
+        banner.text = "Slapshot!";
+        banner.t = 0.8;
+        updateShotButtons();
+      } else if (state.shotMode === "clear") {
+        state.clearsLeft--;
+        state.shotMode = "pass";
+        banner.text = "Clear!";
+        banner.t = 0.8;
+        updateShotButtons();
+      }
     }
   }
   mouse.down = false;
@@ -270,6 +1032,37 @@ canvas.addEventListener("mouseup", (e) => {
 addEventListener("keydown", (e) => {
   if (e.key === "r" || e.key === "R") resetLevel();
   if (e.key === "n" || e.key === "N") nextLevel();
+  if (e.key === "1") {
+    state.shotMode = "pass";
+    banner.text = "Shot armed: Pass";
+    banner.t = 0.8;
+    updateShotButtons();
+  }
+  if (e.key === "2") {
+    if (state.slapsLeft > 0) {
+      state.shotMode = "slap";
+      banner.text = `Shot armed: Slapshot (${state.slapsLeft} left)`;
+    } else {
+      banner.text = "No slapshots left this level";
+    }
+    banner.t = 0.9;
+    updateShotButtons();
+  }
+  if (e.key === "3") {
+    if (state.clearsLeft > 0) {
+      state.shotMode = "clear";
+      banner.text = `Shot armed: Clear (${state.clearsLeft} left)`;
+    } else {
+      banner.text = "No clears left this level";
+    }
+    banner.t = 0.9;
+    updateShotButtons();
+  }
+  if (e.key === "h" || e.key === "H") {
+    state.hudPinned = !state.hudPinned;
+    banner.text = state.hudPinned ? "HUD pinned" : "HUD auto-hide";
+    banner.t = 0.9;
+  }
 });
 
 // ---- Helpers ----
@@ -335,9 +1128,21 @@ function collideBoards(p) {
     p.vx = -p.vx * RESTITUTION_WALL;
   }
 }
+// Did the puck cross the vertical goal line this frame?
+function crossedGoalLine(prevX, prevY, x, y) {
+  const g = LEVELS[levelIndex].goal;
+  if (x === prevX) return false; // no horizontal movement
+  const t = (g.x - prevX) / (x - prevX); // param where path hits x = g.x
+  if (t < 0 || t > 1) return false; // didn’t cross between frames
+  const yAt = prevY + t * (y - prevY); // y at the crossing
+  return yAt + PUCK_R > g.y && yAt - PUCK_R < g.y + g.h; // overlaps goal mouth vertically
+}
+
 function inGoal(p) {
   const g = LEVELS[levelIndex].goal;
-  return p.x + PUCK_R > g.x && p.y > g.y && p.y < g.y + g.h;
+  const crossedLine = p.x > g.x; // center has passed the goal-line plane
+  const overlapsMouthY = p.y + PUCK_R > g.y && p.y - PUCK_R < g.y + g.h;
+  return crossedLine && overlapsMouthY;
 }
 
 // ---- Loop ----
@@ -356,6 +1161,30 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
+function onGoalScored() {
+  if (state.phase === "scored") return;
+
+  state.phase = "scored";
+  const L = LEVELS[levelIndex];
+  const total = strokes;
+  best[levelIndex] = Math.min(best[levelIndex] ?? Infinity, total);
+  banner.text = `GOAL! Strokes: ${total}  ${
+    total <= L.par ? "⛳ Under Par!" : ""
+  }`;
+  banner.t = 1.2;
+
+  // settle puck in mouth
+  state.puck.x = L.goal.x + PUCK_R + 6;
+  state.puck.vx = state.puck.vy = 0;
+
+  startGoalFX();
+
+  // let the celebration run before advancing
+  setTimeout(() => {
+    nextLevel();
+    state.phase = "play";
+  }, goalFX.dur * 1000);
+}
 
 function update(dt) {
   const L = LEVELS[levelIndex];
@@ -367,11 +1196,13 @@ function update(dt) {
   // Puck motion + friction
   const p = state.puck,
     sp = speed(p);
+  const prevX = p.x,
+    prevY = p.y;
   if (sp > 0.1) {
     const dirx = p.vx / sp,
       diry = p.vy / sp;
-    const dec = FRICTION * dt,
-      newSpeed = Math.max(0, sp - dec);
+    const dec = (state.puck.friction || SHOTS.pass.friction) * dt;
+    const newSpeed = Math.max(0, sp - dec);
     p.vx = dirx * newSpeed;
     p.vy = diry * newSpeed;
     p.x += p.vx * dt;
@@ -380,19 +1211,53 @@ function update(dt) {
     p.vx = p.vy = 0;
   }
 
-  if (state.phase === "scored") {
-    // freeze puck and goalie while banner fades
-    state.puck.vx = state.puck.vy = 0;
-    return; // skip the rest of update during transition
+  collideBoards(p);
+
+  // ✅ SINGLE goal check — let onGoalScored() handle everything
+  if (
+    state.phase !== "scored" &&
+    (crossedGoalLine(prevX, prevY, p.x, p.y) || inGoal(p))
+  ) {
+    onGoalScored();
+    return; // stop this frame after triggering the celebration
   }
 
+  // --- Jumbotron auto-hide control with hysteresis & cooldown (puck-only)
+  if (HUD_BEHAVIOR.autoHide && !state.hudPinned) {
+    const needHide = puckOverlapsHud(HUD_PROX.hide);
+    const canShow = !puckOverlapsHud(HUD_PROX.show);
+
+    if (hudVisible) {
+      if (needHide) {
+        hudVisible = false;
+        hudTargetY = HUD_POS.hiddenY;
+        hudRevealT = HUD_BEHAVIOR.showDelay;
+      } else {
+        hudTargetY = HUD_POS.shownY;
+      }
+    } else {
+      if (hudRevealT > 0) hudRevealT -= dt;
+      if (hudRevealT <= 0 && canShow) {
+        hudVisible = true;
+        hudTargetY = HUD_POS.shownY;
+      } else {
+        hudTargetY = HUD_POS.hiddenY;
+      }
+    }
+  } else {
+    hudVisible = true;
+    hudTargetY = HUD_POS.shownY;
+  }
+
+  // Smooth slide
+  const k = Math.min(1, dt * (HUD_BEHAVIOR.animSpeed || 10));
+  hudY += (hudTargetY - hudY) * k;
+
   // Collisions
-  collideBoards(p);
   for (const o of L.obstacles) collideCircleRect(p, o, RESTITUTION_OBS);
 
   // Goalie update + collision
   goalie.update(dt);
-  // Convert center -> top-left for the collider
   collideCircleRect(
     p,
     {
@@ -404,33 +1269,26 @@ function update(dt) {
     0.25
   );
 
-  // Goal check
-  if (inGoal(p) && state.phase !== "scored") {
-    state.phase = "scored";
-    const total = strokes;
-    best[levelIndex] = Math.min(best[levelIndex] ?? Infinity, total);
-    banner.text = `GOAL! Strokes: ${total}  ${
-      total <= L.par ? "⛳ Under Par!" : ""
-    }`;
-    banner.t = 1.2;
+  // ❌ Remove the second goal check block entirely (it’s no longer needed)
 
-    // place puck safely inside net and stop it
-    p.x = LEVELS[levelIndex].goal.x + PUCK_R + 6;
-    p.vx = p.vy = 0;
-
-    setTimeout(() => {
-      nextLevel();
-      state.phase = "play";
-    }, 900);
+  // Goal FX timer
+  if (goalFX.t > 0) {
+    goalFX.t -= dt;
+    goalFX.sweep += dt;
   }
 }
 
 function render() {
   const L = LEVELS[levelIndex];
   ctx.clearRect(0, 0, W, H);
-  drawRink(L.goal);
+  drawIceBackground();
+  drawVignette();
+  drawGoalNet(L.goal);
+  drawGoalFX();
+
   for (const o of L.obstacles) drawObstacle(o);
-  drawGoal(L.goal);
+  if (DEBUG_GOAL) drawGoalDebug(L.goal);
+
   if (mouse.aiming && speed(state.puck) < 3) drawAimGuide();
   drawSkater(state.puck.x, state.puck.y);
   drawPuck(state.puck);
@@ -452,73 +1310,60 @@ function render() {
 }
 
 // ---- Drawing helpers ----
-function drawRink(goal) {
-  // subtle ice lines
+function drawGoalNet(g) {
   ctx.save();
-  ctx.globalAlpha = 0.08;
-  for (let y = WALL; y < H - WALL; y += 8) {
-    ctx.fillStyle = "#cfe8ff";
-    ctx.fillRect(WALL, y, W - 2 * WALL, 1);
+
+  // soft floor shadow (purely cosmetic)
+  ctx.fillStyle = NET_STYLE.shadow;
+  ctx.beginPath();
+  ctx.ellipse(
+    g.x + g.w * 0.72,
+    g.y + g.h * 0.5,
+    g.w * 0.9,
+    g.h * 0.55,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
+
+  // light tint inside the mouth so the mesh pops
+  ctx.fillStyle = NET_STYLE.backTint;
+  ctx.fillRect(g.x, g.y, g.w, g.h);
+
+  // mesh that matches the exact goal rect
+  ctx.globalAlpha = NET_STYLE.meshAlpha;
+  ctx.strokeStyle = NET_STYLE.mesh;
+  ctx.lineWidth = 1;
+  for (let y = g.y; y <= g.y + g.h; y += NET_STYLE.cell) {
+    ctx.beginPath();
+    ctx.moveTo(g.x, y);
+    ctx.lineTo(g.x + g.w, y);
+    ctx.stroke();
   }
+  for (let x = g.x; x <= g.x + g.w; x += NET_STYLE.cell) {
+    ctx.beginPath();
+    ctx.moveTo(x, g.y);
+    ctx.lineTo(x, g.y + g.h);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // red frame (front post on the goal line, back post, crossbar & base)
+  const t = NET_STYLE.postWidth;
+  ctx.fillStyle = NET_STYLE.post;
+
+  // front post sits right on the goal line x = g.x
+  ctx.fillRect(g.x - t, g.y - t, t, g.h + t * 2);
+  // back post at the rear of the mouth
+  ctx.fillRect(g.x + g.w, g.y - t, t, g.h + t * 2);
+  // crossbar and base
+  ctx.fillRect(g.x - t, g.y - t, g.w + t * 2, t);
+  ctx.fillRect(g.x - t, g.y + g.h, g.w + t * 2, t);
+
   ctx.restore();
-  // boards
-  ctx.fillStyle = "#1b2a45";
-  ctx.fillRect(0, 0, W, WALL);
-  ctx.fillRect(0, H - WALL, W, WALL);
-  ctx.fillRect(0, 0, WALL, H);
-  ctx.fillRect(W - WALL, 0, WALL, goal.y);
-  ctx.fillRect(W - WALL, goal.y + goal.h, WALL, H - (goal.y + goal.h));
-  // lines
-  const red = "#c43131",
-    blue = "#1f51a6",
-    lineW = 6;
-  ctx.fillStyle = red;
-  ctx.fillRect(W / 2 - lineW / 2, WALL, lineW, H - 2 * WALL); // center
-  ctx.fillStyle = blue;
-  ctx.fillRect(W * 0.25 - lineW / 2, WALL, lineW, H - 2 * WALL); // blue
-  ctx.fillStyle = blue;
-  ctx.fillRect(W * 0.75 - lineW / 2, WALL, lineW, H - 2 * WALL); // blue
-  ctx.fillStyle = red;
-  ctx.fillRect(W - WALL - 34, WALL, 4, H - 2 * WALL); // goal line
-  // circles
-  ctx.strokeStyle = blue;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(W / 2, H / 2, 60, 0, Math.PI * 2);
-  ctx.stroke();
-  drawFaceoffCircle(W * 0.18, H * 0.35, blue, red);
-  drawFaceoffCircle(W * 0.18, H * 0.65, blue, red);
-  drawFaceoffCircle(W * 0.82, H * 0.35, blue, red);
-  drawFaceoffCircle(W * 0.82, H * 0.65, blue, red);
-  // trapezoid + crease
-  ctx.fillStyle = "#cfe0ff";
-  ctx.beginPath();
-  const gx = goal.x + goal.w,
-    gy = goal.y + goal.h / 2;
-  ctx.moveTo(gx, gy - 60);
-  ctx.lineTo(gx + 35, gy - 80);
-  ctx.lineTo(gx + 35, gy + 80);
-  ctx.lineTo(gx, gy + 60);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = "#59b0ff2e";
-  ctx.beginPath();
-  ctx.arc(goal.x, gy, 86, -Math.PI / 3, Math.PI / 3, false);
-  ctx.lineTo(goal.x, gy);
-  ctx.closePath();
-  ctx.fill();
 }
-function drawFaceoffCircle(cx, cy, ring = "#1f51a6", dot = "#c43131") {
-  ctx.strokeStyle = ring;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 55, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.fillStyle = dot;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-  ctx.fill();
-}
+
 function drawObstacle(o) {
   ctx.fillStyle = "#2b426f";
   ctx.strokeStyle = "#8fb1ff";
@@ -526,27 +1371,7 @@ function drawObstacle(o) {
   ctx.fillRect(o.x, o.y, o.w, o.h);
   ctx.strokeRect(o.x, o.y, o.w, o.h);
 }
-function drawGoal(g) {
-  ctx.strokeStyle = "#e1f1ffaa";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(g.x, g.y, g.w, g.h);
-  ctx.save();
-  ctx.globalAlpha = 0.35;
-  ctx.lineWidth = 1;
-  for (let y = g.y; y < g.y + g.h; y += 6) {
-    ctx.beginPath();
-    ctx.moveTo(g.x, y);
-    ctx.lineTo(g.x + g.w, y);
-    ctx.stroke();
-  }
-  for (let x = g.x; x < g.x + g.w; x += 6) {
-    ctx.beginPath();
-    ctx.moveTo(x, g.y);
-    ctx.lineTo(x, g.y + g.h);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
+
 function drawPuck(p) {
   ctx.fillStyle = "rgba(0,0,0,.25)";
   ctx.beginPath();
@@ -563,33 +1388,86 @@ function drawPuck(p) {
   ctx.stroke();
 }
 function drawAimGuide() {
+  const S = SHOTS[state.shotMode];
+  const pts = predictShotPath(S);
+  if (!pts || pts.length < 2) return;
+
+  ctx.strokeStyle = S.color;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([8, 6]);
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length; i++) {
+    ctx.lineTo(pts[i].x, pts[i].y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Keep your power bar (still useful feedback for pull strength)
   const px = state.puck.x,
     py = state.puck.y;
   const dx = px - mouse.x,
     dy = py - mouse.y,
     len = Math.hypot(dx, dy);
-  const maxLen = Math.min(len, MAX_POWER / POWER_SCALE);
-
-  if (len < 0.001) return;
-  const ax = px + (dx / len) * maxLen;
-  const ay = py + (dy / len) * maxLen;
-
-  ctx.strokeStyle = "#9fd4ff";
-  ctx.lineWidth = 3;
-  ctx.setLineDash([8, 6]);
-  ctx.beginPath();
-  ctx.moveTo(px, py);
-  ctx.lineTo(ax, ay);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  const pwr = Math.min(1, len / (MAX_POWER / POWER_SCALE));
+  const pwr = Math.min(1, len / (S.maxPower / S.powerScale));
   ctx.fillStyle = "#2a3757";
   ctx.fillRect(px - 40, py - 46, 80, 8);
-  ctx.fillStyle = "#6dc1ff";
+  ctx.fillStyle = S.color;
   ctx.fillRect(px - 40, py - 46, 80 * pwr, 8);
   ctx.strokeStyle = "#8bb9ff";
   ctx.strokeRect(px - 40, py - 46, 80, 8);
 }
+
+function drawIceBackground() {
+  if (!ASSETS.bg) {
+    ctx.fillStyle = "#cfe0ff";
+    ctx.fillRect(0, 0, W, H);
+    return;
+  }
+  const img = ASSETS.bg;
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+
+  // COVER: fill canvas without gutters (may crop a little)
+  const s = Math.max(W / iw, H / ih);
+  const dw = iw * s,
+    dh = ih * s;
+  const dx = (W - dw) * 0.5,
+    dy = (H - dh) * 0.5;
+
+  // optional: smoother scaling
+  // ctx.imageSmoothingEnabled = true;
+
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+function drawGoalDebug(g) {
+  ctx.save();
+  ctx.strokeStyle = "#00ff88";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(g.x, g.y, g.w, g.h); // goal mouth
+  ctx.fillStyle = "rgba(0,255,136,0.4)";
+  ctx.fillRect(g.x - 1, WALL, 2, H - 2 * WALL); // goal line x = g.x
+  ctx.restore();
+}
+
+function drawVignette() {
+  ctx.save();
+  const g = ctx.createRadialGradient(
+    W / 2,
+    H / 2,
+    Math.min(W, H) * 0.25,
+    W / 2,
+    H / 2,
+    Math.max(W, H) * 0.7
+  );
+  g.addColorStop(0, "rgba(0,0,0,0)");
+  g.addColorStop(1, "rgba(0,0,0,0.22)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+}
+
 function drawSkater(x, y) {
   // Pool-style: place skater behind the puck as you aim
   let sx = x,
@@ -658,7 +1536,187 @@ function drawGoalie(g) {
   ctx.restore();
 }
 
-function roundRect(x, y, w, h, r, fill, stroke) {
+function drawHUD() {
+  const L = LEVELS[levelIndex];
+
+  // --- Layout
+  const w = Math.min(W - WALL * 2 - 24, JUMBOTRON.maxWidth);
+  const h = JUMBOTRON.height;
+  const x = (W - w) / 2;
+  const y = hudY;
+  // if fully hidden, swallow clicks and bail
+  if (y <= -(h - 2)) {
+    HUD_HITS.bounds = HUD_HITS.pass = HUD_HITS.slap = HUD_HITS.clear = null;
+    return;
+  }
+
+  // record HUD bounds for click swallowing
+  HUD_HITS.bounds = { x, y, w, h };
+
+  // --- Hanging cables
+  ctx.save();
+  ctx.strokeStyle = JUMBOTRON.cable;
+  ctx.lineWidth = 3;
+  const hook = 14;
+  ctx.beginPath();
+  ctx.moveTo(x + hook, 0);
+  ctx.lineTo(x + hook, y);
+  ctx.moveTo(x + w - hook, 0);
+  ctx.lineTo(x + w - hook, y);
+  ctx.stroke();
+
+  // --- Body (rounded rect with vertical gradient)
+  const g = ctx.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, JUMBOTRON.bodyTop);
+  g.addColorStop(1, JUMBOTRON.bodyBot);
+  roundRectPath(x, y, w, h, JUMBOTRON.corner);
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  // Rim / bezel
+  ctx.strokeStyle = JUMBOTRON.rim;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Accent strip
+  ctx.fillStyle = JUMBOTRON.accent;
+  ctx.globalAlpha = 0.85;
+  ctx.fillRect(x + 10, y + h - 6, w - 20, 3);
+  ctx.globalAlpha = 1;
+
+  // Sheen + LEDs
+  ctx.fillStyle = JUMBOTRON.glass;
+  roundRectPath(x + 6, y + 6, w - 12, (h - 12) * 0.45, JUMBOTRON.corner * 0.6);
+  ctx.fill();
+  ctx.fillStyle = JUMBOTRON.led;
+  for (let i = x + 16; i < x + w - 16; i += 18) {
+    ctx.beginPath();
+    ctx.arc(i, y + 8, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- Text lines
+  ctx.fillStyle = JUMBOTRON.text;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "700 17px system-ui, Segoe UI, Roboto";
+  ctx.fillText(
+    `Level ${levelIndex + 1} / ${LEVELS.length}  ·  Par ${L.par}`,
+    x + w / 2,
+    y + 24
+  );
+
+  ctx.font = "600 14px system-ui, Segoe UI, Roboto";
+  ctx.fillStyle = JUMBOTRON.subText;
+  const bestTxt =
+    best[levelIndex] !== undefined ? `Best: ${best[levelIndex]}` : "Best: –";
+  ctx.fillText(
+    `Strokes: ${strokes}  ·  ${bestTxt}  ·  Goalie: ON`,
+    x + w / 2,
+    y + 48
+  );
+
+  // --- Button row (centered pills)
+  const labels = [
+    {
+      key: "pass",
+      text: "Pass",
+      color: SHOTS.pass.color,
+      disabled: false,
+      armed: state.shotMode === "pass",
+    },
+    {
+      key: "slap",
+      text: `Slapshot (${state.slapsLeft})`,
+      color: SHOTS.slap.color,
+      disabled: state.slapsLeft <= 0,
+      armed: state.shotMode === "slap",
+    },
+    {
+      key: "clear",
+      text: `Clear (${state.clearsLeft})`,
+      color: SHOTS.clear.color,
+      disabled: state.clearsLeft <= 0,
+      armed: state.shotMode === "clear",
+    },
+  ];
+
+  ctx.font = "600 13px system-ui, Segoe UI, Roboto";
+  const padX = 16,
+    btnH = 28,
+    gap = 10;
+  const widths = labels.map(
+    (l) => Math.ceil(ctx.measureText(l.text).width) + padX * 2
+  );
+  const totalW = widths.reduce((a, b) => a + b, 0) + gap * (labels.length - 1);
+  let bx = x + (w - totalW) / 2;
+  const by = y + h - 18 - btnH; // a bit above the accent strip
+
+  // draw & record hit rects
+  const hits = {};
+  labels.forEach((l, i) => {
+    const bw = widths[i];
+    drawPill(bx, by, bw, btnH, l.color, l.armed, l.disabled, l.text);
+    hits[l.key] = { x: bx, y: by, w: bw, h: btnH };
+    bx += bw + gap;
+  });
+  HUD_HITS.pass = hits.pass;
+  HUD_HITS.slap = hits.slap;
+  HUD_HITS.clear = hits.clear;
+
+  ctx.restore();
+}
+
+// pill helper used by drawHUD()
+function drawPill(x, y, w, h, color, armed, disabled, label) {
+  ctx.save();
+  const r = h / 2;
+  roundRectPath(x, y, w, h, r);
+  const g = ctx.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, armed ? "#183055" : "#12213c");
+  g.addColorStop(1, armed ? "#132746" : "#0b1429");
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  ctx.lineWidth = armed ? 3 : 2;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+
+  if (disabled) ctx.globalAlpha = 0.35;
+  ctx.fillStyle = "#eaf3ff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "600 13px system-ui, Segoe UI, Roboto";
+  ctx.fillText(label, x + w / 2, y + h / 2 + 0.5);
+  ctx.restore();
+}
+
+// pill helper used by drawHUD()
+function drawPill(x, y, w, h, color, armed, disabled, label) {
+  ctx.save();
+  const r = h / 2;
+  roundRectPath(x, y, w, h, r);
+  const g = ctx.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, armed ? "#183055" : "#12213c");
+  g.addColorStop(1, armed ? "#132746" : "#0b1429");
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  ctx.lineWidth = armed ? 3 : 2;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+
+  if (disabled) ctx.globalAlpha = 0.35;
+  ctx.fillStyle = "#eaf3ff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "600 13px system-ui, Segoe UI, Roboto";
+  ctx.fillText(label, x + w / 2, y + h / 2 + 0.5);
+  ctx.restore();
+}
+
+// helper: build a rounded-rect path (used above)
+function roundRectPath(x, y, w, h, r) {
   const rr = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rr, y);
@@ -666,25 +1724,5 @@ function roundRect(x, y, w, h, r, fill, stroke) {
   ctx.arcTo(x + w, y + h, x, y + h, rr);
   ctx.arcTo(x, y + h, x, y, rr);
   ctx.arcTo(x, y, x + w, y, rr);
-  if (fill) ctx.fill();
-  if (stroke) ctx.stroke();
-}
-function drawHUD() {
-  const L = LEVELS[levelIndex];
-  ctx.fillStyle = "#0b1426e0";
-  ctx.fillRect(WALL + 8, 8, 360, 66);
-  ctx.fillStyle = "#dfeaff";
-  ctx.font = "600 16px system-ui,Segoe UI,Roboto";
-  ctx.fillText(
-    `Level ${levelIndex + 1} / ${LEVELS.length}  ·  Par ${L.par}`,
-    WALL + 22,
-    30
-  );
-  ctx.fillText(
-    `Strokes: ${strokes}${
-      best[levelIndex] !== undefined ? `  ·  Best: ${best[levelIndex]}` : ""
-    }  ·  Goalie: ON`,
-    WALL + 22,
-    54
-  );
+  ctx.closePath();
 }
