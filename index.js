@@ -74,3 +74,34 @@ document.addEventListener("DOMContentLoaded", () => {
     updateButtonLabel();
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const projectCards = document.querySelectorAll(".project-card");
+
+  projectCards.forEach((card) => {
+    const primaryLink = card.querySelector("a.project-link");
+    if (!primaryLink) return;
+
+    // Make the whole card clickable
+    card.addEventListener("click", () => {
+      window.open(primaryLink.href, primaryLink.target || "_self");
+    });
+
+    // Show pointer cursor so it feels clickable
+    card.style.cursor = "pointer";
+
+    // Keep inner links behaving normally
+    card.querySelectorAll("a").forEach((anchor) => {
+      anchor.addEventListener("click", (e) => e.stopPropagation());
+    });
+
+    // Keyboard accessibility: Enter/Space triggers the primary link
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "link");
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        primaryLink.click();
+      }
+    });
+  });
+});

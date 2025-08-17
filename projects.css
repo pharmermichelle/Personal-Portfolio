@@ -147,6 +147,8 @@ h2 {
 }
 
 .project-card {
+  cursor: pointer;
+  position: relative;
   background: linear-gradient(135deg, #7faedd, #b2d9fa);
   border-radius: 10px;
   border: 2px solid rgba(33, 150, 243, 0.2);
@@ -154,6 +156,10 @@ h2 {
   box-shadow: 0 0 6px 1px rgba(33, 150, 243, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: center;
+}
+.project-card:focus {
+  outline: 2px solid #ff6b81;
+  outline-offset: 2px;
 }
 
 .project-card:hover {
@@ -197,4 +203,14 @@ h2 {
 .project-filter-nav button:focus {
   outline: 2px solid #ff6b81;
   outline-offset: 2px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
