@@ -565,3 +565,85 @@ body:not(.dark-mode):not(.light-mode) {
   background-color: #7faedd;
   color: #333;
 }
+/* Retro Arcade CTA (self-contained; does NOT reuse .button) */
+.arcade-cta {
+  --ink: #eaf2ff;
+  --edge: rgba(255, 255, 255, 0.08);
+  --glow: rgba(109, 193, 255, 0.28); /* hub accent vibe */
+  --glow-strong: rgba(109, 193, 255, 0.45);
+  --navy-1: #0f1b32; /* hub bg-2 */
+  --navy-2: #0b1429; /* hub chip/card */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--navy-1), var(--navy-2));
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid var(--glow-strong);
+  box-shadow: 0 0 0 2px var(--glow), inset 0 -2px 0 var(--edge);
+  position: relative;
+  isolation: isolate;
+}
+.arcade-cta .icon {
+  filter: drop-shadow(0 0 8px var(--glow-strong));
+}
+.arcade-cta::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: radial-gradient(
+    120% 180% at 20% -20%,
+    rgba(152, 200, 255, 0.25),
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  z-index: -1;
+}
+.arcade-cta:hover::before {
+  opacity: 1;
+}
+.arcade-cta:focus-visible {
+  outline: 2px solid #6dc1ff;
+  outline-offset: 3px;
+}
+
+/* subtle “scanline” shimmer */
+.arcade-cta .scan {
+  position: relative;
+}
+.arcade-cta .scan::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(152, 200, 255, 0.5),
+    transparent
+  );
+  transform: translateY(-120%);
+  animation: arcade-scan 1.6s linear infinite;
+}
+@keyframes arcade-scan {
+  0% {
+    transform: translateY(180%);
+  }
+  100% {
+    transform: translateY(-180%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-cta .scan::after {
+    animation: none;
+  }
+}

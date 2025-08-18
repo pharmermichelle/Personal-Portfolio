@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <title>Retro Games Hub — (WIP)</title>
+    <meta
+      property="og:description"
+      content="Explore Michelle's portfolio of creative, web-based projects and tools."
+    />
+    <meta property="og:image" content="images\portfolio-icon.png" />
+    <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9D74M6L9M7");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+    <style>
+      :root {
+        --bg: #0a1220;
+        --bg-2: #0f1b32;
+        --ink: #e6f0ff;
+        --muted: #a9b8d9;
+        --accent: #6dc1ff;
+        --accent-2: #8ff1e6;
+        --chip: #0b1429;
+        --chip-border: #203152;
+        --chip-active-ink: #f7fbff;
+        --card: #0e1a31;
+        --card-2: #0b1429;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.35),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        --header-h: 64px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(
+            1200px 800px at 20% -10%,
+            #12203b 0%,
+            #0a1220 55%
+          )
+          fixed;
+        color: var(--ink);
+        font: 16px/1.4 system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      }
+      /* Layout */
+      .page {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 100dvh;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        height: var(--header-h);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(10, 18, 32, 0.95),
+          rgba(10, 18, 32, 0.65)
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        backdrop-filter: saturate(120%) blur(6px);
+      }
+      header .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.5px;
+      }
+      .crt {
+        position: relative;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        background: #0b1429;
+        color: #98c8ff;
+        box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.07),
+          0 0 0 1px rgba(109, 193, 255, 0.25);
+      }
+      header .spacer {
+        flex: 1;
+      }
+      .soon-btn {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 0.55rem 0.9rem;
+        border-radius: 10px;
+        cursor: not-allowed;
+        opacity: 0.8;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: minmax(240px, 20%) 1fr;
+        gap: 18px;
+        height: calc(100dvh - var(--header-h));
+      }
+      .left,
+      .right {
+        min-height: 0;
+      }
+      .left {
+        position: sticky;
+        top: var(--header-h);
+        align-self: start;
+        height: calc(100dvh - var(--header-h));
+        overflow-y: auto;
+        padding: 16px 14px 28px;
+      }
+      .right {
+        overflow-y: auto;
+        padding: 18px 18px 28px;
+      }
+
+      /* Filters column */
+      .panel {
+        background: linear-gradient(180deg, var(--bg-2), #0b1429);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+      }
+      .panel h2 {
+        margin: 0;
+        padding: 14px 14px 6px;
+        font-size: 15px;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.4px;
+      }
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px;
+      }
+      .chip {
+        appearance: none;
+        -webkit-appearance: none;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        user-select: none;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--muted);
+        box-shadow: inset 0 0 0 1px var(--chip-border);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s ease, color 0.15s ease,
+          box-shadow 0.15s ease, transform 0.06s ease;
+      }
+      .chip:hover {
+        transform: translateY(-1px);
+      }
+      .chip .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4b5d7f;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      .chip[aria-pressed="true"] {
+        background: linear-gradient(180deg, #1c2a46, #13253f);
+        color: var(--chip-active-ink);
+        box-shadow: 0 0 0 2px rgba(109, 193, 255, 0.25),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+          inset 0 0 0 1px rgba(109, 193, 255, 0.45);
+      }
+      .chip[aria-pressed="true"] .dot {
+        background: var(--accent);
+      }
+      .chip .tag {
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+
+      /* Game list (left) */
+      .navlist {
+        padding: 8px 0 2px;
+      }
+      .navlist a {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        gap: 10px;
+        color: var(--muted);
+        text-decoration: none;
+        border-left: 3px solid transparent;
+      }
+      .navlist a:hover {
+        background: #0b1429;
+        color: #dfe9ff;
+        border-left-color: var(--accent);
+      }
+
+      /* Gallery */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: linear-gradient(180deg, var(--card), var(--card-2));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+      }
+      .card .thumb {
+        aspect-ratio: 16/9;
+        background: #0b1429 center/cover no-repeat;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .card .body {
+        padding: 12px 14px 14px;
+      }
+      .card h3 {
+        margin: 0.1rem 0 0.35rem;
+        font-size: 18px;
+      }
+      .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        color: #9eb4d8;
+        font-size: 12px;
+      }
+      .meta .pill {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #101d35;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .card .actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .btn {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: #0b1429;
+        color: #eaf2ff;
+        padding: 0.5rem 0.75rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(109, 193, 255, 0.22);
+      }
+
+      /* Scrollbars for desktop */
+      .left::-webkit-scrollbar,
+      .right::-webkit-scrollbar {
+        width: 10px;
+      }
+      .left::-webkit-scrollbar-thumb,
+      .right::-webkit-scrollbar-thumb {
+        background: #12243f;
+        border-radius: 10px;
+      }
+
+      @media (max-width: 900px) {
+        .content {
+          grid-template-columns: 1fr;
+        }
+        .left {
+          position: static;
+          height: auto;
+          order: 2;
+        }
+        .right {
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand">
+          <div class="crt">RETRO GAMES HUB</div>
+          <div style="font-weight: 800; font-size: 18px">MichelleW Arcade</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="soon-btn" title="Auth integration coming soon">
+          Login — coming soon
+        </button>
+      </header>
+
+      <div class="content">
+        <!-- Left rail: filters + quick list -->
+        <aside class="left">
+          <section class="panel">
+            <h2>Filter by platform</h2>
+            <div class="filters" id="f-platform">
+              <button
+                class="chip"
+                data-key="platform"
+                data-val="mobile"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Mobile</span>
+              </button>
+              <button
+                class="chip"
+                data-key="platform"
+                data-val="desktop"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Desktop</span>
+              </button>
+            </div>
+            <h2>Filter by genre</h2>
+            <div class="filters" id="f-genre">
+              <button
+                class="chip"
+                data-key="genre"
+                data-val="puzzle"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Puzzle</span>
+              </button>
+              <button
+                class="chip"
+                data-key="genre"
+                data-val="arcade"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Arcade</span>
+              </button>
+              <button
+                class="chip"
+                data-key="genre"
+                data-val="sim"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Sim</span>
+              </button>
+              <button
+                class="chip"
+                data-key="genre"
+                data-val="text"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Text</span>
+              </button>
+              <button
+                class="chip"
+                data-key="genre"
+                data-val="clicker"
+                aria-pressed="false"
+              >
+                <span class="dot"></span><span class="tag">Clicker</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel" style="margin-top: 14px">
+            <h2>All games</h2>
+            <nav id="game-nav" class="navlist" aria-label="Game list"></nav>
+          </section>
+        </aside>
+
+        <!-- Right column: gallery -->
+        <main class="right">
+          <div id="gallery" class="grid" aria-live="polite"></div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // --- Data (pulled from projects.html) ---
+      const GAMES = [
+        {
+          id: "rink-putt",
+          title: "Rink Putt",
+          href: "minigame/hockey_shooter/index.html",
+          img: "images/hockey-thumb.png",
+          desc: "Aim & bank the puck across a mini-rink. HTML5 Canvas.",
+          genre: ["arcade"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "acorn-ascent",
+          title: "Acorn Ascent",
+          href: "minigame/acorn-ascent/index.html",
+          img: "images/acorn-thumb.png",
+          desc: "Grid-based shape puzzles • 10 levels.",
+          genre: ["puzzle"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "bugged-out",
+          title: "Bugged Out!",
+          href: "minigame/bugged-out/index.html",
+          img: "images/bugged-thumb.png",
+          desc: "Pastel tower defense vs. waves of desert bugs.",
+          genre: ["arcade"],
+          platform: ["desktop"],
+        },
+        {
+          id: "coastline-cruiser",
+          title: "Coastline Cruiser",
+          href: "minigame/coastline-cruiser/cruiser.html",
+          img: "images/cruiser-thumbnail.png",
+          desc: "Drive the coast, dodge obstacles, grab points.",
+          genre: ["arcade"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "wizards-mana",
+          title: "Wizard's Mana Forge",
+          href: "minigame/clickgame.html",
+          img: "images/wizard-thumb.png",
+          desc: "Fantasy clicker about channeling mana & upgrades.",
+          genre: ["clicker"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "whack-a-bug",
+          title: "Whack‑a‑Bug",
+          href: "minigame/whackgame.html",
+          img: "images/whack-thumb.png",
+          desc: "Tap bugs, beat the timer, set a high score.",
+          genre: ["arcade"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "choose-adventure",
+          title: "Choose Your Adventure",
+          href: "minigame/game.html",
+          img: "images/choose-thumb.png",
+          desc: "Branching text adventure in the browser.",
+          genre: ["text"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "ferret-life",
+          title: "Ferret Life (WIP)",
+          href: "minigame/ferret-life/index.html",
+          img: "images/ferret-thumb.png",
+          desc: "Slice‑of‑life ferret sim. Work in progress.",
+          genre: ["sim"],
+          platform: ["desktop"],
+        },
+        {
+          id: "inbox-hero",
+          title: "Inbox Hero",
+          href: "minigame/inbox-hero.html",
+          img: "images/inbox-thumb.png",
+          desc: "Approve, moderate, or trash messages — be the mod.",
+          genre: ["sim", "puzzle"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "community-garden",
+          title: "Community Garden",
+          href: "minigame/community-garden.html",
+          img: "images/garden-thumb.png",
+          desc: "Grow a garden by making positive choices.",
+          genre: ["sim"],
+          platform: ["desktop", "mobile"],
+        },
+      ];
+
+      // --- State & helpers ---
+      const state = { filters: { platform: new Set(), genre: new Set() } };
+      const $ = (q, el = document) => el.querySelector(q);
+      const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+
+      function passFilters(game) {
+        const { platform, genre } = state.filters;
+        if (platform.size && !game.platform.some((p) => platform.has(p)))
+          return false;
+        if (genre.size && !game.genre.some((g) => genre.has(g))) return false;
+        return true;
+      }
+
+      function renderNav() {
+        const nav = $("#game-nav");
+        nav.innerHTML = GAMES.map(
+          (g) =>
+            `<a href="#${g.id}" data-id="${g.id}">🎮 <span>${g.title}</span></a>`
+        ).join("");
+        nav.addEventListener(
+          "click",
+          (e) => {
+            const a = e.target.closest("a");
+            if (!a) return;
+            e.preventDefault();
+            const card = document.getElementById(a.dataset.id);
+            if (card) {
+              card.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          },
+          { once: true }
+        );
+      }
+
+      function renderGallery() {
+        const wrap = $("#gallery");
+        wrap.innerHTML = "";
+        GAMES.filter(passFilters).forEach((g) => {
+          const tagPlatform = g.platform
+            .map((p) => `<span class="pill">${p}</span>`)
+            .join("");
+          const tagGenre = g.genre
+            .map((p) => `<span class="pill">${p}</span>`)
+            .join("");
+          wrap.insertAdjacentHTML(
+            "beforeend",
+            `
+          <article class="card" id="${g.id}">
+            <a class="thumb" href="${g.href}" target="_blank" rel="noopener" style="background-image:url('${g.img}'), linear-gradient(180deg,#0f1b32,#0b1429)"></a>
+            <div class="body">
+              <h3>${g.title}</h3>
+              <div class="meta">${tagGenre} ${tagPlatform}</div>
+              <p style="margin:.5rem 0 0">${g.desc}</p>
+              <div class="actions">
+                <a class="btn" href="${g.href}" target="_blank" rel="noopener">Play</a>
+              </div>
+            </div>
+          </article>
+        `
+          );
+        });
+      }
+
+      function bindFilters() {
+        $$(".chip").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const key = btn.dataset.key;
+            const val = btn.dataset.val;
+            const on = btn.getAttribute("aria-pressed") === "true";
+            btn.setAttribute("aria-pressed", on ? "false" : "true");
+            const set = state.filters[key];
+            if (on) set.delete(val);
+            else set.add(val);
+            renderGallery();
+          });
+        });
+      }
+
+      renderNav();
+      renderGallery();
+      bindFilters();
+    </script>
+  </body>
+</html>
