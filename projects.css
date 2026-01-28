@@ -234,3 +234,8 @@ h2 {
   border-radius: 4px;
   margin-bottom: 8px;
 }
+.wip-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
