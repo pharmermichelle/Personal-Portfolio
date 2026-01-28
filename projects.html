@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>Michelle Waite | Web Dev Projects</title>
@@ -55,14 +55,24 @@
               <a
                 href="resume.html"
                 class="button"
-                onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Resume Button' });"
+                onclick="
+                  gtag('event', 'click', {
+                    event_category: 'Navigation',
+                    event_label: 'Hero Resume Button',
+                  })
+                "
               >
                 Experience & Resume
               </a>
               <a
                 href="contact.html"
                 class="button"
-                onclick="gtag('event', 'click', { event_category: 'Navigation', event_label: 'Hero Contact Button' });"
+                onclick="
+                  gtag('event', 'click', {
+                    event_category: 'Navigation',
+                    event_label: 'Hero Contact Button',
+                  })
+                "
               >
                 Contact Me
               </a>
@@ -88,6 +98,8 @@
               <button data-filter="all" class="active">Everything</button>
             </li>
             <li><button data-filter="games">Games</button></li>
+            <li><button data-filter="client">Client Sites</button></li>
+
             <li><button data-filter="writing">Creative Writing</button></li>
             <li><button data-filter="webdev">Web Development</button></li>
             <li>
@@ -114,6 +126,40 @@
               >Visit Short Story Generator</a
             >
           </div>
+          <!-- SL3D Printing -->
+          <div class="project-card client" data-tags="webdev client">
+            <span class="project-badge">Client</span>
+            <h3>Southern Layers 3D Printing</h3>
+            <p>
+              Small business website for a veteran-owned 3D printing company.
+              Focused on clean layout, mobile usability, and clear service
+              offerings.
+            </p>
+            <a
+              href="https://southernlayers3dprinting.com"
+              target="_blank"
+              class="project-link"
+            >
+              Visit Site →
+            </a>
+          </div>
+          <!-- Boomwave -->
+          <div class="project-card client" data-tags="webdev client">
+            <span class="project-badge">Client</span>
+            <h3>Boomwave</h3>
+            <p>
+              Client-facing site highlighting mobile audio mechanics and
+              interactive design concepts. Built for clarity and performance.
+            </p>
+            <a
+              href="gaming\client-sites\Boomwave\index.html"
+              target="_blank"
+              class="project-link"
+            >
+              Visit Site →
+            </a>
+          </div>
+
           <!-- Acorn Ascent -->
           <div class="project-card" data-tags="games fav">
             <h3>Acorn Ascent</h3>
