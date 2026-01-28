@@ -221,11 +221,6 @@ h2 {
 /* Client project styling */
 .project-card.client {
   border-left: 4px solid #6aa9ff;
-  background: linear-gradient(
-    135deg,
-    rgba(106, 169, 255, 0.08),
-    rgba(0, 0, 0, 0)
-  );
 }
 
 .project-badge {
