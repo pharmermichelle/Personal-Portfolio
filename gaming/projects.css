@@ -1,0 +1,232 @@
+/* Dark Mode */
+body.dark-mode .project-filter-nav button.active {
+  background-color: rgb(146, 182, 254);
+  color: #181818;
+}
+
+body.dark-mode .project-filter-nav button {
+  background-color: #555;
+  color: white;
+}
+
+body.dark-mode .project-card {
+  background-color: #2a2a2a;
+  color: rgb(146, 182, 254);
+  box-shadow: 0 0 6px 1px rgba(146, 182, 254, 0.2);
+}
+
+body.dark-mode .project-card:hover {
+  box-shadow: 0 0 10px 2px rgba(146, 182, 254, 0.3);
+}
+
+body.dark-mode .project-card a,
+body.dark-mode .project-link {
+  color: rgb(146, 182, 254);
+}
+
+body.dark-mode .project-link {
+  background-color: #333;
+}
+
+body.dark-mode .project-link:hover {
+  background-color: #444;
+}
+
+/* Light Mode */
+body.light-mode button.active {
+  background-color: #b2d9fa;
+  color: #111;
+}
+
+body.light-mode .project-filter-nav button {
+  background-color: #d3e8f9;
+  color: #111;
+}
+
+body.light-mode .project-card {
+  background-color: #fefefe;
+  color: #111;
+  box-shadow: 0 0 6px 1px rgba(2, 59, 109, 0.08);
+}
+
+body.light-mode .project-card:hover {
+  box-shadow: 0 0 10px 2px rgba(2, 59, 109, 0.15);
+}
+
+body.light-mode,
+body.light-mode .project-link {
+  color: #0a4d80;
+}
+
+body.light-mode .project-link {
+  background-color: #0a4d80;
+  color: white;
+}
+
+body.light-mode .project-link:hover {
+  background-color: #1466a5;
+}
+
+/* Base Styles */
+.project-filter-nav button.active {
+  background-color: rgb(146, 182, 254);
+  color: #181818;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.project-filter-nav button {
+  background-color: #8b949b;
+  color: rgb(1, 1, 1);
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.project-item {
+  margin-bottom: 30px;
+}
+
+body.light-mode .project-card h3 {
+  color: #102841;
+}
+
+body.dark-mode .project-card h3 {
+  color: #102841;
+}
+
+.card-actions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+.project-link.secondary-link {
+  font-weight: 600;
+  opacity: 0.8;
+}
+.project-link.secondary-link:hover {
+  opacity: 1;
+}
+
+.featured-projects a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.featured-projects a:hover {
+  color: #555;
+  border-color: #555;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 2rem;
+  color: #333;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.project-card {
+  cursor: pointer;
+  position: relative;
+  background: linear-gradient(135deg, #7faedd, #b2d9fa);
+  border-radius: 10px;
+  border: 2px solid rgba(33, 150, 243, 0.2);
+  padding: 4px;
+  box-shadow: 0 0 6px 1px rgba(33, 150, 243, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  text-align: center;
+}
+.project-card:focus {
+  outline: 2px solid #ff6b81;
+  outline-offset: 2px;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 10px 2px rgba(33, 150, 243, 0.3);
+}
+
+.project-card a {
+  text-decoration: none;
+  color: #2196f3;
+  font-weight: bold;
+}
+
+.project-card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.project-link {
+  flex: 0 1 auto;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px;
+  background: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.project-link:hover {
+  background: #555;
+}
+
+/* Accessibility Focus */
+.project-link:focus,
+.project-card a:focus,
+.featured-projects a:focus,
+.project-filter-nav button:focus {
+  outline: 2px solid #ff6b81;
+  outline-offset: 2px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.project-card[data-tags*="client"]::after {
+  content: "Client";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #1ed0f3;
+  color: #001123;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+}
