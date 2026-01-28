@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boomwave Mobile Audio & Mechanics</title>
+    <link rel="stylesheet" href="Car_work.css" />
+  </head>
+  <body>
+    <header> 
+      <div class="left">📍 Greater Myrtle Beach</div>
+      <nav>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Work</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <video id="hero-video" autoplay loop muted playsinline>
+        <source src="media/boomwave-hero.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-content">
+        <!-- Floating logo card -->
+        <div class="hero-logo">
+          <img
+            src="images/boomwave-logo.jpg"
+            alt="Boomwave Mobile Audio & Mechanics"
+          />
+        </div>
+        <p>
+          Professional mobile mechanic & audio installs across Greater Myrtle
+          Beach
+        </p>
+        <p>Reqest a Quote Now</p>
+        <a href="tel:+18430000000" class="btn btn-primary">Call</a>
+        <a
+          href="sms:+18430000000?&body=Hi%20Dante,%20I%27d%20like%20a%20quote%20for%20my%20car."
+          class="btn btn-secondary, text-only"
+        >
+          Text
+        </a>
+      </div>
+    </section>
+
+    <section id="services">
+      <h2>Services</h2>
+      <div class="services">
+        <div class="service-card">
+          <h3>Car Audio Installs</h3>
+          <ul>
+            <li>Head units, speakers & subwoofers</li>
+            <li>Clean wiring & tuning</li>
+            <li>Sound deadening & dash kits</li>
+          </ul>
+          <p><em>From $120 install (parts not included)</em></p>
+        </div>
+        <div class="service-card">
+          <h3>Diagnostics & Repairs</h3>
+          <ul>
+            <li>Mobile OBD-II scan & troubleshooting</li>
+            <li>Brakes, batteries, alternators</li>
+            <li>Small repairs & maintenance</li>
+          </ul>
+          <p><em>Diagnostic from $60</em></p>
+        </div>
+        <div class="service-card">
+          <h3>Mobile Convenience</h3>
+          <ul>
+            <li>We come to your driveway or workplace</li>
+            <li>Evening & weekend availability</li>
+            <li>Serving Greater Myrtle Beach</li>
+          </ul>
+          <p><em>Travel included in local radius</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- “Puzzle” Recent Work -->
+    <section id="portfolio">
+      <h2>Recent Work</h2>
+      <div class="work-wrap">
+        <!-- Left column: stacked -->
+        <div class="work-col stack">
+          <img
+            class="work-img"
+            src="images/work3.jpg"
+            alt="Wheel bearing close-up"
+          />
+          <img
+            class="work-img"
+            src="images/work1.jpg"
+            alt="Fuse panel detail"
+          />
+        </div>
+        <!-- Center column: tall -->
+        <div class="work-col center">
+          <img
+            class="work-img"
+            src="images/work2.jpg"
+            alt="Engine removal on site"
+          />
+        </div>
+        <!-- Right column: stacked placeholders -->
+        <div class="work-col stack">
+          <img
+            class="work-img"
+            src="images/placeholder.jpg"
+            alt="Placeholder recent work"
+          />
+          <img
+            class="work-img"
+            src="images/placeholder.jpg"
+            alt="Placeholder recent work"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <h2>Customer Reviews</h2>
+
+      <div class="reviews-carousel">
+        <!-- arrows -->
+        <button
+          class="reviews-arrow left"
+          id="rev-prev"
+          aria-label="Previous reviews"
+        >
+          ‹
+        </button>
+        <button
+          class="reviews-arrow right"
+          id="rev-next"
+          aria-label="Next reviews"
+        >
+          ›
+        </button>
+
+        <!-- scrollable track -->
+        <div class="reviews-track" id="reviews-track">
+          <blockquote class="review-card">
+            “Replaced both CV axles and for a great price — didn’t rest till job
+            was done. Highly recommend.”
+            <footer>— Sunny, Aug 26, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “Incredibly responsive and helpful from the start. Addressed my
+            issue quickly and made the process easy. Highly recommend.”
+            <footer>— Roger, Aug 12, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “THE BEST MOBILE MECHANIC THUS FAR! Genuine and very knowledgeable.
+            He fixed my Dodge RAM radiator in less than an hour!!!”
+            <footer>— Antquan, Aug 6, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “Came to my house to install my sub, went with me to grab the
+            missing parts, and finished the same day. Professional grade work.”
+            <footer>— Hunter, May 25, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “Stereo install on an old truck — very professionally done. I would
+            100% recommend.”
+            <footer>— Curtis, Feb 21, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “I was stranded for hours and Danté fixed my truck in 30 seconds.
+            Diagnosed the issue before he arrived. God-sent!”
+            <footer>— Talisha, Jul 18, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “Great work on my radio install — no issues at all. Will contact
+            again anytime I need help.”
+            <footer>— Sunshine, Jun 12, 2025</footer>
+          </blockquote>
+
+          <blockquote class="review-card">
+            “Very understanding and great person to work with on the things
+            you’re wanting to accomplish.”
+            <footer>— George, May 26, 2024</footer>
+          </blockquote>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 1rem">
+        <a
+          href="https://www.facebook.com/marketplace/profile/100000508167071/?ref=permalink&mibextid=P5sS7T"
+          target="_blank"
+          style="color: var(--coral)"
+          >See more reviews on Facebook</a
+        >
+      </p>
+    </section>
+
+    <section id="about">
+      <h2>About Danté</h2>
+      <img
+        src="images/dante-headshot.jpg"
+        alt="Danté portrait"
+        style="
+          max-width: 200px;
+          border-radius: 10px;
+          float: right;
+          margin-left: 1rem;
+        "
+      />
+      <p>
+        Hi, I’m Danté Madaffari. I run Boomwave Mobile Audio & Mechanics,
+        helping drivers across Greater Myrtle Beach with professional on-site
+        repairs and custom audio installs. I pride myself on responsiveness,
+        quality work, and making sure every job is done right the first time.
+      </p>
+      <p>
+        From simple diagnostics to full audio upgrades, I bring the shop to you
+        — saving you time, stress, and towing fees.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Request a Quote</h2>
+      <div class="contact-wrap">
+        <p class="contact-intro">
+          Tell Danté what you’re driving and what you need. He’ll text or email
+          you back ASAP.
+        </p>
+
+        <form
+          id="quote-form"
+          class="form-card"
+          action="https://formspree.io/f/xxxxxxxx"
+method="POST" autocomplete="on" novalidate></form>
+
+
+          <!-- Honeypot (spam trap) -->
+          <input
+            type="text"
+            name="company"
+            class="hp"
+            tabindex="-1"
+            autocomplete="off"
+          />
+
+          <div class="form-grid">
+            <div>
+              <label for="q-name">Your Name</label>
+              <input
+                id="q-name"
+                name="name"
+                type="text"
+                required
+                placeholder="Jane Doe"
+              />
+            </div>
+            <div>
+              <label for="q-phone">Phone</label>
+              <input
+                id="q-phone"
+                name="phone"
+                type="tel"
+                inputmode="tel"
+                placeholder="843-555-1234"
+              />
+            </div>
+
+            <div>
+              <label for="q-email">Email</label>
+              <input
+                id="q-email"
+                name="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label for="q-prefer">Preferred Contact</label>
+              <select id="q-prefer" name="preferred_contact">
+                <option value="text">Text</option>
+                <option value="call">Call</option>
+                <option value="email">Email</option>
+              </select>
+            </div>
+
+            <div class="full">
+              <label for="q-vehicle">Vehicle (Year / Make / Model)</label>
+              <input
+                id="q-vehicle"
+                name="vehicle"
+                type="text"
+                placeholder="2012 Toyota Camry SE 2.5L"
+              />
+            </div>
+
+            <div>
+              <label for="q-service">Service</label>
+              <select id="q-service" name="service">
+                <option>Diagnostics</option>
+                <option>Brakes / Battery / Alternator</option>
+                <option>Audio install (stereo / speakers / sub)</option>
+                <option>Electrical / Fuses</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="full">
+              <label for="q-message">Details</label>
+              <textarea
+                id="q-message"
+                name="message"
+                rows="4"
+                required
+                placeholder="What’s going on? Any symptoms, codes, or parts you already have?"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Optional subject to help your inbox -->
+          <input type="hidden" name="_subject" value="Boomwave Quote Request" />
+
+          <div class="form-actions" style="margin-top: 0.6rem">
+            <button type="submit" class="btn btn-primary">Send Request</button>
+            <small class="muted"
+              >or text
+              <a href="sms:+18430000000" style="color: var(--coral)"
+                >(843) 000-0000</a
+              ></small
+            >
+          </div>
+
+          <div id="form-ok" class="alert ok">
+            Thanks! Your message was sent. Danté will get back to you shortly.
+          </div>
+          <div id="form-error" class="alert error">
+            Hmm, something went wrong. Please try again or text/call.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 Boomwave Mobile Audio & Mechanics. Website by
+      <a
+        href="https://michellew.io"
+        target="_blank"
+        style="color: var(--coral); text-decoration: none"
+      >
+        Michelle Waite </a
+      >.
+    </footer>
+
+    <script>
+      // Slow down hero video
+      const v = document.getElementById("hero-video");
+      v.playbackRate = 0.6;
+
+      (function () {
+        const track = document.getElementById("reviews-track");
+        const prev = document.getElementById("rev-prev");
+        const next = document.getElementById("rev-next");
+
+        function scrollAmount() {
+          // Scroll roughly one card at a time
+          return Math.max(track.clientWidth * 0.9, 300);
+        }
+
+        prev.addEventListener("click", () => {
+          track.scrollBy({ left: -scrollAmount(), behavior: "smooth" });
+        });
+        next.addEventListener("click", () => {
+          track.scrollBy({ left: scrollAmount(), behavior: "smooth" });
+        });
+
+        // Hide left/right arrows when at ends
+        function updateArrows() {
+          const maxScroll = track.scrollWidth - track.clientWidth - 2;
+          prev.style.visibility = track.scrollLeft <= 2 ? "hidden" : "visible";
+          next.style.visibility =
+            track.scrollLeft >= maxScroll ? "hidden" : "visible";
+        }
+        track.addEventListener("scroll", updateArrows, { passive: true });
+        window.addEventListener("resize", updateArrows);
+        updateArrows();
+      })();
+    </script>
+  </body>
+</html>
