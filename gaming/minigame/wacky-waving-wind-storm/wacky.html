@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wacky Pose Match — Skeleton Outline</title>
+    <link rel="stylesheet" href="wacky.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <canvas id="c" width="1280" height="720"></canvas>
+    </div>
+
+    <div class="hud">
+      <label class="ctl">
+        <span>Angle</span>
+        <input
+          id="angle"
+          type="range"
+          min="-180"
+          max="180"
+          value="-20"
+          step="1"
+        />
+        <output id="ang">-20°</output>
+      </label>
+
+      <label class="ctl">
+        <span>Speed</span>
+        <input
+          id="speed"
+          type="range"
+          min="0"
+          max="1.2"
+          value="0.75"
+          step="0.01"
+        />
+        <div class="bar"><i id="pow" style="width: 62%"></i></div>
+      </label>
+
+      <button id="gustBtn">GUST</button>
+      <button id="resetBtn">Reset</button>
+      <button id="nextBtn">Next Pose</button>
+      <label class="ctl">
+        <input id="assist" type="checkbox" checked />
+        <span>Magnet assist</span>
+      </label>
+      <div class="score">Match: <b id="scorePct">0%</b></div>
+    </div>
+
+    <div class="toast" id="toast" style="display: none"></div>
+    <script src="wacky.js"></script>
+  </body>
+</html>

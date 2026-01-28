@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KPI Pulse — Waits & No-Shows</title>
+    <meta
+      name="description"
+      content="Static dashboard for average waits, no-show rate, cancellations, and FCR."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="top">
+      <div
+        class="wrap"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div><strong>KPI Pulse</strong> · Waits & No-Shows</div>
+        <nav><a class="btn" href="index.html">← Healthcare</a></nav>
+      </div>
+    </div>
+
+    <div class="top">
+      <div
+        class="wrap"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div><strong>KPI Pulse</strong> · Waits & No-Shows</div>
+      </div>
+    </div>
+
+    <main class="wrap">
+      <section class="kpis" id="kpis" aria-label="Summary KPIs"></section>
+
+      <div class="charts">
+        <div class="chart-card">
+          <h3>Average Wait (min)</h3>
+          <canvas id="chartWait"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>No-Show Rate (%)</h3>
+          <canvas id="chartNoShow"></canvas>
+        </div>
+      </div>
+
+      <p class="meta muted" id="generated"></p>
+      <div class="error" id="error" hidden></div>
+    </main>
+
+    <script src="pulse.js"></script>
+  </body>
+</html>

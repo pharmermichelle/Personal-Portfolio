@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9D74M6L9M7");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Coin Pusher</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="stylesheet" href="coins.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="stat"><b>Bank:</b> <span id="bank">$0.00</span></div>
+        <div class="stat">
+          <b>Current Stack:</b> <span id="stackLabel">—</span>
+        </div>
+        <div class="stat"><b>Coins Left:</b> <span id="coinsLeft">0</span></div>
+        <div class="spacer"></div>
+        <button id="btnDrop">Drop Coin</button>
+        <button id="btnNudge" class="secondary">Nudge (3/day)</button>
+
+        <button id="btnAuto" class="secondary">Auto: Off</button>
+        <button id="btnLoad" class="secondary">Load Coins</button>
+        <button id="btnStore" class="secondary">Theme Store</button>
+      </header>
+
+      <div id="stage">
+        <canvas id="game"></canvas>
+        <!-- Front-of-cabinet overlay (pure CSS, no clicks) -->
+        <div class="cabinet" aria-hidden="true">
+          <div class="glass"></div>
+          <div class="side left"></div>
+          <div class="side right"></div>
+          <div class="tray"></div>
+          <div class="marquee">Cat Coin Pusher</div>
+        </div>
+        <div class="hud">
+          <span class="pill">Wins this round: <b id="winsRound">$0.00</b></span>
+          <span class="pill">Spent: <b id="spentRound">$0.00</b></span>
+          <span class="pill">Net: <b id="netRound">$0.00</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stack Picker Modal -->
+    <div id="stackModal" class="modal show">
+      <div class="sheet">
+        <header>
+          <h2 style="margin: 0">Pick a Wrapped Stack</h2>
+          <p class="muted" style="margin: 0.3rem 0 0">
+            Choose a wrapper — its contents are random and revealed after you
+            pick.
+          </p>
+        </header>
+        <div id="stackGrid" class="grid"></div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+          "
+        >
+          <button class="secondary" id="btnRandom">Surprise Me</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Round Results Modal -->
+    <div id="resultsModal" class="modal">
+      <div class="sheet">
+        <header>
+          <h2 style="margin: 0">Round Results</h2>
+        </header>
+        <div class="grid">
+          <div class="card">
+            <div class="tag">You inserted</div>
+            <h3 id="resSpent" style="margin: 0">$0.00</h3>
+            <p class="muted">Total face value of coins dropped.</p>
+          </div>
+          <div class="card">
+            <div class="tag">You won</div>
+            <h3 id="resWon" style="margin: 0">$0.00</h3>
+            <p class="muted">Coins that fell off the bottom edge.</p>
+          </div>
+          <div class="card">
+            <div class="tag">Net</div>
+            <h3 id="resNet" style="margin: 0">$0.00</h3>
+            <p class="muted">Added to your bank (can be negative).</p>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px;
+          "
+        >
+          <button class="secondary" id="btnStay">Keep Watching</button>
+          <button id="btnAgain">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Modal -->
+    <div id="storeModal" class="modal">
+      <div class="sheet">
+        <header>
+          <h2 style="margin: 0">Theme Store</h2>
+          <p class="muted" style="margin: 0.3rem 0 0">
+            Buy skins using your banked winnings. Purchases are saved locally.
+          </p>
+        </header>
+        <div id="storeList" class="grid"></div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 12px;
+            align-items: center;
+          "
+        >
+          <div class="legend">
+            <span class="swatch" style="background: var(--coin-penny)"></span>
+            Penny
+            <span class="swatch" style="background: var(--coin-nickel)"></span>
+            Nickel
+            <span class="swatch" style="background: var(--coin-dime)"></span>
+            Dime
+            <span class="swatch" style="background: var(--coin-quarter)"></span>
+            Quarter
+          </div>
+          <button class="secondary" id="btnCloseStore">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"
+      integrity="sha512-0z8URjGET6GWnS1xcgiLBZBzoaS8BNlKayfZyQNKz4IRp+s7CKXx0yz7Eco2+TcwoeMBa5KMwmTX7Kus7Fa5Uw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="coins.js"></script>
+
+    <!--
+  =========================
+  ASSET CHECKLIST (to create next)
+  =========================
+  You can ship the prototype without any external assets. To upgrade visuals & audio later, create these optional files and swap them into the CSS/JS:
+
+  Sprites (PNG/SVG):
+  - sprites/cat_paw.png                (cute paw overlay you can animate near the pusher)
+  - sprites/pusher_classic.png         (texture for the pusher plate in Classic Cats)
+  - sprites/pusher_space.png           (for Space Paws)
+  - sprites/pusher_beach.png           (for Beach Boardwalk)
+  - sprites/pusher_neon.png            (for Neon Arcade)
+  - sprites/coin_penny.png             (flat coin texture; transparent bg)
+  - sprites/coin_nickel.png
+  - sprites/coin_dime.png
+  - sprites/coin_quarter.png
+  - sprites/wrapper_red.png            (optional: UI art for wrapped stacks)
+  - sprites/wrapper_blue.png
+  - sprites/wrapper_green.png
+  - sprites/wrapper_orange.png
+
+  Backgrounds:
+  - backgrounds/cats_tile.png          (small tiling paw-print pattern)
+  - backgrounds/space.jpg              (starfield gradient)
+  - backgrounds/boardwalk.jpg          (subtle wood planks)
+  - backgrounds/neon_grid.png          (faint scanline/grid)
+
+  Audio (WAV/MP3 short sfx):
+  - audio/coin_drop.wav
+  - audio/coin_clink.wav
+  - audio/coin_collect.wav
+  - audio/pusher_motor.wav (loop very quietly)
+  - audio/meow.wav (for shop or special nudge)
+
+  Fonts (optional webfont):
+  - fonts/Chivo-Variable.woff2 or similar rounded UI font
+
+  Integration notes for images:
+  - For coins: replace the render.fillStyle with sprite textures via Matter.js: body.render.sprite = { texture: 'sprites/coin_quarter.png', xScale: 0.5, yScale: 0.5 }
+  - For pushers/platforms: swap fillStyle with a sprite texture on those bodies too.
+
+  Save Data (localStorage):
+  - key: catCoinPusherSave_v1
+  - schema: { bankCents:number, ownedSkins:string[], equippedSkin:string }
+
+  Future ideas:
+  - Add a lower deck pusher, paw “nudge” special, coin jams, bonus coins, jackpots, tilt detection.
+  - Add mixed stacks (e.g., 60% quarters, 40% nickels) and a true hidden wrapper reveal with GUI art.
+  - Add physics tuning sliders (restitution, friction), and an onboarding tooltip.
+  - Add an achievements page and a daily login bonus using local time.
+  --></body>
+</html>
