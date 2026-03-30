@@ -137,8 +137,17 @@ function showWinModal() {
   finalUninterestedEl.textContent = uninterestedPassers;
   sharePreviewEl.textContent = getShareText();
   winModal.classList.remove("hidden");
+
   setTimeout(() => {
-    (adsbygoogle = window.adsbygoogle || []).push({});
+    const winAd = document.querySelector(".win-ad ins");
+
+    if (winAd && window.adsbygoogle) {
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.log("Ad already loaded or blocked");
+      }
+    }
   }, 300);
 }
 

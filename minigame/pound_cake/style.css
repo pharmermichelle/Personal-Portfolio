@@ -773,3 +773,14 @@ h1 {
 .win-ad {
   margin: 16px 0;
 }
+.ad-container {
+  margin: 16px 0 24px;
+  padding: 12px;
+  background: #f5e6c8;
+  border-radius: 12px;
+  border: 1px solid #d6b98c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90px;
+}
