@@ -206,7 +206,7 @@ h1 {
 .cake-case {
   position: absolute;
   left: 50%;
-  bottom: 88px;
+  bottom: 98px;
   width: 120px;
   height: 80px;
   border-radius: 50% / 60%;
@@ -507,7 +507,7 @@ h1 {
   }
 
   .kitchen {
-    height: 270px;
+    height: 290px;
   }
 
   .wall-decor {
@@ -519,62 +519,63 @@ h1 {
 
   .passer-lane {
     top: 108px;
-    height: 105px;
+    height: 112px;
   }
 
   .table-wrap {
-    bottom: 58px;
+    bottom: 34px;
   }
 
   .table {
-    width: 200px;
-    height: 140px;
-  }
-
-  .cake {
-    width: 92px;
-    height: 62px;
-    transform: translateY(-4px);
-  }
-
-  .cake.level-0 {
-    transform: translateY(-4px) scale(0.95);
-  }
-
-  .cake.level-1 {
-    transform: translateY(-4px) scale(1);
-  }
-
-  .cake.level-2 {
-    transform: translateY(-4px) scale(1.04);
-  }
-
-  .cake.level-3 {
-    transform: translateY(-4px) scale(1.08);
+    width: 175px;
+    height: 122px;
   }
 
   .cake-case {
-    width: 110px;
-    height: 34px;
-    transform: translateY(-10px);
+    left: calc(50% - 8px);
+    bottom: 62px;
+    width: 96px;
+    height: 30px;
+    transform: translateX(-50%);
   }
 
   .cake-case.level-1 {
-    width: 125px;
-    height: 40px;
-    transform: translateY(-12px);
+    width: 108px;
+    height: 36px;
+    transform: translateX(-50%);
   }
 
   .cake-case.level-2 {
-    width: 135px;
-    height: 44px;
-    transform: translateY(-14px);
+    width: 118px;
+    height: 40px;
+    transform: translateX(-50%);
   }
 
   .cake-case.level-3 {
-    width: 145px;
-    height: 48px;
-    transform: translateY(-15px);
+    width: 126px;
+    height: 44px;
+    transform: translateX(-50%);
+  }
+
+  .cake {
+    width: 86px;
+    height: 58px;
+  }
+
+  .cake.level-0 {
+    transform: translateY(2px) scale(0.9);
+  }
+
+  .cake.level-1 {
+    transform: translateY(2px) scale(0.96);
+  }
+
+  .cake.level-2 {
+    transform: translateY(2px) scale(1);
+  }
+
+  .cake.level-3 {
+    transform: translateY(2px) scale(1.04);
   }
 
   .scene-status {
@@ -599,15 +600,15 @@ h1 {
     height: 430px;
   }
   .table {
-    width: 340px;
-    height: 210px;
+    width: 300px;
+    height: 185px;
     transform: translateY(0px);
   }
 
   .cake-case {
-    width: 150px;
-    height: 42px;
-    border-radius: 50% / 60%;
+    left: calc(50% - 14px);
+    bottom: 108px;
+    transform: translateX(-50%);
   }
   .cake-case.level-0::before {
     display: none;
@@ -658,23 +659,19 @@ h1 {
     transform: translateY(-6px);
   }
   .cake.level-0 {
-    background-image: url("assets/cake-0.png");
-    transform: translateY(-6px) scale(0.9);
+    transform: translateY(-2px) scale(0.9);
   }
 
   .cake.level-1 {
-    background-image: url("assets/cake-1.png");
-    transform: translateY(-6px) scale(1.08);
+    transform: translateY(-2px) scale(1.08);
   }
 
   .cake.level-2 {
-    background-image: url("assets/cake-2.png");
-    transform: translateY(-6px) scale(1.08);
+    transform: translateY(-2px) scale(1.08);
   }
 
   .cake.level-3 {
-    background-image: url("assets/cake-3.png");
-    transform: translateY(-6px) scale(1.08);
+    transform: translateY(-2px) scale(1.08);
   }
 }
 
@@ -825,4 +822,9 @@ h1 {
   align-items: center;
   min-height: 90px;
   text-align: center;
+}
+.ad-container .adsbygoogle {
+  width: 100%;
+  min-width: 250px;
+  max-width: 728px;
 }
