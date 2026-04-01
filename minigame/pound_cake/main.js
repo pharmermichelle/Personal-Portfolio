@@ -125,7 +125,15 @@ function updateUI() {
   chanceSummary.textContent = `Current double-take chance: ${getDoubleTakeChance()}%`;
 
   Object.keys(buttons).forEach((id) => {
-    buttons[id].disabled = purchased[id] || points < costs[id];
+    const isPurchased = purchased[id];
+
+    buttons[id].disabled = isPurchased || points < costs[id];
+
+    if (isPurchased) {
+      buttons[id].classList.add("completed");
+    } else {
+      buttons[id].classList.remove("completed");
+    }
   });
 }
 
