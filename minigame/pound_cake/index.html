@@ -16,7 +16,7 @@
       <header class="topbar">
         <div>
           <h1>Lemon Pound Cake</h1>
-          <p class="subtitle">Make the cake so good everybody double-takes.</p>
+          <p class="subtitle">Build the ultimate cake display.</p>
         </div>
         <div class="stats">
           <div class="stat-box">
@@ -86,48 +86,98 @@
         </div>
 
         <aside class="upgrade-panel">
-          <div class="card">
-            <h2>Upgrades</h2>
-
-            <div class="upgrade-group">
-              <h3>Cake</h3>
-              <button class="upgrade-btn" id="cake15">
-                5 pts • More slices
-              </button>
-              <button class="upgrade-btn" id="cake50">
-                15 pts • Half cake
-              </button>
-              <button class="upgrade-btn" id="cake100">
-                30 pts • Full masterpiece
-              </button>
+          <div class="card upgrade-card-shell">
+            <div class="upgrade-header-row">
+              <h2>Quick Upgrades</h2>
+              <p class="upgrade-mini-help">
+                Spend points to boost double-takes faster.
+              </p>
             </div>
 
-            <div class="upgrade-group">
-              <h3>Case</h3>
-              <button class="upgrade-btn" id="case15">
-                5 pts • Glass dome
-              </button>
-              <button class="upgrade-btn" id="case50">
-                15 pts • Polished stand
-              </button>
-              <button class="upgrade-btn" id="case100">
-                30 pts • Premium display
-              </button>
-            </div>
+            <div class="upgrade-grid">
+              <section class="upgrade-group compact-group">
+                <div class="upgrade-group-top">
+                  <h3>Add More Cake</h3>
+                  <span class="upgrade-bonus-line">+10% • +22% • +36%</span>
+                </div>
+                <div class="upgrade-btn-row">
+                  <button class="upgrade-btn compact-btn" id="cake15">
+                    5 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="cake50">
+                    15 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="cake100">
+                    30 pts
+                  </button>
+                </div>
+              </section>
 
-            <div class="upgrade-group">
-              <h3>Table</h3>
-              <button class="upgrade-btn" id="table15">5 pts • Runner</button>
-              <button class="upgrade-btn" id="table50">
-                15 pts • Flowers + candle
-              </button>
-              <button class="upgrade-btn" id="table100">
-                30 pts • Full decor
-              </button>
+              <section class="upgrade-group compact-group">
+                <div class="upgrade-group-top">
+                  <h3>Fancier Cake Display</h3>
+                  <span class="upgrade-bonus-line">+7% • +15% • +24%</span>
+                </div>
+                <div class="upgrade-btn-row">
+                  <button class="upgrade-btn compact-btn" id="case15">
+                    5 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="case50">
+                    15 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="case100">
+                    30 pts
+                  </button>
+                </div>
+              </section>
+
+              <section class="upgrade-group compact-group">
+                <div class="upgrade-group-top">
+                  <h3>Decorate Table</h3>
+                  <span class="upgrade-bonus-line">+5% • +11% • +20%</span>
+                </div>
+                <div class="upgrade-btn-row">
+                  <button class="upgrade-btn compact-btn" id="table15">
+                    5 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="table50">
+                    15 pts
+                  </button>
+                  <button class="upgrade-btn compact-btn" id="table100">
+                    30 pts
+                  </button>
+                </div>
+              </section>
             </div>
           </div>
         </aside>
       </main>
+    </div>
+
+    <div class="start-modal" id="startModal">
+      <div class="start-modal-backdrop"></div>
+
+      <div class="start-modal-card">
+        <h2>Lemon Pound Cake</h2>
+
+        <p class="start-lead">
+          Make your cake so good people can't help but double-take.
+        </p>
+
+        <ul class="start-instructions">
+          <li>People walk by your table automatically</li>
+          <li>If they double-take, you earn points</li>
+          <li>Upgrade your cake, display, and table to increase chances</li>
+          <li>
+            <strong>Tap the Sheriff</strong> for a guaranteed +2 double-take
+          </li>
+          <li>Reach <strong>100%</strong> double-take chance</li>
+        </ul>
+
+        <button id="startGameBtn" class="upgrade-btn start-btn">
+          Start Game
+        </button>
+      </div>
     </div>
 
     <div class="win-modal hidden" id="winModal">
@@ -158,17 +208,17 @@
           I reached 100% double-take chance in Lemon Pound Cake Double Take with
           0 uninterested passers.
         </p>
-
+        <p class="win-hook">
+          Can you reach 100% with fewer than <strong>115</strong> uninterested
+          passers?
+        </p>
         <div class="win-actions">
           <button class="upgrade-btn" id="copyShareBtn">Copy Result</button>
           <button class="upgrade-btn" id="shareBtn">Share</button>
           <button class="upgrade-btn" id="downloadScoreBtn">
             Download Score Image
           </button>
-          <p class="win-hook">
-            Can you reach 100% with fewer than <strong>115</strong> uninterested
-            passers?
-          </p>
+
           <button class="upgrade-btn" id="restartBtn">Beat Your Score</button>
         </div>
       </div>

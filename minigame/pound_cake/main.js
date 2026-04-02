@@ -81,6 +81,11 @@ Object.keys(costs).forEach((id) => {
   buttons[id] = document.getElementById(id);
 });
 
+const startModal = document.getElementById("startModal");
+const startGameBtn = document.getElementById("startGameBtn");
+
+let gameStarted = false;
+
 function getDoubleTakeChance() {
   const base = 20;
 
@@ -191,7 +196,7 @@ function tryBuy(id, category, newLevel) {
   const currentLevel = upgrades[category];
 
   if (newLevel !== currentLevel + 1) {
-    statusText.textContent = `You need to buy ${category} level ${currentLevel + 1} first.`;
+    statusText.textContent = "You need the earlier upgrade first.";
     return;
   }
 
@@ -199,7 +204,13 @@ function tryBuy(id, category, newLevel) {
   purchased[id] = true;
   upgrades[category] = newLevel;
 
-  statusText.textContent = `Upgrade bought: ${category} level ${newLevel}. The cake setup looks better already.`;
+  const categoryLabel = {
+    cake: "More cake added",
+    case: "Display upgraded",
+    table: "Table decorated",
+  };
+
+  statusText.textContent = `${categoryLabel[category]}. That setup looks better already.`;
   updateUI();
   checkWin();
 }
@@ -222,9 +233,16 @@ downloadScoreBtn.addEventListener("click", downloadScoreImage);
 
 function createPasser() {
   if (gameWon) return;
+  if (!gameStarted) return;
 
   const passer = document.createElement("div");
   passer.className = "passer";
+  const isSheriff = Math.random() < 0.08;
+
+  if (isSheriff) {
+    passer.classList.add("sheriff");
+  }
+
   passer.style.left = "-60px";
 
   const head = document.createElement("div");
@@ -233,9 +251,16 @@ function createPasser() {
   const body = document.createElement("div");
   body.className = "body";
 
-  const bodyColors = ["#6a8eb8", "#b86a6a", "#6bb07f", "#8e72b8", "#c28b47"];
+  const bodyGradients = [
+    "linear-gradient(to bottom, #7fa6d6, #3f5f82)",
+    "linear-gradient(to bottom, #d68f8f, #8a4a4a)",
+    "linear-gradient(to bottom, #7fcf9a, #3e8f5e)",
+    "linear-gradient(to bottom, #b89ae6, #6e4ea8)",
+    "linear-gradient(to bottom, #e6b97a, #a87734)",
+  ];
+
   body.style.background =
-    bodyColors[Math.floor(Math.random() * bodyColors.length)];
+    bodyGradients[Math.floor(Math.random() * bodyGradients.length)];
 
   const skinTones = ["#7d5337", "#a56d46", "#c58a61", "#6a432b"];
   head.style.background =
@@ -255,8 +280,89 @@ function createPasser() {
     Math.min(getDoubleTakeChance() + randomModifier, 98),
   );
 
+  function showFloatingPoints(value) {
+    const popup = document.createElement("div");
+    popup.className = "floating-points";
+    popup.textContent = `+${value}`;
+
+    const passerRect = passer.getBoundingClientRect();
+    const laneRect = passerLane.getBoundingClientRect();
+
+    const popupLeft = passerRect.left - laneRect.left + passerRect.width / 2;
+    const popupTop = passerRect.top - laneRect.top - 6;
+
+    popup.style.left = `${popupLeft}px`;
+    popup.style.top = `${popupTop}px`;
+
+    passerLane.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 900);
+  }
+
+  function rewardDoubleTake(source = "normal") {
+    if (reacted) return;
+
+    reacted = true;
+    passer.classList.add("double-take");
+
+    const pointValue = isSheriff ? 2 : 1;
+    showFloatingPoints(pointValue);
+    points += pointValue;
+    doubleTakes += 1;
+
+    if (isSheriff && source === "tap") {
+      statusText.textContent =
+        "Sheriff spotted it! Tap bonus — double-take for 2 points.";
+    } else if (isSheriff) {
+      statusText.textContent =
+        "Double-take! Even the sheriff noticed that cake. +2 points.";
+    } else {
+      const msg =
+        doubleTakeMessages[
+          Math.floor(Math.random() * doubleTakeMessages.length)
+        ];
+      statusText.textContent = msg;
+    }
+
+    updateUI();
+    checkWin();
+  }
+
+  function markUninterested() {
+    if (reacted) return;
+
+    reacted = true;
+    uninterestedPassers += 1;
+    statusText.textContent =
+      "No double-take that time. Maybe the cake needs more work.";
+    updateUI();
+    checkWin();
+  }
+
+  if (isSheriff) {
+    passer.style.cursor = "pointer";
+
+    const tapTarget = document.createElement("button");
+    tapTarget.type = "button";
+    tapTarget.className = "sheriff-tap-target";
+    tapTarget.setAttribute("aria-label", "Tap the sheriff");
+
+    const tapSheriff = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (reacted || gameWon) return;
+      rewardDoubleTake("tap");
+    };
+
+    tapTarget.addEventListener("click", tapSheriff);
+    tapTarget.addEventListener("touchstart", tapSheriff, { passive: false });
+
+    passer.appendChild(tapTarget);
+  }
+
   const interval = setInterval(() => {
-    // 🔥 STOP everything if game is won
     if (gameWon) {
       clearInterval(interval);
       passer.remove();
@@ -267,28 +373,13 @@ function createPasser() {
     passer.style.left = `${x}px`;
 
     if (!reacted && x > 220) {
-      reacted = true;
       const roll = Math.random() * 100;
 
       if (roll < chance) {
-        passer.classList.add("double-take");
-        points += 1;
-        doubleTakes += 1;
-
-        const msg =
-          doubleTakeMessages[
-            Math.floor(Math.random() * doubleTakeMessages.length)
-          ];
-
-        statusText.textContent = msg;
+        rewardDoubleTake("normal");
       } else {
-        uninterestedPassers += 1;
-        statusText.textContent =
-          "No double-take that time. Maybe the cake needs more work.";
+        markUninterested();
       }
-
-      updateUI();
-      checkWin();
     }
 
     if (x > passerLane.offsetWidth + 60) {
@@ -477,4 +568,9 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 updateUI();
-spawnLoop();
+// wait for start
+startGameBtn.addEventListener("click", () => {
+  startModal.style.display = "none";
+  gameStarted = true;
+  spawnLoop();
+});
