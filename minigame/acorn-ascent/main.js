@@ -6,7 +6,7 @@ canvas.height = canvas.clientHeight;
 // ==== SHAPE GENERATOR ====
 function generateRandomPuzzle(gridSize, pieceCount) {
   const grid = Array.from({ length: gridSize }, () =>
-    Array(gridSize).fill(null)
+    Array(gridSize).fill(null),
   );
   const shapeSize = (gridSize * gridSize) / pieceCount;
   const shapes = [];
@@ -190,10 +190,10 @@ function handlePointerUp() {
 
 // ==== EVENT LISTENERS ====
 canvas.addEventListener("mousedown", (e) =>
-  handlePointerDown(e.clientX, e.clientY)
+  handlePointerDown(e.clientX, e.clientY),
 );
 canvas.addEventListener("mousemove", (e) =>
-  handlePointerMove(e.clientX, e.clientY)
+  handlePointerMove(e.clientX, e.clientY),
 );
 canvas.addEventListener("mouseup", handlePointerUp);
 
@@ -329,9 +329,26 @@ function renderSidePanel() {
 
 // ==== LEVEL + GAME LOGIC ====
 
+function trackEvent(name, params = {}) {
+  if (typeof gtag === "function") {
+    gtag("event", name, params);
+  }
+}
+
+function showLevelCompleteMessage() {
+  const msg = document.createElement("div");
+  msg.className = "level-toast";
+  msg.textContent = "Level Complete!";
+  document.body.appendChild(msg);
+
+  setTimeout(() => {
+    msg.remove();
+  }, 800);
+}
+
 function checkWinCondition() {
   const grid = Array.from({ length: currentGridSize }, () =>
-    Array(currentGridSize).fill(false)
+    Array(currentGridSize).fill(false),
   );
 
   for (const piece of placedPieces) {
@@ -359,23 +376,43 @@ function checkWinCondition() {
     setTimeout(() => {
       acornCount++;
       updateAcornsDisplay();
-      alert("Level Complete!");
+      showLevelCompleteMessage();
       nextLevel();
     }, 100);
   }
 }
 
 function restartLevel() {
+  trackEvent("restart_level", { level: currentLevel + 1 });
   const level = levels[currentLevel];
   currentGridSize = level.gridSize;
   cellSize = canvas.width / currentGridSize;
 
   placedPieces = [];
-  availableShapes = shuffle([...level.shapes]); // ✅ This line stays
+  availableShapes = shuffle([...level.shapes]);
   heldPiece = null;
   renderSidePanel();
   draw();
   document.getElementById("level").innerText = currentLevel + 1;
+}
+
+function nextLevel() {
+  trackEvent("complete_level", {
+    level: currentLevel + 1,
+    acorns: acornCount,
+  });
+
+  if (currentLevel + 1 < levels.length) {
+    currentLevel++;
+    restartLevel();
+  } else {
+    trackEvent("game_complete", { acorns: acornCount });
+    setTimeout(() => {
+      document.getElementById("game-wrapper").style.display = "none";
+      document.getElementById("hud").style.display = "none";
+      document.getElementById("final-screen").style.display = "flex";
+    }, 800);
+  }
 }
 
 function nextLevel() {
@@ -394,6 +431,8 @@ function nextLevel() {
 
 function restartGame() {
   currentLevel = 0;
+  acornCount = 0;
+  updateAcornsDisplay();
   document.getElementById("final-screen").style.display = "none";
   document.getElementById("game-wrapper").style.display = "flex";
   document.getElementById("hud").style.display = "flex";
@@ -406,6 +445,35 @@ function playAgain() {
   document.getElementById("hud").style.display = "flex";
   restartLevel();
 }
+
+canvas.addEventListener(
+  "touchstart",
+  (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    handlePointerDown(t.clientX, t.clientY);
+  },
+  { passive: false },
+);
+
+canvas.addEventListener(
+  "touchmove",
+  (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    handlePointerMove(t.clientX, t.clientY);
+  },
+  { passive: false },
+);
+
+canvas.addEventListener(
+  "touchend",
+  (e) => {
+    e.preventDefault();
+    handlePointerUp();
+  },
+  { passive: false },
+);
 
 // ==== INIT ====
 renderSidePanel();

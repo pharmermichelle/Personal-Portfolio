@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
@@ -12,53 +12,86 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-9D74M6L9M7");
     </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Acorn Ascent - Level 1</title>
+    <meta
+      name="description"
+      content="Help Chip climb the tree by solving cozy puzzle levels in Acorn Ascent."
+    />
     <link rel="stylesheet" href="style.css" />
+
+    <!-- AdSense site script -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
-    <h1>Acorn Ascent</h1>
-    <div id="hud">
-      <div>Level: <span id="level">1</span></div>
-      <div>
-        <img src="assets/acorn.png" id="acorn" />: <span id="acorns">0</span>
-      </div>
+    <main class="page-shell">
+      <header class="game-header">
+        <h1>Acorn Ascent</h1>
+        <p class="tagline">A cozy climb, one puzzle at a time.</p>
+      </header>
 
-      <button onclick="restartLevel()">Restart</button>
-    </div>
-    <div
-      id="instructions"
-      style="
-        margin: 20px auto;
-        max-width: 600px;
-        text-align: center;
-        color: #fff;
-      "
-    >
-      <h2>How to Play</h2>
-      <p>
-        There are 10 levels. Solve each puzzle to help Chip climb the tree and
-        bring home his acorns!
-      </p>
-      <p>Click a piece to pick it up, then click again to place it.</p>
-    </div>
+      <section class="hud-card" id="hud">
+        <div>Level: <span id="level">1</span></div>
+        <div>
+          <img src="assets/acorn.png" id="acorn" alt="Acorn icon" />
+          <span id="acorns">0</span>
+        </div>
+        <button type="button" onclick="restartLevel()">Restart</button>
+      </section>
 
-    <div id="game-wrapper">
-      <canvas id="gameCanvas" width="360" height="360"></canvas>
-      <div id="sidebar">
-        <h2>Pieces</h2>
-        <div id="pieces-panel"></div>
-      </div>
-    </div>
-    <img src="assets/moon.png" id="moon" />
-    <img src="assets/chip.png" id="chip" />
+      <section id="instructions" class="instructions-card">
+        <h2>How to Play</h2>
+        <p>
+          There are 10 levels. Solve each puzzle to help Chip climb the tree and
+          bring home his acorns.
+        </p>
+        <p>Click a piece to pick it up, then click again to place it.</p>
+      </section>
+
+      <section class="game-stage">
+        <div id="game-wrapper">
+          <div class="canvas-stack">
+            <canvas id="gameCanvas" width="360" height="360"></canvas>
+            <img src="assets/moon.png" id="moon" alt="" />
+            <img src="assets/chip.png" id="chip" alt="Chip the chipmunk" />
+          </div>
+
+          <aside id="sidebar">
+            <h2>Pieces</h2>
+            <div id="pieces-panel"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="ad-section" aria-label="Advertisement">
+        <p class="ad-label">Advertisement</p>
+
+        <ins
+          class="adsbygoogle"
+          style="display: block"
+          data-ad-client="ca-pub-9258275639543826"
+          data-ad-slot="4366267404"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </section>
+    </main>
+
     <div id="final-screen" style="display: none">
-      <img src="assets/final-scene.png" id="final-scene" />
+      <img src="assets/final-scene.png" id="final-scene" alt="Final scene" />
       <button id="play-again-btn" onclick="restartGame()">Play Again</button>
     </div>
 
