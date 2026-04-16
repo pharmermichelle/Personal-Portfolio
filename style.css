@@ -54,7 +54,7 @@ main + footer {
 }
 
 .about {
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.386);
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
@@ -713,6 +713,28 @@ body.light-mode {
     linear-gradient(180deg, #eaf4ff 0%, #c5dcf7 50%, #9eb8d2 100%);
   background-attachment: fixed;
   color: #111;
+}
+
+body.light-mode .about {
+  border: 1px solid rgba(20, 60, 120, 0.45);
+
+  box-shadow:
+    0 0 0 2px rgba(20, 60, 120, 0.08),
+    /* outer glow ring */ 0 10px 30px rgba(0, 0, 0, 0.12),
+    /* depth */ inset 0 1px 0 rgba(255, 255, 255, 0.6); /* top highlight */
+
+  background: linear-gradient(135deg, #7faedd, #b2d9fa);
+}
+
+body.light-mode .about-inner {
+  border-top: 1px solid rgba(20, 60, 120, 0.3);
+}
+
+body.light-mode .about:hover {
+  box-shadow:
+    0 0 12px rgba(20, 60, 120, 0.2),
+    0 14px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 body.light-mode section {
