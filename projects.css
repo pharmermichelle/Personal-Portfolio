@@ -1,12 +1,28 @@
 /* Dark Mode */
-body.dark-mode .project-filter-nav button.active {
-  background-color: rgb(146, 182, 254);
-  color: #181818;
+body.dark-mode .project-filter-nav {
+  background: rgba(24, 24, 24, 0.72);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .project-filter-nav p {
+  color: rgb(146, 182, 254);
 }
 
 body.dark-mode .project-filter-nav button {
-  background-color: #555;
-  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgb(146, 182, 254);
+  border-color: rgba(146, 182, 254, 0.22);
+}
+
+body.dark-mode .project-filter-nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(146, 182, 254, 0.4);
+}
+
+body.dark-mode .project-filter-nav button.active {
+  background: rgb(146, 182, 254);
+  color: #111827;
+  border-color: rgb(146, 182, 254);
 }
 
 body.dark-mode .project-card {
@@ -33,14 +49,28 @@ body.dark-mode .project-link:hover {
 }
 
 /* Light Mode */
-body.light-mode button.active {
-  background-color: #b2d9fa;
-  color: #111;
+body.light-mode .project-filter-nav {
+  background: rgba(178, 217, 250, 0.38);
+}
+
+body.light-mode .project-filter-nav p {
+  color: #102841;
 }
 
 body.light-mode .project-filter-nav button {
-  background-color: #d3e8f9;
-  color: #111;
+  background: rgba(255, 255, 255, 0.78);
+  color: #102841;
+  border-color: rgba(16, 40, 65, 0.18);
+}
+
+body.light-mode .project-filter-nav button:hover {
+  background: #ffffff;
+}
+
+body.light-mode .project-filter-nav button.active {
+  background: #102841;
+  color: #ffffff;
+  border-color: #102841;
 }
 
 body.light-mode .project-card {
@@ -68,18 +98,80 @@ body.light-mode .project-link:hover {
 }
 
 /* Base Styles */
-.project-filter-nav button.active {
+button.active {
   background-color: rgb(146, 182, 254);
   color: #181818;
   padding: 6px;
   border-radius: 5px;
 }
 
+.project-filter-nav {
+  max-width: 1000px;
+  margin: 0 auto 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(2, 59, 109, 0.08);
+}
+
+.project-filter-nav p {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #102841;
+  text-align: left;
+}
+
+.project-filter-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-filter-nav li {
+  margin: 0;
+}
+
 .project-filter-nav button {
-  background-color: #8b949b;
-  color: rgb(1, 1, 1);
-  padding: 6px;
-  border-radius: 5px;
+  appearance: none;
+  border: 1px solid rgba(16, 40, 65, 0.22);
+  background: rgba(255, 255, 255, 0.75);
+  color: #102841;
+  padding: 0.72rem 1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.project-filter-nav button:hover {
+  background: #ffffff;
+  border-color: rgba(16, 40, 65, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(2, 59, 109, 0.08);
+}
+
+.project-filter-nav button.active {
+  background: #102841;
+  color: #ffffff;
+  border-color: #102841;
+  box-shadow: 0 8px 18px rgba(16, 40, 65, 0.18);
+}
+
+.project-filter-nav button:focus-visible {
+  outline: 2px solid #ff6b81;
+  outline-offset: 2px;
 }
 
 .project-item {

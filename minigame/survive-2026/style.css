@@ -1,0 +1,517 @@
+:root {
+  --bg: #0f1220;
+  --panel: rgba(12, 16, 28, 0.86);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #f4f7fb;
+  --muted: #aeb7c7;
+  --good: #7ee081;
+  --bad: #ff6f6f;
+  --gold: #ffd36a;
+  --accent: #8bc1ff;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(139, 193, 255, 0.14), transparent 32%),
+    linear-gradient(180deg, #1b2036 0%, #111423 45%, #0b0d17 100%);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+
+#gameWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hud {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+  border-radius: 18px;
+  padding: 12px 14px;
+  backdrop-filter: blur(10px);
+}
+
+.stats {
+  display: grid;
+  gap: 8px;
+  min-width: 220px;
+  max-width: 280px;
+}
+
+.titleSmall {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bigStat {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hearts {
+  font-size: 22px;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  word-break: break-word;
+}
+
+.wardrobe {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(68px, 1fr));
+  gap: 10px;
+  min-width: 344px;
+}
+
+.wardrobeSlot {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 78px;
+  text-align: center;
+}
+
+.wardrobeIcon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 20px;
+}
+
+.wardrobeSlot.active {
+  border-color: rgba(126, 224, 129, 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(126, 224, 129, 0.15),
+    0 0 0 1px rgba(126, 224, 129, 0.08);
+}
+
+.wardrobeSlot.active .wardrobeIcon {
+  background: rgba(126, 224, 129, 0.18);
+}
+
+.wardrobeLabel {
+  font-size: 11px;
+  line-height: 1.15;
+  color: var(--muted);
+}
+
+.bottomBar {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.legend {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 68vw;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+}
+
+.chip strong {
+  color: var(--text);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 9, 14, 0.35),
+    rgba(7, 9, 14, 0.7)
+  );
+}
+
+.card {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: rgba(10, 14, 24, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  padding: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.heroTitle {
+  margin: 0 0 8px;
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.heroTitle .accent {
+  color: var(--gold);
+}
+
+.sub {
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0 0 18px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+}
+
+.miniPanel {
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.miniPanel h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.miniPanel p,
+.miniPanel li {
+  color: var(--muted);
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+ul {
+  margin: 8px 0 0 18px;
+  padding: 0;
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  background: linear-gradient(180deg, #ffd36a, #e6b94f);
+  color: #231500;
+}
+
+.secondaryBtn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hidden {
+  display: none;
+}
+
+.toastLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 90, 90, 0.18);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tiny {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* tablet */
+@media (max-width: 980px) {
+  .wardrobe {
+    grid-template-columns: repeat(4, minmax(58px, 1fr));
+    min-width: 292px;
+  }
+
+  .legend {
+    max-width: 58vw;
+  }
+}
+
+/* mobile */
+@media (max-width: 780px) {
+  .hud {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stats {
+    min-width: 0;
+    max-width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .titleSmall {
+    font-size: 10px;
+  }
+
+  .bigStat {
+    font-size: 21px;
+  }
+
+  .hearts {
+    font-size: 18px;
+    letter-spacing: 0.5px;
+  }
+
+  .wardrobe {
+    min-width: 0;
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .wardrobeSlot {
+    min-height: 68px;
+    padding: 8px 4px;
+    gap: 5px;
+  }
+
+  .wardrobeIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .wardrobeLabel {
+    font-size: 10px;
+  }
+
+  .bottomBar {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .legend {
+    max-width: 100%;
+    gap: 6px;
+  }
+
+  .chip {
+    font-size: 11px;
+    padding: 7px 9px;
+  }
+
+  .chip:nth-child(3) {
+    display: none;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .heroTitle {
+    font-size: 38px;
+  }
+
+  .sub {
+    font-size: 14px;
+  }
+
+  .miniPanel {
+    padding: 12px;
+  }
+
+  .miniPanel h3 {
+    font-size: 15px;
+  }
+
+  .miniPanel p,
+  .miniPanel li {
+    font-size: 13px;
+  }
+
+  button {
+    width: 100%;
+    min-height: 50px;
+  }
+}
+
+/* very small phones */
+@media (max-width: 520px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stats > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .hearts {
+    font-size: 17px;
+  }
+
+  .wardrobe {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wardrobeSlot {
+    min-height: 64px;
+  }
+
+  .chip {
+    font-size: 10px;
+  }
+
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}
+.helpBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 16, 28, 0.9);
+  color: #f4f7fb;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.helpBtn:hover {
+  background: rgba(20, 25, 40, 0.96);
+}
+
+.chip-good {
+  border-color: rgba(126, 224, 129, 0.28);
+}
+
+.chip-bad {
+  border-color: rgba(255, 111, 111, 0.28);
+}
+
+.chip-shield {
+  border-color: rgba(255, 211, 106, 0.28);
+}
+
+.chip-upgrade {
+  border-color: rgba(139, 193, 255, 0.28);
+}
+
+.tutorialPanel {
+  margin-top: 16px;
+}
+
+@media (max-width: 780px) {
+  .helpBtn {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}
