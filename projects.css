@@ -26,28 +26,27 @@ body.dark-mode .project-filter-nav button.active {
 }
 
 body.dark-mode .project-card {
-  background-color: #2a2a2a;
-  color: rgb(146, 182, 254);
-  box-shadow: 0 0 6px 1px rgba(146, 182, 254, 0.2);
+  background: #9fc4ea;
+  color: #102841;
+  box-shadow: 0 0 10px 2px rgba(146, 182, 254, 0.18);
 }
 
 body.dark-mode .project-card:hover {
   box-shadow: 0 0 10px 2px rgba(146, 182, 254, 0.3);
 }
 
-body.dark-mode .project-card a,
 body.dark-mode .project-link {
-  color: rgb(146, 182, 254);
-}
-
-body.dark-mode .project-link {
-  background-color: #333;
+  background-color: #234f7a;
+  color: #ffffff;
 }
 
 body.dark-mode .project-link:hover {
-  background-color: #444;
+  background-color: #2f679d;
 }
 
+body.dark-mode .project-link.secondary-link {
+  color: #ffffff;
+}
 /* Light Mode */
 body.light-mode .project-filter-nav {
   background: rgba(178, 217, 250, 0.38);
@@ -184,6 +183,23 @@ body.light-mode .project-card h3 {
 
 body.dark-mode .project-card h3 {
   color: #102841;
+}
+
+body.dark-mode .project-card p {
+  color: #284766;
+}
+
+body.dark-mode .project-meta {
+  color: #284766;
+}
+
+body.dark-mode .project-meta strong {
+  color: #102841;
+}
+
+body.dark-mode .wip-label {
+  color: #3c5d7e;
+  opacity: 1;
 }
 
 .card-actions {
@@ -330,4 +346,49 @@ h2 {
   font-size: 0.85rem;
   font-weight: 500;
   opacity: 0.75;
+}
+.projects-note {
+  max-width: 1000px;
+  margin: 1rem auto 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 8px 24px rgba(2, 59, 109, 0.08);
+}
+
+.projects-note p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #102841;
+  text-align: left;
+}
+
+.projects-note strong {
+  color: #102841;
+}
+body.dark-mode .projects-note {
+  background: rgba(24, 24, 24, 0.72);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .projects-note p,
+body.dark-mode .projects-note strong {
+  color: rgb(146, 182, 254);
+}
+
+body.dark-mode .projects-note a {
+  color: #ff6b81;
+}
+
+body.dark-mode .projects-note a:hover {
+  color: #ffffff;
+}
+body.light-mode .projects-note {
+  background: rgba(178, 217, 250, 0.35);
+}
+
+body.light-mode .projects-note p,
+body.light-mode .projects-note strong {
+  color: #102841;
 }

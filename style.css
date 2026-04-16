@@ -871,3 +871,20 @@ body:not(.dark-mode):not(.light-mode) {
   transform: none;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
 }
+.project-meta {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin-top: 10px;
+  color: #444;
+}
+
+.project-meta strong {
+  color: #102841;
+}
+body.dark-mode .project-meta {
+  color: rgb(146, 182, 254);
+}
+
+body.dark-mode .project-meta strong {
+  color: #ffffff;
+}
