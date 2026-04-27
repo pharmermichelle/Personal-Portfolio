@@ -49,22 +49,34 @@
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li><a href="projects.html" class="active">Work</a></li>
-          <li><a href="socials.html">Blog</a></li>
-          <li><a href="resume.html">Resume</a></li>
+          <li><a href="socials.html">Socials</a></li>
+          <li><a href="resume.html">Resumes</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
 
-        <a href="contact.html" class="nav-cta">Let's Connect →</a>
-        <button class="nav-mobile-toggle" aria-label="Menu">☰</button>
+        <div class="nav-actions">
+          <a href="contact.html" class="nav-cta">Let's Connect →</a>
+
+          <button
+            id="theme-toggle"
+            class="theme-toggle-btn"
+            aria-label="Toggle color theme"
+            type="button"
+          >
+            ☀️ Light Mode
+          </button>
+
+          <button
+            class="nav-mobile-toggle"
+            aria-label="Menu"
+            aria-expanded="false"
+          >
+            ☰
+          </button>
+        </div>
       </div>
     </nav>
-    <button
-      id="theme-toggle"
-      class="theme-toggle-btn"
-      aria-label="Toggle Dark Mode"
-    >
-      🌙 Dark Mode
-    </button>
+
     <main>
       <section class="hero split-hero">
         <div class="hero-inner">

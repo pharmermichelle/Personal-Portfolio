@@ -1257,30 +1257,34 @@ footer > a:first-child {
 }
 
 /* ============================================================
-   THEME TOGGLE (hidden by default, or keep subtle)
+   THEME TOGGLE — NAV STYLE
    ============================================================ */
 
 .theme-toggle-btn {
   position: fixed;
-  top: 20px;
+  top: 16px;
   right: 20px;
-  z-index: 1000;
-  background: #e63946;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-weight: bold;
+  z-index: 1100;
+
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+
   cursor: pointer;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition:
-    background 0.3s ease,
-    transform 0.2s ease;
+  transition: all var(--transition-fast);
 }
-.theme-toggle-btn {
-  display: none; /* Remove for cleaner look like reference */
+
+.theme-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-card);
 }
+
 /* ============================================================
    BUTTONS — GENERIC (subpage fallback)
    ============================================================ */
@@ -1629,6 +1633,31 @@ body:not(.dark-mode):not(.light-mode) {
   color: var(--text-primary);
 }
 
+body.light-mode .site-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+body.light-mode .nav-logo-text {
+  color: var(--text-primary);
+}
+
+body.light-mode .nav-links li a {
+  color: var(--text-secondary);
+}
+
+body.light-mode .nav-links li a:hover {
+  color: var(--text-primary);
+}
+
+body.light-mode .nav-links li a.active {
+  color: var(--accent);
+}
+
+body.light-mode .nav-links li a.active::after {
+  background: var(--accent);
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -1779,5 +1808,89 @@ body:not(.dark-mode):not(.light-mode) {
 
   .about {
     padding: 24px;
+  }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle-btn {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-card);
+  transform: translateY(-1px);
+}
+
+body.light-mode .site-nav {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+body.light-mode .nav-links li a {
+  color: var(--text-secondary);
+}
+
+body.light-mode .nav-links li a:hover {
+  color: var(--text-primary);
+}
+
+body.light-mode .nav-links li a.active {
+  color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .nav-actions .nav-cta {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .nav-inner {
+    position: relative;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-card);
+  }
+
+  .nav-links.nav-open {
+    display: flex;
+  }
+
+  .nav-links li {
+    display: block;
+    margin: 0;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 14px 16px;
   }
 }

@@ -105,3 +105,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const mobileToggle = document.querySelector(".nav-mobile-toggle");
+  const navLinks = document.querySelector(".nav-links");
+
+  if (!mobileToggle || !navLinks) return;
+
+  mobileToggle.addEventListener("click", () => {
+    navLinks.classList.toggle("nav-open");
+
+    const isOpen = navLinks.classList.contains("nav-open");
+    mobileToggle.setAttribute("aria-expanded", isOpen);
+    mobileToggle.textContent = isOpen ? "✕" : "☰";
+  });
+});
