@@ -219,3 +219,59 @@
     margin: 10px 0;
   }
 }
+/* =========================
+   RESUME PAGE MOBILE FIXES
+   ========================= */
+
+@media (max-width: 768px) {
+  /* Tighten resume hero */
+  body .hero.split-hero,
+  body .split-hero {
+    padding-top: 34px !important;
+    padding-bottom: 34px !important;
+  }
+
+  body .hero-badge {
+    margin-bottom: 16px;
+  }
+
+  body .hero-text h1 {
+    font-size: 1.58rem !important;
+    line-height: 1.15 !important;
+  }
+
+  body .tagline {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  /* Fix stacked resume download buttons */
+  .resume-intro a.resume-download {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 0 14px 0 !important;
+    padding: 15px 18px !important;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .resume-intro a.resume-download:last-of-type {
+    margin-bottom: 0 !important;
+  }
+
+  /* Fix accordion button wrapping */
+  .experience .accordion-header {
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    padding: 14px 14px !important;
+    gap: 8px;
+  }
+
+  .experience .accordion-header::after {
+    font-size: 0.85rem !important;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+}
