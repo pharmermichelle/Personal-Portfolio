@@ -1,14 +1,19 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Michelle Waite | Web Dev Projects</title>
+    <title>Michelle Waite | Projects</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <meta
       property="og:description"
-      content="Explore Michelle's portfolio of creative, web-based projects and tools."
+      content="Explore Michelle Waite's portfolio of creative projects, web tools, games, and interactive experiments."
     />
-    <meta property="og:image" content="images\portfolio-icon.png" />
-    <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
-    <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
+    <meta property="og:image" content="images/portfolio-icon.png" />
+
+    <link rel="icon" type="image/png" href="images/portfolio-icon.png" />
+
     <!-- Google tag (gtag.js) -->
     <script
       async
@@ -20,16 +25,39 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-9D74M6L9M7");
     </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Projects - Michelle's Portfolio</title>
-    <link rel="stylesheet" href="projects.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="projects.css" />
   </head>
   <body>
+    <nav class="site-nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <span class="nav-logo-mark">MW</span>
+          <span class="nav-logo-text">michellew.io</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html" class="active">Work</a></li>
+          <li><a href="socials.html">Blog</a></li>
+          <li><a href="resume.html">Resume</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <a href="contact.html" class="nav-cta">Let's Connect →</a>
+        <button class="nav-mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </nav>
     <button
       id="theme-toggle"
       class="theme-toggle-btn"
@@ -39,53 +67,41 @@
     </button>
     <main>
       <section class="hero split-hero">
-        <div class="hero-image">
-          <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
-        </div>
-        <div class="hero-text">
-          <h1>Michelle Waite</h1>
-          <p class="tagline">
-            Community Builder & Web Generalist<br />
-            Passionate about games, open-source, and making tech more human.<br />
-            AI-curious and always creating.
-          </p>
-          <div class="sticky-nav-wrapper">
+        <div class="hero-inner">
+          <div class="hero-text">
+            <span class="hero-badge">
+              PROJECTS · GAMES · WEB TOOLS · CREATIVE EXPERIMENTS
+            </span>
+
+            <h1>
+              Projects, prototypes, and things I’m figuring out as I build.
+            </h1>
+
+            <p class="tagline">
+              A mix of web projects, browser games, creative tools, client work,
+              and experiments shaped by real-world feedback, curiosity, and
+              iteration.
+            </p>
+
             <div class="hero-buttons">
-              <a href="index.html" class="button">Return Home</a>
-              <a
-                href="resume.html"
-                class="button"
-                onclick="
-                  gtag('event', 'click', {
-                    event_category: 'Navigation',
-                    event_label: 'Hero Resume Button',
-                  })
-                "
+              <a href="index.html" class="button button-outline"
+                >Return Home →</a
               >
-                Experience & Resume
-              </a>
-              <a
-                href="contact.html"
-                class="button"
-                onclick="
-                  gtag('event', 'click', {
-                    event_category: 'Navigation',
-                    event_label: 'Hero Contact Button',
-                  })
-                "
+              <a href="contact.html" class="button button-filled"
+                >Contact Me →</a
               >
-                Contact Me
-              </a>
-              <a
-                href="retro-game-hub.html"
-                class="arcade-cta"
-                title="Play games in the Retro Hub"
-              >
-                <span class="scan"
-                  ><span class="icon">🕹️</span> Play the Retro Arcade</span
-                >
-              </a>
             </div>
+          </div>
+
+          <div class="hero-image">
+            <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
+          </div>
+
+          <div class="hero-tags">
+            <span class="hero-tag">🎮 Browser Games</span>
+            <span class="hero-tag">🛠️ Web Tools</span>
+            <span class="hero-tag">💬 Community Ideas</span>
+            <span class="hero-tag">🎨 Creative Builds</span>
           </div>
         </div>
       </section>
@@ -347,10 +363,6 @@
               display to reach a 100% double-take chance while keeping
               uninterested passers as low as possible.
             </p>
-            <p class="project-meta">
-              <strong>Built with:</strong> HTML · CSS · JavaScript · custom game
-              UI · replayable score loop
-            </p>
             <div class="card-actions">
               <a
                 href="minigame/pound_cake/index.html"
@@ -452,7 +464,7 @@
               deciding which messages to approve, delete, or moderate. Test your
               community management skills in this engaging mini-game.
             </p>
-            <a href="minigame\inbox-hero.html" class="project-link sr-only"
+            <a href="minigame/inbox-hero.html" class="project-link sr-only"
               >Check it out!</a
             >
           </div>
@@ -466,7 +478,7 @@
               community management skills in this engaging mini-game.
             </p>
             <a
-              href="minigame\community-garden.html"
+              href="minigame/community-garden.html"
               class="project-link sr-only"
               >Check it out!</a
             >
@@ -511,27 +523,93 @@
       </section>
 
       <footer>
-        <a href="index.html">← Back to Home</a>
-        <p></p>
-        <h2>Get in Touch</h2>
-        <p>
-          Have a project in mind or just want to chat about games, tech, or
-          community? I’d love to hear from you!
-        </p>
-        <p>
-          Email me at
-          <a href="mailto: michelle@michellew.io"> michelle@michellew.io </a>
-        </p>
-        <p>
-          Created by
-          <a href="linkedin.com/in/michelle-waite/" target="_blank">Michelle</a>
-          |
-          <a href="https://github.com/pharmermichelle" target="_blank"
-            >GitHub</a
-          >
-          |
-          <a href="contact.html">Contact</a> | <a href="resume.html">Resume</a>
-        </p>
+        <div class="footer-grid">
+          <div class="footer-col footer-about">
+            <h3>About Me</h3>
+            <div class="footer-about-inner">
+              <img
+                src="images/photo.png"
+                alt="Michelle"
+                class="footer-avatar"
+              />
+              <p>
+                A collection of tools, games, and experiments built while
+                exploring real-world systems and workflows. From healthcare
+                environments to gaming communities and live events, I bring
+                clarity to complexity.
+              </p>
+            </div>
+            <a href="resume.html" class="footer-subtle-link">
+              More about my journey →
+            </a>
+          </div>
+
+          <div class="footer-col footer-contact">
+            <h3>Let's Work Together</h3>
+            <p>
+              Open to opportunities in healthcare workflows, community support,
+              live ops, event operations, sports environments, and
+              product-adjacent roles.
+            </p>
+            <p>
+              ✉️
+              <a href="mailto:michelle@michellew.io">michelle@michellew.io</a>
+            </p>
+            <p>📍 South Carolina, USA</p>
+            <a class="button button-filled footer-cta" href="contact.html">
+              Let's Connect →
+            </a>
+          </div>
+
+          <div class="footer-col footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="resume.html">📄 View Resume →</a></li>
+              <li><a href="socials.html">📝 Hope & Hotfixes →</a></li>
+              <li>
+                <a
+                  href="https://github.com/pharmermichelle"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🐙 GitHub Profile →
+                </a>
+              </li>
+              <li><a href="contact.html">💌 Get in Touch →</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-bottom-inner">
+            <div class="footer-bottom-left">
+              <span class="nav-logo-mark">MW</span>
+              <span class="nav-logo-text">michellew.io</span>
+            </div>
+
+            <p>© 2026 Michelle Waite. All rights reserved.</p>
+
+            <div class="footer-socials">
+              <a
+                href="https://linkedin.com/in/michelle-waite/"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="LinkedIn"
+              >
+                in
+              </a>
+              <a
+                href="https://github.com/pharmermichelle"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="GitHub"
+              >
+                GH
+              </a>
+              <a href="mailto:michelle@michellew.io" title="Email">✉️</a>
+            </div>
+          </div>
+        </div>
       </footer>
     </main>
   </body>

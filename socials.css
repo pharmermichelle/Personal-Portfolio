@@ -41,11 +41,8 @@
   background-size: cover; /* key for smooth scaling across sizes */
   background-repeat: no-repeat;
   /* subtle dark gradient overlay for readability */
-  background-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.45)
-    ),
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45)),
     var(--hnh-bg-image, none);
   transform: translateZ(0); /* helps some GPUs with rendering */
 }
@@ -87,7 +84,10 @@ body.light-mode .hnh-bg--no-dim::before {
   background: rgba(0, 0, 0, 0.35);
   border: 2px solid rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(4px) saturate(120%);
-  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease;
 }
 .play-chip img {
   width: 40px;
@@ -138,16 +138,10 @@ body.light-mode .hnh-bg--no-dim::before {
   /* glass panel */
   border: 1px solid transparent; /* needed for the gradient border trick */
   background-image:
-    /* layer 1: panel fill (goes inside the border) */ linear-gradient(
-      rgba(20, 20, 20, 0.55),
-      rgba(20, 20, 20, 0.55)
-    ),
+    /* layer 1: panel fill (goes inside the border) */
+    linear-gradient(rgba(20, 20, 20, 0.55), rgba(20, 20, 20, 0.55)),
     /* layer 2: the gradient stroke */
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.6),
-        rgba(255, 255, 255, 0.08)
-      );
+    linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.08));
   background-origin: padding-box, border-box;
   background-clip: padding-box, border-box;
 
@@ -198,7 +192,10 @@ body.light-mode .hnh-bg--no-dim::before {
   place-items: center;
   border: 2px solid rgba(255, 255, 255, 0.8);
   background: transparent;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 .icon-btn img {
   width: 20px;
@@ -249,5 +246,185 @@ body.light-mode .hnh-bg--no-dim::before {
   }
   .link-group {
     justify-content: flex-start;
+  }
+}
+.socials-intro {
+  max-width: var(--max-width);
+  margin: 48px auto;
+  padding: 0 32px;
+}
+
+.socials-intro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+}
+
+.socials-intro-card h2 {
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.socials-intro-card p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.social-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.social-platform-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-med);
+}
+
+.social-platform-card:hover {
+  transform: translateY(-4px);
+  background: var(--bg-card-hover);
+  border-color: var(--border-card);
+}
+
+.social-platform-card h3 {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.social-platform-card p {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.connect-container {
+  max-width: var(--max-width);
+  margin: 0 auto 56px;
+  padding: 0 32px;
+}
+
+.connect-container > p,
+.connect-container > .section-kicker {
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .social-platform-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .social-platform-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .socials-intro,
+  .connect-container {
+    padding: 0 20px;
+  }
+}
+.featured-platform {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--bg-card-hover), var(--bg-card));
+}
+
+.featured-platform h3::after {
+  content: "Main Page";
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-light);
+  font-size: 0.68rem;
+  vertical-align: middle;
+}
+.socials-section-header {
+  margin-bottom: 24px;
+}
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.episode-card {
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-med);
+}
+
+.episode-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-card);
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.episode-thumb {
+  min-height: 180px;
+  background-image:
+    linear-gradient(to bottom, rgba(10, 15, 26, 0.08), rgba(10, 15, 26, 0.72)),
+    var(--thumb);
+  background-size: cover;
+  background-position: center;
+}
+
+.episode-card-body {
+  padding: 24px;
+}
+
+.episode-label {
+  color: var(--accent-light);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.episode-card h3 {
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.episode-card p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.episode-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+@media (max-width: 800px) {
+  .episode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .episode-actions {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

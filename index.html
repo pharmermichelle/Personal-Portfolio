@@ -2,12 +2,18 @@
 <html lang="en">
   <head>
     <title>Michelle Waite | Portfolio Home</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <meta
       property="og:description"
-      content="Explore Michelle's portfolio of creative, web-based projects and tools."
+      content="Explore Michelle Waite's portfolio of operations, live systems, web tools, and interactive projects."
     />
-    <meta property="og:image" content="images\portfolio-icon.png" />
-    <link rel="icon" type="images\png" href="images\portfolio-icon.png" />
+    <meta property="og:image" content="images/portfolio-icon.png" />
+
+    <link rel="icon" type="image/png" href="images/portfolio-icon.png" />
+
     <!-- Google tag (gtag.js) -->
     <script
       async
@@ -19,11 +25,15 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-9D74M6L9M7");
     </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -31,24 +41,117 @@
   <body>
     <button id="theme-toggle" class="theme-toggle-btn">🌙 Dark Mode</button>
 
-    <section class="hero split-hero">
-      <div class="hero-image">
-        <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
+    <nav class="site-nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <span class="nav-logo-mark">MW</span>
+          <span class="nav-logo-text">michellew.io</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="projects.html">Work</a></li>
+          <li><a href="socials.html">Socials</a></li>
+          <li><a href="resume.html">Resumes</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <a href="contact.html" class="nav-cta">Let's Connect →</a>
       </div>
-      <div class="hero-text">
-        <h1>Michelle Waite</h1>
-        <p class="tagline">
-          Operations-minded builder with a background in healthcare, gaming, and
-          live systems.<br />
-          Creating useful digital experiences, interactive tools, and real-world
-          event tech.
-        </p>
+    </nav>
+
+    <section class="hero split-hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="hero-badge">
+            OPERATIONS · LIVE SYSTEMS · WEB TOOLS · USER EXPERIENCE
+          </span>
+
+          <h1>
+            I work at the intersection of people, tools, and workflows in
+            real-world environments.
+          </h1>
+
+          <p class="tagline">
+            I'm operations-minded with experience across healthcare, gaming,
+            live events, community support, and web-based tools.
+          </p>
+
+          <div class="hero-buttons">
+            <a class="button button-filled" href="projects.html">
+              Explore My Work →
+            </a>
+            <a class="button button-outline" href="resume.html">
+              View Resume →
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
+        </div>
+
+        <div class="hero-tags">
+          <span class="hero-tag">Healthcare Operations</span>
+          <span class="hero-tag">Gaming & Community</span>
+          <span class="hero-tag">Live Event Systems</span>
+          <span class="hero-tag">Web Tools</span>
+          <span class="hero-tag">User Support</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-bar">
+      <div class="stats-inner">
+        <div class="stat-item">
+          <span class="stat-icon">📡</span>
+          <span class="stat-label">Live System Thinking</span>
+          <span class="stat-sub">
+            Building and supporting systems that operate in real time
+          </span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-icon">👥</span>
+          <span class="stat-label">User-Focused Execution</span>
+          <span class="stat-sub">
+            Prioritizing clarity, usability, and real user needs
+          </span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-icon">⏱️</span>
+          <span class="stat-label">Real-Time Environments</span>
+          <span class="stat-sub">
+            Experience in fast-moving, high-pressure situations
+          </span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-icon">⚙️</span>
+          <span class="stat-label">Process Awareness</span>
+          <span class="stat-sub">
+            Understanding how systems, people, and workflows connect
+          </span>
+        </div>
+
+        <div class="stat-item">
+          <span class="stat-icon">🛠️</span>
+          <span class="stat-label">Practical Tool Building</span>
+          <span class="stat-sub">
+            Creating useful tools, not just concepts or prototypes
+          </span>
+        </div>
       </div>
     </section>
 
     <main>
       <section class="about">
-        <h2>Explore My Work</h2>
+        <div class="section-header">
+          <h2>Featured Work</h2>
+          <a href="projects.html" class="view-all-link">View All Projects →</a>
+        </div>
+
         <div class="quick-links-grid">
           <a class="quick-link-item" href="projects.html">
             <h3>Projects</h3>
@@ -86,8 +189,7 @@
             <h3>Puck in Play</h3>
             <p>
               Live arena display system built for real-time hockey game
-              operations.
-              <strong>Project page coming soon.</strong>
+              operations. <strong>Project page coming soon.</strong>
             </p>
           </div>
 
@@ -97,25 +199,72 @@
               Interactive browser games exploring UX, engagement loops, and fun.
             </p>
             <span class="arcade-cta explore-arcade-link">
-              <span class="scan"
-                ><span class="icon">🕹️</span> Explore the Retro Arcade</span
-              >
+              <span class="scan">
+                <span class="icon">🕹️</span> Explore the Retro Arcade
+              </span>
             </span>
           </a>
         </div>
+
+        <div class="skills-row-section">
+          <h2>What I Do Best</h2>
+
+          <div class="skills-row">
+            <div class="skill-item">
+              <span class="skill-icon">📋</span>
+              <div>
+                <strong>Operations Support</strong>
+                <p>Keeping people, workflows, and systems organized.</p>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <span class="skill-icon">⚙️</span>
+              <div>
+                <strong>Process Improvement</strong>
+                <p>Finding cleaner ways to manage repeatable work.</p>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <span class="skill-icon">📡</span>
+              <div>
+                <strong>Live Environments</strong>
+                <p>Supporting real-time events, games, and user needs.</p>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <span class="skill-icon">💬</span>
+              <div>
+                <strong>Community + Users</strong>
+                <p>Translating feedback into clearer product direction.</p>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <span class="skill-icon">🛠️</span>
+              <div>
+                <strong>Tool Building</strong>
+                <p>Creating practical web tools and interactive experiences.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="about-inner">
           <h2>About Me</h2>
 
           <div class="about-content">
             <img
               src="images/photo.png"
-              alt="Michelle's Profile Picture"
+              alt="Michelle's profile picture"
               class="profile-pic"
             />
 
             <div class="about-text">
               <p class="about-lead">
-                Hey, I’m Michelle. My background is a little unconventional, but
+                Hey, I'm Michelle. My background is a little unconventional, but
                 it all ties together around one thing: keeping systems running
                 smoothly for people who rely on them.
               </p>
@@ -130,14 +279,14 @@
 
               <p>
                 From there, I moved into gaming and community operations, where
-                I worked on live games, ran events, supported thousands of daily
-                users, and translated player feedback into product improvements.
-                That experience pulled me deeper into live operations, product
+                I worked on live games, ran events, supported users, and helped
+                translate player feedback into product improvements. That
+                experience pulled me deeper into live operations, product
                 thinking, and user experience.
               </p>
 
               <p>
-                Today, I’m focused on building web-based tools, interactive
+                Today, I'm focused on building web-based tools, interactive
                 projects, and real-world systems like
                 <strong>Puck in Play</strong>, a live arena display system used
                 during hockey games, along with my
@@ -146,131 +295,213 @@
               </p>
 
               <p class="about-subtext">
-                Going forward, I’m looking for opportunities in healthcare
-                operations, event and venue operations, or live ops and product
-                roles where people, systems, and real-time execution meet.
+                Going forward, I'm looking for opportunities in healthcare
+                operations, event and venue operations, sports operations, live
+                ops, or product-adjacent roles where people, systems, and
+                real-time execution meet.
               </p>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- Hidden for now - will add back in later
-      <section class="certification-bar">
-        <h2>Featured Certifications</h2>
-        <div class="certifications">
-          <div class="certification">
-            <a
-              href="https://www.linkedin.com/learning/certificates/4857cd754ab1c39cb3a770fb969358f563c10793f0b69de8e4723621c747fdf3?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BbEE1vbAnQtS2sD3PBjCyXw%3D%3D"
-              target="_blank"
-              title="LinkedIn Learn - SQL Essential Training"
-            >
-              <img src="images\LI-In-Bug.png" class="cert-badge" />
-            </a>
+        <!-- Hidden for now - will add back in later
+        <section class="certification-bar">
+          <h2>Featured Certifications</h2>
+          <div class="certifications">
+            <div class="certification">
+              <a
+                href="https://www.linkedin.com/learning/certificates/4857cd754ab1c39cb3a770fb969358f563c10793f0b69de8e4723621c747fdf3?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BbEE1vbAnQtS2sD3PBjCyXw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="LinkedIn Learn - SQL Essential Training"
+              >
+                <img src="images/LI-In-Bug.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.linkedin.com/learning/certificates/7ca7a56bf4948512b50b4e1bf4bfa58d5f3220ba970a7c8690995ecae79e3778?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BbEE1vbAnQtS2sD3PBjCyXw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Microsoft - Generative AI for Marketing"
+              >
+                <img src="images/microsoft-logo-2.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.shecodes.io/certificates/e924f0d6128015fffeaa57e51224d1c3?_gl=1*zi6iae*_gcl_au*MjI5Mjc2NTMxLjE3Mzg5NTMzNzEuMTY3OTYyNDkwNS4xNzQyMjQyMDM4LjE3NDIyNDIwOTU."
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SheCodes - Advanced Web Development"
+              >
+                <img src="images/badge-logo-plus-Addon.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.shecodes.io/certificates/64eca635ee7fffde52952da6440005fc"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SheCodes - Introduction to Artificial Intelligence"
+              >
+                <img src="images/badge-logo-AI-Addon.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.shecodes.io/certificates/32a6e17abf8295c98fd2344d8f1e2778"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SheCodes - Web Development"
+              >
+                <img src="images/badge-logo-plus.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.shecodes.io/certificates/e7062f82a327d1233995946b3077efa6"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SheCodes - Introduction to Web Development"
+              >
+                <img src="images/badge-logo-basic-addon.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://shecodes.io/certificates/bbd834e1fb27885e5a708afd06e9d868"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SheCodes - Introduction to Coding"
+              >
+                <img src="images/badge-logo-basic.png" class="cert-badge" />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.credly.com/badges/69474f04-4edb-4a61-9667-df13bfe08d43/public_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="IBM - Artificial Intelligence Fundamentals"
+              >
+                <img
+                  src="images/badge-logo-AI-Fundamentals-IBM.png"
+                  class="cert-badge"
+                />
+              </a>
+            </div>
+
+            <div class="certification">
+              <a
+                href="https://www.linkedin.com/learning/certificates/418f9efb9b551e2def6c94eac13bba52f9e2e07b96a15e400c6a13085372d981"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="LinkedIn Learn - AI for Marketing"
+              >
+                <img src="images/LI-In-Bug.png" class="cert-badge" />
+              </a>
+            </div>
           </div>
-          <div class="certification">
-            <a
-              href="https://www.linkedin.com/learning/certificates/7ca7a56bf4948512b50b4e1bf4bfa58d5f3220ba970a7c8690995ecae79e3778?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BbEE1vbAnQtS2sD3PBjCyXw%3D%3D"
-              target="_blank"
-              title="Microsoft - Generative AI for Marketing"
-            >
-              <img src="images\microsoft-logo-2.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.shecodes.io/certificates/e924f0d6128015fffeaa57e51224d1c3?_gl=1*zi6iae*_gcl_au*MjI5Mjc2NTMxLjE3Mzg5NTMzNzEuMTY3OTYyNDkwNS4xNzQyMjQyMDM4LjE3NDIyNDIwOTU."
-              target="_blank"
-              title="SheCodes- Advanced Web Development"
-            >
-              <img src="images\badge-logo-plus-Addon.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.shecodes.io/certificates/64eca635ee7fffde52952da6440005fc"
-              target="_blank"
-              title="SheCodes- Introduction to Artificial Intelligence"
-            >
-              <img src="images/badge-logo-AI-Addon.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.shecodes.io/certificates/32a6e17abf8295c98fd2344d8f1e2778"
-              target="_blank"
-              title="SheCodes- Web Development"
-            >
-              <img src="images/badge-logo-plus.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.shecodes.io/certificates/e7062f82a327d1233995946b3077efa6"
-              target="_blank"
-              title="SheCodes- Introduction to Web Development"
-            >
-              <img src="images/badge-logo-basic-addon.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://shecodes.io/certificates/bbd834e1fb27885e5a708afd06e9d868"
-              target="_blank"
-              title="SheCodes- Introduction to Coding"
-            >
-              <img src="images/badge-logo-basic.png" class="cert-badge" />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.credly.com/badges/69474f04-4edb-4a61-9667-df13bfe08d43/public_url"
-              target="_blank"
-              title="IBM - Artifical Intelligence Fundamentals"
-            >
-              <img
-                src="images/badge-logo-AI-Fundamentals-IBM.png"
-                class="cert-badge"
-              />
-            </a>
-          </div>
-          <div class="certification">
-            <a
-              href="https://www.linkedin.com/learning/certificates/418f9efb9b551e2def6c94eac13bba52f9e2e07b96a15e400c6a13085372d981"
-              target="_blank"
-              title="LinkedIn Learn - AI for Marketing"
-            >
-              <img src="images\LI-In-Bug.png" class="cert-badge" />
-            </a>
-          </div>
-        </div>
-        <p class="cert-transcript-link">
-          See full certification transcripts on my
-          <a href="resume.html">Resume Page</a>.
-        </p>
+
+          <p class="cert-transcript-link">
+            See full certification transcripts on my
+            <a href="resume.html">Resume Page</a>.
+          </p>
+        </section>
+        -->
       </section>
-      -->
     </main>
 
     <footer>
-      <a href="index.html">← Back to Home</a>
-      <p></p>
-      <h2>Get in Touch</h2>
-      <p>
-        Have a project in mind or just want to chat about games, tech, or
-        community? I’d love to hear from you!
-      </p>
-      <p>
-        Email me at
-        <a href="mailto: michelle@michellew.io"> michelle@michellew.io </a>
-      </p>
-      <p>
-        Created by
-        <a href="linkedin.com/in/michelle-waite/" target="_blank">Michelle</a> |
-        <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a>
-        |
-        <a href="contact.html">Contact</a> | <a href="resume.html">Resume</a>
-      </p>
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <h3>About Me</h3>
+          <div class="footer-about-inner">
+            <img src="images/photo.png" alt="Michelle" class="footer-avatar" />
+            <p>
+              I thrive where operations, people, and technology intersect. From
+              healthcare operations to gaming communities and live events, I
+              bring clarity to complexity and build practical systems.
+            </p>
+          </div>
+          <a href="resume.html" class="footer-subtle-link">
+            More about my journey →
+          </a>
+        </div>
+
+        <div class="footer-col footer-contact">
+          <h3>Let's Work Together</h3>
+          <p>
+            Open to opportunities in operations, live ops, event operations,
+            healthcare operations, and product-adjacent roles.
+          </p>
+          <p>
+            ✉️
+            <a href="mailto:michelle@michellew.io">michelle@michellew.io</a>
+          </p>
+          <p>📍 South Carolina, USA</p>
+          <a class="button button-filled footer-cta" href="contact.html">
+            Let's Connect →
+          </a>
+        </div>
+
+        <div class="footer-col footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="resume.html">📄 View Resume →</a></li>
+            <li><a href="socials.html">📝 Read the Blog →</a></li>
+            <li>
+              <a
+                href="https://github.com/pharmermichelle"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                🐙 GitHub Profile →
+              </a>
+            </li>
+            <li><a href="contact.html">💌 Get in Touch →</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+          <div class="footer-bottom-left">
+            <span class="nav-logo-mark">MW</span>
+            <span class="nav-logo-text">michellew.io</span>
+          </div>
+
+          <p>© 2026 Michelle Waite. All rights reserved.</p>
+
+          <div class="footer-socials">
+            <a
+              href="https://linkedin.com/in/michelle-waite/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="LinkedIn"
+            >
+              in
+            </a>
+            <a
+              href="https://github.com/pharmermichelle"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub"
+            >
+              GH
+            </a>
+            <a href="mailto:michelle@michellew.io" title="Email">✉️</a>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <script src="index.js"></script>

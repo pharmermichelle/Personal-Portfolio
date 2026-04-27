@@ -19,10 +19,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socials</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="contact.css" />
     <link rel="stylesheet" href="socials.css" />
   </head>
   <body>
+    <nav class="site-nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <span class="nav-logo-mark">MW</span>
+          <span class="nav-logo-text">michellew.io</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html">Work</a></li>
+          <li><a href="socials.html" class="active">Socials</a></li>
+          <li><a href="resume.html">Resume</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <a href="contact.html" class="nav-cta">Let's Connect →</a>
+        <button class="nav-mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </nav>
     <button
       id="theme-toggle"
       class="theme-toggle-btn"
@@ -32,409 +50,499 @@
     </button>
 
     <section class="hero split-hero">
-      <div class="hero-image">
-        <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
-      </div>
-      <div class="hero-text">
-        <h1>Socials — Hope & Hotfixes</h1>
-        <p class="tagline">
-          Devlog clips, reels, and posts from the series. Follow along or jump
-          to a game below.
-        </p>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="hero-badge"
+            >HOPE & HOTFIXES · DEVLOGS · BUILD NOTES</span
+          >
 
-        <div class="social-row">
-          <a
-            href="https://www.linkedin.com/in/michelle-waite"
-            target="_blank"
-            rel="noopener"
-            class="post-button"
-          >
-            <img class="social-icon" src="images/linkedin.svg" alt="LinkedIn" />
-            LinkedIn
-          </a>
-          <a
-            href="https://x.com/pharmermichelle"
-            target="_blank"
-            rel="noopener"
-            class="post-button"
-          >
-            <img class="social-icon" src="images/x.svg" alt="X" /> X / Twitter
-          </a>
-          <a
-            href="https://www.facebook.com/michelletwaite/owner_reels"
-            target="_blank"
-            rel="noopener"
-            class="post-button"
-          >
-            <img class="social-icon" src="images/facebook.svg" alt="Facebook" />
-            Facebook
-          </a>
-        </div>
+          <h1>
+            Hope & Hotfixes is where I share the messy middle of building.
+          </h1>
 
-        <div class="hero-buttons">
-          <a href="projects.html" class="button">← Back to Projects</a>
-          <a href="contact.html" class="button">Contact & Connect</a>
-          <a
-            href="retro-game-hub.html"
-            class="arcade-cta"
-            title="Play games in the Retro Hub"
-          >
-            <span class="scan"
-              ><span class="icon">🕹️</span> Play the Retro Arcade</span
+          <p class="tagline">
+            Short posts, reels, game updates, and honest notes about debugging,
+            learning, rebuilding, and finding the hope inside the hotfix.
+          </p>
+
+          <div class="hero-buttons">
+            <a
+              href="https://hopeandhotfixes.wordpress.com"
+              class="button button-filled"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-          </a>
+              Read the Blog →
+            </a>
+            <a href="projects.html" class="button button-outline">
+              View Projects →
+            </a>
+          </div>
         </div>
+
+        <div class="hero-image">
+          <img src="images/selfie.jpg" alt="Michelle Waite headshot" />
+        </div>
+
+        <div class="hero-tags">
+          <span class="hero-tag">🛠️ Build Logs</span>
+          <span class="hero-tag">🎮 Game Experiments</span>
+          <span class="hero-tag">💛 Real Lessons</span>
+          <span class="hero-tag">📱 Social Updates</span>
+        </div>
+      </div>
+    </section>
+    <section class="socials-intro">
+      <div class="socials-intro-card">
+        <h2>What is Hope & Hotfixes?</h2>
+        <p>
+          Hope & Hotfixes is my creative devlog series about building small
+          games, web tools, and portfolio projects while sharing the real
+          process behind them. It is part project archive, part learning
+          journal, and part reminder that broken code is usually just a step
+          before the fix.
+        </p>
+      </div>
+
+      <div class="social-platform-grid">
+        <a
+          href="https://hopeandhotfixes.wordpress.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-platform-card"
+        >
+          <h3>Hope & Hotfixes Blog</h3>
+          <p>Longer reflections, build notes, and behind-the-scenes posts.</p>
+        </a>
+
+        <a
+          href="https://www.facebook.com/profile.php?id=61573317522381"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-platform-card featured-platform"
+        >
+          <h3>Hope & Hotfixes Facebook Page</h3>
+          <p>
+            The main Facebook home for Hope & Hotfixes posts, reels, and
+            updates.
+          </p>
+        </a>
+
+        <a
+          href="https://www.facebook.com/michelletwaite/owner_reels"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-platform-card"
+        >
+          <h3>Personal Facebook</h3>
+          <p>
+            Personal profile reels and updates connected to my creative work.
+          </p>
+        </a>
+
+        <a
+          href="https://www.linkedin.com/in/michelle-waite"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-platform-card"
+        >
+          <h3>LinkedIn</h3>
+          <p>
+            Professional updates, project posts, and portfolio storytelling.
+          </p>
+        </a>
+
+        <a
+          href="https://x.com/pharmermichelle"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-platform-card"
+        >
+          <h3>X</h3>
+          <p>Quick updates, dev thoughts, and episode links.</p>
+        </a>
       </div>
     </section>
 
     <section class="connect-container">
-      Most recent posts on top!
-
-      <!-- Hockey Shooter -->
-      <section id="hockey-shooter" class="hope-hotfixes hnh-bg hnh-bg--no-dim">
-        <h2>Hockey Shooter</h2>
-
-        <!-- Play Now chip -->
-        <a
-          href="minigame/hockey_shooter/index.html"
-          class="play-chip"
-          aria-label="Play Hockey"
-        >
-          <img src="images\hockey_guy.png" alt="" />
-          <span>Play Now</span>
-        </a>
-
-        <div class="overlay-card modern">
-          <div class="episode-row">
-            <h3>Episode 5.0 • Hockey Shooter • Planning</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1956374843907100999"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View planning on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/r/16uydLgeDd/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View planning on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_opentowork-gamedev-indiedev-activity-7362139763912429568-MKgR?utm_source=share&utm_medium=member_desktop&rcm=ACoAACIvaoUBVAaW4Gc5fr27Ym-clw5D-qe4wFE"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="View planning on LinkedIn"
-                ><img src="images/linkedin.svg" alt=""
-              /></a>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="episode-row">
-            <h3>Episode 5.1 • Hockey Shooter • Reveal</h3>
-            <div class="link-group">Comming Soon!</div>
-          </div>
+      <div class="section-header socials-section-header">
+        <div>
+          <h2>Episode Library</h2>
+          <p class="section-kicker">
+            Recent Hope & Hotfixes posts, project reveals, and playable builds.
+          </p>
         </div>
-      </section>
+      </div>
 
-      <!-- Ferret Life -->
-      <section id="ferret-life" class="hope-hotfixes hnh-bg hnh-bg--no-dim">
-        <h2>Ferret Life</h2>
+      <div class="episode-grid">
+        <!-- Puck in Play / CSS Cleanup -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/puck-in-play-thumb.png&quot;)"
+          ></div>
 
-        <!-- Play Now chip -->
-        <a
-          href="minigame/ferret-life/index.html"
-          class="play-chip"
-          aria-label="Play Ferret Life"
-        >
-          <img src="minigame/ferret-life/assets/bandit.png" alt="" />
-          <span>Play Now</span>
-        </a>
+          <div class="episode-card-body">
+            <p class="episode-label">Build Notes</p>
+            <h3>Puck in Play + CSS Cleanup</h3>
+            <p>
+              A two-part Hope & Hotfixes post about cleaning up CSS, rebuilding
+              display styles, and improving Puck in Play after live arena use.
+            </p>
 
-        <div class="overlay-card modern">
-          <div class="episode-row">
-            <h3>Episode 4.0 • Ferret Life • Planning</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1949920000090722800"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View planning on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/r/179nQRyJzC/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View planning on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_hopeandhotfixes-gamedevelopment-creativechallenge-activity-7355684951494692864-i5bL"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="View planning on LinkedIn"
-                ><img src="images/linkedin.svg" alt=""
-              /></a>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="episode-row">
-            <h3>Episode 4.1 • Ferret Life • Reveal</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1949984683292311932"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View reveal on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/r/1Azx4Gd1rU/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View reveal on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_gamedev-indiedev-opentowork-activity-7355750048724312065-PfhG"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="View reveal on LinkedIn"
-                ><img src="images/linkedin.svg" alt=""
-              /></a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Acorn Ascent -->
-      <section id="acorn-ascent" class="hope-hotfixes hnh-bg hnh-bg--no-dim">
-        <h2>Acorn Ascent</h2>
-
-        <!-- Play Now chip -->
-        <a
-          href="minigame/acorn-ascent/index.html"
-          class="play-chip"
-          aria-label="Play Acorn Ascent"
-        >
-          <img src="minigame/acorn-ascent/assets/acorn.png" alt="" />
-          <span>Play Now</span>
-        </a>
-
-        <div class="overlay-card modern">
-          <div class="episode-row">
-            <h3>Episode 3.0 • Acorn Ascent • Planning</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1945927748725146086"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View planning on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/r/1C5swedURa/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View planning on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="episode-row">
-            <h3>Episode 3.1 • Acorn Ascent • Reveal</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1946070950329397685"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View reveal on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/r/1CcEhkwmnN/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View reveal on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_gamedev-portfolio-webdev-activity-7351841180965371904-SACO"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="Full post on LinkedIn"
-                ><img src="images/linkedin.svg" alt=""
-              /></a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Bugged Out -->
-      <section id="bugged-out" class="hope-hotfixes hnh-bg hnh-bg--no-dim">
-        <h2>Bugged Out!</h2>
-
-        <!-- Play Now chip -->
-        <a
-          href="minigame/bugged-out/index.html"
-          class="play-chip"
-          aria-label="Play Bugged Out"
-        >
-          <img src="minigame/bugged-out/assets/tower-3-green.png" alt="" />
-          <span>Play Now</span>
-        </a>
-
-        <!-- Tight glass card with text + ghost buttons -->
-        <div class="overlay-card modern">
-          <div class="episode-row">
-            <h3>Episode 2.0 • Bugged Out • Planning</h3>
-            <div class="link-group">
-              <a
-                href="https://x.com/pharmermichelle/status/1945694173350248520"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View planning on X"
-              >
-                <img src="images/x.svg" alt="" />
+            <div class="episode-actions">
+              <a href="projects.html" class="button button-filled">
+                View Project →
               </a>
-              <a
-                href="https://www.facebook.com/share/r/191H8GpeSk/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View planning on Facebook"
-              >
-                <img src="images/facebook.svg" alt="" />
-              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://www.facebook.com/share/p/1LNL8qEze8/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="View CSS and Puck in Play post on Facebook"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/v/1C9Po57qZU/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="View CSS and Puck in Play reel on Facebook"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+              </div>
             </div>
           </div>
+        </article>
 
-          <div class="divider"></div>
+        <!-- Hockey Shooter -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/hockey-thumb.png&quot;)"
+          ></div>
 
-          <div class="episode-row">
-            <h3>Episode 2.1 • Bugged Out • Reveal</h3>
-            <div class="link-group">
+          <div class="episode-card-body">
+            <p class="episode-label">Episode 5</p>
+            <h3>Hockey Shooter</h3>
+            <p>
+              Planning and reveal posts for a hockey mini-game build, with
+              playable game and social updates.
+            </p>
+
+            <div class="episode-actions">
               <a
-                href="https://x.com/pharmermichelle/status/1945533051276087566"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View reveal on X"
+                href="minigame/hockey_shooter/index.html"
+                class="button button-filled"
               >
-                <img src="images/x.svg" alt="" />
+                Play Now →
               </a>
-              <a
-                href="https://www.facebook.com/share/r/1ZhEi6GZHx/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View reveal on Facebook"
-              >
-                <img src="images/facebook.svg" alt="" />
-              </a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_gamedev-portfolio-webdev-activity-7351841180965371904-SACO"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="Full post on LinkedIn"
-              >
-                <img src="images/linkedin.svg" alt="" />
-              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://x.com/pharmermichelle/status/1956374843907100999"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="x"
+                  ><img src="images/x.svg"
+                /></a>
+                <a
+                  href="https://www.facebook.com/share/r/16uydLgeDd/"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="fb"
+                  ><img src="images/facebook.svg"
+                /></a>
+                <a
+                  href="https://www.linkedin.com/posts/michelle-waite_opentowork-gamedev-indiedev-activity-7362139763912429568-MKgR"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="li"
+                  ><img src="images/linkedin.svg"
+                /></a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </article>
 
-      <!-- Coastline Cruiser -->
-      <section
-        id="coastline-cruiser"
-        class="hope-hotfixes hnh-bg hnh-bg--no-dim"
-      >
-        <h2>Coastline Cruiser</h2>
+        <!-- Ferret Life -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/ferret-thumb.png&quot;)"
+          ></div>
 
-        <!-- Play Now chip -->
-        <a
-          href="minigame/coastline-cruiser/cruiser.html"
-          class="play-chip"
-          aria-label="Play Coastline Cruiser"
-        >
-          <img src="minigame/coastline-cruiser/assets/buggy3.png" alt="" />
-          <span>Play Now</span>
-        </a>
+          <div class="episode-card-body">
+            <p class="episode-label">Episode 4</p>
+            <h3>Ferret Life</h3>
+            <p>
+              A playful simulation concept with planning and reveal posts across
+              platforms.
+            </p>
 
-        <div class="overlay-card modern">
-          <div class="episode-row">
-            <h3>Episode 1 • Coastline Cruiser</h3>
-            <div class="link-group">
+            <div class="episode-actions">
               <a
-                href="https://x.com/pharmermichelle/status/1945178553596678315"
-                target="_blank"
-                class="icon-btn"
-                data-platform="x"
-                aria-label="View on X"
-                ><img src="images/x.svg" alt=""
-              /></a>
-              <a
-                href="https://www.facebook.com/share/v/16eE4U1yUF/"
-                target="_blank"
-                class="icon-btn"
-                data-platform="fb"
-                aria-label="View on Facebook"
-                ><img src="images/facebook.svg" alt=""
-              /></a>
-              <a
-                href="https://www.linkedin.com/posts/michelle-waite_indiegamedev-webgame-coastlinecruiser-activity-7350652862747537410-AN_3"
-                target="_blank"
-                class="icon-btn"
-                data-platform="li"
-                aria-label="View on LinkedIn"
-                ><img src="images/linkedin.svg" alt=""
-              /></a>
+                href="minigame/ferret-life/index.html"
+                class="button button-filled"
+              >
+                Play Now →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://x.com/pharmermichelle/status/1949920000090722800"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="x"
+                  ><img src="images/x.svg"
+                /></a>
+                <a
+                  href="https://www.facebook.com/share/r/179nQRyJzC/"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="fb"
+                  ><img src="images/facebook.svg"
+                /></a>
+                <a
+                  href="https://www.linkedin.com/posts/michelle-waite_hopeandhotfixes-gamedevelopment-creativechallenge-activity-7355684951494692864-i5bL"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="li"
+                  ><img src="images/linkedin.svg"
+                /></a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </article>
+
+        <!-- Acorn Ascent -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/acorn-thumb.png&quot;)"
+          ></div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Episode 3</p>
+            <h3>Acorn Ascent</h3>
+            <p>
+              Platform-style concept exploring gameplay mechanics and
+              progression.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="minigame/acorn-ascent/index.html"
+                class="button button-filled"
+              >
+                Play Now →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://x.com/pharmermichelle/status/1945927748725146086"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="x"
+                  ><img src="images/x.svg"
+                /></a>
+                <a
+                  href="https://www.facebook.com/share/r/1C5swedURa/"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="fb"
+                  ><img src="images/facebook.svg"
+                /></a>
+                <a
+                  href="https://www.linkedin.com/posts/michelle-waite_gamedev-portfolio-webdev-activity-7351841180965371904-SACO"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="li"
+                  ><img src="images/linkedin.svg"
+                /></a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Bugged Out -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/bugged-thumb.png&quot;)"
+          ></div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Episode 2</p>
+            <h3>Bugged Out!</h3>
+            <p>
+              Cozy tower defense prototype protecting strawberries from waves of
+              bugs.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="minigame/bugged-out/index.html"
+                class="button button-filled"
+              >
+                Play Now →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://x.com/pharmermichelle/status/1945694173350248520"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="x"
+                  ><img src="images/x.svg"
+                /></a>
+                <a
+                  href="https://www.facebook.com/share/r/191H8GpeSk/"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="fb"
+                  ><img src="images/facebook.svg"
+                /></a>
+                <a
+                  href="https://www.linkedin.com/posts/michelle-waite_gamedev-portfolio-webdev-activity-7351841180965371904-SACO"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="li"
+                  ><img src="images/linkedin.svg"
+                /></a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Coastline Cruiser -->
+        <article class="episode-card">
+          <div
+            class="episode-thumb"
+            style="--thumb: url(&quot;images/cruiser-thumbnail.png&quot;)"
+          ></div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Episode 1</p>
+            <h3>Coastline Cruiser</h3>
+            <p>
+              Endless runner beach driving game focused on progression and
+              powerups.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="minigame/coastline-cruiser/cruiser.html"
+                class="button button-filled"
+              >
+                Play Now →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://x.com/pharmermichelle/status/1945178553596678315"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="x"
+                  ><img src="images/x.svg"
+                /></a>
+                <a
+                  href="https://www.facebook.com/share/v/16eE4U1yUF/"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="fb"
+                  ><img src="images/facebook.svg"
+                /></a>
+                <a
+                  href="https://www.linkedin.com/posts/michelle-waite_indiegamedev-webgame-coastlinecruiser-activity-7350652862747537410-AN_3"
+                  target="_blank"
+                  class="icon-btn"
+                  data-platform="li"
+                  ><img src="images/linkedin.svg"
+                /></a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
 
     <footer>
-      <a href="projects.html">← Back to Projects</a>
-      <p></p>
-      <p>
-        Created by
-        <a href="https://linkedin.com/in/michelle-waite/" target="_blank"
-          >Michelle</a
-        >
-        |
-        <a href="https://github.com/pharmermichelle" target="_blank">GitHub</a>
-        |
-        <a href="contact.html">Contact & Connect</a>
-      </p>
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <h3>About Me</h3>
+          <div class="footer-about-inner">
+            <img src="images/photo.png" alt="Michelle" class="footer-avatar" />
+            <p>
+              I thrive where operations, people, and technology intersect. From
+              healthcare operations to gaming communities and live events, I
+              bring clarity to complexity and build practical systems.
+            </p>
+          </div>
+          <a href="resume.html" class="footer-subtle-link">
+            More about my journey →
+          </a>
+        </div>
+
+        <div class="footer-col footer-contact">
+          <h3>Let's Work Together</h3>
+          <p>
+            Open to opportunities in operations, live ops, event operations,
+            healthcare operations, and product-adjacent roles.
+          </p>
+          <p>
+            ✉️ <a href="mailto:michelle@michellew.io">michelle@michellew.io</a>
+          </p>
+          <p>📍 South Carolina, USA</p>
+          <a class="button button-filled footer-cta" href="contact.html">
+            Let's Connect →
+          </a>
+        </div>
+
+        <div class="footer-col footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="resume.html">📄 View Resume →</a></li>
+            <li><a href="socials.html">📝 Hope & Hotfixes →</a></li>
+            <li>
+              <a
+                href="https://github.com/pharmermichelle"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                🐙 GitHub Profile →
+              </a>
+            </li>
+            <li><a href="contact.html">💌 Get in Touch →</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+          <div class="footer-bottom-left">
+            <span class="nav-logo-mark">MW</span>
+            <span class="nav-logo-text">michellew.io</span>
+          </div>
+
+          <p>© 2026 Michelle Waite. All rights reserved.</p>
+
+          <div class="footer-socials">
+            <a href="https://linkedin.com/in/michelle-waite/" target="_blank"
+              >in</a
+            >
+            <a href="https://github.com/pharmermichelle" target="_blank">GH</a>
+            <a href="mailto:michelle@michellew.io">✉️</a>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <script src="index.js"></script>

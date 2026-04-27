@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9D74M6L9M7");
+    </script>
+    <title>Adulting: Low Battery Mode</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="game">
+      <div class="top-panel">
+        <h2>Adulting: Low Battery Mode</h2>
+        <div class="broken">working as intended...</div>
+
+        <div class="avatar" id="avatar">
+          <div class="avatar-head"></div>
+          <div class="avatar-body"></div>
+        </div>
+
+        <div class="stats">
+          <p>Age: <span id="age"></span></p>
+          <p>Energy: <span id="energy"></span></p>
+          <p>XP: <span id="xp"></span></p>
+          <p>Money: $<span id="moneySaved"></span></p>
+          <p>Energy Spent: <span id="totalEnergySpent"></span>⚡</p>
+        </div>
+
+        <p class="progress-label">Progress to next age:</p>
+        <div class="xp-bar-wrap">
+          <div id="xpBar"></div>
+        </div>
+
+        <p id="taskProgress"></p>
+      </div>
+
+      <div class="play-panel">
+        <div id="room">
+          <button class="room-item bed" onclick="takeNap()">
+            🛏️<span>Nap</span>
+          </button>
+          <button class="room-item fridge" onclick="useEnergyBoost()">
+            🧃<span id="boostRoomLabel">Boost</span>
+          </button>
+          <button class="room-item tv" onclick="watchAd()">
+            📺<span>Ad Break</span>
+          </button>
+          <button class="room-item door" onclick="doRoomTask('work')">
+            🚪<span>Work</span>
+          </button>
+
+          <div id="roomTasks"></div>
+        </div>
+
+        <button class="danger start-over" onclick="startOver()">
+          Start Over
+        </button>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,362 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+}
+#game {
+  max-width: 900px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#room {
+  width: 96%;
+  max-width: 900px;
+  flex: 1;
+  height: 100%;
+  min-height: 260px;
+  margin: 12px auto;
+  position: relative;
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(135deg, #3b2f2f, #191919);
+  background-size:
+    40px 40px,
+    40px 40px,
+    cover;
+  border: 3px solid #555;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.room-item {
+  position: absolute;
+  width: 92px;
+  height: 72px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-size: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.room-item span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.room-item.done {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+.room-item:disabled {
+  cursor: not-allowed;
+}
+
+.bed {
+  left: 24px;
+  top: 24px;
+  background: #495c8f;
+}
+
+.fridge {
+  right: 24px;
+  top: 24px;
+  background: #8e44ad;
+}
+
+.tv {
+  right: 24px;
+  bottom: 24px;
+  background: #2c3e50;
+}
+
+.door {
+  left: 24px;
+  bottom: 24px;
+  background: #8b5a2b;
+}
+
+.start-over {
+  width: 96%;
+  max-width: 900px;
+  margin: 0 auto 20px;
+}
+
+/* task object positions */
+.desk {
+  left: 160px;
+  top: 35px;
+  background: #5d6d7e;
+}
+.sink {
+  left: 310px;
+  top: 35px;
+  background: #3498db;
+}
+.laundry {
+  left: 460px;
+  top: 35px;
+  background: #16a085;
+}
+.bathroom {
+  left: 610px;
+  top: 35px;
+  background: #7f8c8d;
+}
+.kitchen {
+  left: 190px;
+  top: 165px;
+  background: #d35400;
+}
+.grocery {
+  left: 350px;
+  top: 165px;
+  background: #27ae60;
+}
+.pet {
+  left: 510px;
+  top: 165px;
+  background: #c0392b;
+}
+.kid {
+  left: 670px;
+  top: 165px;
+  background: #f39c12;
+}
+.house {
+  left: 300px;
+  top: 295px;
+  background: #6c5ce7;
+}
+.life {
+  left: 460px;
+  top: 295px;
+  background: #e84393;
+}
+
+@media (max-width: 700px) {
+  #room {
+    height: 540px;
+  }
+
+  .room-item {
+    width: 78px;
+    height: 66px;
+    font-size: 24px;
+  }
+
+  .desk {
+    left: 115px;
+    top: 24px;
+  }
+  .sink {
+    left: 210px;
+    top: 24px;
+  }
+  .laundry {
+    left: 115px;
+    top: 110px;
+  }
+  .bathroom {
+    left: 210px;
+    top: 110px;
+  }
+  .kitchen {
+    left: 115px;
+    top: 200px;
+  }
+  .grocery {
+    left: 210px;
+    top: 200px;
+  }
+  .pet {
+    left: 115px;
+    top: 290px;
+  }
+  .kid {
+    left: 210px;
+    top: 290px;
+  }
+  .house {
+    left: 115px;
+    top: 380px;
+  }
+  .life {
+    left: 210px;
+    top: 380px;
+  }
+}
+
+.top-panel {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #111;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #333;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.05;
+  margin: 4px 0;
+}
+
+.broken {
+  font-size: 12px;
+  margin: 2px 0 8px;
+}
+
+.stats {
+  width: 96%;
+  margin: 6px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 8px;
+}
+
+.stats p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.progress-label {
+  margin: 6px 0 4px;
+  font-size: 13px;
+}
+
+#taskProgress {
+  margin: 6px 0 0;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.play-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 6px 0 6px;
+}
+
+button {
+  min-height: 48px;
+  padding: 10px;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  margin: 4px auto;
+  background: linear-gradient(145deg, #444, #222);
+  border-radius: 24px;
+  transform: rotateX(20deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.xp-bar-wrap {
+  background: #333;
+  border-radius: 999px;
+  overflow: hidden;
+  width: 96%;
+  height: 14px;
+  margin: 0 auto 6px;
+}
+
+#xpBar {
+  height: 100%;
+  width: 0%;
+  background: #f39c12;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+#tasks,
+.actions {
+  width: 90%;
+  margin: 12px auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+button {
+  width: 100%;
+  min-height: 54px;
+  padding: 12px;
+  margin: 0;
+  font-size: 15px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.task {
+  background: #2ecc71;
+  color: #071107;
+}
+
+.task.done {
+  background: #555;
+  color: #bbb;
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+.task:disabled {
+  cursor: not-allowed;
+}
+
+.rest {
+  background: #3498db;
+}
+
+.ad {
+  background: #f39c12;
+}
+
+.boost {
+  background: #9b59b6;
+  color: white;
+}
+
+.danger {
+  background: #e74c3c;
+  color: white;
+}
+.actions {
+  position: sticky;
+  bottom: 0;
+  background: #111;
+  padding: 8px 0;
+  border-top: 1px solid #333;
+}
+
+@media (max-width: 700px) {
+  #tasks,
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
