@@ -1,0 +1,236 @@
+<!doctype html>
+<!-- ════════════════════════════════════════════════════════════════════════
+     SharkToothify™ — Copyright © 2025–2026 D.L. Burich. ALL RIGHTS RESERVED.
+     Proprietary application. No license is granted to copy, modify, mirror,
+     scrape, or create derivative works. "Sharktoothify" and the tooth-badge
+     logo are trademarks of D.L. Burich. DMCA/permissions:
+     updates@sharktoothify.us
+     ════════════════════════════════════════════════════════════════════════ -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>SharkToothify — Shark Tooth Identification</title>
+    <meta
+      name="description"
+      content="Identify shark teeth instantly with AI or the free manual identifier. Tide charts, weather, hunt planner, badges, and reports — built for fossil hunters."
+    />
+    <meta name="theme-color" content="#004E78" />
+    <meta
+      name="copyright"
+      content="© 2025–2026 D.L. Burich. All rights reserved."
+    />
+    <link rel="canonical" href="https://sharktoothify.us/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SharkToothify",
+        "url": "https://sharktoothify.us/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "Identify shark teeth instantly with AI or a free manual identifier. Live tide charts, weather, a hunt planner, badges and reports for fossil hunters.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "D.L. Burich" }
+      }
+    </script>
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="SharkToothify" />
+
+    <!-- Social cards -->
+    <meta
+      property="og:title"
+      content="SharkToothify — Identify Your Shark Tooth"
+    />
+    <meta
+      property="og:description"
+      content="Snap a photo, get an identification. Free manual ID, AI packs, tide charts, hunt planner & more."
+    />
+    <meta
+      property="og:image"
+      content="https://sharktoothify.us/icons/og-card.png"
+    />
+    <meta property="og:url" content="https://sharktoothify.us" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts used by the app -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Optional, privacy-friendly analytics (create a free Plausible account, then uncomment):
+  <script defer data-domain="sharktoothify.us" src="https://plausible.io/js/script.js"></script>
+  -->
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0a3149;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+        color: #cfe9f5;
+        font-family: system-ui, sans-serif;
+      }
+      #boot .ring {
+        width: 46px;
+        height: 46px;
+        border: 4px solid rgba(255, 255, 255, 0.18);
+        border-top-color: #00aecc;
+        border-radius: 50%;
+        animation: sp 1s linear infinite;
+      }
+      @keyframes sp {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div id="boot">
+        <div class="ring"></div>
+        <div>Loading SharkToothify…</div>
+      </div>
+    </div>
+    <section
+      id="seo"
+      style="
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem;
+        color: #cfe9f5;
+        font-family: system-ui, sans-serif;
+        line-height: 1.6;
+      "
+    >
+      <h1 style="font-size: 1.6rem">
+        SharkToothify — Identify Your Shark Tooth in Seconds
+      </h1>
+      <p>
+        Found a shark tooth on the beach? SharkToothify tells you what it is.
+        Snap a photo for an instant AI identification, or answer a few questions
+        in the always-free manual identifier — Megalodon, Great White, Mako,
+        Tiger, Snaggletooth and 20+ more species.
+      </p>
+      <h2 style="font-size: 1.1rem">Built for fossil hunters</h2>
+      <ul>
+        <li>AI + always-free manual shark tooth identification</li>
+        <li>Live NOAA tide charts and National Weather Service forecasts</li>
+        <li>Hunt Planner: every low tide for the week, scored for hunting</li>
+        <li>
+          10 famous hotspot beaches — Venice FL, Myrtle Beach SC, Calvert Cliffs
+          MD and more
+        </li>
+        <li>
+          Find log, 50 badges, collection tracker and shareable ID reports
+        </li>
+        <li>100% private — your collection never leaves your device</li>
+      </ul>
+      <p>
+        Free to use in any browser. Installs to your home screen and works
+        offline at the beach.
+      </p>
+    </section>
+    <noscript
+      ><div
+        style="
+          position: fixed;
+          inset: 0;
+          background: #0a3149;
+          color: #cfe9f5;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 2rem;
+          font-family: system-ui;
+        "
+      >
+        SharkToothify needs JavaScript enabled to identify your shark teeth.
+        Please enable JavaScript and reload.
+      </div></noscript
+    >
+
+    <!-- React 18 UMD + Babel standalone: zero build step, single-file JSX -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+    <script>
+      // Map the JSX file's `import {...} from "react"` + default export to the UMD globals.
+      window.__mountSTFY = function (AppComponent) {
+        var seo = document.getElementById("seo");
+        if (seo) seo.remove();
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(React.createElement(AppComponent));
+      };
+      fetch("./SharkToothIdentifier.jsx")
+        .then((r) => r.text())
+        .then((src) => {
+          src =
+            src
+              .replace(
+                /import\s+React\s*,\s*\{([^}]*)\}\s*from\s*["']react["'];?/,
+                "const React = window.React; const {$1} = window.React;",
+              )
+              .replace(
+                /import\s*\{([^}]*)\}\s*from\s*["']react["'];?/,
+                "const {$1} = window.React;",
+              )
+              .replace(
+                /export\s+default\s+function\s+([A-Za-z0-9_]+)/,
+                "function $1",
+              ) +
+            "\n;window.__mountSTFY(typeof SharkToothifyApp!=='undefined'?SharkToothifyApp:App);";
+          const out = Babel.transform(src, {
+            presets: [["react"]],
+            filename: "app.jsx",
+          }).code;
+          const s = document.createElement("script");
+          s.text = out;
+          document.body.appendChild(s);
+        })
+        .catch((e) => {
+          document.getElementById("boot").innerHTML =
+            "Couldn't load the app: " + e.message;
+        });
+
+      // PWA service worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () =>
+          navigator.serviceWorker.register("./sw.js").catch(() => {}),
+        );
+      }
+    </script>
+  </body>
+</html>

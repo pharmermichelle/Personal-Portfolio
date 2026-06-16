@@ -1,0 +1,22 @@
+# SharkToothify AI Backend — Cloudflare Worker config
+# Deploy:  npx wrangler deploy        (after `npx wrangler login`)
+# Secrets: npx wrangler secret put ANTHROPIC_API_KEY
+#          npx wrangler secret put STRIPE_SECRET_KEY
+# KV:      npx wrangler kv namespace create CREDITS   → paste the id below
+
+name = "sharktoothify-ai"
+main = "worker.js"
+compatibility_date = "2026-06-01"
+
+[[kv_namespaces]]
+binding = "CREDITS"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+
+[vars]
+# Comma-separated origins allowed to call this API. Use your real app URL(s).
+ALLOWED_ORIGIN = "https://sharktoothify.us"
+TRIAL_CREDITS  = "3"
+MAX_TOKENS_CAP = "8000"
+ALLOWED_MODEL  = "claude-sonnet-4-20250514"
+# amount_total (cents) → credits, fallback if a Payment Link lacks `credits` metadata
+PRICE_MAP      = "299:10,699:30,1499:100"
