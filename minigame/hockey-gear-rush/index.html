@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hockey Gear Rush</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    color: #b30000;
+    text-align: center;
+    padding-bottom: 90px;
+  }
+
+  h1 {
+    background: #b30000;
+    color: white;
+    margin: 0;
+    padding: 12px;
+  }
+
+  #game {
+    padding: 10px;
+  }
+
+  #target {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+
+  #timer {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  #levelInfo {
+  margin-top: 8px;
+  font-weight: 900;
+  color: #7a0000;
+  font-size: 18px;
+}
+
+#lateInfo {
+  margin: 6px auto 0;
+  max-width: 380px;
+  color: #7a0000;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.clean-mode-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #b30000;
+  margin: 8px 0;
+}
+
+.trash-item {
+  font-size: 42px;
+  line-height: 1;
+  width: 58px;
+  height: 58px;
+}
+
+.trash-item.cleaned {
+  opacity: 0;
+  transform: scale(0.2) rotate(180deg);
+  pointer-events: none;
+  transition: 0.25s ease;
+}
+  
+#pileArea {
+  position: relative;
+  width: min(92vw, 420px);
+  height: 420px;
+  margin: 12px auto;
+  background: #fff5f5;
+  border: 4px solid #b30000;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(179, 0, 0, 0.15);
+  touch-action: none;
+}
+
+.pile-item {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.pile-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.pile-item.found {
+  filter: drop-shadow(0 0 10px gold);
+  transform: scale(1.08);
+}
+
+
+  .cell {
+    background: #ffe5e5;
+    border-radius: 10px;
+    font-size: 26px;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .found {
+    background: #b30000;
+    color: white;
+  }
+
+  button {
+    margin-top: 12px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #b30000;
+    color: white;
+    font-size: 16px;
+  }
+
+  #message {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .cell {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+#missionBox {
+  max-width: 420px;
+  margin: 16px auto 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff, #fff1f1);
+  border: 4px solid #b30000;
+  border-radius: 22px;
+  box-shadow: 0 6px 0 #7a0000, 0 10px 18px rgba(179,0,0,0.18);
+}
+
+#missionBox h2 {
+  margin: 0 0 10px;
+  color: #b30000;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+#targetList {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#targetList li {
+  list-style: none !important;
+  background: #ffffff;
+  border: 2px solid #ffb5b5;
+  border-radius: 14px;
+  padding: 8px 9px;
+  color: #930000;
+  font-weight: 800;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+}
+
+#targetList li span:not(.checkmark) {
+  flex: 1;
+}
+
+#targetList li.collected {
+  background: #e9ffe9;
+  border-color: #35a852;
+  color: #217a35;
+  text-decoration: line-through;
+}
+
+.checklist-gear-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.checkmark {
+  flex-shrink: 0;
+  font-size: 17px;
+}
+
+/* Fixes the red/square backgrounds on draggable pile items */
+.pile-item {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: inherit;
+}
+
+.clutter-item {
+  font-size: 34px;
+  line-height: 1;
+}
+
+body {
+  background:
+    radial-gradient(circle at top, #ffffff 0%, #fff1f1 45%, #ffffff 100%);
+}
+
+h1 {
+  font-size: clamp(32px, 9vw, 58px);
+  border-bottom: 6px solid #ffdddd;
+  text-shadow: 2px 3px 0 rgba(0,0,0,0.18);
+}
+
+#missionBox {
+  max-width: 420px;
+  margin: 14px auto 10px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff, #fff0f0);
+  border: 4px solid #b30000;
+  border-radius: 22px;
+  box-shadow: 0 6px 0 #7a0000, 0 10px 18px rgba(179,0,0,0.2);
+}
+
+#missionBox h2 {
+  margin: 0 0 10px;
+  color: #b30000;
+  font-size: 22px;
+}
+
+#targetList {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+#targetList li {
+  list-style: none !important;
+  background: #ffffff;
+  border: 2px solid #ffb5b5;
+  border-radius: 14px;
+  padding: 9px 10px;
+  color: #930000;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#targetList li.collected {
+  background: #e9ffe9;
+  border-color: #35a852;
+  color: #217a35;
+  text-decoration: line-through;
+}
+
+#timer {
+  display: inline-block;
+  background: #b30000;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 22px;
+  box-shadow: 0 4px 0 #7a0000;
+}
+
+/* IMPORTANT: removes the square backgrounds */
+.pile-item,
+.pile-item.clutter-item {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Emoji clutter should float by itself */
+.clutter-item {
+  font-size: 40px;
+  line-height: 1;
+  width: 54px;
+  height: 54px;
+  text-shadow: 0 3px 5px rgba(0,0,0,0.18);
+  backdrop-filter: none !important;
+}
+
+/* Gear images should also have no tile behind them */
+.pile-item img {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-y: hidden;
+}
+
+h1 {
+  font-size: clamp(24px, 7vw, 42px);
+  padding: 6px 10px;
+  line-height: 1.05;
+  border-bottom: 4px solid #ffdddd;
+}
+
+#game {
+  padding: 6px;
+}
+
+#missionBox {
+  margin: 8px auto 6px;
+  padding: 8px;
+  border-width: 3px;
+  border-radius: 18px;
+}
+
+#missionBox h2 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+#targetList {
+  gap: 5px;
+}
+
+#targetList li {
+  min-height: 42px;
+  padding: 5px 6px;
+  font-size: 13px;
+  border-radius: 12px;
+}
+
+.checklist-gear-img {
+  width: 26px;
+  height: 26px;
+}
+
+.checkmark {
+  font-size: 14px;
+}
+
+#timer {
+  font-size: 18px;
+  padding: 5px 14px;
+  margin-bottom: 3px;
+}
+
+#levelInfo {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+#lateInfo {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+#pileArea {
+  width: min(92vw, 390px);
+  height: min(46vh, 360px);
+  margin: 6px auto;
+  border-width: 3px;
+  border-radius: 18px;
+}
+
+.pile-item {
+  width: 56px;
+  height: 56px;
+}
+
+.clutter-item {
+  width: 46px;
+  height: 46px;
+  font-size: 34px;
+}
+
+.trash-item {
+  width: 48px;
+  height: 48px;
+  font-size: 34px;
+}
+
+.level-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.level-popup.hidden {
+  display: none;
+}
+
+.level-popup-card {
+  max-width: 340px;
+  width: 100%;
+  background: white;
+  border: 4px solid #b30000;
+  border-radius: 24px;
+  padding: 18px;
+  color: #7a0000;
+  box-shadow: 0 8px 0 #7a0000;
+}
+
+.level-popup-card h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  color: #b30000;
+}
+
+.level-popup-card p {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+#pileArea.paused {
+  pointer-events: none;
+  opacity: 0.75;
+}
+  
+  #adBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 60px;
+  background: rgba(255,255,255,0.96);
+  border-top: 4px solid #b30000;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+  
+#coffeeBtn {
+  position: fixed;
+  bottom: 78px;
+  right: 10px;
+  z-index: 10000;
+  background: #ffdd00;
+  color: #111;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 7px 9px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.3);
+}
+
+#coffeeBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+</style>
+</head>
+
+<body>
+
+<a
+  id="coffeeBtn"
+  href="https://venmo.com/pharmermichelle"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  ☕ Tip Dev
+</a>
+
+<div id="levelPopup" class="level-popup hidden">
+  <div class="level-popup-card">
+    <h2 id="popupTitle">Level 1</h2>
+    <p id="popupDetails"></p>
+    <button onclick="beginLevelTimer()">Start Level</button>
+  </div>
+</div>
+
+<h1>🏒 Hockey Gear Rush</h1>
+
+<div id="game">
+<div id="missionBox">
+  <h2>🏒 Gear Checklist</h2>
+  <ul id="targetList"></ul>
+</div>
+<div id="timer"></div>
+<div id="levelInfo">Level 1</div>
+<div id="lateInfo"></div>
+  <div id="pileArea"></div>
+  <button onclick="startGame()">Start Round</button>
+  <div id="message"></div>
+</div>
+
+<script>
+
+const gear = [
+  { name: "helmet", label: "Helmet", img: "assets/gear/helmet.png" },
+  { name: "glove", label: "Glove", img: "assets/gear/glove.png" },
+  { name: "skates", label: "Ice Skates", img: "assets/gear/skates.png" },
+  { name: "stick", label: "Hockey Stick", img: "assets/gear/stick.png" },
+  { name: "puck", label: "Puck", img: "assets/gear/puck.png" },
+  { name: "net", label: "Net", img: "assets/gear/net.png" },
+  { name: "shin-pad", label: "Shin Pad", img: "assets/gear/shin_pad.png" },
+  { name: "elbow-pad", label: "Elbow Pad", img: "assets/gear/elbow_pad.png" },
+  { name: "chest-pad", label: "Chest Pad", img: "assets/gear/chest_pad.png" },
+  { name: "jersey", label: "Jersey", img: "assets/gear/jersey.png" }
+];
+
+const filler = ["⭐","🔥","❄️","🍎","🎯","🍀","🌟","💥"];
+
+ let targetItems = [];
+let foundItems = [];
+let time = 0;
+let timer;
+let level = 1;
+let mode = "gear";
+let cleanupItemsLeft = 0;
+
+const levels = [
+  { level: 1, targets: 4, clutter: 34, suggestedTime: 15 },
+  { level: 2, targets: 5, clutter: 42, suggestedTime: 20 },
+  { level: 3, targets: 6, clutter: 50, suggestedTime: 25 },
+  { level: 4, targets: 7, clutter: 58, suggestedTime: 30 },
+  { level: 5, targets: 8, clutter: 66, suggestedTime: 35 }
+];
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function buildGrid() {
+  const pile = document.getElementById("pileArea");
+  pile.innerHTML = "";
+
+  let items = [];
+
+  targetItems = [];
+  const levelData = levels[level - 1] || levels[levels.length - 1];
+
+  // PICK 4 UNIQUE TARGET GEAR ITEMS
+  while (targetItems.length < levelData.targets) {
+    let item = randomItem(gear);
+
+    if (!targetItems.find(t => t.name === item.name)) {
+      targetItems.push(item);
+      items.push({ ...item, isTarget: true });
+    }
+  }
+
+  // RANDOM BEDROOM CLUTTER
+  const clutter = [
+    "🧸","🛹","🎧","📚","🧦","🍕","🥤","🎮",
+    "🧢","📱","🪥","🧃","🍌","🕹️","🪀","📸",
+    "🧼","🧴","🛼","🪁","🎲","🪙","🔋","💡",
+    "🧻","🧢","🪑","🎨","📦","🪥","🧸","🎒"
+  ];
+
+  // ADD LOTS OF CLUTTER
+  while (items.length < levelData.clutter) {
+    items.push({
+      type: "clutter",
+      emoji: randomItem(clutter)
+    });
+  }
+
+  // SHUFFLE EVERYTHING
+  items.sort(() => Math.random() - 0.5);
+
+  items.forEach((item, index) => {
+    const button = document.createElement("button");
+    button.className = "pile-item";
+
+    const maxX = pile.clientWidth - 70;
+const maxY = pile.clientHeight - 70;
+const x = Math.random() * maxX;
+const y = Math.random() * maxY;
+    const rotate = Math.random() * 100 - 50;
+
+    button.style.left = x + "px";
+    button.style.top = y + "px";
+    button.style.transform = `rotate(${rotate}deg)`;
+    button.style.zIndex = index + 1;
+
+    // HOCKEY GEAR
+    if (item.img) {
+      const img = document.createElement("img");
+      img.src = item.img;
+      img.alt = item.label;
+
+      button.appendChild(img);
+
+      button.addEventListener("click", () =>
+        handleClick(button, item)
+      );
+    }
+
+    // CLUTTER EMOJIS
+    else {
+      button.textContent = item.emoji;
+      button.classList.add("clutter-item");
+    }
+
+    makeDraggable(button);
+
+    pile.appendChild(button);
+  });
+
+renderTargetList();
+}
+
+
+function renderTargetList() {
+  const list = document.getElementById("targetList");
+  list.innerHTML = "";
+
+  targetItems.forEach(item => {
+    const li = document.createElement("li");
+    li.id = "target-" + item.name;
+
+    li.innerHTML = `
+      <img class="checklist-gear-img" src="${item.img}" alt="${item.label}">
+      <span>${item.label}</span>
+      <span class="checkmark">⬜</span>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+
+function makeDraggable(item) {
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let itemX = 0;
+  let itemY = 0;
+
+  item.addEventListener("pointerdown", e => {
+    isDragging = true;
+    item.setPointerCapture(e.pointerId);
+
+    startX = e.clientX;
+    startY = e.clientY;
+
+    itemX = parseFloat(item.style.left) || 0;
+    itemY = parseFloat(item.style.top) || 0;
+
+    item.style.zIndex = 999;
+    item.style.cursor = "grabbing";
+  });
+
+  item.addEventListener("pointermove", e => {
+    if (!isDragging) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    item.style.left = itemX + dx + "px";
+    item.style.top = itemY + dy + "px";
+  });
+
+  item.addEventListener("pointerup", e => {
+    isDragging = false;
+    item.releasePointerCapture(e.pointerId);
+    item.style.cursor = "grab";
+  });
+}
+
+function handleClick(cell, item) {
+  const isTarget = targetItems.find(t => t.name === item.name);
+
+  if (isTarget && !cell.classList.contains("found")) {
+    cell.classList.add("found");
+    foundItems.push(item.name);
+
+    cell.style.opacity = "0.25";
+    cell.style.pointerEvents = "none";
+
+    const listItem = document.getElementById("target-" + item.name);
+
+    if (listItem) {
+      listItem.classList.add("collected");
+      listItem.querySelector(".checkmark").textContent = "✅";
+    }
+
+    if (foundItems.length === targetItems.length) {
+      endGame(true);
+    }
+  }
+}
+
+function startGame() {
+  mode = "gear";
+  foundItems = [];
+  time = 0;
+
+  const levelData = levels[level - 1] || levels[levels.length - 1];
+
+  document.getElementById("message").textContent = "";
+  document.getElementById("levelInfo").textContent = "Level " + level;
+  document.getElementById("lateInfo").textContent =
+    "Suggested time: " + levelData.suggestedTime + " seconds. Go over and you clean the room!";
+
+  buildGrid();
+  updateTimer();
+
+  clearInterval(timer);
+
+  document.getElementById("pileArea").classList.add("paused");
+
+  document.getElementById("popupTitle").textContent = "🏒 Level " + level;
+  document.getElementById("popupDetails").innerHTML =
+    "Find <strong>" + levelData.targets + "</strong> pieces of hockey gear.<br>" +
+    "Messy items in the way: <strong>" + (levelData.clutter - levelData.targets) + "</strong><br>" +
+    "Beat it in <strong>" + levelData.suggestedTime + " seconds</strong> or clean the room after.";
+
+  document.getElementById("levelPopup").classList.remove("hidden");
+}
+
+function beginLevelTimer() {
+  document.getElementById("levelPopup").classList.add("hidden");
+  document.getElementById("pileArea").classList.remove("paused");
+
+  clearInterval(timer);
+  timer = setInterval(() => {
+    time++;
+    updateTimer();
+  }, 1000);
+}
+
+function updateTimer() {
+  document.getElementById("timer").textContent = "Time: " + time;
+}
+
+function endGame(win) {
+  clearInterval(timer);
+
+  const levelData = levels[level - 1] || levels[levels.length - 1];
+  const lateSeconds = Math.max(0, time - levelData.suggestedTime);
+
+  if (win && lateSeconds > 0) {
+    document.getElementById("message").textContent =
+      "⏰ You found the gear, but you were " + lateSeconds + 
+      " seconds late. Time to clean this messy room!";
+    
+    setTimeout(() => startCleanupMiniGame(lateSeconds), 1200);
+    return;
+  }
+
+  if (win) {
+    document.getElementById("message").textContent =
+      "🏆 Great job! You beat the clock and made it to the game on time!";
+
+    level++;
+    setTimeout(startGame, 1300);
+    return;
+  }
+
+  document.getElementById("message").textContent =
+    "⏰ Time got away from you. Clean the room before trying again!";
+
+  setTimeout(() => startCleanupMiniGame(5), 1200);
+}
+
+function startCleanupMiniGame(lateSeconds) {
+  mode = "cleanup";
+  clearInterval(timer);
+
+  const pile = document.getElementById("pileArea");
+  pile.innerHTML = "";
+
+  document.getElementById("targetList").innerHTML = "";
+  document.getElementById("timer").textContent = "Cleanup!";
+  document.getElementById("levelInfo").textContent = "Room Cleanup Mini Game";
+
+  cleanupItemsLeft = Math.min(12, Math.max(4, lateSeconds));
+
+  document.getElementById("lateInfo").textContent =
+    "Clean up " + cleanupItemsLeft + " messy items to continue.";
+
+  document.getElementById("message").textContent =
+    "Tap the messy stuff to clean it up!";
+
+  const trash = ["🧦","🍕","🥤","📚","🧸","🎮","🪥","🧃","🍌","📦","🧻","🎒"];
+
+  for (let i = 0; i < cleanupItemsLeft; i++) {
+    const button = document.createElement("button");
+    button.className = "pile-item trash-item";
+    button.textContent = randomItem(trash);
+
+    const maxX = pile.clientWidth - 60;
+const maxY = pile.clientHeight - 60;
+
+button.style.left = Math.random() * maxX + "px";
+button.style.top = Math.random() * maxY + "px";
+    button.style.transform = `rotate(${Math.random() * 80 - 40}deg)`;
+    button.style.zIndex = i + 1;
+
+    button.addEventListener("click", () => {
+      if (button.classList.contains("cleaned")) return;
+
+      button.classList.add("cleaned");
+      cleanupItemsLeft--;
+
+      document.getElementById("lateInfo").textContent =
+        "Messy items left: " + cleanupItemsLeft;
+
+      if (cleanupItemsLeft <= 0) {
+        document.getElementById("message").textContent =
+          "🧹 Room cleaned! Back to finding gear.";
+
+        level++;
+        setTimeout(startGame, 1200);
+      }
+    });
+
+    pile.appendChild(button);
+  }
+}
+</script>
+
+<!-- Bottom Ad Bar -->
+<div id="adBar">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
+     crossorigin="anonymous"></script>
+
+<!-- Gear finder banner -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-9258275639543826"
+     data-ad-slot="8767009395"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+
+</body>
+</html>
