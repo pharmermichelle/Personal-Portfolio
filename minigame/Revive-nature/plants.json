@@ -1,0 +1,82 @@
+{
+  "carrot": {
+    "name": "Carrots",
+    "sprite": "\ud83e\udd55",
+    "baseSell": 42,
+    "seedCost": 5,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "tomato": {
+    "name": "Tomatoes",
+    "sprite": "\ud83c\udf45",
+    "baseSell": 46,
+    "seedCost": 6,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "corn": {
+    "name": "Corn",
+    "sprite": "\ud83c\udf3d",
+    "baseSell": 48,
+    "seedCost": 6,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "sunflower": {
+    "name": "Sunflower",
+    "sprite": "\ud83c\udf3b",
+    "baseSell": 52,
+    "seedCost": 7,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "blueberry": {
+    "name": "Blueberries",
+    "sprite": "\ud83e\uded0",
+    "baseSell": 56,
+    "seedCost": 8,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "watermelon": {
+    "name": "Watermelon",
+    "sprite": "\ud83c\udf49",
+    "baseSell": 60,
+    "seedCost": 9,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "pepper": {
+    "name": "Peppers",
+    "sprite": "\ud83c\udf36\ufe0f",
+    "baseSell": 62,
+    "seedCost": 9,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "cactusfruit": {
+    "name": "Cactus Fruit",
+    "sprite": "\ud83c\udf35",
+    "baseSell": 66,
+    "seedCost": 10,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "apple": {
+    "name": "Apples",
+    "sprite": "\ud83c\udf4e",
+    "baseSell": 64,
+    "seedCost": 10,
+    "minWater": 3,
+    "minFertilizer": 3
+  },
+  "mushroom": {
+    "name": "Mushrooms",
+    "sprite": "\ud83c\udf44",
+    "baseSell": 58,
+    "seedCost": 8,
+    "minWater": 3,
+    "minFertilizer": 3
+  }
+}

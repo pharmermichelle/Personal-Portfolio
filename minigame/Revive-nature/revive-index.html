@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#183d2a" />
+  <title>Revive Nature</title>
+  <link rel="stylesheet" href="revive-style.css" />
+</head>
+<body>
+  <div id="game-shell">
+    <header class="topbar">
+      <div>
+        <h1>REVIVE NATURE</h1>
+        <p id="biome-label">Choose your first property</p>
+      </div>
+
+      <div class="hud" aria-label="Game status">
+        <span>💰 <b id="money-value">$0</b></span>
+        <span>💧 <b id="water-value">0</b></span>
+        <span>🧪 <b id="fertilizer-value">0</b></span>
+        <span>🌱 <b id="restored-value">0/25</b></span>
+      </div>
+    </header>
+
+    <main>
+      <section id="property-screen" class="screen active">
+        <div class="panel intro-panel">
+          <p class="eyebrow">RESTORE • GROW • EXPAND</p>
+          <h2>Buy your first forgotten property.</h2>
+          <p>
+            Every property begins with damaged plants already growing there.
+            Restore them, harvest them, and permanently reclaim each square of land.
+          </p>
+
+          <div id="property-options" class="property-grid"></div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen">
+        <div class="game-layout">
+          <aside class="side-panel">
+            <h2 id="current-biome-name">Pasture</h2>
+            <p id="current-biome-description"></p>
+
+            <div class="progress-block">
+              <div class="progress-label">
+                <span>Biome revival</span>
+                <span id="progress-text">0%</span>
+              </div>
+              <div class="progress-track">
+                <div id="progress-bar" class="progress-bar"></div>
+              </div>
+            </div>
+
+            <button id="world-button" class="pixel-button secondary">WORLD MAP</button>
+            <button id="save-button" class="pixel-button secondary">SAVE GAME</button>
+            <button id="reset-button" class="pixel-button danger">RESET SAVE</button>
+
+            <div class="how-to">
+              <h3>HOW TO PLAY</h3>
+              <p>Drag the farmer to supplies or a grid square.</p>
+              <p>Damaged plants need both 💧 water and 🧪 fertilizer.</p>
+              <p>At 10 health, drag to the crop to harvest and sell it.</p>
+            </div>
+          </aside>
+
+          <section class="world-stage-wrap">
+            <div class="zoom-toolbar" aria-label="World zoom controls">
+              <button id="zoom-out-button" class="zoom-button" type="button">−</button>
+              <span id="zoom-label">FIT</span>
+              <button id="zoom-in-button" class="zoom-button" type="button">+</button>
+              <button id="zoom-fit-button" class="zoom-button fit-button" type="button">FIT</button>
+            </div>
+            <div id="world-stage" class="world-stage">
+              <div id="house" class="world-object house-object">
+                <span class="object-icon">🏠</span>
+                <span>HOME</span>
+              </div>
+
+              <button id="water-station" class="world-object supply-object" type="button">
+                <span class="object-icon">💧</span>
+                <span>WATER</span>
+              </button>
+
+              <button id="fertilizer-station" class="world-object supply-object" type="button">
+                <span class="object-icon">🧪</span>
+                <span>FERTILIZER</span>
+              </button>
+
+              <button id="sell-bin" class="world-object sell-object" type="button">
+                <span class="object-icon">📦</span>
+                <span>MARKET</span>
+              </button>
+
+              <div id="farm-grid" class="farm-grid" aria-label="5 by 5 restoration grid"></div>
+
+              <div id="player" class="player" role="img" aria-label="Farmer">
+                <div class="player-shadow"></div>
+                <div class="player-sprite">🧑‍🌾</div>
+                <div id="carry-badge" class="carry-badge hidden"></div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="action-panel">
+            <h2>FARMER</h2>
+            <div id="carry-card" class="status-card">
+              <span class="status-label">Carrying</span>
+              <strong id="carry-value">Nothing</strong>
+            </div>
+
+            <div id="plant-card" class="plant-card empty">
+              <p class="eyebrow">SELECTED PLOT</p>
+              <h3 id="plant-name">Move to a plant</h3>
+              <div id="plant-details">
+                <p>Drag your farmer onto a crop to inspect it.</p>
+              </div>
+            </div>
+
+            <div class="shop-card">
+              <h3>SUPPLY PRICES</h3>
+              <p>💧 Water: <b id="water-price">$2</b></p>
+              <p>🧪 Fertilizer: <b id="fertilizer-price">$3</b></p>
+              <small>Pick up one treatment at a time.</small>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div id="modal" class="modal" role="dialog" aria-modal="true">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="revive-game.js"></script>
+</body>
+</html>

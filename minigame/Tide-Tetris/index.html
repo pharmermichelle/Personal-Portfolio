@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fallen Grid Prototype</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-shell">
+    <header class="top-bar">
+      <h1>Fallen Grid</h1>
+      <button id="restartBtn">Restart</button>
+    </header>
+
+    <section class="hud">
+      <div>Level: <span id="level">1</span> / 30</div>
+      <div>Lines: <span id="lines">0</span></div>
+      <div>Score: <span id="score">0</span></div>
+    </section>
+
+    <canvas id="game" width="320" height="640"></canvas>
+
+    <section class="touch-controls" aria-label="Game controls">
+  <button type="button" id="leftBtn" aria-label="Move left">◀</button>
+  <button type="button" id="rotateBtn" aria-label="Rotate">⟳</button>
+  <button type="button" id="rightBtn" aria-label="Move right">▶</button>
+  <button type="button" id="downBtn" aria-label="Move down">▼</button>
+  <button type="button" id="dropBtn" class="wide">DROP</button>
+</section>
+
+    <section class="controls">
+      <h2>Controls</h2>
+      <p>Desktop: ← → move, ↑ rotate, ↓ soft drop, space hard drop.</p>
+      <p>Mobile: use the buttons under the board.</p>
+    </section>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

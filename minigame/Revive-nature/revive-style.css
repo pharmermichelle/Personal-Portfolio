@@ -1,0 +1,777 @@
+:root {
+  --ink: #10261d;
+  --cream: #f6efc9;
+  --panel: #f0df9b;
+  --panel-dark: #d7bd69;
+  --green: #4e8b4a;
+  --green-dark: #245432;
+  --red: #9f3e35;
+  --blue: #4c8194;
+  --shadow: #13251c;
+  --pixel-border: 4px solid var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 50%, transparent 50%),
+    #183d2a;
+  background-size: 100% 4px;
+  color: var(--ink);
+  font-family: "Courier New", Courier, monospace;
+  image-rendering: pixelated;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}
+
+#game-shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  min-height: 84px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: #10261d;
+  color: var(--cream);
+  border-bottom: 4px solid #07120d;
+  box-shadow: 0 4px 0 #2c6342;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 38px);
+  letter-spacing: 2px;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.topbar p {
+  margin: 3px 0 0;
+  color: #b9d49e;
+  font-size: 12px;
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.hud span {
+  padding: 8px 10px;
+  background: #1d4a33;
+  border: 3px solid #07120d;
+  box-shadow: 3px 3px 0 #07120d;
+  white-space: nowrap;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+#property-screen {
+  min-height: calc(100vh - 84px);
+  padding: 28px 16px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 23px,
+      rgba(0,0,0,.06) 24px
+    ),
+    #769956;
+}
+
+.panel {
+  max-width: 1050px;
+  margin: 0 auto;
+  background: var(--cream);
+  border: var(--pixel-border);
+  box-shadow: 8px 8px 0 rgba(0,0,0,.45);
+}
+
+.intro-panel {
+  padding: clamp(18px, 4vw, 36px);
+}
+
+.intro-panel h2 {
+  margin: 6px 0 10px;
+  font-size: clamp(22px, 4vw, 36px);
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  font-weight: bold;
+  font-size: 11px;
+  color: var(--green-dark);
+  letter-spacing: 1px;
+}
+
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.property-card {
+  position: relative;
+  min-height: 215px;
+  padding: 18px;
+  border: var(--pixel-border);
+  box-shadow: 5px 5px 0 var(--shadow);
+  overflow: hidden;
+}
+
+.property-card h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.property-card .biome-icon {
+  font-size: 46px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.property-card p {
+  max-width: 470px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.property-card .perk {
+  padding: 8px;
+  margin: 12px 0;
+  background: rgba(255,255,255,.55);
+  border: 2px solid rgba(16,38,29,.5);
+}
+
+.property-card.pasture { background: #b7cf70; }
+.property-card.lakeside { background: #83c6c2; }
+.property-card.desert { background: #e1bf6d; }
+.property-card.mountain { background: #91a986; }
+
+.pixel-button {
+  cursor: pointer;
+  border: 3px solid #10261d;
+  padding: 10px 12px;
+  background: #4e8b4a;
+  color: #fffbd6;
+  font-weight: bold;
+  box-shadow: 4px 4px 0 #10261d;
+  text-transform: uppercase;
+}
+
+.pixel-button:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 #10261d;
+}
+
+.pixel-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.pixel-button.secondary {
+  background: #52727a;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.pixel-button.danger {
+  background: var(--red);
+  width: 100%;
+  margin-top: 10px;
+}
+
+.pixel-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(460px, 1fr) 220px;
+  gap: 12px;
+  min-height: calc(100vh - 84px);
+  padding: 12px;
+  background: #324d35;
+}
+
+.side-panel,
+.action-panel {
+  background: var(--cream);
+  border: var(--pixel-border);
+  padding: 14px;
+  box-shadow: 5px 5px 0 rgba(0,0,0,.35);
+}
+
+.side-panel h2,
+.action-panel h2 {
+  margin: 0 0 6px;
+}
+
+.side-panel > p {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.progress-block {
+  margin: 18px 0;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.progress-track {
+  height: 20px;
+  border: 3px solid var(--ink);
+  background: #d2c08d;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #4e8b4a 0,
+      #4e8b4a 10px,
+      #63a558 10px,
+      #63a558 20px
+    );
+}
+
+.how-to {
+  margin-top: 18px;
+  border-top: 3px dashed #927d49;
+  padding-top: 10px;
+}
+
+.how-to h3 {
+  font-size: 13px;
+}
+
+.how-to p {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.world-stage-wrap {
+  overflow: auto;
+}
+
+.world-stage {
+  position: relative;
+  min-width: 650px;
+  min-height: 650px;
+  width: 100%;
+  height: min(760px, calc(100vh - 108px));
+  border: 4px solid #07120d;
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.08);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.world-stage.pasture {
+  background:
+    radial-gradient(circle at 20% 22%, rgba(245,221,120,.4) 0 4px, transparent 5px),
+    repeating-linear-gradient(90deg, rgba(76,112,49,.12) 0 2px, transparent 2px 30px),
+    #789f50;
+}
+
+.world-stage.lakeside {
+  background:
+    linear-gradient(90deg, #4e9aa2 0 13%, #7fac62 13% 100%);
+}
+
+.world-stage.desert {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(112,76,32,.12) 0 3px, transparent 4px),
+    #cfa95b;
+}
+
+.world-stage.mountain {
+  background:
+    linear-gradient(145deg, rgba(72,91,73,.45), transparent 35%),
+    #68835e;
+}
+
+.world-object {
+  position: absolute;
+  z-index: 3;
+  width: 92px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--ink);
+  background: var(--cream);
+  box-shadow: 4px 4px 0 rgba(0,0,0,.35);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.world-object .object-icon {
+  font-size: 32px;
+}
+
+.house-object {
+  left: 24px;
+  top: 25px;
+  background: #dca767;
+}
+
+#water-station {
+  right: 25px;
+  top: 25px;
+  background: #8bc8d6;
+}
+
+#fertilizer-station {
+  right: 25px;
+  bottom: 25px;
+  background: #bb9b72;
+}
+
+#sell-bin {
+  left: 25px;
+  bottom: 25px;
+  background: #d6c36f;
+}
+
+.farm-grid {
+  position: absolute;
+  z-index: 2;
+  width: min(62%, 460px);
+  aspect-ratio: 1 / 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 5px;
+  padding: 7px;
+  border: 4px solid #3d2e1d;
+  background: #49351f;
+  box-shadow: 6px 6px 0 rgba(0,0,0,.3);
+}
+
+.tile {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border: 2px solid #43321f;
+  background: #79552c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tile.damaged {
+  background:
+    linear-gradient(35deg, transparent 46%, rgba(66,43,24,.65) 47% 50%, transparent 51%),
+    #806037;
+}
+
+.tile.restored {
+  background: #6a984e;
+}
+
+.tile.hydro {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #5595a3 0 8px,
+      #76b3bb 8px 16px
+    );
+}
+
+.tile .plant-sprite {
+  font-size: clamp(22px, 4vw, 42px);
+  filter: saturate(.65);
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.tile.health-low .plant-sprite {
+  filter: grayscale(.55) sepia(.3);
+  transform: rotate(-12deg) scale(.72);
+}
+
+.tile.health-mid .plant-sprite {
+  filter: saturate(.75);
+  transform: scale(.85);
+}
+
+.tile.health-high .plant-sprite {
+  filter: saturate(1);
+  transform: scale(1);
+}
+
+.tile.mature .plant-sprite {
+  filter: saturate(1.25);
+  transform: scale(1.08);
+  animation: crop-ready .8s steps(2, end) infinite;
+}
+
+.tile .health-mini {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 5px;
+  border: 1px solid #18221a;
+  background: #49351f;
+}
+
+.tile .health-mini > span {
+  display: block;
+  height: 100%;
+  background: #76bd57;
+}
+
+.tile .tile-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #f6efc9;
+  border: 1px solid #10261d;
+  padding: 0 2px;
+  font-size: 9px;
+}
+
+.player {
+  position: absolute;
+  z-index: 10;
+  width: 54px;
+  height: 65px;
+  left: 108px;
+  top: 95px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.player.dragging {
+  cursor: grabbing;
+  transform: scale(1.08);
+}
+
+.player-sprite {
+  position: relative;
+  z-index: 2;
+  font-size: 43px;
+  line-height: 1;
+  pointer-events: none;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,.45));
+}
+
+.player-shadow {
+  position: absolute;
+  z-index: 1;
+  bottom: 3px;
+  left: 9px;
+  width: 38px;
+  height: 11px;
+  background: rgba(0,0,0,.32);
+}
+
+.carry-badge {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  z-index: 4;
+  padding: 2px 4px;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  font-size: 17px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.status-card,
+.plant-card,
+.shop-card {
+  margin-top: 12px;
+  border: 3px solid var(--ink);
+  padding: 10px;
+  background: #e4d59f;
+}
+
+.status-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-label {
+  font-size: 10px;
+}
+
+.plant-card h3,
+.shop-card h3 {
+  margin: 3px 0 9px;
+}
+
+.plant-card p,
+.shop-card p,
+.shop-card small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.plant-card.empty {
+  opacity: .75;
+}
+
+.need-box {
+  padding: 8px;
+  border: 2px solid var(--ink);
+  background: #fff4bc;
+  margin: 8px 0;
+  font-weight: bold;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #766434;
+  padding: 4px 0;
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%) translateY(120px);
+  max-width: min(520px, calc(100vw - 30px));
+  padding: 12px 18px;
+  background: #10261d;
+  color: #fff8ce;
+  border: 3px solid #d9c575;
+  box-shadow: 5px 5px 0 rgba(0,0,0,.5);
+  font-weight: bold;
+  text-align: center;
+  transition: transform .18s steps(2, end);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5,15,10,.78);
+}
+
+.modal {
+  width: min(680px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 18px;
+  background: var(--cream);
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 #000;
+}
+
+.modal h2,
+.modal h3 {
+  margin-top: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.world-map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.world-map-card {
+  padding: 12px;
+  border: 3px solid var(--ink);
+  background: #e7d99f;
+}
+
+.world-map-card.current {
+  outline: 4px solid #609b58;
+}
+
+.world-map-card.locked {
+  opacity: .8;
+}
+
+@keyframes crop-ready {
+  0% { transform: translateY(0) scale(1.08); }
+  100% { transform: translateY(-3px) scale(1.08); }
+}
+
+@media (max-width: 970px) {
+  .game-layout {
+    grid-template-columns: 170px minmax(460px, 1fr);
+  }
+
+  .action-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .action-panel > h2 {
+    display: none;
+  }
+
+  .status-card,
+  .plant-card,
+  .shop-card {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hud {
+    justify-content: flex-start;
+  }
+
+  .property-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .side-panel {
+    order: 2;
+  }
+
+  .world-stage-wrap {
+    order: 1;
+  }
+
+  .action-panel {
+    order: 3;
+    display: block;
+  }
+
+  .world-stage {
+    height: 650px;
+  }
+
+  .farm-grid {
+    width: 66%;
+  }
+
+  .world-map-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Mobile world fit + zoom controls */
+.zoom-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.zoom-button {
+  min-width: 38px;
+  min-height: 34px;
+  padding: 4px 9px;
+  border: 3px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 3px 3px 0 #07120d;
+  font-weight: bold;
+}
+.zoom-button:active { transform: translate(3px,3px); box-shadow: none; }
+.zoom-button.fit-button { min-width: 52px; }
+#zoom-label {
+  min-width: 48px;
+  text-align: center;
+  padding: 6px 4px;
+  background: #1d4a33;
+  color: var(--cream);
+  border: 2px solid #07120d;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+@media (max-width: 760px) {
+  .game-layout { padding: 8px; }
+  .world-stage-wrap { width: 100%; overflow: hidden; }
+  .world-stage {
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1 / 1.35;
+  }
+  .farm-grid { width: 74%; max-width: none; }
+  .world-object {
+    width: 20%;
+    min-height: 0;
+    height: 15%;
+    font-size: clamp(8px, 2.5vw, 11px);
+  }
+  .world-object .object-icon { font-size: clamp(22px, 7vw, 32px); }
+  .house-object { left: 5%; top: 4%; }
+  #water-station { right: 5%; top: 4%; }
+  #fertilizer-station { right: 5%; bottom: 4%; }
+  #sell-bin { left: 5%; bottom: 4%; }
+  .player { width: 42px; height: 52px; }
+  .player-sprite { font-size: 35px; }
+}

@@ -518,3 +518,75 @@ body.light-mode .projects-note strong {
     grid-template-columns: 1fr;
   }
 }
+
+.project-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 6px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-card);
+  color: var(--accent-light);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.beta-testing-section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 64px 32px 80px;
+}
+
+.beta-testing-copy {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.beta-testing-copy h2 {
+  text-align: left;
+}
+
+.beta-testing-copy p {
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.beta-form-wrapper {
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.beta-form {
+  display: block;
+  width: 100%;
+  min-height: 1404px;
+  border: 0;
+  background: #ffffff;
+}
+
+.form-fallback {
+  margin-top: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 700px) {
+  .beta-testing-section {
+    padding: 48px 20px 64px;
+  }
+
+  .beta-form {
+    min-height: 1500px;
+  }
+}

@@ -48,7 +48,7 @@
 
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
-          <li><a href="projects.html" class="active">Work</a></li>
+          <li><a href="projects.html" class="active">Projects</a></li>
           <li><a href="socials.html">Socials</a></li>
           <li><a href="resume.html">Resumes</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -118,7 +118,40 @@
         </div>
       </section>
 
-      <section class="projects section">
+      <section class="build-process-section">
+        <div class="build-process-copy">
+          <h2>What I Enjoy About the Process</h2>
+
+          <p>
+            The part I enjoy most is turning a loose idea into something another
+            person can actually understand and use. I like thinking through the
+            purpose of a feature, removing unnecessary steps, building the
+            interface, troubleshooting problems, and then improving the result
+            through feedback.
+          </p>
+
+          <p>
+            My projects often start with an everyday problem, a creative
+            experiment, or an idea that simply sounds fun enough to explore. I
+            enjoy working across the full process—from planning and design
+            through development, testing, store preparation, and launch.
+          </p>
+        </div>
+
+        <aside class="future-project-box">
+          <h3>Ideas I’d Like to Explore</h3>
+
+          <ul>
+            <li>Writing and reflection tools</li>
+            <li>Hockey and sports-based games</li>
+            <li>Family-friendly mobile games</li>
+            <li>Local outdoor and activity tools</li>
+            <li>Simple solutions to everyday problems</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="projects section" id="projects">
         <nav class="project-filter-nav">
           <p>Browse by category</p>
           <ul>
@@ -126,8 +159,7 @@
               <button data-filter="all" class="active">Everything</button>
             </li>
             <li><button data-filter="games">Games</button></li>
-            <li><button data-filter="client">Websites</button></li>
-
+            <li><button data-filter="apps">Apps</button></li>
             <li><button data-filter="writing">Creative Writing</button></li>
             <li><button data-filter="webdev">Web Development</button></li>
             <li>
@@ -175,6 +207,41 @@
             >
           </div>
 
+          <!-- Rambling Android App -->
+          <div class="project-card" data-tags="apps fav">
+            <span class="project-status">Closed Beta Testing</span>
+
+            <h3>Rambling</h3>
+
+            <p>
+              A private Android writing app for journaling, poetry, prayers,
+              short stories, and everyday thoughts. Entries are stored locally
+              on the user's device rather than in an online account.
+            </p>
+
+            <p class="project-meta">
+              <strong>Stage:</strong> Closed beta testing through Google Play
+            </p>
+
+            <p class="project-meta">
+              <strong>Focus:</strong> Android development · Local storage ·
+              Search · Writing templates · Privacy-focused UX
+            </p>
+
+            <div class="card-actions">
+              <a href="#beta-testing" class="project-link secondary-link">
+                Join the Beta Test →
+              </a>
+
+              <a
+                href="privacy-policies-apps/rambling-privacy.html"
+                class="project-link secondary-link"
+              >
+                Privacy Policy →
+              </a>
+            </div>
+          </div>
+
           <!-- WasteLens -->
           <!--<div class="project-card" data-tags="webdev client fav">
             <h3>WasteLens™ Prototype</h3>
@@ -204,7 +271,7 @@
         -->
 
           <!-- Southern Layers 3D Printing -->
-          <div class="project-card" data-tags="webdev client fav">
+          <div class="project-card" data-tags="webdev fav">
             <h3>Southern Layers 3D Printing</h3>
             <p>
               Small business website for a veteran-owned 3D printing company.
@@ -226,8 +293,7 @@
           </div>
 
           <!-- ScreenITology -->
-          <!-- ScreenITology -->
-          <div class="project-card" data-tags="webdev client fav">
+          <div class="project-card" data-tags="webdev fav">
             <h3>ScreenITology</h3>
             <p>
               Founder-built website for ScreenITology LLC, a connected event
@@ -250,29 +316,6 @@
             </a>
           </div>
 
-          <!-- Boomwave -->
-          <div class="project-card" data-tags="webdev client fav">
-            <h3>Boomwave <span class="wip-label">(WIP)</span></h3>
-            <p>
-              Client-facing concept site exploring mobile audio mechanics and
-              interactive design patterns. Currently in development, with
-              placeholder visuals used during iteration.
-            </p>
-            <p class="project-meta">
-              <strong>Capabilities:</strong> Interaction design · Mobile UX
-              concepts · Performance-focused layouts · Audio-driven UI
-              exploration
-            </p>
-
-            <a
-              href="gaming/client-sites/boomwave/index.html"
-              target="_blank"
-              class="project-link sr-only"
-            >
-              View Boomwave (WIP)
-            </a>
-          </div>
-
           <!-- Acorn Ascent -->
           <div class="project-card" data-tags="games fav">
             <h3>Acorn Ascent</h3>
@@ -289,6 +332,7 @@
               </a>
             </div>
           </div>
+
           <!-- Ferret Life -->
           <div class="project-card" data-tags="games">
             <h3>Ferret Life</h3>
@@ -307,6 +351,7 @@
               >
             </div>
           </div>
+
           <!-- Hope & Hotfixes Blog and Social Channel -->
           <div class="project-card" data-tags="writing webdev fav">
             <h3>Hope & Hotfixes: A Blog</h3>
@@ -330,7 +375,6 @@
               </a>
             </div>
           </div>
-
           <div class="project-card" data-tags="writing webdev fav">
             <h3>Hope & Hotfixes: Social Channel</h3>
             <p>
@@ -367,6 +411,7 @@
               >
             </div>
           </div>
+
           <!-- Lemon Pound Cake Double Take -->
           <div class="project-card" data-tags="games fav">
             <h3>Lemon Pound Cake Double Take</h3>
@@ -384,6 +429,92 @@
               </a>
             </div>
           </div>
+
+          <!-- Save My Putt Android App -->
+          <div class="project-card" data-tags="apps">
+            <span class="project-status">Internal Testing</span>
+
+            <h3>Save My Putt</h3>
+
+            <p>
+              A mobile putting companion designed to help golfers record useful
+              details, recognize patterns, and understand what may be affecting
+              their performance on the green.
+            </p>
+
+            <p class="project-meta">
+              <strong>Stage:</strong> Internal testing through Google Play
+            </p>
+
+            <p class="project-meta">
+              <strong>Focus:</strong> Android development · Mobile-first UX ·
+              Putting tracking · Practical feedback · Product testing
+            </p>
+          </div>
+
+          <!-- Rink Putt -->
+          <div class="project-card" data-tags="apps games fav">
+            <span class="project-status">In Development</span>
+
+            <h3>Rink Putt</h3>
+
+            <p>
+              A hockey-inspired mobile game that combines puck shooting with
+              putting-style aim, rink layouts, obstacles, targets, and short
+              arcade challenges.
+            </p>
+
+            <p class="project-meta">
+              <strong>Stage:</strong> Mobile app in development
+            </p>
+
+            <p class="project-meta">
+              <strong>Playable concept:</strong> An earlier HTML5 Canvas version
+              lets players aim and shoot across different rink layouts.
+            </p>
+
+            <p class="project-meta">
+              <strong>Focus:</strong> Mobile game design · Touch controls ·
+              Level design · Scoring systems · Replayable gameplay
+            </p>
+
+            <div class="card-actions">
+              <a
+                href="minigame/hockey_shooter/index.html"
+                class="project-link secondary-link"
+              >
+                Play the Browser Version →
+              </a>
+
+              <a href="retro-game-hub.html" class="project-link secondary-link">
+                Visit the Retro Arcade →
+              </a>
+            </div>
+          </div>
+
+          <!-- Boomwave -->
+          <div class="project-card" data-tags="webdev fav">
+            <h3>Boomwave <span class="wip-label">(WIP)</span></h3>
+            <p>
+              Client-facing concept site exploring mobile audio mechanics and
+              interactive design patterns. Currently in development, with
+              placeholder visuals used during iteration.
+            </p>
+            <p class="project-meta">
+              <strong>Capabilities:</strong> Interaction design · Mobile UX
+              concepts · Performance-focused layouts · Audio-driven UI
+              exploration
+            </p>
+
+            <a
+              href="gaming/client-sites/boomwave/index.html"
+              target="_blank"
+              class="project-link sr-only"
+            >
+              View Boomwave (WIP)
+            </a>
+          </div>
+
           <!-- AI Portrait -->
           <div class="project-card" data-tags="writing">
             <h3>Gen-AI Portrait Experiment</h3>
@@ -408,6 +539,80 @@
               class="project-link sr-only"
               >Check Your Weather</a
             >
+          </div>
+          <!-- Cut the Cheese -->
+          <div class="project-card" data-tags="games fav">
+            <h3>Cut the Cheese</h3>
+
+            <p>
+              A cheese-shooting arcade puzzle game where players aim an antique
+              cheese knife, bounce shots off the walls, and connect matching
+              cheeses to clear the board.
+            </p>
+
+            <p class="project-meta">
+              <strong>Gameplay:</strong> Match 4+ cheeses · Bank shots · Parm
+              Wheel power-ups · Touch controls
+            </p>
+
+            <div class="card-actions">
+              <a
+                href="minigame/Cut-the-Cheese/index.html"
+                class="project-link secondary-link"
+              >
+                Play Cut the Cheese →
+              </a>
+            </div>
+          </div>
+
+          <!-- Tide Tetris -->
+          <div class="project-card" data-tags="games">
+            <h3>Tide Tetris</h3>
+
+            <p>
+              An ocean-themed block puzzle game where players stack colorful
+              coral pieces, complete rows, and keep the reef from reaching the
+              top.
+            </p>
+
+            <p class="project-meta">
+              <strong>Gameplay:</strong> Falling-block puzzle · Coral theme ·
+              Line clears
+            </p>
+
+            <div class="card-actions">
+              <a
+                href="minigame/Tide-Tetris/index.html"
+                class="project-link secondary-link"
+              >
+                Play Tide Tetris →
+              </a>
+            </div>
+          </div>
+
+          <!-- Revive Nature -->
+          <div class="project-card" data-tags="games fav">
+            <h3>Revive Nature</h3>
+
+            <p>
+              A retro resource-management game about restoring damaged land one
+              plot at a time. Grow plants, manage water and fertilizer, earn
+              money, expand your property, and bring each biome back to life.
+            </p>
+
+            <p class="project-meta">
+              <strong>Gameplay:</strong> Resource management · Farming · Land
+              expansion · Multiple biomes
+            </p>
+
+            <div class="card-actions">
+              <a
+                href="minigame/Revive-nature/index.html"
+                class="project-link secondary-link"
+              >
+                Play Revive Nature →
+              </a>
+            </div>
           </div>
           <!-- CYO Adventure -->
           <div class="project-card" data-tags="games writing">
@@ -534,6 +739,46 @@
         </div>
       </section>
 
+      <section class="beta-testing-section" id="beta-testing">
+        <div class="beta-testing-copy">
+          <span class="hero-badge">ANDROID BETA TESTING</span>
+
+          <h2>Help Test Upcoming Apps</h2>
+
+          <p>
+            I’m currently gathering testers for Rambling and may invite
+            interested testers to future Android projects. Testers help confirm
+            that apps install correctly, work across real devices, and are
+            understandable before public release.
+          </p>
+
+          <p>
+            The signup form asks only for the information needed to provide
+            Google Play testing access and communicate testing instructions.
+          </p>
+
+          <a
+            class="button button-outline"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScqM16CdkWFRB8TkYNseR7s_Nf42qvbD8eMEJtAOiUW7k5k_w/viewform?usp=publish-editor"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open the Form in a New Tab →
+          </a>
+        </div>
+
+        <div class="beta-form-wrapper">
+          <iframe
+            class="beta-form"
+            src="https://docs.google.com/forms/d/e/1FAIpQLScqM16CdkWFRB8TkYNseR7s_Nf42qvbD8eMEJtAOiUW7k5k_w/viewform?embedded=true"
+            title="Android beta tester signup form"
+            loading="lazy"
+          >
+            Loading…
+          </iframe>
+        </div>
+      </section>
+
       <footer>
         <div class="footer-grid">
           <div class="footer-col footer-about">
@@ -626,6 +871,24 @@
     </main>
   </body>
   <script src="index.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedFilter = params.get("filter");
+
+      if (!requestedFilter) {
+        return;
+      }
+
+      const filterButton = document.querySelector(
+        `[data-filter="${requestedFilter}"]`,
+      );
+
+      if (filterButton) {
+        filterButton.click();
+      }
+    });
+  </script>
 
   <script
     src="https://kit.fontawesome.com/a076d05399.js"
