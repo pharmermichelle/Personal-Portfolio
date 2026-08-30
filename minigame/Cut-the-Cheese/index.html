@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#7f4f24" />
+  <title>Cut the Cheese</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <header class="title-wrap">
+      <div>
+        <p class="eyebrow">RETRO ARCADE</p>
+        <h1>Cut the Cheese</h1>
+      </div>
+      <button id="soundBtn" class="icon-btn" aria-label="Toggle sound">🔊</button>
+    </header>
+
+    <section class="hud" aria-label="Game stats">
+      <div class="hud-card"><span>LEVEL</span><strong id="levelValue">1</strong></div>
+      <div class="hud-card"><span>TIME</span><strong id="timeValue">00:00</strong></div>
+      <div class="hud-card"><span>SHOTS</span><strong id="shotsValue">0</strong></div>
+      <div class="hud-card"><span>NEXT PARM</span><strong id="parmProgressValue">5</strong></div>
+      <div class="hud-card parm-card">
+        <span>PARM WHEELS</span>
+        <strong id="parmValue">0</strong>
+        <button id="parmBtn" class="parm-btn" disabled>USE</button>
+      </div>
+    </section>
+
+    <section class="next-strip">
+      <div>
+        <span class="strip-label">COMING NEXT</span>
+        <div id="nextQueue" class="next-queue" aria-label="Upcoming cheese"></div>
+      </div>
+      <div class="legend">
+        Match <b>4+</b> touching cheeses • Bank 5 clears for a Parm Wheel
+      </div>
+    </section>
+
+    <section class="board-wrap">
+      <canvas id="gameCanvas" width="900" height="1200" aria-label="Cut the Cheese game board"></canvas>
+
+      <div id="startOverlay" class="overlay visible">
+        <div class="panel">
+          <p class="eyebrow">WOOD-FIRED MAYHEM</p>
+          <h2>Ready to cut it?</h2>
+          <p>Aim the antique cheese knife. Bounce shots off the side walls. Connect 4 or more matching cheeses to clear them.</p>
+          <button id="startBtn" class="primary-btn">START GAME</button>
+          <p class="tiny">Mouse/touch: aim + tap • Keyboard: ← → to aim, Space to shoot, P for Parm Wheel</p>
+        </div>
+      </div>
+
+      <div id="gameOverOverlay" class="overlay">
+        <div class="panel">
+          <p class="eyebrow">THE BOARD IS FULL</p>
+          <h2>That cheese got too close.</h2>
+          <p id="gameOverStats"></p>
+          <button id="restartBtn" class="primary-btn">PLAY AGAIN</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© Cut the Cheese</span>
+      <span>Image-ready build: drop cheese PNGs into <code>assets/cheese/</code>.</span>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
