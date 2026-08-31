@@ -428,3 +428,68 @@ body.light-mode .hnh-bg--no-dim::before {
     align-items: flex-start;
   }
 }
+/* ============================================================
+   CONSISTENT HOPE & HOTFIXES CARDS
+   ============================================================ */
+
+.episode-grid {
+  align-items: stretch;
+}
+
+.episode-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.episode-thumb {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* dark image shading */
+.episode-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 15, 26, 0.12) 0%,
+    rgba(10, 15, 26, 0.32) 40%,
+    rgba(10, 15, 26, 0.72) 100%
+  );
+}
+
+.episode-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.episode-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.episode-card-body > p:not(.episode-label) {
+  margin-bottom: 14px;
+}
+
+.episode-actions {
+  margin-top: auto;
+}
+
+@media (max-width: 700px) {
+  .episode-thumb {
+    height: 210px;
+  }
+}

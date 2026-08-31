@@ -37,7 +37,7 @@
 
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
-          <li><a href="projects.html">Work</a></li>
+          <li><a href="projects.html">Projects</a></li>
           <li><a href="socials.html" class="active">Socials</a></li>
           <li><a href="resume.html">Resumes</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -183,20 +183,163 @@
     <section class="connect-container">
       <div class="section-header socials-section-header">
         <div>
-          <h2>Episode Library</h2>
+          <h2>Hope & Hotfixes Library</h2>
           <p class="section-kicker">
-            Recent Hope & Hotfixes posts, project reveals, and playable builds.
+            Build stories, project launches, playable games, beta updates, and
+            honest notes from the development process.
           </p>
         </div>
       </div>
 
       <div class="episode-grid">
+        <!-- Rambling Beta -->
+        <article class="episode-card">
+          <div class="episode-thumb">
+            <img
+              src="images/rambling.png"
+              alt="Rambling Android writing app beta testing preview"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Android Closed Beta</p>
+
+            <h3>Rambling: Quiet Thoughts</h3>
+
+            <p>
+              A private Android writing app for journaling, poetry, prayer,
+              reflection, simple sketching, and revisiting past entries. Writing
+              remains stored locally on the device, and the app is currently in
+              closed beta testing through Google Play.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="projects.html?filter=apps#beta-testing"
+                class="button button-filled"
+              >
+                Become a Beta Tester →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://www.facebook.com/share/p/192AqAbsuJ/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="Read the Rambling beta tester Facebook post"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Vibe Coding From My Phone -->
+        <article class="episode-card">
+          <div class="episode-thumb">
+            <img
+              src="images/trashpanda.png"
+              alt="Mobile game development project built from a phone"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Development Story</p>
+
+            <h3>Vibe Coding a Game Entirely From My Phone</h3>
+
+            <p>
+              A behind-the-scenes look at developing a game almost entirely from
+              my phone using Android, Acode, GitHub, and a very unconventional
+              mobile workflow.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="https://hopeandhotfixes.wordpress.com/2026/06/08/vibe-coding-a-game-entirely-from-my-phone/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="button button-filled"
+              >
+                Read the Article →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://www.facebook.com/share/p/18AxfB96bJ/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="Read the Facebook post about building a game from a phone"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Hockey Gear Rush -->
+        <article class="episode-card">
+          <div class="episode-thumb">
+            <img
+              src="images/hockeygear.png"
+              alt="Hockey Gear Rush hidden object browser game"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="episode-card-body">
+            <p class="episode-label">Game Launch</p>
+
+            <h3>Hockey Gear Rush</h3>
+
+            <p>
+              A chaotic hockey-themed hidden-object game where players search
+              through piles of gear and random locker-room clutter before
+              warmups. It was also the first game I fully built, pushed to
+              GitHub, and deployed entirely from my Android phone.
+            </p>
+
+            <div class="episode-actions">
+              <a
+                href="minigame/hockey-gear-rush/index.html"
+                class="button button-filled"
+              >
+                Play the Game →
+              </a>
+
+              <div class="link-group">
+                <a
+                  href="https://www.facebook.com/share/p/1BancH11Mr/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="Read the Hockey Gear Rush Facebook post"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
         <!-- Puck in Play / CSS Cleanup -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/puck-in-play-thumb.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/puck-in-play-thumb.png"
+              alt="Puck in Play live hockey display system"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Build Notes</p>
@@ -213,12 +356,23 @@
 
               <div class="link-group">
                 <a
-                  href="https://www.facebook.com/share/p/1LNL8qEze8/"
+                  href="https://www.facebook.com/share/p/197DVt4nPj/"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="icon-btn"
                   data-platform="fb"
-                  aria-label="View CSS and Puck in Play post on Facebook"
+                  aria-label="Puck in Play post on Facebook"
+                >
+                  <img src="images/facebook.svg" alt="" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/p/19NAdSfPzp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="icon-btn"
+                  data-platform="fb"
+                  aria-label="Puck in Play post on Facebook"
                 >
                   <img src="images/facebook.svg" alt="" />
                 </a>
@@ -240,10 +394,13 @@
 
         <!-- Hockey Shooter -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/hockey-thumb.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/hockey-thumb.png"
+              alt="Hockey Shooter browser game"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Episode 5</p>
@@ -290,10 +447,13 @@
 
         <!-- Ferret Life -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/ferret-thumb.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/ferret-thumb.png"
+              alt="Ferret Life browser game"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Episode 4</p>
@@ -340,10 +500,13 @@
 
         <!-- Acorn Ascent -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/acorn-thumb.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/acorn-thumb.png"
+              alt="Acorn Ascent puzzle game"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Episode 3</p>
@@ -390,10 +553,13 @@
 
         <!-- Bugged Out -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/bugged-thumb.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/bugged-thumb.png"
+              alt="Bugged Out tower defense game"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Episode 2</p>
@@ -440,10 +606,13 @@
 
         <!-- Coastline Cruiser -->
         <article class="episode-card">
-          <div
-            class="episode-thumb"
-            style="--thumb: url(&quot;images/cruiser-thumbnail.png&quot;)"
-          ></div>
+          <div class="episode-thumb">
+            <img
+              src="images/cruiser-thumbnail.png"
+              alt="Coastline Cruiser browser game"
+              loading="lazy"
+            />
+          </div>
 
           <div class="episode-card-body">
             <p class="episode-label">Episode 1</p>
