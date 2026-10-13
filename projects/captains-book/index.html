@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f2eb">
+<meta name="description" content="A private, offline book viewer for your own PNG pages. Pages remain on this device.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-J+PQmYtzTHfTK1JACo19fg4vOyZnmK9NfjXQhInK8i8='; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'">
+<title>Captain's Book — Offline PNG Viewer</title>
+<style>
+  :root{color-scheme:light;--paper:#f6f2eb;--ink:#25343b;--muted:#67747a;--line:#ded9d0;--sea:#286b78;--sea-dark:#17525c;--white:#fff;--shadow:0 16px 45px rgba(24,35,40,.12)}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif}
+  button,input,select{font:inherit}
+  button{cursor:pointer}
+  button:disabled{opacity:.35;cursor:not-allowed}
+  .app{display:flex;flex-direction:column;min-height:100dvh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:rgba(255,255,255,.78);position:relative;z-index:2}
+  .brand{min-width:0;flex:1;display:flex;align-items:center;gap:9px}
+  .brand-icon{font-size:25px}
+  .brand-text{min-width:0}
+  .brand strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Georgia,serif;font-size:18px}
+  .brand small{display:block;font-size:11px;color:var(--muted)}
+  .toolbar{display:flex;gap:6px;align-items:center}
+  .btn{min-height:40px;border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:white;color:var(--ink);font-size:14px;font-weight:650}
+  .btn.primary{background:var(--sea);border-color:var(--sea);color:white}
+  .btn:focus-visible,.thumb:focus-visible{outline:3px solid #57a1b0;outline-offset:2px}
+  .btn.icon{padding:9px 11px;min-width:42px}
+  main{display:flex;flex-direction:column;flex:1;min-height:0}
+  .reader{display:flex;align-items:center;justify-content:center;flex:1;min-height:0;padding:14px 9px 8px;position:relative;touch-action:pan-y}
+  .book{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:1100px;min-height:0;height:calc(100dvh - 188px);max-height:1000px}
+  .page{min-width:0;display:flex;align-items:center;justify-content:center;height:100%;max-width:100%;position:relative}
+  .page img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;display:block;box-shadow:var(--shadow);background:white;border-radius:3px}
+  .page .number{position:absolute;bottom:9px;right:11px;padding:3px 7px;border-radius:15px;background:#fffef0dc;font-size:11px;color:#536269}
+  .book.spread .page{flex:1 1 50%;max-width:50%}
+  .empty{max-width:440px;text-align:center;padding:30px 24px;margin:auto}
+  .empty .big{font-size:55px;margin-bottom:8px}
+  .empty h2{font:normal 29px Georgia,serif;margin:0 0 12px}
+  .empty p{color:var(--muted);line-height:1.55}
+  .controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.65)}
+  .counter{min-width:95px;text-align:center;font-size:13px;font-weight:650}
+  .flex{flex:1}
+  .hint{font-size:11px;color:var(--muted);text-align:center;margin-top:5px}
+  .gallery{padding:18px 14px 90px;overflow:auto;flex:1}
+  .gallery-head{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1100px;margin:0 auto 18px}
+  .gallery-head h2{font:normal 26px Georgia,serif;margin:0}
+  .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:14px;max-width:1100px;margin:auto}
+  .tile{min-width:0;border:1px solid var(--line);background:#fff;border-radius:14px;padding:9px;box-shadow:0 3px 14px #25343b0b}
+  .thumb{border:0;background:#ebe9e5;width:100%;height:160px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden}
+  .thumb img{height:100%;width:100%;object-fit:contain}
+  .tile-info{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:9px;font-size:12px}
+  .tile-info .filename{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);max-width:100%}
+  .tile-buttons{display:flex;justify-content:space-between;gap:5px;margin-top:8px}
+  .tile-buttons button{background:var(--paper);border:1px solid var(--line);border-radius:8px;min-height:32px;flex:1;color:var(--ink)}
+  .tile-buttons button.delete{color:#ac4141}
+  .notice{color:var(--muted);font-size:12px;line-height:1.4;max-width:1100px;margin:14px auto}
+  dialog{border:0;border-radius:20px;box-shadow:0 30px 100px #0b27344a;padding:0;width:min(93vw,440px);max-height:90dvh;color:var(--ink)}
+  dialog::backdrop{background:#142e3d8c}
+  .dialog-body{padding:22px}
+  .dialog-body h2{margin:0 0 10px;font:normal 26px Georgia,serif}
+  .dialog-body p{color:var(--muted);line-height:1.5;font-size:14px}
+  .dialog-actions{display:grid;gap:8px;margin-top:18px}
+  .dialog-actions .btn{width:100%;text-align:center}
+  .busy-overlay{position:fixed;inset:0;background:#f6f2ebeb;z-index:99;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:20px}
+  .busy-overlay.on{display:flex}
+  .spinner{width:35px;height:35px;border-radius:50%;border:4px solid #bfd4d8;border-top-color:var(--sea);animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .busy-overlay p{max-width:350px;color:var(--muted)}
+  .zoom-dialog{width:100vw;max-width:none;height:100dvh;max-height:none;border-radius:0;background:#24282a;color:white}
+  .zoom-wrap{height:calc(100% - 70px);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:10px;touch-action:pan-x pan-y}
+  .zoom-wrap img{height:auto;max-width:none;box-shadow:0 10px 40px #0005}
+  .zoom-controls{display:flex;align-items:center;gap:12px;padding:11px 15px;height:70px;justify-content:space-between}
+  .zoom-controls input{width:120px;max-width:35vw}
+  .zoom-controls .btn{background:#fff}
+  .local-privacy{margin:0 auto;max-width:960px;padding:5px 14px;text-align:center;color:#49636a;font-size:12px;background:#e3ede8;border-radius:10px}
+  .menu-footnote{font-size:12px;line-height:1.5;color:var(--muted)}
+  .hidden{display:none!important}
+  @media(max-width:430px){header{padding:9px}.brand strong{font-size:15px}.brand-icon{font-size:20px}.toolbar .btn{font-size:13px;padding:8px}.btn.icon{min-width:37px}.book{height:calc(100dvh - 166px)}.reader{padding:6px}.counter{min-width:74px}}
+  @media(min-width:700px){.thumb-grid{grid-template-columns:repeat(auto-fill,minmax(166px,1fr))}.thumb{height:220px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><span class="brand-icon" aria-hidden="true">⚓</span><div class="brand-text"><strong id="title">Captain's Book</strong><small id="subtitle">Private pages • saved on this device</small></div></div>
+    <div class="toolbar">
+      <button class="btn primary" id="addBtn" title="Add images">＋ Add</button>
+      <button class="btn icon" id="galleryBtn" title="Page overview" aria-label="Page overview">▦</button>
+      <button class="btn icon" id="moreBtn" title="More options" aria-label="More options">⋯</button>
+    </div>
+  </header>
+  <main id="main"></main>
+  <footer class="controls" id="footer">
+    <button class="btn icon" id="prevBtn" aria-label="Previous page">‹</button>
+    <span class="counter" id="counter">0 pages</span>
+    <button class="btn icon" id="nextBtn" aria-label="Next page">›</button>
+    <span class="flex"></span>
+    <button class="btn" id="zoomBtn">Zoom</button>
+  </footer>
+</div>
+<input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+<input type="file" id="restoreInput" accept=".zip,application/zip" hidden>
+<dialog id="addDialog"><div class="dialog-body"><h2>Add your next pages</h2><p>Choose one PNG or several. Images are copied into this book's offline storage and can be rearranged afterward.</p><div class="dialog-actions"><button class="btn primary" id="appendBtn">Add to end of book</button><button class="btn" id="insertBtn">Insert after current page</button><button class="btn" data-close="addDialog">Cancel</button></div></div></dialog>
+<dialog id="menuDialog"><div class="dialog-body"><h2>Book tools</h2><div class="dialog-actions">
+  <button class="btn primary" id="installBtn">⇩ Install as app</button>
+  <button class="btn" id="storageBtn">⛨ Protect local storage</button>
+  <button class="btn" id="renameBtn">✎ Rename book</button>
+  <button class="btn" id="spreadBtn">▣ Two-page spread: Off</button>
+  <button class="btn" id="pdfBtn">↓ Export book as PDF</button>
+  <button class="btn" id="backupBtn">↓ Back up pages (.zip)</button>
+  <button class="btn" id="restoreBtn">↑ Restore backup (.zip)</button>
+  <button class="btn" data-close="menuDialog">Close</button>
+</div><p class="menu-footnote"><strong>Private on this device:</strong> Imported images are saved in this browser’s local IndexedDB storage, never uploaded by this app. Other visitors to your website get an empty book. This copy does not automatically sync with another device.</p><p class="menu-footnote">Backups contain original image files, page order, and book title. Keep one somewhere safe; clearing browser/site data may delete local pages.</p></div></dialog>
+<dialog id="installDialog"><div class="dialog-body"><h2>Install Captain’s Book</h2><p id="installHelp">On Android in Chrome, open the ⋮ browser menu and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>. Launch Captain’s Book from its icon afterward.</p><p>This needs HTTPS and a first online visit. Your PNGs will stay local after installation; the reader also works offline once the app files have been cached.</p><div class="dialog-actions"><button class="btn primary" data-close="installDialog">Got it</button></div></div></dialog>
+<dialog id="zoomDialog" class="zoom-dialog"><div class="zoom-controls"><button class="btn" id="zoomClose">Done</button><label for="zoomRange">Zoom</label><input id="zoomRange" type="range" min="100" max="300" value="150" step="25"><span id="zoomValue">150%</span></div><div class="zoom-wrap" id="zoomWrap"><img id="zoomImage" alt="Enlarged book page"></div></dialog>
+<div class="busy-overlay" id="busy" role="status" aria-live="polite"><div class="spinner"></div><strong id="busyText">Working…</strong><p id="busySub">Your book is being prepared.</p></div>
+<script>
+'use strict';
+/* Captain's Book — offline-first PWA reader. All book contents stored locally; no analytics or external libraries. */
+const $ = id => document.getElementById(id);
+const DB_NAME = 'captains-book-reader-v1';
+const DB_VERSION = 1;
+let db, pages = [], current = 0, title = "Captain's Book", mode = 'reader', spread = false;
+let importPlacement = 'end';
+const fullURLs = new Map(), thumbURLs = new Map();
+const encoder = new TextEncoder();
+const encoderBytes = text => encoder.encode(text);
+const sleep = () => new Promise(resolve => setTimeout(resolve, 0));
+
+function notice(msg) { alert(msg); }
+function busy(message, sub = 'Please keep this page open.') {
+  $('busyText').textContent = message;
+  $('busySub').textContent = sub;
+  $('busy').classList.add('on');
+}
+function unbusy() { $('busy').classList.remove('on'); }
+function safeName(s) { return (s || 'Book').replace(/[^a-z0-9 _.-]/gi,'_').trim().slice(0,80) || 'Book'; }
+function makeID() { return globalThis.crypto?.randomUUID?.() || ('p_' + Date.now() + '_' + Math.random().toString(36).slice(2)); }
+function txDone(tx) { return new Promise((resolve,reject) => { tx.oncomplete = resolve; tx.onerror = () => reject(tx.error || new Error('Database transaction failed')); tx.onabort = () => reject(tx.error || new Error('Database transaction aborted')); }); }
+function getReq(request) { return new Promise((resolve,reject) => { request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }
+function openDB() {
+  return new Promise((resolve,reject) => {
+    if (!('indexedDB' in window)) return reject(new Error('This browser does not offer IndexedDB.'));
+    const request = indexedDB.open(DB_NAME,DB_VERSION);
+    request.onupgradeneeded = () => { const d = request.result; if (!d.objectStoreNames.contains('pages')) d.createObjectStore('pages',{keyPath:'id'}); if (!d.objectStoreNames.contains('settings')) d.createObjectStore('settings',{keyPath:'key'}); };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('Could not open local storage'));
+    request.onblocked = () => reject(new Error('Another browser tab is blocking book storage. Close other tabs for this book.'));
+  });
+}
+async function loadBook() {
+  const tx = db.transaction(['pages','settings'],'readonly');
+  const all = await getReq(tx.objectStore('pages').getAll());
+  const orderRow = await getReq(tx.objectStore('settings').get('order'));
+  const titleRow = await getReq(tx.objectStore('settings').get('title'));
+  const spreadRow = await getReq(tx.objectStore('settings').get('spread'));
+  const currentRow = await getReq(tx.objectStore('settings').get('current'));
+  const order = orderRow?.value || [];
+  const indices = new Map(order.map((id,i)=>[id,i]));
+  pages = all.sort((a,b)=>(indices.get(a.id) ?? Number.MAX_SAFE_INTEGER)-(indices.get(b.id) ?? Number.MAX_SAFE_INTEGER));
+  title = titleRow?.value || title;
+  spread = !!spreadRow?.value;
+  current = Math.max(0,Math.min(Number(currentRow?.value)||0,pages.length-1));
+  render();
+}
+function setSetting(key,value) {
+  const tx = db.transaction('settings','readwrite');
+  tx.objectStore('settings').put({key,value});
+  return txDone(tx);
+}
+async function saveOrder() { await setSetting('order',pages.map(p=>p.id)); }
+async function saveLocation() { try { await setSetting('current',current); } catch(err) { console.warn(err); } }
+function pageIndices() {
+  if (!pages.length) return [];
+  if (!spread || current===0) return [current];
+  const left = current % 2 ? current : current-1;
+  return [left,left+1].filter(i=>i<pages.length);
+}
+function nextIndex() { if (!spread) return current+1; return current===0?1:((current%2)?current+2:current+1); }
+function prevIndex() { if (!spread) return current-1; return current<=2?0:((current%2)?current-2:current-3); }
+function getFullURL(id) {
+  if (!fullURLs.has(id)) {
+    const p=pages.find(x=>x.id===id);
+    if (p) fullURLs.set(id,URL.createObjectURL(p.blob));
+  }
+  return fullURLs.get(id);
+}
+function trimFullURLs() {
+  const keep = new Set(pageIndices().map(i=>pages[i].id));
+  for (const [id,url] of fullURLs) if (!keep.has(id)) { URL.revokeObjectURL(url);fullURLs.delete(id); }
+}
+function getThumbURL(p) {
+  if (!thumbURLs.has(p.id)) thumbURLs.set(p.id,URL.createObjectURL(p.thumb || p.blob));
+  return thumbURLs.get(p.id);
+}
+function clearURLs() {
+  for(const url of fullURLs.values()) URL.revokeObjectURL(url);
+  for(const url of thumbURLs.values()) URL.revokeObjectURL(url);
+  fullURLs.clear();thumbURLs.clear();
+}
+function goTo(index) {
+  if(index<0||index>=pages.length) return;
+  current=index;saveLocation();render();
+}
+function render() {
+  $('title').textContent=title;
+  $('subtitle').textContent=pages.length + (pages.length===1?' page • saved on this device':' pages • saved on this device');
+  $('galleryBtn').textContent=mode==='gallery'?'▤':'▦';
+  $('galleryBtn').title=mode==='gallery'?'Return to reader':'Page overview';
+  $('spreadBtn').textContent='▣ Two-page spread: '+(spread?'On':'Off');
+  $('footer').classList.toggle('hidden',mode==='gallery');
+  if (mode==='gallery') renderGallery(); else renderReader();
+}
+function renderReader() {
+  const main=$('main');main.replaceChildren();main.className='reader';
+  if (!pages.length) {
+    const box=document.createElement('section');box.className='empty';
+    box.innerHTML='<div class="big">📖</div><h2>Your story starts here</h2><p>Add page 1 as a PNG. Then keep adding pages whenever you create them. They will stay in reading order on this device, even after you close the viewer. Nothing is uploaded to the website.</p>';
+    const b=document.createElement('button');b.className='btn primary';b.textContent='＋ Add your first page';b.onclick=()=> $('addDialog').showModal();box.append(b);main.append(box);
+  } else {
+    const book=document.createElement('div');book.className='book'+(spread&&current!==0?' spread':'');
+    for(const i of pageIndices()) {
+      const p=pages[i];const holder=document.createElement('div');holder.className='page';
+      const img=document.createElement('img');img.src=getFullURL(p.id);img.alt='Page '+(i+1);img.draggable=false;img.onclick=()=>openZoom(i);
+      const n=document.createElement('span');n.className='number';n.textContent=i+1;
+      holder.append(img,n);book.append(holder);
+    }
+    main.append(book);trimFullURLs();
+  }
+  $('prevBtn').disabled=!pages.length||current===0;
+  $('nextBtn').disabled=!pages.length||nextIndex()>=pages.length;
+  $('zoomBtn').disabled=!pages.length;
+  const visible=pageIndices();
+  $('counter').textContent=pages.length ? (visible.map(i=>i+1).join('–')+' / '+pages.length) : '0 pages';
+}
+function renderGallery() {
+  const main=$('main');main.replaceChildren();main.className='gallery';
+  const head=document.createElement('div');head.className='gallery-head';
+  const h=document.createElement('h2');h.textContent='All pages';
+  const back=document.createElement('button');back.className='btn';back.textContent='Read book →';back.onclick=()=>{mode='reader';render();};head.append(h,back);main.append(head);
+  const grid=document.createElement('div');grid.className='thumb-grid';
+  pages.forEach((p,i)=>{
+    const tile=document.createElement('section');tile.className='tile';
+    const thumb=document.createElement('button');thumb.className='thumb';thumb.title='Read page '+(i+1);
+    thumb.onclick=()=>{current=i;saveLocation();mode='reader';render();};
+    const img=document.createElement('img');img.src=getThumbURL(p);img.loading='lazy';img.alt='Thumbnail for page '+(i+1);thumb.append(img);
+    const info=document.createElement('div');info.className='tile-info';
+    const num=document.createElement('strong');num.textContent='Page '+(i+1);
+    const file=document.createElement('span');file.className='filename';file.title=p.name||'';file.textContent=p.name||'Image';info.append(num,file);
+    const actions=document.createElement('div');actions.className='tile-buttons';
+    const up=document.createElement('button');up.textContent='←';up.title='Move earlier';up.disabled=i===0;up.onclick=()=>movePage(i,-1);
+    const down=document.createElement('button');down.textContent='→';down.title='Move later';down.disabled=i===pages.length-1;down.onclick=()=>movePage(i,1);
+    const del=document.createElement('button');del.textContent='✕';del.title='Delete this page';del.className='delete';del.onclick=()=>deletePage(i);
+    actions.append(up,down,del);tile.append(thumb,info,actions);grid.append(tile);
+  });
+  main.append(grid);
+  const note=document.createElement('p');note.className='notice';note.textContent='Use ← and → to rearrange pages. Tap any thumbnail to read it. ✕ removes a page from this book.';main.append(note);
+  trimFullURLs();
+}
+async function movePage(i,delta) {
+  const j=i+delta;if(j<0||j>=pages.length)return;
+  [pages[i],pages[j]]=[pages[j],pages[i]];
+  if(current===i)current=j;else if(current===j)current=i;
+  try{await saveOrder();await saveLocation();render();}catch(e){notice('Could not save order: '+e.message);await loadBook();}
+}
+async function deletePage(i) {
+  const p=pages[i];if(!confirm('Remove page '+(i+1)+' ("'+p.name+'") from this book?\n\nKeep a backup if you need the original later.'))return;
+  const updated=pages.filter(x=>x.id!==p.id);
+  try {
+    const tx=db.transaction(['pages','settings'],'readwrite');
+    tx.objectStore('pages').delete(p.id);
+    tx.objectStore('settings').put({key:'order',value:updated.map(x=>x.id)});
+    await txDone(tx);
+    pages=updated;current=Math.max(0,Math.min(current,pages.length-1));
+    if(fullURLs.has(p.id)){URL.revokeObjectURL(fullURLs.get(p.id));fullURLs.delete(p.id);}
+    if(thumbURLs.has(p.id)){URL.revokeObjectURL(thumbURLs.get(p.id));thumbURLs.delete(p.id);}
+    saveLocation();render();
+  }catch(e){notice('Could not delete page: '+e.message);}
+}
+function blobForFile(file) { return file.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(file.name); }
+async function makeThumbnail(blob) {
+  const bmp=await createBitmap(blob);
+  try {
+    const scale=Math.min(1,240/bmp.width,360/bmp.height);
+    const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));
+    canvas.getContext('2d').drawImage(bmp,0,0,canvas.width,canvas.height);
+    return await canvasBlob(canvas,'image/jpeg',.75);
+  } finally { bmp.close?.(); }
+}
+function canvasBlob(canvas,type,quality) {
+  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Image conversion failed')),type,quality));
+}
+async function createBitmap(blob) {
+  if ('createImageBitmap' in window) { try { return await createImageBitmap(blob); } catch {} }
+  const url=URL.createObjectURL(blob);
+  try{
+    const img=new Image();img.src=url;await img.decode();
+    return {width:img.naturalWidth,height:img.naturalHeight,drawImage:img,close(){}};
+  } finally { URL.revokeObjectURL(url); }
+}
+async function importFiles(fileList) {
+  const files=Array.from(fileList).filter(blobForFile);if(!files.length){notice('Choose PNG, JPG, or WebP images.');return;}
+  busy('Importing your pages','Original pictures are saved, and small preview thumbnails are generated.');
+  try{
+    const newPages=[];
+    for(let i=0;i<files.length;i++) {
+      $('busyText').textContent='Importing page '+(i+1)+' of '+files.length;
+      await sleep();
+      const f=files[i];const thumb=await makeThumbnail(f);
+      newPages.push({id:makeID(),name:f.name,blob:f,thumb,addedAt:Date.now()});
+    }
+    const insertion=importPlacement==='after'&&pages.length?current+1:pages.length;
+    const updated=[...pages.slice(0,insertion),...newPages,...pages.slice(insertion)];
+    const tx=db.transaction(['pages','settings'],'readwrite');
+    newPages.forEach(p=>tx.objectStore('pages').put(p));
+    tx.objectStore('settings').put({key:'order',value:updated.map(p=>p.id)});
+    await txDone(tx);
+    pages=updated;current=insertion;
+    await saveLocation();mode='reader';render();
+  }catch(err){notice('Import failed: '+err.message+'\n\nCheck free storage space or browser permissions.');console.error(err);}
+  finally{unbusy();}
+}
+function openZoom(i=current) {
+  if (!pages[i])return;
+  const dialog=$('zoomDialog');const img=$('zoomImage');
+  img.src=getFullURL(pages[i].id);img.dataset.index=i;
+  $('zoomRange').value='150';$('zoomValue').textContent='150%';
+  updateZoom();dialog.showModal();
+}
+function updateZoom() {
+  const value=Number($('zoomRange').value);$('zoomValue').textContent=value+'%';
+  // Pixel width relative to the mobile viewport, allowing scrolling while zoomed.
+  $('zoomImage').style.width='min('+value+'vw, '+Math.round(660*value/100)+'px)';
+}
+function closeZoom(){ $('zoomDialog').close(); }
+function downloadBlob(blob,filename) {
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+/* PDF exporter: writes a standard image-based PDF directly; no external libraries. */
+async function exportPDF() {
+  if(!pages.length){notice('Add pages first.');return;}
+  busy('Preparing PDF','Each page will be fitted onto a 6 × 9 inch PDF page.');
+  try {
+    const chunks=[], offsets=[0];let byteOffset=0;
+    function push(v) { const b=typeof v==='string'?encoderBytes(v):v;chunks.push(b);byteOffset+=b.size??b.byteLength; }
+    function object(id,content) { offsets[id]=byteOffset;push(id+' 0 obj\n');push(content);push('\nendobj\n'); }
+    push('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+    object(1,'<< /Type /Catalog /Pages 2 0 R >>');
+    const kids=pages.map((p,i)=>(3+i*3)+' 0 R').join(' ');
+    object(2,'<< /Type /Pages /Kids ['+kids+'] /Count '+pages.length+' >>');
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1536;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    for(let i=0;i<pages.length;i++) {
+      $('busyText').textContent='Exporting PDF: page '+(i+1)+' / '+pages.length;
+      await sleep();
+      const bmp=await createBitmap(pages[i].blob);
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,1024,1536);
+      const scale=Math.min(1024/bmp.width,1536/bmp.height);
+      const w=bmp.width*scale,h=bmp.height*scale;
+      ctx.drawImage(bmp.drawImage||bmp,(1024-w)/2,(1536-h)/2,w,h);
+      bmp.close?.();
+      const jpg=await canvasBlob(canvas,'image/jpeg',.91);
+      const pid=3+i*3,cid=pid+1,iid=pid+2;
+      object(pid,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 432 648] /Resources << /XObject << /Im0 '+iid+' 0 R >> >> /Contents '+cid+' 0 R >>');
+      const drawing='q\n432 0 0 648 0 0 cm\n/Im0 Do\nQ\n';
+      const bytes=encoderBytes(drawing);
+      object(cid,'<< /Length '+bytes.length+' >>\nstream\n'+drawing+'endstream');
+      offsets[iid]=byteOffset;push(iid+' 0 obj\n');
+      push('<< /Type /XObject /Subtype /Image /Width 1024 /Height 1536 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+jpg.size+' >>\nstream\n');
+      push(jpg);push('\nendstream\nendobj\n');
+    }
+    const xrefAt=byteOffset, count=3+pages.length*3;
+    push('xref\n0 '+count+'\n0000000000 65535 f \n');
+    for(let i=1;i<count;i++)push(String(offsets[i]).padStart(10,'0')+' 00000 n \n');
+    push('trailer\n<< /Size '+count+' /Root 1 0 R >>\nstartxref\n'+xrefAt+'\n%%EOF\n');
+    downloadBlob(new Blob(chunks,{type:'application/pdf'}),safeName(title)+'.pdf');
+  }catch(err){notice('PDF export failed: '+err.message);console.error(err);}
+  finally{unbusy();}
+}
+
+/* ZIP backup writer/reader. Uncompressed ZIP keeps original PNG/JPG files intact. */
+const crcTable=(()=>{const arr=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;arr[n]=c>>>0;}return arr;})();
+function crc32(bytes){let c=0xffffffff;for(const x of bytes)c=crcTable[(c^x)&255]^(c>>>8);return (c^0xffffffff)>>>0;}
+function u16(view,pos,n){view.setUint16(pos,n,true);}
+function u32(view,pos,n){view.setUint32(pos,n>>>0,true);}
+function zipHeader(nameBytes,size,crc,central=false,offset=0){
+  const n=new Uint8Array((central?46:30)+nameBytes.length),v=new DataView(n.buffer);
+  u32(v,0,central?0x02014b50:0x04034b50);
+  if(central){u16(v,4,20);u16(v,6,20);u16(v,8,0x800);u16(v,10,0);u32(v,16,crc);u32(v,20,size);u32(v,24,size);u16(v,28,nameBytes.length);u32(v,42,offset);n.set(nameBytes,46);}
+  else{u16(v,4,20);u16(v,6,0x800);u16(v,8,0);u32(v,14,crc);u32(v,18,size);u32(v,22,size);u16(v,26,nameBytes.length);n.set(nameBytes,30);}
+  return n;
+}
+async function exportBackup() {
+  if(!pages.length){notice('There are no pages to back up yet.');return;}
+  busy('Making book backup','Keeping your original image files without resizing or compression.');
+  try{
+    const manifest={format:'captains-book-v1',title,created:new Date().toISOString(),pages:pages.map((p,i)=>({id:p.id,name:p.name||('page-'+(i+1)+'.png'),file:'pages/'+String(i+1).padStart(4,'0')+(/\.(png|jpe?g|webp)$/i.exec(p.name||'')?.[0] || (p.blob.type==='image/jpeg'?'.jpg':p.blob.type==='image/webp'?'.webp':'.png'))}))};
+    const entries=[{name:'manifest.json',blob:new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'})},...pages.map((p,i)=>({name:manifest.pages[i].file,blob:p.blob}))];
+    const chunks=[],central=[];let offset=0;
+    for(let i=0;i<entries.length;i++){
+      $('busyText').textContent='Backing up '+i+' / '+pages.length+' images';await sleep();
+      const {name,blob}=entries[i],bytes=new Uint8Array(await blob.arrayBuffer());
+      const nameBytes=encoderBytes(name),sum=crc32(bytes),header=zipHeader(nameBytes,bytes.length,sum);
+      chunks.push(header,bytes);central.push(zipHeader(nameBytes,bytes.length,sum,true,offset));
+      offset+=header.length+bytes.length;
+    }
+    const centralOffset=offset;for(const c of central){chunks.push(c);offset+=c.length;}
+    if(offset>0xffffffff||entries.length>65535)throw new Error('Book is too large for this ZIP format.');
+    const end=new Uint8Array(22),ev=new DataView(end.buffer);u32(ev,0,0x06054b50);u16(ev,8,entries.length);u16(ev,10,entries.length);u32(ev,12,offset-centralOffset);u32(ev,16,centralOffset);chunks.push(end);
+    downloadBlob(new Blob(chunks,{type:'application/zip'}),safeName(title)+'-backup.zip');
+  }catch(err){notice('Backup failed: '+err.message);console.error(err);}
+  finally{unbusy();}
+}
+function readZipEntries(buffer) {
+  const view=new DataView(buffer),data=new Uint8Array(buffer);
+  let eocd=-1;for(let i=data.length-22;i>=Math.max(0,data.length-65557);i--)if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}
+  if(eocd<0)throw new Error('Not a valid ZIP backup.');
+  const count=view.getUint16(eocd+10,true),start=view.getUint32(eocd+16,true);
+  const entries=new Map();let pos=start;
+  for(let i=0;i<count;i++){
+    if(view.getUint32(pos,true)!==0x02014b50)throw new Error('Damaged ZIP index.');
+    const method=view.getUint16(pos+10,true),size=view.getUint32(pos+20,true),nameLen=view.getUint16(pos+28,true),extra=view.getUint16(pos+30,true),comment=view.getUint16(pos+32,true),local=view.getUint32(pos+42,true);
+    const name=new TextDecoder().decode(data.subarray(pos+46,pos+46+nameLen));
+    if(method!==0)throw new Error('This backup uses unsupported compression. Restore an archive exported from this app.');
+    if(view.getUint32(local,true)!==0x04034b50)throw new Error('Damaged ZIP file entry.');
+    const at=local+30+view.getUint16(local+26,true)+view.getUint16(local+28,true);
+    if(at+size>data.length)throw new Error('Incomplete ZIP image.');
+    entries.set(name,new Blob([buffer.slice(at,at+size)]));
+    pos+=46+nameLen+extra+comment;
+  }
+  return entries;
+}
+async function restoreBackup(file){
+  busy('Restoring backup','Restoring replaces every page currently in this book.');
+  try{
+    const entries=readZipEntries(await file.arrayBuffer());
+    const manifestBlob=entries.get('manifest.json');if(!manifestBlob)throw new Error('manifest.json missing from ZIP.');
+    const manifest=JSON.parse(await manifestBlob.text());
+    if(manifest.format!=='captains-book-v1'||!Array.isArray(manifest.pages))throw new Error('Not a Captain’s Book backup.');
+    const restored=[];
+    for(let i=0;i<manifest.pages.length;i++){
+      $('busyText').textContent='Restoring page '+(i+1)+' / '+manifest.pages.length;await sleep();
+      const p=manifest.pages[i],fileBlob=entries.get(p.file);if(!fileBlob)throw new Error('Missing image: '+p.file);
+      const mime=/\.jpe?g$/i.test(p.file)?'image/jpeg':/\.webp$/i.test(p.file)?'image/webp':'image/png';
+      const blob=new Blob([fileBlob],{type:mime});
+      restored.push({id:makeID(),name:p.name,blob,thumb:await makeThumbnail(blob),addedAt:Date.now()});
+    }
+    const tx=db.transaction(['pages','settings'],'readwrite');const store=tx.objectStore('pages');store.clear();restored.forEach(p=>store.put(p));
+    tx.objectStore('settings').put({key:'order',value:restored.map(p=>p.id)});
+    tx.objectStore('settings').put({key:'title',value:manifest.title||'My Book'});
+    tx.objectStore('settings').put({key:'current',value:0});
+    await txDone(tx);
+    clearURLs();pages=restored;title=manifest.title||'My Book';current=0;mode='reader';render();
+  }catch(err){notice('Restore failed: '+err.message);console.error(err);}
+  finally{unbusy();}
+}
+
+/* UI events */
+
+/* PWA installation and optional protection against automatic storage eviction. */
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  $('installBtn').textContent = '⇩ Install as app';
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  $('installBtn').textContent = '✓ App installed';
+});
+$('installBtn').onclick = async () => {
+  $('menuDialog').close();
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    notice('Captain’s Book is already running as an installed app.');
+    return;
+  }
+  if (deferredInstallPrompt) {
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    try { await promptEvent.prompt(); await promptEvent.userChoice; }
+    catch (err) { console.warn('App install prompt was unavailable', err); }
+  } else {
+    $('installDialog').showModal();
+  }
+};
+$('storageBtn').onclick = async () => {
+  $('menuDialog').close();
+  if (!navigator.storage?.persist) {
+    notice('This browser does not support requesting persistent storage. Your book will still save locally. Export ZIP backups regularly.');
+    return;
+  }
+  try {
+    const granted = await navigator.storage.persist();
+    notice(granted
+      ? 'Persistent storage is enabled. Your browser should not automatically evict this book’s data, but clearing site data or uninstalling may still erase it. Keep ZIP backups.'
+      : 'This browser did not grant persistent storage. Your pages remain saved locally, but keep regular ZIP backups.');
+  } catch (err) { notice('Could not request persistent storage: ' + err.message); }
+};
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', {scope: './'})
+      .catch(err => console.warn('Offline app files could not be cached:', err));
+  });
+}
+
+$('addBtn').onclick=()=> $('addDialog').showModal();
+$('appendBtn').onclick=()=>{importPlacement='end';$('addDialog').close();$('imageInput').click();};
+$('insertBtn').onclick=()=>{importPlacement='after';$('addDialog').close();$('imageInput').click();};
+$('imageInput').onchange=async e=>{await importFiles(e.target.files);e.target.value='';};
+$('moreBtn').onclick=()=> $('menuDialog').showModal();
+$('galleryBtn').onclick=()=>{mode=mode==='gallery'?'reader':'gallery';render();};
+$('prevBtn').onclick=()=>goTo(prevIndex());
+$('nextBtn').onclick=()=>goTo(nextIndex());
+$('zoomBtn').onclick=()=>openZoom();
+$('zoomClose').onclick=closeZoom;
+$('zoomRange').oninput=updateZoom;
+$('renameBtn').onclick=async()=>{ $('menuDialog').close();const n=prompt('Book title:',title);if(n?.trim()){title=n.trim().slice(0,120);await setSetting('title',title);render();} };
+$('spreadBtn').onclick=async()=>{spread=!spread;await setSetting('spread',spread);render();};
+$('pdfBtn').onclick=()=>{$('menuDialog').close();exportPDF();};
+$('backupBtn').onclick=()=>{$('menuDialog').close();exportBackup();};
+$('restoreBtn').onclick=()=>{$('menuDialog').close();$('restoreInput').click();};
+$('restoreInput').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&confirm('RESTORE BACKUP?\n\nThis replaces every page currently stored in this book. Export a backup of your current book first if you want to keep it.'))await restoreBackup(f);};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+$('zoomDialog').addEventListener('close',()=>{$('zoomImage').removeAttribute('src');trimFullURLs();});
+let touchStart=null;
+$('main').addEventListener('touchstart',e=>{if(mode==='reader'&&e.touches.length===1)touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+$('main').addEventListener('touchend',e=>{if(!touchStart||mode!=='reader'||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.35)goTo(dx<0?nextIndex():prevIndex());},{passive:true});
+document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||mode!=='reader')return;if(e.key==='ArrowRight')goTo(nextIndex());if(e.key==='ArrowLeft')goTo(prevIndex());});
+window.addEventListener('pagehide',clearURLs);
+(async function start(){
+  try {db=await openDB();await loadBook();}
+  catch(err){console.error(err);$('main').innerHTML='<section class="empty"><div class="big">⚠️</div><h2>Offline storage unavailable</h2><p>Your browser is not allowing this HTML file to save images. Open the app at its HTTPS address using Chrome (not private/incognito browsing). Do not import pages until storage works.</p></section>';$('addBtn').disabled=true;notice('Cannot start saved book: '+err.message);}
+})();
+</script>
+</body>
+</html>

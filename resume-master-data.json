@@ -1,0 +1,3000 @@
+{
+  "schema_version": "2.1-public",
+  "document_title": "Michelle Waite Resume Experience Data",
+  "purpose": "Public experience data used by the filterable resume explorer on michellew.io.",
+  "available_tags": [
+    "healthcare",
+    "operations",
+    "live-events",
+    "development",
+    "community",
+    "gaming",
+    "customer-support",
+    "leadership",
+    "compliance",
+    "data-ai",
+    "retail-hospitality",
+    "marketing-monetization"
+  ],
+
+  "sections_in_source_order": [
+    "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+    "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+    "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+
+    "Puck in Play | FPHL Hockey Season 2025 - 2026",
+    "Southern Layers 3D Printing | Jan 2025 – Present",
+    "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+    "Independent Apps & Web Projects",
+    "Backend, Hosting & Deployment",
+
+    "Gala Games – Community, LiveOps & Game Design | 2020 – Dec 2024",
+    "Outlier.ai – AI Data Quality",
+    "Palmetto Goodwill – Retail & Hardlines | May 2026 – Present",
+    "WorkAda – AI Image Review & Data Labeling"
+  ],
+
+  "record_count": 433,
+  "records": [
+    {
+      "id": "resume-line-0177",
+      "source_order": 177,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Supported onboarding workflows, documentation tracking, and scheduling coordination across multiple client accounts, ensuring accurate records and timely follow-up",
+      "tags": ["customer-support", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0179",
+      "source_order": 179,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Responded to client inquiries via phone and email, maintaining accurate documentation and resolution tracking",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0195",
+      "source_order": 195,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Supported enterprise and SMB clients through onboarding, access troubleshooting, and live training coordination",
+      "tags": ["customer-support", "data-ai", "leadership", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0196",
+      "source_order": 196,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Responded to client inquiries via email, chat, and live sessions; documented resolutions within SLA expectations",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0197",
+      "source_order": 197,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Built standardized playbooks, readiness checklists, and SOPs that reduced onboarding time by ~30%",
+      "tags": ["customer-support", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0198",
+      "source_order": 198,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Tracked engagement, attendance, and satisfaction metrics; contributed to a +133% improvement in CSAT",
+      "tags": ["customer-support"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0200",
+      "source_order": 200,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Reorganized and cleaned legacy operational data to restore reporting accuracy and improve visibility across onboarding and delivery workflows",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0201",
+      "source_order": 201,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintained and updated multi‑source operational and client pipelines in Excel and Google Sheets, ensuring accurate status tracking and executive visibility.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0202",
+      "source_order": 202,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Prepared weekly reports and dashboards highlighting pipeline health, risks, and next actions for leadership review.",
+      "tags": ["leadership", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0203",
+      "source_order": 203,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated recurring meetings by organizing agendas, tracking action items, and following up to ensure completion.",
+      "tags": ["operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0204",
+      "source_order": 204,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Prepared operational and invoicing‑related reports, validating data accuracy and resolving discrepancies prior to submission.",
+      "tags": ["data-ai", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0205",
+      "source_order": 205,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Supported client communications and follow‑ups via email, ensuring commitments were documented and met.",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0206",
+      "source_order": 206,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Improved operational clarity and follow‑through, contributing to a 133% increase in customer satisfaction.",
+      "tags": ["customer-support", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0209",
+      "source_order": 209,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated and organized enterprise onsite training sessions (travel logistics, trainer readiness, equipment, schedules).",
+      "tags": ["data-ai", "leadership", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0223",
+      "source_order": 223,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Met directly with stakeholders to uncover needs, clarify expectations, and remove barriers to participation.",
+      "tags": ["customer-support", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0234",
+      "source_order": 234,
+      "section": "Opsgility – Customer Success Consulting | May 2025 – Jun 2025",
+      "subsection": null,
+      "type": "text",
+      "text": "Managed live sessions, feedback collection, and customer insights to inform process and content improvements.",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "opsgility"
+    },
+    {
+      "id": "resume-line-0249",
+      "source_order": 249,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintained audit-ready compliance documentation, SOPs, safety logs, and workflow records in accordance with HIPAA, USP 797/800, and applicable regulatory standards.",
+      "tags": [
+        "compliance",
+        "data-ai",
+        "healthcare",
+        "leadership",
+        "operations"
+      ],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0250",
+      "source_order": 250,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Navigated EMR systems to verify treatment plans, confirm orders, and ensure accuracy across patient records",
+      "tags": ["customer-support", "healthcare"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0251",
+      "source_order": 251,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated with providers, nurses, pharmacists, and schedulers to resolve workflow issues and prevent delays",
+      "tags": ["healthcare", "operations"],
+      "role_id": "oncology"
+    },
+
+    {
+      "id": "resume-line-0253",
+      "source_order": 253,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated urgent cases and schedule adjustments while maintaining compliance and operational accuracy",
+      "tags": ["compliance", "data-ai", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0254",
+      "source_order": 254,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Participated in safety and compliance reviews, contributing to process improvements and regulatory adherence",
+      "tags": ["compliance", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0255",
+      "source_order": 255,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported provider readiness by ensuring documentation accuracy, compliance alignment, and workflow coordination across clinical operations",
+      "tags": ["compliance", "customer-support", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+
+    {
+      "id": "resume-line-0260",
+      "source_order": 260,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Assisted with patient preparation and ensured treatment areas were clean, stocked, and ready for care.",
+      "tags": ["customer-support", "healthcare"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0263",
+      "source_order": 263,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Assisted with triage of daily caseload, coordinating with schedulers and clinical staff to accommodate add-ons, urgent cases, and schedule changes.",
+      "tags": ["data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+
+    {
+      "id": "resume-line-0265",
+      "source_order": 265,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintained sterile cleanroom operations and participated in monthly Safety Committee reviews to support environmental, workflow, and regulatory compliance.",
+      "tags": ["compliance", "data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0266",
+      "source_order": 266,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Assisted clinical staff during active patient treatment sessions by preparing materials, verifying documentation, and supporting workflow needs.",
+      "tags": ["customer-support", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0267",
+      "source_order": 267,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Completed daily opening procedures for pharmacy operations, including environmental checks, reviewing patient schedules, organizing supplies, and preparing individual workstations to ensure workflow readiness.",
+      "tags": ["customer-support", "data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0268",
+      "source_order": 268,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed chemotherapy inventory, vendor ordering, par levels, and supply coordination to maintain operational readiness and appropriate stock levels across clinical sites.",
+      "tags": [
+        "compliance",
+        "data-ai",
+        "healthcare",
+        "leadership",
+        "operations"
+      ],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0269",
+      "source_order": 269,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated urgent medication transfers between clinical sites, communicating with internal and external practices to prevent treatment delays and ensure continuity of care.",
+      "tags": ["healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0289",
+      "source_order": 289,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Supported high‑volume, highly regulated operations requiring exceptional accuracy, documentation, and attention to detail.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0290",
+      "source_order": 290,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated staffing schedules, coverage adjustments, workload balancing, and operational tracking to maintain service levels and support leadership oversight.",
+      "tags": ["compliance", "data-ai", "leadership", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0291",
+      "source_order": 291,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated daily workflows across multidisciplinary teams, ensuring priorities were met and issues escalated appropriately.",
+      "tags": ["data-ai", "leadership", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0292",
+      "source_order": 292,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Prepared operational summaries and reports to support management decision‑making.",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0300",
+      "source_order": 300,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Identified and resolved workflow bottlenecks, staffing constraints, and operational issues to improve efficiency, throughput, and continuity of patient care.",
+      "tags": ["customer-support", "data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0308",
+      "source_order": 308,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Formally supervised a 6-person oncology pharmacy team, including onboarding, scheduling, daily assignments, performance accountability, and staff support.",
+      "tags": [
+        "customer-support",
+        "data-ai",
+        "healthcare",
+        "leadership",
+        "operations"
+      ],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0310",
+      "source_order": 310,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Conducted internal audits of workflows, logs, inventory, and safety procedures; implemented corrective actions to address deficiencies.",
+      "tags": ["compliance", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0311",
+      "source_order": 311,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Monitored workflow efficiency, staffing utilization, error trends, and overtime, implementing process adjustments to improve consistency and throughput.",
+      "tags": ["operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0313",
+      "source_order": 313,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as backup leadership across multiple sites, providing staff guidance, operational support, and issue resolution as needed.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0315",
+      "source_order": 315,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated with pharmacists, nurses, providers, and administrative leadership to improve efficiency and patient throughput.",
+      "tags": ["customer-support", "healthcare", "leadership"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0316",
+      "source_order": 316,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported EMR/EHR rollouts for iKnowMed, ARIA, and DoseEdge through UAT, regimen build, data validation, staff training, and workflow optimization.",
+      "tags": [
+        "customer-support",
+        "data-ai",
+        "healthcare",
+        "leadership",
+        "operations"
+      ],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0339",
+      "source_order": 339,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as a trusted point of contact during high-stress situations, balancing urgency with empathy and precision.",
+      "tags": ["healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0340",
+      "source_order": 340,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Trained and mentored 15+ technicians in aseptic technique, workflow organization, documentation, compliance, accuracy, and patient safety.",
+      "tags": ["customer-support", "data-ai", "healthcare", "leadership"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0341",
+      "source_order": 341,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintained strict compliance with HIPAA and USP 797/800 standards while managing complex, fast-paced operations.",
+      "tags": ["compliance", "data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0345",
+      "source_order": 345,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed incoming clinical documentation, including labs, provider notes, and faxes, ensuring accurate routing to the appropriate patient record or care team member.",
+      "tags": ["customer-support", "healthcare"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0352",
+      "source_order": 352,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Streamlined workflows through EHR data analysis, improving timing and safety compliance under USP 797/800 standards.",
+      "tags": ["compliance", "data-ai", "healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0355",
+      "source_order": 355,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated oncology pharmacy workflows supporting ~200 patients per day across multiple clinics and 40 infusion chairs, ensuring medication readiness, accurate documentation, and timely communication across pharmacy, nursing, and scheduling.",
+      "tags": ["healthcare", "operations"],
+      "role_id": "oncology"
+    },
+    {
+      "id": "resume-line-0359",
+      "source_order": 359,
+      "section": "Oncology Pharmacy & Healthcare Operations | May 2009 – Sep 2021",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated with providers and clinical teams to streamline patient flow and reduce chair turnover across 40 infusion chairs.",
+      "tags": ["customer-support", "data-ai", "healthcare"],
+      "role_id": "oncology"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supervised daily operations in high-volume service environments, coordinating staffing, coverage changes, customer flow, performance feedback, conflict resolution, and service recovery.",
+      "tags": [
+        "retail-hospitality",
+        "customer-support",
+        "leadership",
+        "operations"
+      ],
+      "role_id": "macaroni-grill"
+    },
+    {
+      "id": "resume-line-0368",
+      "source_order": 368,
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as an expediter and communication link between front-of-house and kitchen teams, coordinating timing across stations to ensure accurate, efficient order delivery during peak service.",
+      "tags": ["retail-hospitality", "operations"],
+      "role_id": ["macaroni-grill", "bjs-brewhouse"]
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Worked across food prep, line support, dish, expo, hosting, and serving functions, developing a broad understanding of restaurant operations.",
+      "tags": ["retail-hospitality", "operations"],
+      "role_id": "macaroni-grill"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Adjusted staffing and coverage based on reservations, sales volume, weather, and local events to align labor with demand and control costs.",
+      "tags": ["retail-hospitality", "operations", "leadership"],
+      "role_id": "macaroni-grill"
+    },
+    {
+      "id": "resume-line-0377",
+      "source_order": 377,
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Supported high-volume dine-in, takeout, and quick-service operations, maintaining order accuracy, timing, and efficient service flow across multiple channels.",
+      "tags": ["retail-hospitality", "operations", "customer-support"],
+      "role_id": ["macaroni-grill", "bjs-brewhouse", "ninety-nine"]
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Adapted quickly to changing service models and operating procedures during COVID-era restaurant operations while maintaining service standards.",
+      "tags": ["retail-hospitality", "operations", "customer-support"],
+      "role_id": "ninety-nine"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed full front-of-house operations independently during solo shifts, including bartending, serving, guest service, issue resolution, and cash handling.",
+      "tags": ["retail-hospitality", "operations", "customer-support"],
+      "role_id": "excelsior-pub"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Received and processed deliveries, maintained inventory levels, and organized stockroom operations to support daily service readiness.",
+      "tags": ["retail-hospitality", "operations"],
+      "role_id": "excelsior-pub"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported high-volume, event-driven dining operations tied to scheduled live shows, preparing service areas based on ticket volume and maintaining timing, coordination, restocking, and reset between events.",
+      "tags": [
+        "retail-hospitality",
+        "live-events",
+        "operations",
+        "customer-support"
+      ],
+      "role_id": "medieval-times"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Increased per-guest revenue through upselling merchandise, specialty beverages, and event-related items.",
+      "tags": [
+        "retail-hospitality",
+        "marketing-monetization",
+        "customer-support"
+      ],
+      "role_id": "medieval-times"
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Opened and closed restaurant and bar operations, preparing service areas, organizing supplies, completing cleaning, and performing end-of-day cash-out procedures.",
+      "tags": ["retail-hospitality", "operations"],
+      "role_id": ["macaroni-grill", "excelsior-pub"]
+    },
+    {
+      "id": "resume-line-0396b",
+      "source_order": 396,
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Worked across food prep, line support, dish, expo, hosting, and serving functions, developing a broad understanding of restaurant operations.",
+      "tags": ["retail-hospitality", "operations"],
+      "role_id": "hospitality-general"
+    },
+    {
+      "id": "resume-line-0396",
+      "source_order": 396,
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed reservations, waitlists, large parties, dining-room flow, and table turnover to maintain service pacing during high-volume periods.",
+      "tags": ["retail-hospitality", "operations", "customer-support"],
+      "role_id": ["hospitality-general", "macaroni-grill"]
+    },
+    {
+      "section": "Hospitality & Customer Service | Sep 2011 – Aug 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Resolved guest concerns with empathy and clear communication, adapting quickly to different personalities while maintaining organized service flow.",
+      "tags": ["retail-hospitality", "customer-support"],
+      "role_id": [
+        "hospitality-general",
+        "macaroni-grill",
+        "bjs-brewhouse",
+        "ninety-nine",
+        "excelsior-pub",
+        "medieval-times"
+      ]
+    },
+    {
+      "id": "resume-line-0410",
+      "source_order": 410,
+      "section": "Snowboard Instruction & Group Training | 2004 – 2010",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Taught group lessons with patience, structure, and safety focus.",
+      "tags": ["compliance"],
+      "role_id": "snowboard-instructor"
+    },
+    {
+      "id": "resume-line-0414",
+      "source_order": 414,
+      "section": "Snowboard Instruction & Group Training | 2004 – 2010",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Taught thousands of students with an emphasis on safety, confidence, and fun.",
+      "tags": ["compliance"],
+      "role_id": "snowboard-instructor"
+    },
+    {
+      "id": "resume-line-0416",
+      "source_order": 416,
+      "section": "Snowboard Instruction & Group Training | 2004 – 2010",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Trained and supervised 20+ staff across customer-facing roles, reinforcing communication, service standards, teamwork, and consistent execution during peak periods.",
+      "tags": ["retail-hospitality", "leadership", "customer-support"],
+      "role_id": "snowboard-instructor"
+    },
+    {
+      "id": "resume-line-0419",
+      "source_order": 419,
+      "section": "Web Development & Digital Projects",
+      "subsection": null,
+      "type": "text",
+      "text": "(Puck in Play, Screenitology, EcoActivators, SL3DPrinting, HTML5 game portfolio)",
+      "tags": ["development", "gaming"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0421",
+      "source_order": 421,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Operate a live event system at the Florence Center, supporting real-time communication during hockey games",
+      "tags": ["customer-support", "gaming", "live-events"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0422",
+      "source_order": 422,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinate live updates and troubleshoot issues during events with large audiences",
+      "tags": ["operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0423",
+      "source_order": 423,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Support in-venue experience through real-time operational awareness",
+      "tags": ["customer-support", "live-events", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0425",
+      "source_order": 425,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Built and operated a real-time arena display system used during 18+ live hockey games",
+      "tags": ["gaming", "live-events"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0426",
+      "source_order": 426,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Delivered live content and updates to audiences of up to 7,400+ attendees during record-breaking FPHL game attendance",
+      "tags": ["gaming", "live-events"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0427",
+      "source_order": 427,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed real-time score updates, messaging, and game state transitions across 14 connected display devices",
+      "tags": ["gaming", "leadership"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0428",
+      "source_order": 428,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed a custom admin system enabling instant updates during live events with zero disruption to user experience",
+      "tags": ["customer-support", "live-events"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0429",
+      "source_order": 429,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Troubleshot live issues in real time to ensure uninterrupted system performance",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0445",
+      "source_order": 445,
+      "section": "Southern Layers 3D Printing | Jan 2025 – Present",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and built the full WordPress website for sl3dprinting.com with a focus on mobile usability and clear product presentation.",
+      "tags": ["development"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0446",
+      "source_order": 446,
+      "section": "Southern Layers 3D Printing | Jan 2025 – Present",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Structured product pages and merchandising sections to highlight IceCats gear and custom items.",
+      "tags": ["development"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0447",
+      "source_order": 447,
+      "section": "Southern Layers 3D Printing | Jan 2025 – Present",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Implemented backend forms and workflows for custom order inquiries and communication.",
+      "tags": ["customer-support", "development", "operations"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0448",
+      "source_order": 448,
+      "section": "Southern Layers 3D Printing | Jan 2025 – Present",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Updated content, layouts, and seasonal sections based on event timing and product availability.",
+      "tags": ["data-ai"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0450",
+      "source_order": 450,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built and deployed a connected tablet display system used during Pee Dee IceCats home games.",
+      "tags": ["gaming"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0451",
+      "source_order": 451,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed live standings displays, schedule updates, sponsor messaging, and game-day content.",
+      "tags": ["gaming", "live-events", "operations"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0452",
+      "source_order": 452,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Created a custom admin panel for updating schedules, standings, and in-game messaging.",
+      "tags": ["gaming", "operations"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0453",
+      "source_order": 453,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed local network setup and real-time troubleshooting during events.",
+      "tags": ["customer-support", "leadership"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0454",
+      "source_order": 454,
+      "section": "Puck in Play | FPHL Hockey Season 2025 - 2026",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Focused on building a system that enhances fan experience inside the arena.",
+      "tags": ["live-events"],
+      "role_id": "screenitology"
+    },
+    {
+      "id": "resume-line-0474",
+      "source_order": 474,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built the Waste Lens™ prototype, a climate-tech SaaS tool designed around user flows.",
+      "tags": ["customer-support"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0475",
+      "source_order": 475,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated with founders to translate vision into responsive, branded UI and smooth transitions.",
+      "tags": ["development"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0476",
+      "source_order": 476,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Delivered a working product in a lean, Agile-style iteration cycle.",
+      "tags": ["development"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0478",
+      "source_order": 478,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed a simple flow-led prototype for a climate-tech tool and created user-friendly documentation. Helped founders translate ideas into clear steps and guided experiences.",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0480",
+      "source_order": 480,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built the Waste Lens™ prototype, a responsive front-end tool that guided users through waste sorting and sustainability flows.",
+      "tags": ["data-ai", "development"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0481",
+      "source_order": 481,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated on UI/UX strategy and created interactive user journeys that translated brand goals into actionable experiences.",
+      "tags": ["customer-support"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0483",
+      "source_order": 483,
+      "section": "EcoActivators – Waste Lens | Jul 2025 – Aug 2025",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and delivered a flow-led prototype for a climate-tech SaaS platform, integrating guided steps for education and decision support",
+      "tags": ["customer-support", "leadership"],
+      "role_id": "ecoactivators"
+    },
+    {
+      "id": "resume-line-0487",
+      "source_order": 487,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Managed high-volume communication and support workflows",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0488",
+      "source_order": 488,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated live events and communications",
+      "tags": ["live-events", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0489",
+      "source_order": 489,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Designed event campaigns tied to digital products, supporting engagement and revenue generation",
+      "tags": [
+        "customer-support",
+        "data-ai",
+        "development",
+        "marketing-monetization"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0491",
+      "source_order": 491,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Managed high-volume support and documentation workflows across multiple systems, ensuring accurate tracking and timely resolution of issues",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0492",
+      "source_order": 492,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintained detailed tracking of issues, resolutions, and follow-ups",
+      "tags": ["data-ai", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0493",
+      "source_order": 493,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated across teams to resolve complex operational issues and improve processes",
+      "tags": ["leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0494",
+      "source_order": 494,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Built structured documentation and workflows to reduce friction and improve user experience",
+      "tags": ["customer-support", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0495",
+      "source_order": 495,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Served as primary contact for high-volume inquiries via chat and email",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0496",
+      "source_order": 496,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintained detailed documentation and ensured timely follow-up.",
+      "tags": ["data-ai", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0497",
+      "source_order": 497,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated communication and scheduling across multiple teams to support daily operations.",
+      "tags": ["customer-support", "data-ai", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0499",
+      "source_order": 499,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Executed recurring LiveOps campaigns and events that increased DAU up to 6× and improved retention by +20%",
+      "tags": ["data-ai", "gaming", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0500",
+      "source_order": 500,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Owned event cadence planning, timing, and player communication across Discord, social, and in-game messaging",
+      "tags": ["community", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0501",
+      "source_order": 501,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Coordinated with QA and engineering to test features pre-release, validate fixes, and ensure stable launches",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0502",
+      "source_order": 502,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Monitored live events and rapidly investigated issues, communicating updates and workarounds to players",
+      "tags": ["development", "gaming", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0503",
+      "source_order": 503,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Designed engagement loops including competitions, rewards, and limited-time events tied to gameplay systems",
+      "tags": ["gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0504",
+      "source_order": 504,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Managed high-volume player communication channels, ensuring clarity, segmentation, and strong player experience",
+      "tags": ["gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0505",
+      "source_order": 505,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Translated player feedback into actionable improvements for product, economy, and event design",
+      "tags": ["community", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0506",
+      "source_order": 506,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Collaborated cross-functionally with Product, QA, Art, and Engineering teams on releases and live events",
+      "tags": ["leadership", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0507",
+      "source_order": 507,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Built SOPs, playbooks, and documentation to improve consistency and reduce operational errors",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0508",
+      "source_order": 508,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Led design and rollout of NFT-based features and LiveOps systems within a competitive Web3 game, collaborating cross-functionally with engineering, QA, art, and leadership.",
+      "tags": ["gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0509",
+      "source_order": 509,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and documented in-game features using Figma wireframes and a standardized cross-functional design framework adopted across product and engineering teams.",
+      "tags": ["gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0510",
+      "source_order": 510,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Balanced tokenized asset mechanics to preserve competitive fairness, progression pacing, and long-term player trust while supporting monetization goals.",
+      "tags": [
+        "customer-support",
+        "data-ai",
+        "gaming",
+        "marketing-monetization"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0511",
+      "source_order": 511,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and executed recurring LiveOps programs that increased daily active users up to 6× and improved retention by +20%.",
+      "tags": ["data-ai", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0512",
+      "source_order": 512,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Monitored performance using retention cohorts (D1/D7/D30), LTV trends, feature adoption, conversion rates, secondary market activity, and event-to-revenue correlation to inform iteration and balance adjustments.",
+      "tags": ["gaming", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0513",
+      "source_order": 513,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Partnered with QA and engineering to validate NFT feature releases, monitor bug trends and deployment velocity, and improve post-release stability.",
+      "tags": ["gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0514",
+      "source_order": 514,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Identified onboarding friction through player sentiment analysis and implemented structured communication updates that improved early user clarity and reduced repeated support inquiries.",
+      "tags": ["community", "customer-support", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0516",
+      "source_order": 516,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Served as the primary point of contact for a global gaming community supporting 5,000+ daily active users.",
+      "tags": ["community", "customer-support", "data-ai", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0517",
+      "source_order": 517,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Built and maintained structured documentation, FAQs, and onboarding flows to help players understand game systems and mechanics.",
+      "tags": ["customer-support", "data-ai", "gaming", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0518",
+      "source_order": 518,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Worked directly with creators to identify gameplay logic and scripting issues, document reproduction steps, and collaborate with engineering to resolve production defects.",
+      "tags": ["community", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0519",
+      "source_order": 519,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Partnered with QA to reproduce issues, validate fixes, and coordinate testing prior to live releases.",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0520",
+      "source_order": 520,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Designed and executed recurring LiveOps programs that increased DAU up to 6× and improved retention +20%",
+      "tags": ["gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0521",
+      "source_order": 521,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Moderated Discord communities, resolved conflicts, and maintained a healthy creator ecosystem.",
+      "tags": ["community", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0522",
+      "source_order": 522,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Collaborated with event managers and cross-functional teams to host livestreams, community spotlights, and virtual events that strengthened creator retention and platform engagement.",
+      "tags": ["community", "gaming", "leadership", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0523",
+      "source_order": 523,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Supported competitive and user-generated strategy ecosystems by helping players understand mechanics, balancing, and system interactions.",
+      "tags": ["customer-support", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0524",
+      "source_order": 524,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Provided hands-on technical guidance to creators troubleshooting scripting logic, asset behavior, and gameplay interactions within a live production environment.",
+      "tags": ["community", "customer-support", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0525",
+      "source_order": 525,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "text",
+      "text": "Produced and edited in-game gameplay footage and marketing clips using OBS and CapCut, supporting community engagement and feature launches across social platforms.",
+      "tags": [
+        "community",
+        "customer-support",
+        "gaming",
+        "marketing-monetization"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0527",
+      "source_order": 527,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Designed and executed recurring LiveOps campaigns that created structured weekly engagement cycles tied to digital product activity.",
+      "tags": ["data-ai", "development", "gaming", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0528",
+      "source_order": 528,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported multiple NFT product launches through coordinated social campaigns, countdown content, livestream education, and community activation.",
+      "tags": [
+        "community",
+        "customer-support",
+        "data-ai",
+        "gaming",
+        "live-events",
+        "marketing-monetization",
+        "operations"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0529",
+      "source_order": 529,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built anticipation and urgency around timed digital drops, increasing participation and repeat engagement.",
+      "tags": ["development"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0530",
+      "source_order": 530,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Increased community size to over 5,500 daily active users, expanding launch reach and product visibility.",
+      "tags": ["community", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0531",
+      "source_order": 531,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Created predictable content cadences that maintained engagement during non-peak periods.",
+      "tags": ["data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0532",
+      "source_order": 532,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Monitored participation and engagement metrics and adjusted messaging and timing to improve campaign performance.",
+      "tags": ["data-ai", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0533",
+      "source_order": 533,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Translated community feedback into clearer sales messaging that improved buyer confidence and product understanding.",
+      "tags": ["community", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0535",
+      "source_order": 535,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as primary point of contact for a global digital platform supporting 5,000+ daily active users",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0536",
+      "source_order": 536,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Handled high-volume real-time support via chat, email, and live sessions; triaged issues and documented outcomes",
+      "tags": ["customer-support", "data-ai", "leadership", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0537",
+      "source_order": 537,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated live operations programs and events that increased daily active users by up to 6× and improved retention by +20%",
+      "tags": ["data-ai", "gaming", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0538",
+      "source_order": 538,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built and maintained SOPs, FAQs, onboarding flows, and release communications to reduce friction and support adoption",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0539",
+      "source_order": 539,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collected structured user feedback and delivered actionable insights to product and engineering teams",
+      "tags": ["customer-support", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0540",
+      "source_order": 540,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Acted as liaison between users, moderators, and developers to resolve incidents and improve platform stability",
+      "tags": ["community", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0541",
+      "source_order": 541,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Partnered closely with QA to reproduce bugs, validate fixes, and coordinate testing prior to live releases",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0542",
+      "source_order": 542,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated live operations schedules, event cadence, and release communications supporting recurring programs and launches",
+      "tags": ["customer-support", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0544",
+      "source_order": 544,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Supported executive and cross‑functional teams by maintaining project trackers, timelines, and operational reports across multiple concurrent initiatives.",
+      "tags": ["customer-support", "data-ai", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0545",
+      "source_order": 545,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated weekly operational and project meetings, tracking progress, staffing needs, and action items.",
+      "tags": ["leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0546",
+      "source_order": 546,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintained KPI and status dashboards used in executive reviews to support planning and decision‑making.",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0547",
+      "source_order": 547,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Acted as a central point of coordination between leadership, product, and support teams to keep initiatives organized and on schedule.",
+      "tags": ["customer-support", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0548",
+      "source_order": 548,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported pricing, documentation, and proposal‑adjacent materials by compiling accurate data and maintaining version control.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0550",
+      "source_order": 550,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Worked cross-functionally with engineering, design, and QA teams on live product updates and feature rollouts.",
+      "tags": ["leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0551",
+      "source_order": 551,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Translated player and stakeholder feedback into actionable technical and UX improvements.",
+      "tags": ["gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0552",
+      "source_order": 552,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Supported debugging, issue triage, and release coordination in production environments.",
+      "tags": ["customer-support", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0553",
+      "source_order": 553,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated across multiple active initiatives with minimal supervision.",
+      "tags": ["leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0554",
+      "source_order": 554,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Queried and analyzed live game and user data using SQL-based workflows in Databricks and Redis-backed systems to support operational decisions and issue investigation.",
+      "tags": [
+        "customer-support",
+        "data-ai",
+        "development",
+        "gaming",
+        "operations"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0556",
+      "source_order": 556,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as voice of the player community, translating feedback into product decisions.",
+      "tags": ["community", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0557",
+      "source_order": 557,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and launched weekly live-ops events informed by feedback, improving retention +20%.",
+      "tags": ["gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0558",
+      "source_order": 558,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Coordinated feature request & bug tracking, keeping developers and users aligned.",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0559",
+      "source_order": 559,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Stepped up during a leadership gap to guide roadmap priorities and sprint alignment.",
+      "tags": ["leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0560",
+      "source_order": 560,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Produced FAQs, changelogs, livestreams, and onboarding flows to ensure adoption.",
+      "tags": ["customer-support", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0561",
+      "source_order": 561,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Handled high-volume real-time client communications via calls, chat, and email while documenting outcomes and next steps.",
+      "tags": ["customer-support", "data-ai", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0564",
+      "source_order": 564,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and executed 75+ recurring operational programs and live sessions, coordinating staffing, schedules, and communications to ensure consistent execution.",
+      "tags": ["leadership", "live-events", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0566",
+      "source_order": 566,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Led structured feedback and incident-tracking initiatives; synthesized trends into regular reports used by leadership to guide operational decisions.",
+      "tags": ["leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0571",
+      "source_order": 571,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed social media presence across Twitter/X, Facebook, Instagram, Reddit, Discord, YouTube, and the company blog; built content calendars, event promotions, and community updates.",
+      "tags": ["community", "leadership", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0572",
+      "source_order": 572,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and executed 75+ recurring live programs and events, balancing engagement, retention, and monetization using direct community feedback.",
+      "tags": ["community", "gaming", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0574",
+      "source_order": 574,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Led sentiment analysis initiatives, developing Discord bots and emoji-tagging workflows to categorize community feedback; synthesized insights into monthly reports presented to the C-suite.",
+      "tags": ["community", "leadership", "operations"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0575",
+      "source_order": 575,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Partnered with influencers and streamers, both grassroots and formal, including guest livestream appearances and a guild leader advocacy council that influenced roadmap decisions.",
+      "tags": [
+        "community",
+        "customer-support",
+        "development",
+        "leadership",
+        "live-events"
+      ],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0579",
+      "source_order": 579,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as the primary liaison between a 5,500+ daily user community, internal product teams, and external partners.",
+      "tags": ["community", "customer-support", "data-ai", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0580",
+      "source_order": 580,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built long-term relationships with community leaders, moderators, and ambassadors by listening closely, addressing concerns, and following through consistently.",
+      "tags": ["community", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0581",
+      "source_order": 581,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Led live educational sessions, Q&As, and update briefings that helped users understand programs, timelines, and changes—improving retention by +20%.",
+      "tags": ["customer-support", "gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0582",
+      "source_order": 582,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Gathered qualitative feedback from users and stakeholders, synthesized trends, and shared actionable insights with product, marketing, and leadership teams.",
+      "tags": ["leadership", "marketing-monetization"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0583",
+      "source_order": 583,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Represented the organization publicly during livestreams, events, and launches, balancing transparency with professionalism.",
+      "tags": ["live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0584",
+      "source_order": 584,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Operated independently in a fast-moving environment, managing competing priorities while maintaining trust and clarity.",
+      "tags": ["data-ai"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0586",
+      "source_order": 586,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed communication for a global player community with 5,500+ DAU.",
+      "tags": ["community", "gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0587",
+      "source_order": 587,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Wrote FAQs, onboarding flows, knowledge base articles, and regular update communications.",
+      "tags": ["customer-support", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0588",
+      "source_order": 588,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Handled large-scale messaging (~2,000+ messages/day during peak times).",
+      "tags": ["leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0589",
+      "source_order": 589,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Improved community retention by +20% and contributed to a +175% increase in DAU through clearer education, engagement programs, and support content.",
+      "tags": ["community", "customer-support", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0590",
+      "source_order": 590,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Ran livestream Q&As, community events, and update briefings.",
+      "tags": ["community", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0591",
+      "source_order": 591,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Gathered user feedback and routed it to product/design teams with clarity.",
+      "tags": ["customer-support", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0593",
+      "source_order": 593,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Served as the liaison between 5,500+ daily players, developers, and live-ops leadership, ensuring player feedback directly informed roadmap priorities.",
+      "tags": ["community", "data-ai", "gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0594",
+      "source_order": 594,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Designed and launched weekly live-ops events that increased retention 20% and community engagement 30%.",
+      "tags": ["community", "gaming"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0595",
+      "source_order": 595,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Built and mentored an ambassador/moderator program across Discord, Twitter, and YouTube to amplify transparency and user-generated content (UGC).",
+      "tags": ["community", "customer-support", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0596",
+      "source_order": 596,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Hosted developer livestreams, managed event communications, and created FAQ/help-center content that strengthened trust and reduced repetitive support tickets.",
+      "tags": ["customer-support", "development", "leadership", "live-events"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0597",
+      "source_order": 597,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Represented the community voice during alpha tests and feature rollouts; collected, categorized, and presented feedback to guide product and event design.",
+      "tags": ["community"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0599",
+      "source_order": 599,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Led communications and onboarding initiatives for a SaaS platform with 5,500+ daily active users.",
+      "tags": ["customer-support", "data-ai", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0600",
+      "source_order": 600,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Managed feedback loops, education content, and live training sessions to improve adoption (+20% retention).",
+      "tags": ["data-ai", "gaming", "leadership"],
+      "role_id": "gala-games"
+    },
+    {
+      "id": "resume-line-0601",
+      "source_order": 601,
+      "section": "Gala Games – Community, LiveOps & Game Design | 2022 – Dec 2024",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Partnered cross-functionally to build workflows and content documentation that ensured clarity and consistency.",
+      "tags": ["operations"],
+      "role_id": "gala-games"
+    },
+
+    {
+      "id": "resume-line-0604",
+      "source_order": 604,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "AI Data Quality Reviewer (Contract) Outlier.ai |nt Feb 2024 – Present",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0605",
+      "source_order": 605,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Evaluated outputs using structured frameworks, identifying inconsistencies and edge cases",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0606",
+      "source_order": 606,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Applied logical problem-solving to improve quality and reliability of systems",
+      "tags": ["development"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0607",
+      "source_order": 607,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintained precision in high-volume review workflows",
+      "tags": ["data-ai", "operations"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0608",
+      "source_order": 608,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Evaluate LLM-generated outputs using structured prompt and policy frameworks to ensure quality, safety, and consistency.",
+      "tags": ["compliance", "data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0609",
+      "source_order": 609,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Identify edge cases, inconsistencies, and prompt-related output issues.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0610",
+      "source_order": 610,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Provide structured feedback to improve AI response quality and reliability.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0611",
+      "source_order": 611,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintain precision and consistency in high-volume asynchronous review workflows.",
+      "tags": ["data-ai", "operations"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0612",
+      "source_order": 612,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "text",
+      "text": "AI Data Quality Reviewer (Contract) Outlier.ai | Feb 2024 – Present",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0613",
+      "source_order": 613,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Perform policy-based data annotation and quality review for large-scale AI training workflows",
+      "tags": ["compliance", "data-ai", "operations"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0614",
+      "source_order": 614,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Evaluate content against detailed guidelines, ensuring accuracy, consistency, and compliance",
+      "tags": ["compliance", "data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0615",
+      "source_order": 615,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Identify edge cases and quality issues; provide structured feedback to improve model outputs",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0616",
+      "source_order": 616,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintain confidentiality and precision in a high-volume, asynchronous review environment",
+      "tags": ["compliance", "data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0617",
+      "source_order": 617,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Outlier.ai - Community Reviewer / AI Training Contributor (Contract) Remote | Feb 2024 – Present",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0618",
+      "source_order": 618,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Reviewed and evaluated user-generated and AI-generated content against detailed quality, safety, and policy guidelines.",
+      "tags": ["compliance", "customer-support", "data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0619",
+      "source_order": 619,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Contributed to large-scale feedback loops used to improve model performance, consistency, and trust outcomes.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0620",
+      "source_order": 620,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Maintained accuracy, confidentiality, and adherence to evolving standards in a distributed, asynchronous work environment.",
+      "tags": ["compliance", "data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0621",
+      "source_order": 621,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Identified edge cases and recurring issues, escalating patterns that informed guideline refinement and training improvements.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0622",
+      "source_order": 622,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Collaborated within a large-scale contributor ecosystem, supporting consistency, fairness, and trust across platform moderation and review workflows.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0623",
+      "source_order": 623,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Outlier.AI — Data Annotator | Remote | Feb 2025 – Present",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0624",
+      "source_order": 624,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Provide accurate annotation for AI training datasets. Follow detailed guidelines, document edge cases, and review outputs for clarity and consistency.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0625",
+      "source_order": 625,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "role_or_context",
+      "text": "Outlier.AI — Data Annotator | Remote – Part-Time | Feb 2025 – Present",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0626",
+      "source_order": 626,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Reviewed and rated AI training responses for tone, empathy, and community alignment.",
+      "tags": ["data-ai"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0627",
+      "source_order": 627,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Ensured accuracy, readability, and inclusivity across diverse user-facing scenarios.",
+      "tags": ["customer-support"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0628",
+      "source_order": 628,
+      "section": "Outlier.ai – AI Data Quality",
+      "subsection": null,
+      "type": "bullet",
+      "text": "Provided structured feedback to help improve community moderation and content authenticity.",
+      "tags": ["customer-support"],
+      "role_id": "outlier-ai"
+    },
+    {
+      "id": "resume-line-0745",
+      "source_order": 745,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Built and configured specialized backend tools for dbmb.io using Cloudflare Workers, connecting front-end interfaces with external APIs while keeping credentials and sensitive logic out of the browser.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0746",
+      "source_order": 746,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Developed serverless request-handling workflows through Cloudflare Workers to support résumé-tailoring, content-processing, and other interactive website functions.",
+      "tags": ["customer-support", "data-ai", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0747",
+      "source_order": 747,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Diagnosed API routing, endpoint, CORS, authentication, and deployment issues across Cloudflare-hosted services and static front-end applications.",
+      "tags": ["customer-support", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0748",
+      "source_order": 748,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Managed Cloudflare DNS, custom-domain configuration, SSL, worker deployment, environment variables, and production troubleshooting.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0749",
+      "source_order": 749,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Helped transform a static portfolio site into a more functional platform with secure backend-supported tools and administrative workflows.",
+      "tags": ["customer-support", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0750",
+      "source_order": 750,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Cloudflare and dbmb.io",
+      "type": "text",
+      "text": "Future tags: development operations backend cloudflare",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0752",
+      "source_order": 752,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Designed, built, tested, and prepared native Android applications using Kotlin and Android Studio.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0753",
+      "source_order": 753,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Developed Android apps with local data storage, search, structured writing tools, user preferences, privacy-focused workflows, and mobile-responsive interfaces.",
+      "tags": ["customer-support", "data-ai", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0754",
+      "source_order": 754,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Built and tested app features across the full development cycle, including interface design, debugging, device testing, release builds, store assets, privacy documentation, and tester feedback.",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0755",
+      "source_order": 755,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Created Android application bundles and managed versioning, release notes, package configuration, icons, screenshots, and feature graphics for publication.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0756",
+      "source_order": 756,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Integrated Google Mobile Ads into Android applications and tested banner-ad placement, consent behavior, and production readiness.",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0757",
+      "source_order": 757,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Used real tester feedback to identify usability issues, improve navigation, refine features, and prepare applications for wider release.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0758",
+      "source_order": 758,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Android application development",
+      "type": "text",
+      "text": "Future tags: development android apps product user-experience",
+      "tags": ["customer-support", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0760",
+      "source_order": 760,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Navigated the Google Play Console to configure app listings, content declarations, testing tracks, privacy disclosures, data-safety information, and release requirements.",
+      "tags": ["data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0761",
+      "source_order": 761,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Managed internal and closed-testing releases, tester lists, opt-in links, application bundles, version codes, and staged promotion between testing tracks.",
+      "tags": ["development", "marketing-monetization"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0762",
+      "source_order": 762,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Prepared Google Play store materials including descriptions, screenshots, icons, feature graphics, privacy-policy links, and testing instructions.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0763",
+      "source_order": 763,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Coordinated closed beta recruitment and tester communication to meet Google Play testing requirements and collect structured feedback.",
+      "tags": ["operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0764",
+      "source_order": 764,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Troubleshot release-processing, testing-access, package-version, store-listing, and policy-compliance issues within the Google Play developer workflow.",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0765",
+      "source_order": 765,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Google Play Developer Console",
+      "type": "text",
+      "text": "Future tags: development apps operations release-management",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0767",
+      "source_order": 767,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Integrated Google AdMob banner advertising into Android applications and completed required consent and privacy configurations.",
+      "tags": ["development", "marketing-monetization"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0768",
+      "source_order": 768,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Configured AdMob ad units, test ads, production IDs, app registration, and regional consent messaging for mobile releases.",
+      "tags": ["development", "marketing-monetization"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0769",
+      "source_order": 769,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Implemented and maintained Google AdSense across web properties, including site verification, ads.txt, placement planning, and approval-readiness improvements.",
+      "tags": [
+        "data-ai",
+        "development",
+        "marketing-monetization",
+        "operations"
+      ],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0770",
+      "source_order": 770,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Reviewed website structure, navigation, original content, privacy information, and user experience to improve AdSense compliance and monetization readiness.",
+      "tags": [
+        "customer-support",
+        "development",
+        "marketing-monetization",
+        "operations"
+      ],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0771",
+      "source_order": 771,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Balanced advertising placement with usability, page clarity, and the overall visitor experience across web and mobile products.",
+      "tags": ["development", "marketing-monetization"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0772",
+      "source_order": 772,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "AdMob and AdSense",
+      "type": "text",
+      "text": "Future tags: development monetization marketing operations",
+      "tags": ["development", "marketing-monetization", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0774",
+      "source_order": 774,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Managed domains, DNS records, email configuration, and website connections through Namecheap.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0775",
+      "source_order": 775,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Configured custom-domain records for websites hosted through GitHub Pages, Cloudflare, and other deployment platforms.",
+      "tags": ["data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0776",
+      "source_order": 776,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Supported SSL, DNS propagation, email-client setup, IMAP configuration, and troubleshooting for domain-based business email.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0777",
+      "source_order": 777,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Connected branded domains and email addresses to live websites, contact workflows, and business communications.",
+      "tags": ["customer-support", "data-ai", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0778",
+      "source_order": 778,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Maintained domain settings while diagnosing conflicts between registrars, DNS providers, hosting platforms, and email services.",
+      "tags": ["customer-support", "data-ai", "development", "healthcare"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0779",
+      "source_order": 779,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Namecheap, domains and email",
+      "type": "text",
+      "text": "Future tags: development operations domains technical-support",
+      "tags": ["customer-support", "data-ai", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0781",
+      "source_order": 781,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Supabase",
+      "type": "text",
+      "text": "Used Supabase to support application data, backend workflows, and interactive web-product prototypes.",
+      "tags": ["customer-support", "data-ai", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0782",
+      "source_order": 782,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Supabase",
+      "type": "text",
+      "text": "Connected front-end interfaces with Supabase services to support structured data storage and application functionality.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0783",
+      "source_order": 783,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Supabase",
+      "type": "text",
+      "text": "Worked with database tables, project configuration, API credentials, and client-side integrations while troubleshooting access and data-flow issues.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0784",
+      "source_order": 784,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Supabase",
+      "type": "text",
+      "text": "Evaluated when to use cloud database storage versus local-only storage based on privacy, cost, complexity, and user needs.",
+      "tags": ["customer-support"],
+      "role_id": "independent-digital"
+    },
+
+    {
+      "id": "resume-line-0788",
+      "source_order": 788,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Use Git and GitHub to create and manage repositories, branches, commits, pull requests, releases, and production website deployments.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0789",
+      "source_order": 789,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Maintain multiple live websites and interactive projects through GitHub, including file organization, version history, deployment troubleshooting, and iterative updates.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0790",
+      "source_order": 790,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Diagnose GitHub Pages issues involving repository structure, custom domains, paths, cached assets, routing, and deployment status.",
+      "tags": ["data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0791",
+      "source_order": 791,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Use GitHub directly from desktop and mobile development environments to update, test, commit, and publish production code.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0792",
+      "source_order": 792,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Built and deployed complete browser-game projects from an Android phone using Acode, GitHub, and mobile testing tools.",
+      "tags": ["customer-support", "development", "gaming"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0793",
+      "source_order": 793,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Review file changes, compare versions, restore prior code, resolve basic merge conflicts, and safely separate experimental work from production updates.",
+      "tags": ["development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0794",
+      "source_order": 794,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Organize multi-project repositories containing websites, games, images, data files, documentation, and standalone application code.",
+      "tags": ["data-ai", "development", "gaming", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0795",
+      "source_order": 795,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Coordinate GitHub-hosted front ends with Cloudflare Workers and other external services to create full interactive workflows.",
+      "tags": ["customer-support", "development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0796",
+      "source_order": 796,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Write clear commit messages and maintain version-controlled records of fixes, content updates, feature changes, and deployment work.",
+      "tags": ["data-ai"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0797",
+      "source_order": 797,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": "Git and GitHub",
+      "type": "text",
+      "text": "Future tags: development github operations version-control",
+      "tags": ["development", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0800",
+      "source_order": 800,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Created a private Android writing application with local-only storage, search, structured journal formats, simple sketching, and user-controlled content organization.",
+      "tags": ["customer-support", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0801",
+      "source_order": 801,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Developed app privacy policies, user disclosures, beta-testing instructions, and store-listing content to support responsible product release.",
+      "tags": ["customer-support", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0802",
+      "source_order": 802,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Built beta-tester recruitment and response-tracking workflows using Google Forms and Google Sheets, allowing submissions to be reviewed and exported as CSV data.",
+      "tags": ["data-ai", "operations"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0803",
+      "source_order": 803,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Designed and maintained responsive web portfolios, project libraries, filterable content, interactive tools, and mobile-friendly navigation.",
+      "tags": ["data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0804",
+      "source_order": 804,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Developed browser games and interactive prototypes using HTML, CSS, JavaScript, Canvas, structured game states, scoring systems, and user-feedback loops.",
+      "tags": ["customer-support", "development", "gaming"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0805",
+      "source_order": 805,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Managed projects from concept through planning, development, troubleshooting, deployment, tester recruitment, feedback collection, and iterative improvement.",
+      "tags": ["customer-support", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0806",
+      "source_order": 806,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Used analytics, user behavior, support feedback, and live testing to identify friction and improve digital experiences.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0807",
+      "source_order": 807,
+      "section": "Web Development, Digital Projects & Apps",
+      "subsection": null,
+      "type": "text",
+      "text": "Created privacy-focused applications and made product decisions about local storage, account requirements, data collection, and third-party services.",
+      "tags": ["customer-support", "data-ai", "development"],
+      "role_id": "independent-digital"
+    },
+    {
+      "id": "resume-line-0809",
+      "source_order": 809,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Retail Associate / Sales Floor & Warehouse Support | Myrtle Beach, SC | 2026",
+      "tags": ["customer-support", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0811",
+      "source_order": 811,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Operated the point-of-sale register, processed customer purchases, handled payments, and maintained accuracy during busy retail periods.",
+      "tags": [
+        "customer-support",
+        "leadership",
+        "operations",
+        "retail-hospitality"
+      ],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0812",
+      "source_order": 812,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Assisted customers with locating merchandise, answering questions, resolving routine concerns, and creating a welcoming shopping experience.",
+      "tags": ["customer-support", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0813",
+      "source_order": 813,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Stocked and organized merchandise across the sales floor while maintaining clear aisles, logical product placement, and attractive displays.",
+      "tags": ["retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0814",
+      "source_order": 814,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Sorted incoming donations and merchandise, evaluated condition, and prepared items for pricing and placement on the sales floor.",
+      "tags": ["retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0815",
+      "source_order": 815,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Priced donated goods using store guidelines, product condition, category, and resale considerations.",
+      "tags": ["retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0816",
+      "source_order": 816,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Rotated merchandise and reorganized sections to improve visibility, accessibility, and shopping flow.",
+      "tags": ["retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0817",
+      "source_order": 817,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Supported furniture, warehouse, and sales-floor operations by moving merchandise safely and coordinating space for incoming inventory.",
+      "tags": ["customer-support", "operations", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0818",
+      "source_order": 818,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Monitored shelves and racks for misplaced, damaged, or unpriced merchandise and corrected issues promptly.",
+      "tags": ["retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0819",
+      "source_order": 819,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Balanced register duties, stocking, customer assistance, pricing, recovery, and warehouse support based on immediate operational needs.",
+      "tags": ["customer-support", "operations", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0820",
+      "source_order": 820,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Worked collaboratively with cashiers, production staff, supervisors, and warehouse employees to maintain daily store flow.",
+      "tags": ["leadership", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0821",
+      "source_order": 821,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Followed cash-handling, safety, loss-prevention, and donation-processing procedures.",
+      "tags": ["compliance", "operations"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0822",
+      "source_order": 822,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Adapted quickly between customer-facing and behind-the-scenes tasks in a high-volume retail environment.",
+      "tags": ["customer-support", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0823",
+      "source_order": 823,
+      "section": "Palmetto Goodwill – Retail & Hardlines| May 2026 – Jul 2026",
+      "subsection": null,
+      "type": "text",
+      "text": "Future tags: retail customer-support operations inventory",
+      "tags": ["customer-support", "operations", "retail-hospitality"],
+      "role_id": "palmetto-goodwill"
+    },
+    {
+      "id": "resume-line-0825",
+      "source_order": 825,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "AI Data Quality Reviewer / Data Labeling Contributor | WorkAda",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0827",
+      "source_order": 827,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Compared image pairs and datasets using detailed project guidelines to evaluate visual consistency, quality, and task-specific criteria.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0828",
+      "source_order": 828,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Reviewed generated and edited images for visual artifacts, inconsistent lighting, malformed details, repeated textures, distorted text, and other indicators associated with AI generation.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0829",
+      "source_order": 829,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Evaluated whether images followed prompts and labeling requirements, documenting mismatches and ambiguous cases with structured reasoning.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0830",
+      "source_order": 830,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Annotated and categorized image data for use in AI-training and quality-evaluation workflows.",
+      "tags": ["data-ai", "operations"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0831",
+      "source_order": 831,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Identified subtle differences between original, edited, and generated images while maintaining accuracy across high-volume review tasks.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0832",
+      "source_order": 832,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Applied evolving quality standards consistently and escalated unclear edge cases rather than making unsupported assumptions.",
+      "tags": ["compliance", "customer-support", "data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0833",
+      "source_order": 833,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Recorded structured labels, ratings, and written explanations to support model evaluation and dataset quality.",
+      "tags": ["customer-support", "data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0834",
+      "source_order": 834,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Reviewed facial details, hands, backgrounds, shadows, reflections, object boundaries, perspective, and metadata presented within the task when assessing image authenticity or generation artifacts.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0835",
+      "source_order": 835,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Maintained confidentiality and attention to detail while completing asynchronous data-labeling assignments.",
+      "tags": ["compliance", "data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0836",
+      "source_order": 836,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Followed complex rubrics and updated instructions while preserving consistency across large image-review datasets.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0837",
+      "source_order": 837,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Performed quality-control review of AI-generated visual content, identifying recurring failure patterns and providing feedback useful for model improvement.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0838",
+      "source_order": 838,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Distinguished between normal photographic imperfections and potential synthetic-generation artifacts using careful side-by-side comparison.",
+      "tags": ["data-ai"],
+      "role_id": "workada"
+    },
+    {
+      "id": "resume-line-0839",
+      "source_order": 839,
+      "section": "WorkAda – AI Image Review & Data Labeling",
+      "subsection": null,
+      "type": "text",
+      "text": "Future tags: ai data quality-analysis operations",
+      "tags": ["data-ai", "operations"],
+      "role_id": "workada"
+    }
+  ]
+}

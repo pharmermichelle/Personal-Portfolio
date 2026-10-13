@@ -51,7 +51,7 @@
 
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
-          <li><a href="projects.html">Work</a></li>
+          <li><a href="projects.html">Projects</a></li>
           <li><a href="socials.html">Socials</a></li>
           <li><a href="resume.html" class="active">Resume</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -210,181 +210,129 @@
         </a>
       </section>
 
-      <section class="experience" id="experience">
-        <h2>Professional Experience</h2>
-        <p>
-          I'm a product-minded builder with a background in community strategy,
-          web development, and customer success. I’ve led cross-functional
-          projects, designed live service content, and helped shape product
-          direction by listening closely to users. Whether I'm building
-          front-end tools or coordinating game events, I focus on creating
-          experiences that feel thoughtful, useful, and fun. I work best at the
-          edge of structure and creativity—especially when there's a chance to
-          make something people actually enjoy using.
-        </p>
-        <div class="accordion">
-          <button class="accordion-header">
-            Product Support, LiveOps & Game Design ⬇︎
-          </button>
-          <div class="accordion-panel">
-            <h3>Product-Adjacent Support & Junior Game Design</h3>
-            <h4>
-              <strong
-                >Gala Games – Town Star | Full-Time - Remote | 2022–2023</strong
-              >
-            </h4>
-            <p>
-              Stepped into a product-adjacent support role during a staffing
-              transition, helping organize roadmap priorities, team
-              communication, and player feedback. Supported LiveOps planning and
-              content release cycles while aligning gameplay feedback with
-              development work. Helped manage feature requests, bug tracking,
-              tester onboarding, and retention-focused event planning. Continued
-              serving as Community Manager while contributing to
-              cross-functional product and design discussions. Designed and
-              launched weekly in-game events based on player insights,
-              contributing to a <strong>20% increase in retention</strong>. See
-              <a href="https://michellewaite.com/live-ops">
-                game design & live-ops portfolio here!
-              </a>
-            </p>
+      <section class="experience resume-explorer" id="experience">
+        <div class="resume-explorer-heading">
+          <span class="hero-badge"> FILTERABLE EXPERIENCE </span>
+
+          <h2>Explore My Experience</h2>
+
+          <p>
+            Select one or more areas to highlight the experience most relevant
+            to your needs. Results are pulled from my complete experience
+            library.
+          </p>
+        </div>
+
+        <div class="resume-filter-section">
+          <h3>Filter by Job / Project</h3>
+          <p class="resume-filter-help">
+            Choose one or more roles to see the experience connected to that
+            work.
+          </p>
+
+          <div
+            id="resume-job-filters"
+            class="resume-filter-buttons"
+            role="group"
+            aria-label="Filter résumé by job or project"
+          >
+            <!-- Job buttons are created automatically from resume-master-data.json -->
           </div>
         </div>
 
-        <div class="accordion">
-          <button class="accordion-header">
-            Community & Social Media Manager ⬇︎
-          </button>
-          <div class="accordion-panel">
-            <h3>Community & Social Media Manager</h3>
-            <h4>
-              <strong
-                >Gala Games (Town Star) | Remote | June 2020 – Dec 2024</strong
-              >
-            </h4>
-            <p>
-              Scaled the player base by <strong>175%</strong> to over
-              <strong>5,500 daily active users</strong> through targeted
-              community-building and live-ops initiatives. Boosted engagement by
-              <strong>30%</strong> across Discord, Twitter (X), and YouTube by
-              executing creative content strategies and timely updates. Produced
-              and hosted developer livestreams to deepen transparency and player
-              trust. Spearheaded collaborations with influencers and UGC
-              creators, driving visibility and participation across key
-              campaigns.
-            </p>
-          </div>
-        </div>
-        <div class="accordion">
-          <button class="accordion-header">
-            Freelance Web Developer & Product Designer ⬇︎
-          </button>
-          <div class="accordion-panel">
-            <h3>Web Developer & Product Designer</h3>
-            <h4>
-              <strong
-                >EcoActivators | Freelance Contract - Hybrid/Remote |
-                July–August 2025</strong
-              >
-            </h4>
-            <p>
-              Designed and implemented the front-end for EcoActivators'
-              <strong>Waste Lens™</strong> prototype, a climate-tech solution
-              for waste guidance. Collaborated closely with founders to define
-              flows, UI/UX hierarchy, and decision logic. Delivered branded,
-              emotionally resonant components with
-              <strong>smooth transitions</strong> and responsive design.
-              Integrated GPT Vision and dynamic backend structures using
-              <strong>Supabase</strong>. Prioritized a
-              <strong>flow-led</strong> rather than page-led UX to reflect user
-              journey needs.
-            </p>
-          </div>
-        </div>
-        <div class="accordion">
-          <button class="accordion-header">
-            Independent Consultant – Customer Success ⬇︎
-          </button>
-          <div class="accordion-panel">
-            <h3>Independent Consultant – Customer Success</h3>
-            <h4>
-              <strong
-                >Opsgility | Freelance - Remote | May 2025 – June 2025</strong
-              >
-            </h4>
-            <p>
-              Supported enterprise clients through onboarding, training
-              coordination, and platform optimization for a Microsoft learning
-              solutions provider. Managed multiple training portals and live
-              session schedules, ensuring a
-              <strong>seamless learner experience</strong>. Cleaned and
-              restructured legacy data to improve performance and accuracy in
-              reporting. Regularly interfaced with clients to resolve technical
-              and logistical challenges, contributing to an increase in customer
-              satisfaction by <strong>greater than 150%</strong>.
-            </p>
+        <div class="resume-filter-section">
+          <h3>Filter by Skill / Experience Area</h3>
+          <p class="resume-filter-help">
+            Highlight experience related to a specific skill or type of work.
+          </p>
+
+          <div
+            class="resume-filter-buttons"
+            role="group"
+            aria-label="Filter résumé by skill or experience area"
+          >
+            <button type="button" data-resume-filter="healthcare">
+              Healthcare
+            </button>
+
+            <button type="button" data-resume-filter="operations">
+              Operations
+            </button>
+
+            <button type="button" data-resume-filter="live-events">
+              Live Events
+            </button>
+
+            <button type="button" data-resume-filter="development">
+              Development
+            </button>
+
+            <button type="button" data-resume-filter="community">
+              Community
+            </button>
+
+            <button type="button" data-resume-filter="gaming">Gaming</button>
+
+            <button type="button" data-resume-filter="customer-support">
+              Customer Support
+            </button>
+
+            <button type="button" data-resume-filter="leadership">
+              Leadership
+            </button>
+
+            <button type="button" data-resume-filter="compliance">
+              Compliance
+            </button>
+
+            <button type="button" data-resume-filter="data-ai">
+              AI & Data
+            </button>
+
+            <button type="button" data-resume-filter="retail-hospitality">
+              Retail & Hospitality
+            </button>
+
+            <button type="button" data-resume-filter="marketing-monetization">
+              Marketing & Monetization
+            </button>
           </div>
         </div>
 
-        <div class="accordion">
-          <button class="accordion-header">
-            Lead Oncology Admixture Technician ⬇︎
+        <div class="resume-filter-controls">
+          <button type="button" class="resume-see-all">
+            See All Experience
           </button>
-          <div class="accordion-panel">
-            <h3>Lead Oncology Admixture Technician</h3>
-            <h4>
-              <strong
-                >US Oncology, Berkshire Health Systems | May 2009 – Sept
-                2021</strong
-              >
-            </h4>
-            <p>
-              Led workflow optimizations by analyzing EHR data, resulting in
-              reduced patient wait times and enhanced operational efficiency for
-              a 10+ person team. Maintained full compliance with
-              <strong>USP safety standards</strong> in cleanroom environments
-              while preparing chemotherapy and IV treatments. Directed cleanroom
-              redesigns and integrated
-              <strong>closed-system transfer devices (CSTDs)</strong> to improve
-              safety and meet evolving regulatory standards.
-            </p>
-          </div>
+
+          <button type="button" class="resume-clear-filters">
+            Clear Filters
+          </button>
+
+          <p class="resume-filter-status" aria-live="polite">
+            Choose a job, project, or experience area above.
+          </p>
         </div>
 
-        <div class="accordion">
-          <button class="accordion-header">
-            Restaurant Shift Supervisor ⬇︎
-          </button>
-          <div class="accordion-panel">
-            <h3>Server ➡︎ Bartender ➡︎ Shift Supervisor</h3>
-            <h4><strong>Various Restaurants | Sept 2011 – Aug 2024</strong></h4>
-            <p>
-              Enhanced guest satisfaction by adapting service styles to feedback
-              and high-volume conditions. Managed and coached teams during peak
-              shifts to maintain efficiency and a collaborative atmosphere.
-              Frequently recognized for leadership and problem-solving under
-              pressure.
-            </p>
-          </div>
+        <div id="resume-loading" class="resume-loading" role="status">
+          Loading experience library…
         </div>
 
-        <div class="accordion">
-          <button class="accordion-header">⬇︎ Snowboard Instructor ⬇︎</button>
-          <div class="accordion-panel">
-            <h3>Snowboard Instructor</h3>
-            <h4>
-              <strong
-                >Woods Valley Ski Area | Westernville, NY | Nov 2004 – Feb
-                2010</strong
-              >
-            </h4>
-            <p>
-              Delivered personalized instruction to thousands of students,
-              resulting in rapid skill development and over
-              <strong>95% satisfaction</strong>. Led workshops to improve
-              training standards and teaching consistency among instructors.
-            </p>
-          </div>
+        <section
+          id="resume-selected-summary"
+          class="resume-selected-summary"
+          hidden
+        >
+          <span class="resume-summary-label"> Professional Summary </span>
+
+          <p id="resume-summary-text"></p>
+        </section>
+
+        <div id="resume-results" class="resume-results"></div>
+
+        <div id="resume-no-results" class="resume-no-results" hidden>
+          <h3>No matching experience found</h3>
+
+          <p>Try selecting another area or clearing the current filters.</p>
         </div>
       </section>
 
@@ -538,30 +486,467 @@
 
     <script src="index.js"></script>
     <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const hero = document.querySelector(".split-hero");
-        hero.classList.add("visible");
-      });
+      document.addEventListener("DOMContentLoaded", async () => {
+        const filterButtons = document.querySelectorAll("[data-resume-filter]");
 
-      document.addEventListener("DOMContentLoaded", function () {
-        const headers = document.querySelectorAll(".accordion-header");
+        const jobFilterContainer = document.querySelector(
+          "#resume-job-filters",
+        );
 
-        headers.forEach((header) => {
-          const panel = header.nextElementSibling;
+        const clearButton = document.querySelector(".resume-clear-filters");
 
-          header.addEventListener("click", () => {
-            const isOpen = panel.classList.contains("open");
+        const seeAllButton = document.querySelector(".resume-see-all");
 
-            header.classList.toggle("open");
-            panel.classList.toggle("open");
+        const status = document.querySelector(".resume-filter-status");
 
-            if (isOpen) {
-              panel.style.maxHeight = null;
-            } else {
-              panel.style.maxHeight = panel.scrollHeight + "px";
+        const loading = document.querySelector("#resume-loading");
+
+        const results = document.querySelector("#resume-results");
+
+        const noResults = document.querySelector("#resume-no-results");
+
+        const activeFilters = new Set();
+        const activeJobs = new Set();
+        let showingAll = false;
+
+        /*
+         * These sections are not part of the work-experience explorer.
+         * We can build separate dynamic sections for them later.
+         */
+        const excludedSections = new Set([
+          "Document",
+          "Summaries",
+          "Skills",
+          "Education",
+          "Selected Projects",
+          "Certifications & Training",
+          "Updated technical skills block",
+        ]);
+
+        /*
+         * These record types are useful as experience content.
+         */
+        const allowedTypes = new Set([
+          "bullet",
+          "text",
+          "role_or_context",
+          "skill_block",
+        ]);
+
+        let resumeRecords = [];
+
+        try {
+          const response = await fetch("resume-master-data.json");
+
+          if (!response.ok) {
+            throw new Error(`Unable to load résumé data: ${response.status}`);
+          }
+
+          const resumeData = await response.json();
+
+          resumeRecords = resumeData.records.filter((record) => {
+            return (
+              record.text &&
+              record.tags?.length &&
+              !excludedSections.has(record.section) &&
+              allowedTypes.has(record.type)
+            );
+          });
+
+          createJobFilters(resumeData.sections_in_source_order || []);
+
+          loading.hidden = true;
+        } catch (error) {
+          console.error(error);
+
+          loading.textContent =
+            "The experience library could not be loaded. Please try again after the page is published.";
+
+          return;
+        }
+
+        function formatFilterName(filter) {
+          const labels = {
+            healthcare: "Healthcare",
+            operations: "Operations",
+            "live-events": "Live Events",
+            development: "Development",
+            community: "Community",
+            gaming: "Gaming",
+            "customer-support": "Customer Support",
+            leadership: "Leadership",
+            compliance: "Compliance",
+            "data-ai": "AI & Data",
+            "retail-hospitality": "Retail & Hospitality",
+            "marketing-monetization": "Marketing & Monetization",
+          };
+
+          return labels[filter] || filter;
+        }
+
+        function createJobFilters(sections) {
+          jobFilterContainer.innerHTML = "";
+
+          sections.forEach((section) => {
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.dataset.jobFilter = section;
+            button.textContent = section;
+
+            button.addEventListener("click", () => {
+              showingAll = false;
+
+              if (activeJobs.has(section)) {
+                activeJobs.delete(section);
+              } else {
+                activeJobs.add(section);
+              }
+
+              renderResults();
+            });
+
+            jobFilterContainer.appendChild(button);
+          });
+        }
+
+        function recordMatchesFilters(record) {
+          if (showingAll) {
+            return true;
+          }
+
+          const hasJobFilters = activeJobs.size > 0;
+          const hasSkillFilters = activeFilters.size > 0;
+
+          if (!hasJobFilters && !hasSkillFilters) {
+            return false;
+          }
+
+          const matchesJob = !hasJobFilters || activeJobs.has(record.section);
+
+          const matchesSkill =
+            !hasSkillFilters ||
+            [...activeFilters].some((filter) => record.tags.includes(filter));
+
+          return matchesJob && matchesSkill;
+        }
+
+        function groupRecordsBySection(records) {
+          return records.reduce((groups, record) => {
+            const sectionName = record.section || "Additional Experience";
+
+            if (!groups[sectionName]) {
+              groups[sectionName] = [];
+            }
+
+            groups[sectionName].push(record);
+
+            return groups;
+          }, {});
+        }
+
+        function createTagMarkup(tags) {
+          return tags
+            .filter((tag) => activeFilters.has(tag))
+            .map(
+              (tag) => `
+            <span class="resume-result-tag">
+              ${formatFilterName(tag)}
+            </span>
+          `,
+            )
+            .join("");
+        }
+
+        function createRecordMarkup(record, initiallyHidden = false) {
+          const duplicateClass = record.duplicate_candidate
+            ? " duplicate-candidate"
+            : "";
+
+          return `
+  <li
+    class="resume-result-line${duplicateClass}"
+    data-record-id="${record.id}"
+    ${initiallyHidden ? "hidden" : ""}
+  >
+          <p>${escapeHtml(record.text)}</p>
+
+          <div class="resume-line-meta">
+            ${createTagMarkup(record.tags)}
+
+            ${
+              record.duplicate_candidate
+                ? `
+                  <span
+                    class="resume-review-note"
+                    title="This line may overlap another entry and will be reviewed later."
+                  >
+                    Similar version retained
+                  </span>
+                `
+                : ""
+            }
+          </div>
+        </li>
+      `;
+        }
+
+        function createSectionMarkup(sectionName, records) {
+          const visibleInitially = 8;
+          const hasMore = records.length > visibleInitially;
+
+          const recordMarkup = records
+            .map((record, index) => {
+              const initiallyHidden = index >= visibleInitially;
+
+              return createRecordMarkup(record, initiallyHidden).replace(
+                'class="resume-result-line',
+                `class="resume-result-line${
+                  initiallyHidden ? " resume-extra-line" : ""
+                }`,
+              );
+            })
+            .join("");
+
+          return `
+        <article class="resume-result-group">
+          <button
+            class="resume-result-header"
+            type="button"
+            aria-expanded="true"
+          >
+            <span>
+              <strong>${escapeHtml(sectionName)}</strong>
+              <small>
+                ${records.length}
+                ${records.length === 1 ? "matching line" : "matching lines"}
+              </small>
+            </span>
+
+            <span class="resume-result-arrow" aria-hidden="true">
+              −
+            </span>
+          </button>
+
+          <div class="resume-result-panel">
+            <ul class="resume-result-list">
+              ${recordMarkup}
+            </ul>
+
+            ${
+              hasMore
+                ? `
+                  <button
+                    type="button"
+                    class="resume-show-more"
+                    data-expanded="false"
+                  >
+                    Show all ${records.length} lines
+                  </button>
+                `
+                : ""
+            }
+          </div>
+        </article>
+      `;
+        }
+
+        function renderResults() {
+          document.querySelectorAll("[data-job-filter]").forEach((button) => {
+            const job = button.dataset.jobFilter;
+            const selected = activeJobs.has(job);
+
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-pressed", String(selected));
+          });
+          filterButtons.forEach((button) => {
+            const filter = button.dataset.resumeFilter;
+            const selected = activeFilters.has(filter);
+
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-pressed", String(selected));
+          });
+
+          if (
+            activeFilters.size === 0 &&
+            activeJobs.size === 0 &&
+            !showingAll
+          ) {
+            results.innerHTML = "";
+            noResults.hidden = true;
+
+            status.textContent =
+              "Choose a job, project, or experience area above.";
+
+            updateAddressBar();
+
+            return;
+          }
+
+          const matchingRecords = resumeRecords.filter(recordMatchesFilters);
+
+          const groupedRecords = groupRecordsBySection(matchingRecords);
+
+          if (showingAll) {
+            status.textContent = `Showing all ${matchingRecords.length} experience lines.`;
+          } else {
+            const selectedNames = [
+              ...activeJobs,
+              ...[...activeFilters].map(formatFilterName),
+            ];
+
+            status.textContent =
+              `Showing ${matchingRecords.length} lines related to: ` +
+              selectedNames.join(", ") +
+              ".";
+          }
+
+          if (matchingRecords.length === 0) {
+            results.innerHTML = "";
+            noResults.hidden = false;
+
+            updateAddressBar();
+
+            return;
+          }
+
+          noResults.hidden = true;
+
+          results.innerHTML = Object.entries(groupedRecords)
+            .map(([sectionName, records]) =>
+              createSectionMarkup(sectionName, records),
+            )
+            .join("");
+
+          attachResultEvents();
+          updateAddressBar();
+        }
+
+        function attachResultEvents() {
+          document
+            .querySelectorAll(".resume-result-header")
+            .forEach((header) => {
+              header.addEventListener("click", () => {
+                const panel = header.nextElementSibling;
+                const currentlyOpen =
+                  header.getAttribute("aria-expanded") === "true";
+
+                header.setAttribute("aria-expanded", String(!currentlyOpen));
+
+                panel.hidden = currentlyOpen;
+
+                const arrow = header.querySelector(".resume-result-arrow");
+
+                if (arrow) {
+                  arrow.textContent = currentlyOpen ? "+" : "−";
+                }
+              });
+            });
+
+          document.querySelectorAll(".resume-show-more").forEach((button) => {
+            button.addEventListener("click", () => {
+              const group = button.closest(".resume-result-group");
+
+              const extraLines = group.querySelectorAll(".resume-extra-line");
+
+              const isExpanded = button.dataset.expanded === "true";
+
+              extraLines.forEach((line) => {
+                line.hidden = isExpanded;
+              });
+
+              button.dataset.expanded = String(!isExpanded);
+
+              const totalLines = group.querySelectorAll(
+                ".resume-result-line",
+              ).length;
+
+              button.textContent = isExpanded
+                ? `Show all ${totalLines} lines`
+                : "Show fewer lines";
+            });
+          });
+        }
+
+        function updateAddressBar() {
+          const url = new URL(window.location.href);
+
+          if (activeFilters.size === 0) {
+            url.searchParams.delete("focus");
+          } else {
+            url.searchParams.set("focus", [...activeFilters].join(","));
+          }
+
+          history.replaceState(
+            {},
+            "",
+            `${url.pathname}${url.search}${url.hash}`,
+          );
+        }
+
+        function loadFiltersFromAddress() {
+          const params = new URLSearchParams(window.location.search);
+
+          const requestedFilters = params
+            .get("focus")
+            ?.split(",")
+            .map((filter) => filter.trim())
+            .filter(Boolean);
+
+          requestedFilters?.forEach((filter) => {
+            const matchingButton = document.querySelector(
+              `[data-resume-filter="${filter}"]`,
+            );
+
+            if (matchingButton) {
+              activeFilters.add(filter);
             }
           });
+        }
+
+        function escapeHtml(value) {
+          const element = document.createElement("div");
+
+          element.textContent = value;
+
+          return element.innerHTML;
+        }
+
+        filterButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", "false");
+
+          button.addEventListener("click", () => {
+            showingAll = false;
+            const filter = button.dataset.resumeFilter;
+
+            if (activeFilters.has(filter)) {
+              activeFilters.delete(filter);
+            } else {
+              activeFilters.add(filter);
+            }
+
+            renderResults();
+          });
         });
+
+        clearButton.addEventListener("click", () => {
+          activeFilters.clear();
+          activeJobs.clear();
+          showingAll = false;
+
+          renderResults();
+        });
+
+        seeAllButton.addEventListener("click", () => {
+          activeFilters.clear();
+          activeJobs.clear();
+          showingAll = true;
+
+          renderResults();
+        });
+
+        loadFiltersFromAddress();
+        renderResults();
       });
     </script>
   </body>
