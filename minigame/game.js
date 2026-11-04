@@ -594,13 +594,7 @@ function showNode(storyId, nodeKey) {
   }
 }
 
-  if (node.options.length === 0) {
-    const button = document.createElement("button");
-    button.innerText = "Restart";
-    button.addEventListener("click", () => startStory(storyId));
-    choices.appendChild(button);
-  }
-}
+
 
 // Start all stories
 startStory("whimsical");
