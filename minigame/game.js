@@ -516,6 +516,7 @@ function startStory(storyId) {
   showNode(storyId, "start");
 }
 
+
 function showNode(storyId, nodeKey) {
   const container = document.querySelector(`#${storyId}`);
   const storyText = container.querySelector(".story-text");
@@ -526,12 +527,72 @@ function showNode(storyId, nodeKey) {
   storyText.innerText = node.text;
   choices.innerHTML = "";
 
+  // Track Whimsical Quest's five endings
+  if (storyId === "whimsical" && node.ending) {
+    const storageKey = "whimsicalEndings";
+    let discovered = [];
+
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(storageKey) || "[]"
+      );
+
+      if (Array.isArray(saved)) {
+        discovered = saved;
+      }
+    } catch (error) {
+      discovered = [];
+    }
+
+    // Save each unique ending only once
+    if (!discovered.includes(node.ending)) {
+      discovered.push(node.ending);
+
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify(discovered)
+        );
+      } catch (error) {
+        console.warn("Could not save ending progress.");
+      }
+    }
+
+    storyText.innerText +=
+      "\n\n🏆 ENDING UNLOCKED: " +
+      node.ending +
+      "\n\nEndings discovered: " +
+      discovered.length +
+      " of 5" +
+      "\n\n✨ There are multiple endings! " +
+      "Play again and make different choices " +
+      "to discover all five.";
+  }
+
+  // Create choice buttons
   node.options.forEach((option) => {
     const button = document.createElement("button");
     button.innerText = option.text;
-    button.addEventListener("click", () => showNode(storyId, option.next));
+
+    button.addEventListener("click", () => {
+      showNode(storyId, option.next);
+    });
+
     choices.appendChild(button);
   });
+
+  // Show restart button at the end of a story
+  if (node.options.length === 0) {
+    const button = document.createElement("button");
+    button.innerText = "🔄 Play Again";
+
+    button.addEventListener("click", () => {
+      startStory(storyId);
+    });
+
+    choices.appendChild(button);
+  }
+}
 
   if (node.options.length === 0) {
     const button = document.createElement("button");
