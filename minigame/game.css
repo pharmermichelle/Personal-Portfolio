@@ -35,7 +35,7 @@ h1 {
 
 #game-grid {
   display: grid;
-  height: 90vh;
+  height: auto;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
   margin: 0 auto;
