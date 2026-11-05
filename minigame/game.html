@@ -1,77 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c1424" />
+    <meta
+      name="description"
+      content="Choose your path in four interactive adventures. Explore enchanted forests, haunted mansions, steampunk inventions, and IT disasters."
+    />
+    <title>Choose Your Adventure | Interactive Stories</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="game.css?v=20261104-3" />
 
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
-    ></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+      function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
-
       gtag("config", "G-9D74M6L9M7");
     </script>
-    <meta charset="UTF-8" />
-    <title>Choose Your Adventure</title>
-    <link rel="stylesheet" href="game.css" />
 
-
-<!-- Mobile responsiveness -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<!-- Google AdSense -->
-<script
-  async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
-  crossorigin="anonymous"
-></script>
-
+    <!-- Google AdSense: keep this once per page -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <h1>Choose Your Adventure</h1>
+    <div class="page-shell">
+      <header class="site-hero">
+        <nav class="top-nav" aria-label="Page navigation">
+          <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">✦</span> DBMB Games</a>
+          <a class="back-link" href="../index.html">← Back to projects</a>
+        </nav>
+        <div class="hero-content">
+          <p class="eyebrow"><span aria-hidden="true">✧</span> STORIES THAT CHANGE WITH YOU <span aria-hidden="true">✧</span></p>
+          <h1>Choose Your <em>Adventure</em></h1>
+          <p class="hero-intro">Four worlds. Countless decisions. Read the story, choose your path, and see where it takes you.</p>
+          <div class="hero-pills" aria-label="Game features">
+            <span>✦ 4 interactive stories</span>
+            <span>✦ Multiple endings</span>
+            <span>✦ Play for free</span>
+          </div>
+        </div>
+      </header>
 
-    <div id="game-grid">
-      <div class="game-container" id="whimsical">
-        <h2>Whimsical Quest</h2>
-        <div class="story-text"></div>
-        <div class="choices"></div>
-      </div>
+      <main>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE STORY COLLECTION</p>
+            <h2>Pick your world</h2>
+          </div>
+          <p>Every choice takes you somewhere new.</p>
+        </div>
 
-      <div class="game-container" id="horror">
-        <h2>
-          Light Horror
-          <a
-            href="https://miro.com/app/board/uXjVI9dzpEk=/?share_link_id=910708399508"
-            target="_blank"
-            >Miro</a
-          >
-        </h2>
-        <div class="story-text"></div>
-        <div class="choices"></div>
-      </div>
+        <!-- IDs, .story-text and .choices are kept for your existing game.js -->
+        <div id="game-grid">
+          <article class="game-container" id="whimsical">
+            <div class="card-heading">
+              <div class="card-meta"><span>WORLD 01 · FANTASY</span><span class="ending-chip">5 endings</span></div>
+              <div class="card-title-row">
+                <div class="world-icon" aria-hidden="true">🌿</div>
+                <div><h2>Whimsical Quest</h2><p>Little crowns. Big trouble.</p></div>
+              </div>
+            </div>
+            <section class="story-panel" aria-label="Whimsical Quest story">
+              <p class="panel-label">THE STORY SO FAR</p>
+              <div class="story-text" aria-live="polite" aria-atomic="true"></div>
+            </section>
+            <div class="choice-panel">
+              <p class="panel-label">WHAT WILL YOU DO?</p>
+              <div class="choices"></div>
+            </div>
+          </article>
 
-      <div class="game-container" id="steampunk">
-        <h2>Steampunk Animals</h2>
-        <div class="story-text"></div>
-        <div class="choices"></div>
-      </div>
+          <article class="game-container" id="horror">
+            <div class="card-heading">
+              <div class="card-meta"><span>WORLD 02 · MYSTERY</span><span class="ending-chip">Spooky, not gory</span></div>
+              <div class="card-title-row">
+                <div class="world-icon" aria-hidden="true">🕯️</div>
+                <div><h2>Light Horror</h2><p>Willowmere Mansion has secrets.</p></div>
+              </div>
+            </div>
+            <section class="story-panel" aria-label="Light Horror story">
+              <p class="panel-label">THE STORY SO FAR</p>
+              <div class="story-text" aria-live="polite" aria-atomic="true"></div>
+            </section>
+            <div class="choice-panel">
+              <p class="panel-label">WHAT WILL YOU DO?</p>
+              <div class="choices"></div>
+            </div>
+          </article>
 
-      <div class="game-container" id="itSupport">
-        <h2>IT Support Saga</h2>
-        <div class="story-text"></div>
-        <div class="choices"></div>
-      </div>
+          <article class="game-container" id="steampunk">
+            <div class="card-heading">
+              <div class="card-meta"><span>WORLD 03 · INVENTION</span><span class="ending-chip">Clockwork chaos</span></div>
+              <div class="card-title-row">
+                <div class="world-icon" aria-hidden="true">⚙️</div>
+                <div><h2>Steampunk Animals</h2><p>Great inventions. Questionable plans.</p></div>
+              </div>
+            </div>
+            <section class="story-panel" aria-label="Steampunk Animals story">
+              <p class="panel-label">THE STORY SO FAR</p>
+              <div class="story-text" aria-live="polite" aria-atomic="true"></div>
+            </section>
+            <div class="choice-panel">
+              <p class="panel-label">WHAT WILL YOU DO?</p>
+              <div class="choices"></div>
+            </div>
+          </article>
+
+          <article class="game-container" id="itSupport">
+            <div class="card-heading">
+              <div class="card-meta"><span>WORLD 04 · COMEDY</span><span class="ending-chip">Office survival</span></div>
+              <div class="card-title-row">
+                <div class="world-icon" aria-hidden="true">💻</div>
+                <div><h2>IT Support Saga</h2><p>One more ticket. What could go wrong?</p></div>
+              </div>
+            </div>
+            <section class="story-panel" aria-label="IT Support Saga story">
+              <p class="panel-label">THE STORY SO FAR</p>
+              <div class="story-text" aria-live="polite" aria-atomic="true"></div>
+            </section>
+            <div class="choice-panel">
+              <p class="panel-label">WHAT WILL YOU DO?</p>
+              <div class="choices"></div>
+            </div>
+          </article>
+        </div>
+
+        <!-- One ad unit outside the games, away from choice buttons -->
+        <section class="ad-section" aria-label="Advertisement">
+          <p class="ad-label">Advertisement</p>
+          <ins
+            class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-9258275639543826"
+            data-ad-slot="4366267404"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>✦ Every path tells a different story.</span>
+        <a href="../index.html">More games and projects →</a>
+      </footer>
     </div>
 
+    <script>
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
     <script src="./game.js?v=20261104-2"></script>
   </body>
 </html>
