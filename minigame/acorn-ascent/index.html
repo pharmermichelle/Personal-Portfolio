@@ -1,100 +1,112 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"
-    ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102921" />
+    <meta name="description" content="Help Chip the chipmunk climb a magical oak tree in ten increasingly tricky shape-fitting puzzles." />
+    <title>Acorn Ascent | Chip's Treehouse Challenge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=20261105-1" />
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+      function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
       gtag("config", "G-9D74M6L9M7");
     </script>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Acorn Ascent - Level 1</title>
-    <meta
-      name="description"
-      content="Help Chip climb the tree by solving cozy puzzle levels in Acorn Ascent."
-    />
-    <link rel="stylesheet" href="style.css" />
-
-    <!-- AdSense site script -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
-      crossorigin="anonymous"
-    ></script>
+    <!-- Keep existing AdSense setup; use Auto Ads controls to avoid overlays. -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
   </head>
-
   <body>
     <main class="page-shell">
       <header class="game-header">
-        <h1>Acorn Ascent</h1>
-        <p class="tagline">A cozy climb, one puzzle at a time.</p>
+        <div class="header-deco" aria-hidden="true">
+          <span class="star star-a">✧</span><span class="star star-b">✦</span>
+          <img src="assets/moon.png" id="moon" alt="" />
+        </div>
+        <p class="eyebrow"><span aria-hidden="true">✦</span> A COZY PUZZLE ADVENTURE</p>
+        <h1>Acorn <em>Ascent</em></h1>
+        <p class="tagline">One little chipmunk. One very tall tree. Ten branches to climb.</p>
+        <div class="progress-steps" id="progress-steps" aria-label="Climb progress"></div>
       </header>
 
-      <section class="hud-card" id="hud">
-        <div>Level: <span id="level">1</span></div>
+      <section class="hud-card" id="hud" aria-label="Game status">
+        <div class="hud-stat"><span class="stat-label">BRANCH</span><strong><span id="level">1</span><span class="stat-sub"> / 10</span></strong></div>
+        <div class="hud-stat"><span class="stat-label">ACORNS COLLECTED</span><strong class="acorn-stat"><img src="assets/acorn.png" id="acorn" alt="" /><span id="acorns">0</span></strong></div>
+        <div class="hud-stat"><span class="stat-label">PIECES PLACED</span><strong id="pieces-count">0 / 3</strong></div>
+        <button type="button" class="restart-button" id="restart-button">↺ Restart branch</button>
+      </section>
+
+      <section class="instructions-card" aria-labelledby="instructions-heading">
         <div>
-          <img src="assets/acorn.png" id="acorn" alt="Acorn icon" />
-          <span id="acorns">0</span>
+          <p class="eyebrow">HOW TO PLAY</p>
+          <h2 id="instructions-heading">Fit the pieces. Climb the oak.</h2>
         </div>
-        <button type="button" onclick="restartLevel()">Restart</button>
+        <p><strong>Drag</strong> a piece onto the bark puzzle, or <strong>tap</strong> a piece and then tap the board. Rotate pieces as you climb higher. Fill every square to reach the next branch.</p>
       </section>
 
-      <section id="instructions" class="instructions-card">
-        <h2>How to Play</h2>
-        <p>
-          There are 10 levels. Solve each puzzle to help Chip climb the tree and
-          bring home his acorns.
-        </p>
-        <p>Click a piece to pick it up, then click again to place it.</p>
-      </section>
-
-      <section class="game-stage">
+      <section class="game-stage" aria-label="Puzzle game">
         <div id="game-wrapper">
-          <div class="canvas-stack">
-            <canvas id="gameCanvas" width="360" height="360"></canvas>
-            <img src="assets/moon.png" id="moon" alt="" />
-            <img src="assets/chip.png" id="chip" alt="Chip the chipmunk" />
+          <aside class="climb-rail" aria-label="Chip's climb progress">
+            <p class="rail-title">CHIP'S CLIMB</p>
+            <div class="climb-track" id="climb-track">
+              <div class="climb-line"></div><div class="climb-fill" id="climb-fill"></div>
+              <span class="branch-mark mark-one">✦</span><span class="branch-mark mark-two">✦</span><span class="branch-mark mark-three">✦</span>
+              <img src="assets/chip.png" id="chip" alt="Chip the chipmunk" />
+            </div>
+            <p class="rail-level">Branch <span id="rail-level">1</span> of 10</p>
+          </aside>
+
+          <div class="board-column">
+            <div class="board-heading"><div><p class="eyebrow">THE OAK'S HOLLOW</p><h2 id="board-title">The First Branch</h2></div><span class="difficulty" id="difficulty">EASY</span></div>
+            <div class="board-frame">
+              <canvas id="gameCanvas" width="480" height="480" aria-label="Square tiling puzzle board. Drag or tap the pieces to fill every square." tabindex="0"></canvas>
+            </div>
+            <div class="board-tools" aria-label="Puzzle controls">
+              <button id="rotate-btn" type="button" title="Rotate selected piece clockwise (R)">↻ Rotate <span class="key-hint">R</span></button>
+              <button id="undo-btn" type="button" title="Undo last placement">↶ Undo</button>
+              <button id="hint-btn" type="button" title="Reveal a possible location for an unplaced piece">✧ Hint <span id="hint-count">1</span></button>
+              <button id="cancel-btn" type="button" title="Unselect current piece">✕ Cancel</button>
+            </div>
+            <p class="game-message" id="game-message" role="status" aria-live="polite">Choose a piece to begin.</p>
           </div>
 
-          <aside id="sidebar">
-            <h2>Pieces</h2>
+          <aside id="sidebar" aria-label="Puzzle pieces">
+            <div class="tray-top"><div><p class="eyebrow">YOUR PIECES</p><h2>Forest shapes</h2></div><span id="pieces-remaining">3 left</span></div>
+            <p class="tray-hint">Drag onto the board, or tap to select.</p>
             <div id="pieces-panel"></div>
+            <div class="tray-foot"><span aria-hidden="true">🌿</span> The higher you climb, the trickier the shapes.</div>
           </aside>
         </div>
       </section>
 
+      <!-- One in-page ad only, well separated from game controls. Auto ads are managed in AdSense. -->
       <section class="ad-section" aria-label="Advertisement">
         <p class="ad-label">Advertisement</p>
-
-        <ins
-          class="adsbygoogle"
-          style="display: block"
-          data-ad-client="ca-pub-9258275639543826"
-          data-ad-slot="4366267404"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404" data-ad-format="auto" data-full-width-responsive="true"></ins>
       </section>
+      <footer class="site-footer">A little climb goes a long way. <a href="../../index.html">← Back to games</a></footer>
     </main>
 
-    <div id="final-screen" style="display: none">
-      <img src="assets/final-scene.png" id="final-scene" alt="Final scene" />
-      <button id="play-again-btn" onclick="restartGame()">Play Again</button>
+    <div id="drag-preview" aria-hidden="true"></div>
+    <div id="final-screen" hidden>
+      <div class="final-card">
+        <p class="eyebrow">THE TOP OF THE OAK</p>
+        <h2>Chip made it home!</h2>
+        <p>You solved all ten branches and brought home every acorn. The tree has never looked so beautiful.</p>
+        <img src="assets/final-scene.png" id="final-scene" alt="Chip celebrates at the top of the tree" />
+        <button id="play-again-btn" type="button">Play all ten again ↻</button>
+      </div>
     </div>
 
-    <script src="main.js"></script>
+    <script>
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <script src="main.js?v=20261105-1"></script>
   </body>
 </html>
