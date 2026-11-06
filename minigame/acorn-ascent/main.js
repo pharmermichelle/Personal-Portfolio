@@ -333,23 +333,49 @@ function cancelSelection(restore = true) {
   selection = null; hoverPlacement = null; pointerDrag = null;
   clearDragGhost(); renderPieceTray(); updateUI(); draw();
 }
+
 function selectShape(shape, original = null) {
   if (levelLocked) return;
-  // Do not replace the touched tray button during pointerdown: that can
-  // cancel touch capture before the user finishes dragging it.
-  if (selection && selection.original) placedPieces.push(selection.original);
-  selection = null;
-  if (original) placedPieces = placedPieces.filter(p => p !== original);
-  selection = { shape, blocks: (original ? original.blocks : shape.initialBlocks).map(([r,c]) => [r,c]), original };
+
+  // Keep the current rotation when selecting
+  // the same piece again.
+  const keepRotation =
+    selection &&
+    selection.shape.id === shape.id &&
+    !original &&
+    !selection.original;
+
+  const blocks = keepRotation
+    ? selection.blocks.map(([r, c]) => [r, c])
+    : (original ? original.blocks : shape.initialBlocks)
+        .map(([r, c]) => [r, c]);
+
+  if (selection && selection.original) {
+    placedPieces.push(selection.original);
+  }
+
+  if (original) {
+    placedPieces = placedPieces.filter(p => p !== original);
+  }
+
+  selection = { shape, blocks, original };
   hoverPlacement = null;
-  if (original) renderPieceTray();
-  else {
+
+  if (original) {
+    renderPieceTray();
+  } else {
     document.querySelectorAll(".piece-tile").forEach(btn => {
       const active = Number(btn.dataset.shapeId) === shape.id;
       btn.classList.toggle("selected", active);
       btn.setAttribute("aria-pressed", String(active));
     });
   }
+
+  updateUI();
+  draw();
+  message("Drag to the board, or tap a spot to place.");
+}
+
   updateUI(); draw();
   message("Drag to the board, or tap a spot to place. Rotate if it doesn't fit.");
 }
