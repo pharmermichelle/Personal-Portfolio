@@ -428,12 +428,23 @@ function renderPieceTray() {
     button.append(preview);
     const label = document.createElement("small"); label.textContent = `PIECE ${shape.id + 1}`;
     button.append(label);
-    button.addEventListener("pointerdown", (e) => {
-      if (levelLocked || (e.pointerType === "mouse" && e.button !== 0)) return;
-      e.preventDefault();
-      selectShape(shape);
-      pointerDrag = { id: e.pointerId, source: "tray", x: e.clientX, y: e.clientY, moved: false };
-    });
+button.addEventListener("pointerdown", (e) => {
+  if (levelLocked || (e.pointerType === "mouse" && e.button !== 0)) return;
+  e.preventDefault();
+
+  // Preserve the rotation if this piece is already selected.
+  if (!selection || selection.shape.id !== shape.id) {
+    selectShape(shape);
+  }
+
+  pointerDrag = {
+    id: e.pointerId,
+    source: "tray",
+    x: e.clientX,
+    y: e.clientY,
+    moved: false
+  };
+});
     button.addEventListener("click", (e) => {
       if (e.detail === 0) selectShape(shape); // keyboard activation
     });
