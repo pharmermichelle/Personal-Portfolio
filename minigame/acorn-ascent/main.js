@@ -376,9 +376,6 @@ function selectShape(shape, original = null) {
   message("Drag to the board, or tap a spot to place.");
 }
 
-  updateUI(); draw();
-  message("Drag to the board, or tap a spot to place. Rotate if it doesn't fit.");
-}
 function placeSelected(candidate) {
   if (!selection || !candidate) return false;
   if (!canPlace(selection.blocks, candidate.row, candidate.col)) {
