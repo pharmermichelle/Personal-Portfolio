@@ -123,13 +123,34 @@ canvas{width:100%;height:100%;display:block}
  .shell{min-height:100svh}.field-wrap{width:min(100%,calc(max(250px,(100svh - 275px)*1.92)));min-height:0}
 }
 
+
+/* Accessible sound controls: keep the title and buttons readable on phones. */
+.masthead>div:first-child{min-width:0}
+.mast-actions{display:flex;align-items:center;gap:6px;flex:none}
+.sound-toggle{display:grid;place-items:center;width:46px;height:44px;min-width:44px;border-radius:12px;border:2px solid #b3af8f;background:#e5ecfa;color:#253657;font-size:23px;cursor:pointer}
+.sound-toggle[aria-pressed="false"]{background:#3a4d70;color:#fff1e2}
+.sound-toggle:focus-visible{outline:3px solid #ffc482;outline-offset:2px}
+.audio-settings{background:#e9eff6;border:2px solid #afbdcc;border-radius:15px;padding:13px;margin:0 0 18px}
+.audio-settings h3{margin:0 0 6px;font-size:21px}.audio-settings p{font-size:15px;line-height:1.4;margin:0 0 12px}
+.audio-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0}
+.audio-actions button{min-height:51px;font-size:16px;overflow-wrap:break-word}
+.audio-actions button[aria-pressed="false"]{background:#c9d1dc;color:#36445d}
+.audio-volume-label{display:flex;justify-content:space-between;gap:8px;margin:12px 0 5px;font-weight:950;font-size:17px}
+#audioVolume{display:block;width:100%;min-height:38px;accent-color:#496a81;cursor:pointer}
+@media(max-width:600px){
+ .masthead{gap:5px}.masthead h1{font-size:clamp(20px,6.35vw,27px);white-space:nowrap}
+ .mast-actions .round-tag{font-size:11px;padding:8px 6px}
+ .sound-toggle{min-width:40px;width:40px;height:40px;font-size:20px}
+ .audio-actions button{font-size:15px;padding:8px 5px}
+}
+
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
 </head>
 <body>
 <main class="shell">
-<header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div id="phaseTag" class="round-tag">🐈 READY</div></header>
+<header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div class="mast-actions"><div id="phaseTag" class="round-tag">🐈 READY</div><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute game audio" aria-pressed="true" title="Toggle game sound">🔊</button></div></header>
 <div class="hud" role="group" aria-label="Battle stats">
 <div class="stat"><span class="lbl">🐟 Coins</span><span class="val" id="goldStat">24</span></div>
 <div class="stat"><span class="lbl">⚔️ Level</span><span class="val" id="levelStat">1</span></div>
@@ -157,14 +178,221 @@ canvas{width:100%;height:100%;display:block}
 <div id="panelBoost" class="drawer-panel" hidden><div class="boost-wallet"><div><b>🌿 Catnip: <span id="boostNip">0</span></b><div><span>Earned immediately from dog defeats</span></div></div></div><div id="boostRoster" class="boost-squad" aria-label="Choose a cat to boost"></div><div id="boostDetail"></div><p class="boost-explainer">All battle boosts disappear when you start a new level. Fish coins and permanent training stay saved. Opening this menu pauses combat.</p></div>
 <div id="panelHeroes" class="drawer-panel" hidden><p class="panel-intro">Available after clearing level 4. Buy a champion with fish coins, then tap its large summon button during battle. Champions use a cooldown and do <strong>not</strong> fill a squad slot.</p><div id="heroesList" class="heroes-list"></div></div>
 <div id="panelDogs" class="drawer-panel" hidden><p class="dog-stats-legend">Current level <b id="dogPreviewLevel">1</b> · RANGE is attack reach in battlefield units. Dog stats rise each level. Longer sieges may strengthen incoming dogs. Tap the kennel to check its defenders anytime.</p><div id="dogRoster" class="enemy-roster"></div></div>
-<div id="panelHelp" class="drawer-panel help-area" hidden><button id="startOverBtn" class="btn start-over-btn" type="button">↻ Start Over · Level 1</button><p class="start-over-note">Testing only · starts a fresh save with just the Tabby Squire and 24 fish coins.</p><h3>⚔️ How to play</h3><p>Pick up to five different cats. Press <strong>Start level</strong>. Every cat type marches out automatically according to its own timer.</p><p>Defeat dogs to earn <strong>🌿 catnip</strong> immediately. Tap <strong>Boost</strong> to spend it on temporary Power, Speed, Lives or Spawn upgrades for your squad. Catnip starts at zero each level. <strong>🐟 Fish coins</strong> are saved for permanent upgrades between levels.</p><p>Tap the <strong>dog castle</strong> on the battlefield or its health card to inspect enemy stats. Dogs march out as occasional single scouts and slower, stronger groups. There is no final wave to wait for: when cats reach the kennel and no dogs remain, they can damage its gate immediately. 🐾 markers on kennel health show when its guardians appear.</p><p>Castle gates take controlled strikes rather than instant damage from every cat standing nearby.</p><h3>🔎 Easier viewing</h3><p>Use <strong>⛶</strong> to enlarge the battlefield, or turn your phone sideways for a wider battle view. The battle pauses while a menu is open. At level 5, dog bosses defend their castle once its health falls below 65%; tap Summon to deploy a purchased legendary cat.</p><button id="biggerTextBtn" class="btn settings-btn">A+ Extra-large menu text: Off</button><button id="howBtn" class="btn settings-btn">Show quick instructions</button><p class="warning">Start Over resets coins, cat unlocks, heroes, upgrades, levels, and battle catnip. It asks you to confirm before deleting your current progress.</p></div>
+<div id="panelHelp" class="drawer-panel help-area" hidden><section class="audio-settings" aria-label="Sound and music settings">
+  <h3>🎵 Sound &amp; music</h3>
+  <p>Original 8-bit music and cartoon cat, dog, and battle sounds. Music pauses with the game. Sound starts after your first tap.</p>
+  <div class="audio-actions">
+    <button id="audioMasterBtn" class="btn" type="button" aria-pressed="true">🔊 Sound on</button>
+    <button id="audioMusicBtn" class="btn" type="button" aria-pressed="true">🎵 Music on</button>
+    <button id="audioEffectsBtn" class="btn" type="button" aria-pressed="true">⚔️ Effects on</button>
+    <button id="audioTestBtn" class="btn primary" type="button">♪ Test sound</button>
+  </div>
+  <label class="audio-volume-label" for="audioVolume">Volume <output id="audioVolumeLabel" for="audioVolume">55%</output></label>
+  <input id="audioVolume" type="range" min="0" max="100" step="5" value="55" aria-label="Game sound volume">
+</section><button id="startOverBtn" class="btn start-over-btn" type="button">↻ Start Over · Level 1</button><p class="start-over-note">Testing only · starts a fresh save with just the Tabby Squire and 24 fish coins.</p><h3>⚔️ How to play</h3><p>Pick up to five different cats. Press <strong>Start level</strong>. Every cat type marches out automatically according to its own timer.</p><p>Defeat dogs to earn <strong>🌿 catnip</strong> immediately. Tap <strong>Boost</strong> to spend it on temporary Power, Speed, Lives or Spawn upgrades for your squad. Catnip starts at zero each level. <strong>🐟 Fish coins</strong> are saved for permanent upgrades between levels.</p><p>Tap the <strong>dog castle</strong> on the battlefield or its health card to inspect enemy stats. Dogs march out as occasional single scouts and slower, stronger groups. There is no final wave to wait for: when cats reach the kennel and no dogs remain, they can damage its gate immediately. 🐾 markers on kennel health show when its guardians appear.</p><p>Castle gates take controlled strikes rather than instant damage from every cat standing nearby.</p><h3>🔎 Easier viewing</h3><p>Use <strong>⛶</strong> to enlarge the battlefield, or turn your phone sideways for a wider battle view. The battle pauses while a menu is open. At level 5, dog bosses defend their castle once its health falls below 65%; tap Summon to deploy a purchased legendary cat.</p><button id="biggerTextBtn" class="btn settings-btn">A+ Extra-large menu text: Off</button><button id="howBtn" class="btn settings-btn">Show quick instructions</button><p class="warning">Start Over resets coins, cat unlocks, heroes, upgrades, levels, and battle catnip. It asks you to confirm before deleting your current progress.</p></div>
 </div></section></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="overlay" class="overlay" hidden><div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalTitle"><div id="modalIcon" class="big">🏰</div><h2 id="modalTitle">Level cleared!</h2><p id="modalText"></p><button id="modalBtn" class="btn primary">Continue</button><button id="modalCancel" class="btn quiet modal-cancel" type="button" hidden>Keep my progress</button></div></div>
+
+<script>
+/* Original procedural sound design: no audio files, samples or borrowed melodies.
+   Web Audio uses the device's active audio output. Everything can be muted. */
+window.ClawsAudio = (() => {
+  'use strict';
+  const KEY = 'claws-vs-paws-audio-v1';
+  const defaults = {enabled:true,music:true,effects:true,volume:55};
+  const state = {...defaults};
+  try {
+    const old = JSON.parse(localStorage.getItem(KEY)||'{}');
+    for (const k of ['enabled','music','effects']) if (typeof old[k] === 'boolean') state[k]=old[k];
+    if (Number.isFinite(old.volume)) state.volume=Math.min(100,Math.max(0,old.volume));
+  } catch(e) {}
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ctx=null, master=null, musicBus=null, fxBus=null, limiter=null, noiseBuffer=null;
+  let nextBeat=0, step=0, musicPlaying=false, lastGlobal=-100, lastFx={};
+  const beatSeconds=60/112/2;
+  // Hand-composed eight-bar original chiptune; pitches are MIDI note numbers.
+  const tune=[
+    [71,74,79,null,78,74,71,69],
+    [71,76,79,76,74,null,71,67],
+    [72,76,79,null,76,74,72,69],
+    [69,74,78,81,78,74,69,null],
+    [71,74,79,81,79,74,71,null],
+    [76,79,83,null,79,76,74,71],
+    [72,76,79,76,74,72,69,71],
+    [74,78,81,78,74,71,69,null]
+  ];
+  const bass=[55,52,60,62,55,52,60,62];
+  const $=id=>document.getElementById(id);
+  const freq=m=>440*Math.pow(2,(m-69)/12);
+  function remember(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function updateButtons(){
+    if($('soundToggle')){
+      $('soundToggle').textContent=state.enabled?'🔊':'🔇';
+      $('soundToggle').setAttribute('aria-pressed',String(state.enabled));
+      $('soundToggle').setAttribute('aria-label',state.enabled?'Mute game audio':'Unmute game audio');
+      $('soundToggle').title=state.enabled?'Mute game audio':'Unmute game audio';
+    }
+    for(const [id,active,on,off] of [
+      ['audioMasterBtn',state.enabled,'🔊 Sound on','🔇 Sound off'],
+      ['audioMusicBtn',state.music,'🎵 Music on','🎵 Music off'],
+      ['audioEffectsBtn',state.effects,'⚔️ Effects on','⚔️ Effects off']
+    ]){
+      const b=$(id);if(b){b.textContent=active?on:off;b.setAttribute('aria-pressed',String(active));}
+    }
+    if($('audioVolume')) $('audioVolume').value=String(state.volume);
+    if($('audioVolumeLabel')) $('audioVolumeLabel').textContent=String(state.volume)+'%';
+  }
+  function apply(){
+    if(!ctx||!master)return;
+    master.gain.setTargetAtTime(state.enabled?state.volume/100*.52:0,ctx.currentTime,.04);
+    if(!state.music||!state.enabled) musicBus.gain.setTargetAtTime(.0001,ctx.currentTime,.035);
+  }
+  function unlock(){
+    if(!AC||!state.enabled)return false;
+    if(!ctx){
+      try{
+        ctx=new AC({latencyHint:'interactive'});
+        master=ctx.createGain();
+        limiter=ctx.createDynamicsCompressor();
+        limiter.threshold.value=-19;limiter.knee.value=12;limiter.ratio.value=4;
+        limiter.attack.value=.004;limiter.release.value=.12;
+        musicBus=ctx.createGain();fxBus=ctx.createGain();
+        musicBus.gain.value=.0001;fxBus.gain.value=.86;
+        musicBus.connect(master);fxBus.connect(master);
+        master.connect(limiter);limiter.connect(ctx.destination);
+        noiseBuffer=ctx.createBuffer(1,Math.floor(ctx.sampleRate*.22),ctx.sampleRate);
+        const samples=noiseBuffer.getChannelData(0);
+        for(let i=0;i<samples.length;i++)samples[i]=(Math.random()*2-1)*.8;
+        apply();
+      }catch(e){ctx=null;return false;}
+    }
+    if(ctx.state!=='running'){try{ctx.resume().catch(()=>{});}catch(e){}}
+    return true;
+  }
+  function tone(midi,at,duration,level,type,bus,bend){
+    if(!ctx||!bus)return;
+    const t=Math.max(ctx.currentTime+.002,at);
+    try{
+      const oscillator=ctx.createOscillator(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();
+      oscillator.type=type||'square';
+      oscillator.frequency.setValueAtTime(freq(midi),t);
+      if(bend)oscillator.frequency.exponentialRampToValueAtTime(freq(midi+bend),t+duration*.83);
+      filter.type='lowpass';filter.frequency.value=(type==='sawtooth'||type==='square')?1900:2800;
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.exponentialRampToValueAtTime(Math.max(.001,level),t+.008);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+      oscillator.connect(filter);filter.connect(gain);gain.connect(bus);
+      oscillator.start(t);oscillator.stop(t+duration+.015);
+    }catch(e){}
+  }
+  function noise(at,duration,level,cutoff){
+    if(!ctx||!noiseBuffer||!fxBus)return;
+    const t=Math.max(ctx.currentTime+.002,at);
+    try{
+      const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();
+      source.buffer=noiseBuffer;
+      filter.type='bandpass';filter.frequency.value=cutoff||1200;filter.Q.value=.8;
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.linearRampToValueAtTime(level,t+.006);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+      source.connect(filter);filter.connect(gain);gain.connect(fxBus);
+      source.start(t);source.stop(t+Math.min(duration,.20)+.005);
+    }catch(e){}
+  }
+  function musicStep(at){
+    const bar=Math.floor(step/8)%8,part=step%8,lead=tune[bar][part];
+    if(lead!=null)tone(lead,at,.17,.095,'square',musicBus);
+    if(part===0||part===4)tone(bass[bar],at,.29,.09,'triangle',musicBus);
+    if(part===3||part===7)tone(bass[bar]+7,at,.11,.035,'triangle',musicBus);
+    if(part===2||part===6)tone(88,at,.042,.015,'triangle',musicBus);
+    step=(step+1)%64;
+  }
+  function tick(playing){
+    if(!ctx||ctx.state!=='running')return;
+    const active=!!(playing&&state.enabled&&state.music&&state.volume>0&&!document.hidden);
+    if(!active){
+      if(musicPlaying){musicBus.gain.setTargetAtTime(.0001,ctx.currentTime,.055);musicPlaying=false;}
+      return;
+    }
+    if(!musicPlaying){
+      musicPlaying=true;nextBeat=ctx.currentTime+.07;
+      musicBus.gain.setTargetAtTime(.66,ctx.currentTime,.11);
+    }
+    if(nextBeat<ctx.currentTime-.2)nextBeat=ctx.currentTime+.02;
+    let count=0;
+    while(nextBeat<ctx.currentTime+.12&&count++<3){musicStep(nextBeat);nextBeat+=beatSeconds;}
+  }
+  const gaps={sword:.18,axe:.29,bow:.28,star:.22,wand:.37,bolt:.26,hammer:.37,shield:.30,
+    bite:.24,bone:.28,catHurt:.48,dogHurt:.42,catDown:.45,dogDown:.40,bossDown:.9,
+    castle:.6,boss:1.3,hero:1,purchase:.30,boost:.25,coins:1,victory:2,defeat:2};
+  function effect(kind,force=false){
+    if(!ctx||ctx.state!=='running'||!state.enabled||!state.effects||state.volume<=0||document.hidden)return;
+    const t=ctx.currentTime;
+    if(!force&&((t-(lastFx[kind]||-100)<(gaps[kind]||.25))||t-lastGlobal<.085))return;
+    lastGlobal=t;lastFx[kind]=t;
+    const p=(n,d,g,type='square',slide=0,offset=0)=>tone(n,t+offset,d,g,type,fxBus,slide);
+    const n=(d,g,hz,offset=0)=>noise(t+offset,d,g,hz);
+    switch(kind){
+      case 'sword': n(.058,.13,2350);p(86,.085,.052,'triangle',-9);break;
+      case 'axe': n(.07,.19,990);p(51,.11,.13,'triangle',-8);break;
+      case 'hammer': n(.105,.17,750);p(46,.16,.17,'triangle',-10);break;
+      case 'shield': n(.05,.09,1350);p(68,.08,.07,'triangle',-7);break;
+      case 'bow': p(81,.11,.08,'triangle',-13);n(.028,.045,2000);break;
+      case 'star': p(86,.08,.08,'square',-8);break;
+      case 'wand': p(76,.15,.075,'sine',7);p(83,.11,.054,'triangle',3,.08);break;
+      case 'bolt':p(90,.09,.068,'square',-14);n(.045,.06,3200);break;
+      case 'bite':n(.07,.11,1100);p(51,.08,.09,'sawtooth',-5);break;
+      case 'bone':p(66,.11,.06,'triangle',-11);break;
+      case 'catHurt':p(82,.095,.092,'sine',-6);p(77,.07,.055,'triangle',-4,.07);break;
+      case 'dogHurt':p(54,.11,.115,'triangle',-5);n(.055,.07,760);break;
+      case 'catDown':p(81,.14,.11,'triangle',-4);p(70,.19,.085,'sine',-5,.09);break;
+      case 'dogDown':p(58,.13,.12,'sawtooth',-5);p(49,.14,.07,'triangle',-6,.1);break;
+      case 'bossDown':n(.16,.18,850);p(48,.27,.16,'triangle',-13);break;
+      case 'castle':n(.10,.20,820);p(48,.16,.13,'triangle',-9);break;
+      case 'boss':p(50,.22,.18,'sawtooth',-3);p(46,.25,.15,'triangle',-3,.16);break;
+      case 'hero':for(const [i,m] of [67,74,79,83].entries())p(m,.15,.105,'triangle',0,i*.105);break;
+      case 'boost':for(const [i,m] of [79,83,86].entries())p(m,.11,.086,'triangle',0,i*.082);break;
+      case 'purchase':for(const [i,m] of [74,79,83].entries())p(m,.13,.095,'square',0,i*.11);break;
+      case 'coins':for(const [i,m] of [79,83,86,91].entries())p(m,.17,.11,'triangle',0,i*.105);break;
+      case 'victory':
+        n(.15,.14,1300);
+        for(const [i,m] of [67,74,79,83,86,91].entries())p(m,i===5?.38:.16,.115,'triangle',0,i*.14);
+        break;
+      case 'defeat':for(const [i,m] of [67,64,60,55].entries())p(m,.22,.10,'triangle',-2,i*.18);break;
+    }
+  }
+  function set(key,value){
+    if(!(key in state))return;
+    state[key]=key==='volume'?Math.max(0,Math.min(100,Number(value)||0)):!!value;
+    remember();apply();updateButtons();
+    if(state.enabled)unlock();
+  }
+  function test(){
+    unlock();
+    if(!ctx)return;
+    if(!state.enabled){set('enabled',true);}
+    if(!state.effects){set('effects',true);}
+    effect('purchase',true);
+  }
+  // No automatic browser sound: activate only after a real tap, click, or key press.
+  document.addEventListener('pointerdown',unlock,{capture:true,passive:true});
+  document.addEventListener('keydown',unlock,{capture:true});
+  $('soundToggle')?.addEventListener('click',()=>set('enabled',!state.enabled));
+  $('audioMasterBtn')?.addEventListener('click',()=>set('enabled',!state.enabled));
+  $('audioMusicBtn')?.addEventListener('click',()=>set('music',!state.music));
+  $('audioEffectsBtn')?.addEventListener('click',()=>set('effects',!state.effects));
+  $('audioTestBtn')?.addEventListener('click',test);
+  $('audioVolume')?.addEventListener('input',e=>set('volume',e.target.value));
+  updateButtons();
+  return {unlock,tick,effect,set,settings:state};
+})();
+</script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('battle'),ctx=canvas.getContext('2d'),W=960,H=500;
 const STORAGE='claws-vs-paws-castle-clash-v1';
+const sound=window.ClawsAudio;
 const CATS=[
  {id:'tabby',name:'Tabby Squire',short:'Tabby',fur:'#f4b16d',belly:'#ffe4b3',mark:'stripes',weapon:'sword',desc:'Balanced sword fighter',cost:0,power:12,attack:1.05,spawn:5.6,range:32,speed:43},
  {id:'fluffy',name:'Fluffy Axer',short:'Fluffy',fur:'#ffffff',belly:'#fff5eb',mark:'fluffy',weapon:'axe',desc:'Slow, heavy ax strikes',cost:65,power:20,attack:1.55,spawn:8.0,range:32,speed:34},
@@ -208,7 +436,7 @@ function buyBoost(c,kind){if(phase!=='battle'||!save.squad.includes(c.id)||boost
  const prior=fieldStat(c);catnip-=cost;battleUpgrades[c.id][kind]++;const current=fieldStat(c);
  if(kind==='spawn'&&spawnTimers[c.id]!==undefined)spawnTimers[c.id]=Math.max(.15,spawnTimers[c.id]*current.spawn/prior.spawn);
  for(const u of cats){if(u.hero||u.id!==c.id)continue;const oldMax=u.maxHp;u.maxHp=current.hp;u.hp=Math.min(u.maxHp,Math.max(1,u.hp+Math.max(0,u.maxHp-oldMax)));u.power=current.power;u.attack=current.attack;u.cd=Math.min(u.cd,u.attack);}
- message('🌿 '+c.short+' gained a battle boost!');updateUI(true);return true;
+ sound.effect('boost');message('🌿 '+c.short+' gained a battle boost!');updateUI(true);return true;
 }
 // Higher training tiers unlock as you complete more levels; old purchases remain intact.
 function trainingCap(){return Math.min(10,Math.max(1,Math.floor((save.level+1)/3)));}
@@ -260,8 +488,8 @@ function spawnDogTraffic(dt){
  }
 }
 function resetBattle(){cats=[];dogs=[];shots=[];particles=[];floaters=[];time=0;paused=false;spawnTimers={};soloDogTimer=3;groupDogTimer=save.level===1?25:save.level===2?20:14;groupDogGap=0;groupDogQueue=[];dogGroupsSent=0;pendingCoins=0;catnip=0;battleUpgrades=emptyBattleUpgrades();boostSelected=save.squad[0]||'tabby';heroCd=0;gateBossTriggered=false;secondBossTriggered=false;dogBossWarning=0;catHp=catCastleMax();dogHp=dogCastleMax();catDefenseCd=2.1;dogDefenseCd=2.1;dogCastleStrikeCd=0;catCastleStrikeCd=0;shake=0;updateUI(true);}
-function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}message('🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
-function endBattle(won){if(phase!=='battle')return;phase=won?'win':'loss';paused=false;
+function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}sound.unlock();message('🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
+function endBattle(won){if(phase!=='battle')return;phase=won?'win':'loss';paused=false;sound.effect(won?'victory':'defeat',true);
  if(won){const reward=victoryReward(save.level);const finished=save.level;const earned=reward+pendingCoins;save.coins+=earned;save.level++;persist();
  modal('🏆','Level '+finished+' conquered!','Your cats earned 🐟 '+reward+' for the win and 🐟 '+pendingCoins+' for defeated dogs (🐟 '+earned+' total). Battle catnip and boosts reset next level. '+(finished===4?'Legendary cat champions are now unlocked in the Heroes shop!':'Train and choose your next siege carefully.'),'Prepare level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();message('Plan your next siege!');});}
  else{const consolation=8+Math.min(7,Math.floor(pendingCoins*.20));save.coins+=consolation;persist();modal('💔','The cat castle fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip and battle boosts reset when you retry. Try a different squad or invest in permanent training.','Retry level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();});}
@@ -274,10 +502,10 @@ function tip(t){/* Concise messages appear in the top battle banner. */}
 function catPortrait(c){const face=c.mark==='siamese'?'#806657':c.fur;let markings='';if(c.mark==='stripes')markings='<path d="M23 20l-3 8M32 16v11M41 20l3 8" stroke="#8b5837" stroke-width="4" stroke-linecap="round"/>';if(c.mark==='calico')markings='<path d="M14 27q6-11 16-8l-3 12Z" fill="#a96947"/><path d="M35 19q12-5 16 8l-12 4Z" fill="#333d4c"/>';if(c.mark==='tuxedo')markings='<path d="M22 36q10 8 20 0v12H22Z" fill="#f8f6eb"/>';if(c.mark==='siamese')markings='<ellipse cx="32" cy="34" rx="17" ry="15" fill="#846456"/>';if(c.mark==='fluffy')markings='<path d="M12 31l-5 3 5 6-4 5 8 3q15 12 32 0l8-3-4-5 5-6-5-3" fill="'+c.belly+'"/>';let tool=c.weapon==='sword'?'⚔️':c.weapon==='axe'?'🪓':c.weapon==='bow'?'🏹':c.weapon==='star'?'✦':c.weapon==='shield'?'🛡️':c.weapon==='wand'?'✧':c.weapon==='bolt'?'⚡':'🔨';return `<svg class="portrait" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="57" rx="22" ry="4" fill="#8495a355"/><path d="M13 30 12 9l15 12M51 30 52 9 37 21" fill="${c.fur}" stroke="#405262" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 24 16 14l9 10M48 24 48 14l-9 10" fill="#efb3aa"/><circle cx="32" cy="37" r="23" fill="${c.fur}" stroke="#405262" stroke-width="2"/>${markings}<ellipse cx="32" cy="39" rx="14" ry="12" fill="${c.mark==='siamese'?face:c.belly}"/><ellipse cx="26" cy="36" rx="2.4" ry="3" fill="#243750"/><ellipse cx="38" cy="36" rx="2.4" ry="3" fill="#243750"/><path d="m29 44 3 2 3-2-3-2Z" fill="#d5788c"/><path d="M32 46v2m0 0-4 2m4-2 4 2" stroke="#6c6670" stroke-width="1.2" fill="none"/><text x="53" y="61" font-size="16" text-anchor="middle">${tool}</text></svg>`;}
 function rosterLocked(){return phase==='battle';}
 function choose(id){selected=id;renderBarracks();renderDetails();openDrawer('train');}
-function buyCat(c){if(rosterLocked()){message('Train between battles!');return;}if(save.unlocked.includes(c.id))return;if(save.level<catUnlockLevel(c)){message('Unlocks at level '+catUnlockLevel(c)+'!');return;}if(save.coins<c.cost){message('Need '+(c.cost-save.coins)+' more fish coins!');return;}save.coins-=c.cost;save.unlocked.push(c.id);if(save.squad.length<5)save.squad.push(c.id);selected=c.id;persist();message('🐱 '+c.name+' joined your army!');updateUI(true);}
+function buyCat(c){if(rosterLocked()){message('Train between battles!');return;}if(save.unlocked.includes(c.id))return;if(save.level<catUnlockLevel(c)){message('Unlocks at level '+catUnlockLevel(c)+'!');return;}if(save.coins<c.cost){message('Need '+(c.cost-save.coins)+' more fish coins!');return;}save.coins-=c.cost;save.unlocked.push(c.id);if(save.squad.length<5)save.squad.push(c.id);selected=c.id;persist();sound.effect('purchase');message('🐱 '+c.name+' joined your army!');updateUI(true);}
 function catUnlockLevel(c){return {tabby:1,fluffy:2,siamese:3,tuxedo:4,ginger:5,calico:6,sphynx:7,maine:8}[c.id]||1;}
 function equip(c){if(rosterLocked()){message('Squad locked during battle!');return;}if(!save.unlocked.includes(c.id)){buyCat(c);return;}if(save.squad.includes(c.id)){if(save.squad.length===1){message('Keep at least one cat equipped!');return;}save.squad=save.squad.filter(id=>id!==c.id);message(c.short+' returned to the barracks.');}else{if(save.squad.length>=5){message('Five slots full — unequip one first.');return;}save.squad.push(c.id);message(c.short+' added to your squad!');}persist();updateUI(true);}
-function improve(c,kind){if(rosterLocked()){message('Upgrades are between levels!');return;}if(!save.unlocked.includes(c.id))return;const u=save.upgrades[c.id];if((kind==='lives'&&u.lives>=5)||(kind!=='lives'&&u[kind]>=10)){message('Maxed out!');return;}if(u[kind]>=trainingCap()){message('Next training rank unlocks at a later level!');return;}const cost=upgradeCost(c,kind);if(save.coins<cost){message('Need '+(cost-save.coins)+' more fish coins!');return;}save.coins-=cost;u[kind]++;persist();message('✨ '+c.short+' '+({power:'power',attack:'attack speed',spawn:'spawn rate',lives:'lives'}[kind])+' improved!');updateUI(true);}
+function improve(c,kind){if(rosterLocked()){message('Upgrades are between levels!');return;}if(!save.unlocked.includes(c.id))return;const u=save.upgrades[c.id];if((kind==='lives'&&u.lives>=5)||(kind!=='lives'&&u[kind]>=10)){message('Maxed out!');return;}if(u[kind]>=trainingCap()){message('Next training rank unlocks at a later level!');return;}const cost=upgradeCost(c,kind);if(save.coins<cost){message('Need '+(cost-save.coins)+' more fish coins!');return;}save.coins-=cost;u[kind]++;persist();sound.effect('boost');message('✨ '+c.short+' '+({power:'power',attack:'attack speed',spawn:'spawn rate',lives:'lives'}[kind])+' improved!');updateUI(true);}
 function renderSquad(){const el=$('squad');el.innerHTML='';for(let i=0;i<5;i++){let id=save.squad[i],c=CATMAP[id],div=document.createElement('button');div.className='squad-card '+(c?'filled':'empty');div.disabled=false;if(c){div.innerHTML='<span class="num">'+(i+1)+'</span>'+catPortrait(c)+'<div class="slot-name">'+c.short+'</div><div class="slot-timer" id="timer-'+c.id+'">'+stat(c).spawn.toFixed(1)+'s</div><div class="slot-progress"><div id="progress-'+c.id+'"></div></div>';div.addEventListener('click',()=>{if(phase==='battle'){boostSelected=c.id;openDrawer('boost');}else choose(c.id);});}else{div.innerHTML='<span class="num">'+(i+1)+'</span><div class="plus">+</div><div class="slot-name">Add cat</div>';div.addEventListener('click',()=>{openDrawer('cats');message('Pick a cat to unlock or equip.');});}el.appendChild(div);}}
 function catStatsMarkup(c){const t=phase==='battle'?fieldStat(c):stat(c);return '<div class="unit-stats" aria-label="Damage '+t.power+', range '+t.range+', HP '+t.hp+'"><span><small>DMG</small><b class="unit-value">'+t.power+'</b></span><span><small>RANGE</small><b class="unit-value">'+t.range+'</b></span><span><small>HP</small><b class="unit-value">'+t.hp+'</b></span></div>';}
 function dogPreviewStats(type){
@@ -323,10 +551,10 @@ function renderBattleBoost(){const wallet=$('boostNip'),roster=$('boostRoster'),
 function renderHeroes(){const el=$('heroesList');if(!el)return;el.innerHTML='';
  for(const h of HEROES){const owned=save.heroUnlocked.includes(h.id),selected=save.heroSelected===h.id,available=save.level>=h.level;const card=document.createElement('article');card.className='hero-card';
  card.innerHTML=catPortrait(h)+'<div class="hero-info"><h3>'+h.name+'</h3><p>'+h.desc+'</p><div class="hero-stats">❤️ '+h.hp+' · ⚔️ '+h.power+' · ⏱️ '+h.cooldown+'s</div><button class="btn '+(selected?'green':'primary')+'" '+(!available||phase==='battle'||(!owned&&save.coins<h.cost)?'disabled':'')+'>'+(!available?'🔒 Reach level '+h.level:!owned?'Buy 🐟 '+h.cost:selected?'✓ Selected':'Choose champion')+'</button></div>';
- card.querySelector('button').addEventListener('click',()=>{if(phase==='battle'){message('Recruit between battles!');return;}if(!available)return;if(!owned){if(save.coins<h.cost)return;save.coins-=h.cost;save.heroUnlocked.push(h.id);}save.heroSelected=h.id;persist();renderHeroes();updateUI(true);message('🦁 '+h.name+' is ready to summon!');});el.appendChild(card);}}
+ card.querySelector('button').addEventListener('click',()=>{if(phase==='battle'){message('Recruit between battles!');return;}if(!available)return;if(!owned){if(save.coins<h.cost)return;save.coins-=h.cost;save.heroUnlocked.push(h.id);}save.heroSelected=h.id;persist();sound.effect('purchase');renderHeroes();updateUI(true);message('🦁 '+h.name+' is ready to summon!');});el.appendChild(card);}}
 function summonHero(){const h=HEROMAP[save.heroSelected];if(phase!=='battle'||paused||!h||heroCd>0||cats.some(u=>u.hero&&u.hp>0))return false;
  cats.push({uid:++uid,team:'cat',id:h.id,type:h.id,x:158,y:yPath-8,hp:h.hp+Math.max(0,save.level-5)*16,maxHp:h.hp+Math.max(0,save.level-5)*16,power:h.power,attack:h.attack,range:h.range,speed:h.speed,cd:.2,anim:0,hit:0,weapon:h.weapon,scale:h.scale,hero:true});
- heroCd=h.cooldown;puff(158,yPath,24,'#ffe08c');message('⭐ '+h.name+' joins the siege!');updateHUD();return true;}
+ heroCd=h.cooldown;sound.effect('hero',true);puff(158,yPath,24,'#ffe08c');message('⭐ '+h.name+' joins the siege!');updateHUD();return true;}
 function heroAction(){if(phase==='prepare'){enterBattle();return;}if(phase!=='battle')return;
  if(save.level<5)return;
  if(!save.heroSelected){openDrawer('heroes');return;}
@@ -362,11 +590,12 @@ function floatText(x,y,t,col){floaters.push({x,y,text:t,color:col,age:0,life:.88
 function puff(x,y,n,color){for(let i=0;i<n;i++)particles.push({x:x+Math.random()*12-6,y:y+Math.random()*12-6,vx:(Math.random()-.5)*55,vy:-15-Math.random()*30,life:.35+Math.random()*.3,max:.65,r:2+Math.random()*3,color});}
 function projectile(attacker,target,power,weapon,team,splash){shots.push({x:attacker.x+(team==='cat'?15:-15),y:attacker.y-22,target:target.uid,team,power,weapon,splash,velocity:weapon==='bolt'?390:weapon==='star'?310:weapon==='wand'?255:weapon==='bone'?235:280});}
 function damage(target,amount){if(!target||target.hp<=0)return;target.hp-=amount;target.hit=.16;
+ sound.effect(target.hp<=0?(target.team==='cat'?'catDown':target.type==='gatekeeper'?'bossDown':'dogDown'):(target.team==='cat'?'catHurt':'dogHurt'));
  floatText(target.x,target.y-52,'-'+Math.max(1,Math.round(amount)),target.team==='cat'?'#fff8ce':'#ffc8b4');puff(target.x,target.y-20,2,target.team==='cat'?'#d5ecdb':'#e9b39e');
  if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(22+save.level*7,pendingCoins+loot);const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
  else puff(target.x,target.y-20,8,'#e6f2c8');}}
 
-function attackUnit(u,target){u.cd=u.attack;if(u.range>50){projectile(u,target,u.power,u.weapon,u.team,u.hero&&u.id==='panther'?105:u.weapon==='wand'?55:0);}else{damage(target,u.power);puff(target.x,target.y-24,2,'#fff9e9');}}
+function attackUnit(u,target){u.cd=u.attack;sound.effect(u.team==='dog'?(u.weapon==='bone'?'bone':'bite'):(['sword','axe','bow','star','wand','bolt','hammer','shield'].includes(u.weapon)?u.weapon:'sword'));if(u.range>50){projectile(u,target,u.power,u.weapon,u.team,u.hero&&u.id==='panther'?105:u.weapon==='wand'?55:0);}else{damage(target,u.power);puff(target.x,target.y-24,2,'#fff9e9');}}
 function enemyTarget(u,opponents,range){let chosen=null,dist=1e10;for(const t of opponents){if(t.hp<=0)continue;const gap=Math.abs(t.x-u.x);if(gap<dist){dist=gap;chosen=t;}}return chosen&&dist<=range?chosen:null;}
 function stepUnits(dt){dogCastleStrikeCd=Math.max(0,dogCastleStrikeCd-dt);catCastleStrikeCd=Math.max(0,catCastleStrikeCd-dt);for(const u of [...cats,...dogs]){if(u.hp<=0)continue;u.cd=Math.max(0,u.cd-dt);u.hit=Math.max(0,u.hit-dt);u.anim+=dt*(2.5+u.speed/25);const isCat=u.team==='cat';const others=isCat?dogs:cats;const target=enemyTarget(u,others,u.range+14*u.scale);const nearCastle=isCat?u.x>=817:u.x<=141;if(target){if(u.cd<=0)attackUnit(u,target);}else if(nearCastle){if(u.cd<=0){u.cd=u.attack;if(isCat&&dogs.some(d=>d.hp>0)){u.cd=Math.max(.5,u.attack);if(Math.random()<.065)floatText(883,244,'🛡️ GATE HELD','#fff3bd');}else{
  // Only one castle strike per side every 0.9s. Individual attack cooldowns
@@ -377,7 +606,7 @@ function stepUnits(dt){dogCastleStrikeCd=Math.max(0,dogCastleStrikeCd-dt);catCas
   const strike=Math.max(1,Math.round(Math.min(u.power,cap)*(u.hero?1.20:1)));
   if(isCat){dogHp=Math.max(0,dogHp-strike);dogCastleStrikeCd=.90;}
   else{catHp=Math.max(0,catHp-strike);catCastleStrikeCd=.90;}
-  floatText(isCat?883:73,245,'-'+strike,isCat?'#ffc59e':'#ffffff');
+  sound.effect('castle');floatText(isCat?883:73,245,'-'+strike,isCat?'#ffc59e':'#ffffff');
   shake=Math.min(4,shake+1.0);puff(isCat?868:100,300,6,isCat?'#f8c6b1':'#d4e8e2');
  }
  }}}
@@ -393,7 +622,7 @@ function checkKennelBoss(){if(save.level<5)return;
  for(const [fraction,key] of fractions){if((key==='first'&&gateBossTriggered)||(key==='second'&&secondBossTriggered))continue;
  if(dogHp>0&&dogHp<=dogCastleMax()*fraction){if(key==='first')gateBossTriggered=true;else secondBossTriggered=true;
  spawnDog('gatekeeper');const boss=dogs[dogs.length-1];boss.hp=Math.round(boss.hp*1.16);boss.maxHp=boss.hp;boss.x=797;boss.y=yPath-8;
- dogBossWarning=5;puff(814,yPath,18,'#ffc482');message('🐶 KENNEL GUARDIAN! A boss has appeared!');}}
+ dogBossWarning=5;sound.effect('boss',true);puff(814,yPath,18,'#ffc482');message('🐶 KENNEL GUARDIAN! A boss has appeared!');}}
 }
 function updateBattle(dt){if(phase!=='battle'||paused)return;dt*=speed;time+=dt;
  heroCd=Math.max(0,heroCd-dt);dogBossWarning=Math.max(0,dogBossWarning-dt);
@@ -491,7 +720,7 @@ function render(){const rect=canvas.getBoundingClientRect();visualAspect=rect.he
 for(const f of floaters){ctx.globalAlpha=clamp(1-f.age/f.life,0,1);ctx.font='900 18px system-ui';ctx.textAlign='center';ctx.fillStyle='#28384d';ctx.fillText(f.text,f.x+1,f.y+1);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}ctx.globalAlpha=1;
 // castle name tags inside scene
 roundRect(10,431,142,26,9,'#2b3a67ec');roundRect(800,431,150,26,9,'#584b53ea');ctx.fillStyle='#fef5ef';ctx.textAlign='center';ctx.font='900 14px system-ui';ctx.fillText('🐱 CAT CASTLE',81,449);ctx.fillText('DOG KENNEL 🐶',875,449);ctx.restore();}
-function frame(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.055,(ts-lastTs)/1000);lastTs=ts;updateBattle(dt);advanceVisuals(dt);uiAcc+=dt;if(uiAcc>.12){updateHUD();updateTimers();uiAcc=0;}render();requestAnimationFrame(frame);}
+function frame(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.055,(ts-lastTs)/1000);lastTs=ts;updateBattle(dt);advanceVisuals(dt);uiAcc+=dt;if(uiAcc>.12){updateHUD();updateTimers();uiAcc=0;}render();sound.tick(phase==='battle'&&!paused&&!drawerOpen&&$('overlay').hidden);requestAnimationFrame(frame);}
 document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openDrawer(b.dataset.openPanel)));
 $('closeDrawer').addEventListener('click',closeDrawer);
 $('drawerBackdrop').addEventListener('click',e=>{if(e.target===$('drawerBackdrop'))closeDrawer();});
