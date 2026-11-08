@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B3A67">
+<meta name="description" content="Claws vs. Paws: a cat army castle-siege game. Pick five cats, fight roaming dogs and surprise groups, upgrade your squad, and take down the dog castle.">
+<title>Claws vs. Paws | Castle Clash</title>
+<style>
+:root{color-scheme:light;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;
+ --navy:#2B3A67;--slate:#496A81;--sage:#66999B;--olive:#B3AF8F;
+ --brass:#FFC482;--rose:#9D5C63;--plum:#584B53;--ice:#D6E3F8;--paper:#FEF5EF;
+ --ink:#24314f;--muted:#546476;--line:#b9c2c5;
+ color:var(--ink);background:var(--navy)}
+*{box-sizing:border-box}html{height:100%;overflow:hidden}body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 50% 5%,#496a81 0%,#2b3a67 60%,#202d50 100%);-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.46;cursor:not-allowed}button:focus-visible{outline:3px solid #ffc482;outline-offset:2px}
+[hidden]{display:none!important}
+.shell{width:min(100%,1050px);height:100%;height:100dvh;margin:0 auto;padding:calc(7px + env(safe-area-inset-top)) 9px calc(6px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;min-height:0}
+.masthead{flex:none;display:flex;justify-content:space-between;align-items:center;color:var(--paper);min-height:51px;gap:12px}.masthead h1{font-size:clamp(26px,4.2vw,35px);line-height:1.06;letter-spacing:-.045em;margin:0;font-weight:1000}.masthead h1 span{color:var(--brass)}.brand-note{font-weight:950;letter-spacing:.15em;text-transform:uppercase;font-size:12px;color:var(--ice);margin-bottom:2px}.subtitle{color:var(--ice);font-size:13px;margin-top:2px}.round-tag{font-size:14px;font-weight:1000;border-radius:100px;background:var(--plum);border:1px solid #a18a8b;padding:10px 13px;white-space:nowrap}
+.hud{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stat{background:var(--paper);border:2px solid var(--olive);border-radius:13px;padding:7px 10px;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;box-shadow:0 3px 0 #162345}.stat .lbl{font-size:14px;font-weight:950;color:#435872}.stat .val{font-weight:1000;font-size:23px;line-height:1;font-variant-numeric:tabular-nums;color:var(--navy);white-space:nowrap}
+.arena{min-height:0;flex:1;display:flex;flex-direction:column;gap:8px;align-items:stretch;justify-content:space-between}
+.field-wrap{min-height:125px;flex:1;position:relative;border:3px solid #b3af8f;border-radius:17px;overflow:hidden;background:var(--ice);box-shadow:0 5px 0 #172446;max-height:560px;isolation:isolate}
+canvas{display:block;width:100%;height:100%;touch-action:manipulation}
+.battle-label{position:absolute;top:9px;left:50%;transform:translateX(-50%);max-width:94%;padding:7px 11px;background:#2b3a67ec;color:#fff;border:1px solid #b3af8f;border-radius:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;font-size:14px;font-weight:900;line-height:1.1;text-align:center}
+.castle-health{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.health-card{background:var(--ice);border:1px solid #9baec5;border-radius:12px;padding:6px 9px}.health-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--navy);font-size:14px;font-weight:950}.health-top b{font-size:18px;font-variant-numeric:tabular-nums}.meter{height:8px;border-radius:100px;overflow:hidden;background:#afbdc8;margin-top:4px}.meter div{height:100%;transition:width .2s}.meter.cats div{background:#4a8585}.meter.dogs div{background:#9d5c63}
+.control-row{flex:none;display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1.2fr) minmax(0,1.15fr) 50px;gap:7px}
+.btn{border:0;background:var(--ice);color:var(--navy);font-size:16px;font-weight:1000;border-radius:11px;padding:9px 8px;min-height:49px;box-shadow:0 3px 0 #8396a7;text-align:center}.btn.primary{background:var(--brass);box-shadow:0 3px 0 #ae7e55}.btn.green{background:var(--sage);color:#10283a;box-shadow:0 3px 0 #406c70}.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #667c86}.btn.quiet{background:transparent;border:1px solid #b6c4d5;color:var(--navy);box-shadow:none}.btn:disabled{box-shadow:none}
+.squad-box{flex:none;border:1px solid #7e95ad;background:#213353a8;border-radius:14px;padding:6px 8px 8px}.squad-top{display:flex;justify-content:space-between;align-items:center;color:#edf2f9;font-size:14px;font-weight:950;margin:0 2px 5px}.squad-top button{background:transparent;color:var(--brass);border:0;font-size:14px;font-weight:1000;padding:0 2px}
+.squad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.squad-card{border:2px solid #b6bbc2;border-radius:11px;position:relative;background:var(--paper);color:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-width:0;height:89px;padding:3px 2px 5px;overflow:hidden}.squad-card.filled{border-color:var(--sage)}.squad-card .portrait{height:42px;width:42px;flex:none}.squad-card .slot-name{font-size:12px;font-weight:1000;line-height:1.05;white-space:normal;max-width:100%;overflow:hidden;text-overflow:ellipsis;text-align:center;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;min-height:25px;padding:1px 2px 0;word-break:break-word}.squad-card .slot-timer{font-size:12px;font-weight:900;color:#4a576c;white-space:nowrap;line-height:1}.squad-card.empty .plus{font-size:30px;line-height:41px;color:var(--slate)}.squad-card .num{display:none}.slot-progress{height:5px;border-radius:10px;background:#c7d6d9;width:88%;overflow:hidden;margin-top:3px}.slot-progress div{height:100%;width:0;background:#458786}
+.bottom-nav{flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.nav-btn{border-radius:13px;border:1px solid #74869c;background:#394c72;color:#fff4e9;padding:8px 3px;min-height:61px;font-size:15px;font-weight:1000;line-height:1.2}.nav-btn .nav-icon{font-size:23px;display:block;margin-bottom:2px}.nav-btn:active{background:var(--slate)}
+.drawer-backdrop{position:fixed;inset:0;z-index:15;background:#11192abf;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.drawer{width:min(100%,740px);max-height:min(88dvh,850px);display:flex;flex-direction:column;overflow:hidden;background:var(--paper);border-radius:22px 22px 0 0;border:3px solid var(--olive);border-bottom:0;box-shadow:0 -10px 35px #11192aaa}
+.drawer-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--navy);color:#fff;gap:10px;min-height:68px}.drawer-header h2{font-size:25px;margin:0;font-weight:1000;letter-spacing:-.04em}.drawer-header p{margin:1px 0 0;color:#e4e8f4;font-size:14px}.close-drawer{width:47px;height:47px;border:2px solid #b3af8f;background:var(--ice);color:var(--navy);border-radius:12px;font-size:28px;font-weight:900}
+.drawer-body{padding:16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0}.drawer-panel{min-width:0}.panel-intro{margin:0 0 15px;font-size:16px;line-height:1.4;color:#495a69;font-weight:650}
+.barracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cat-card{border:2px solid #c3c9cb;border-radius:14px;background:#fff;min-width:0;display:flex;gap:12px;align-items:center;padding:11px;text-align:left;color:var(--ink)}.cat-card.selected{border-color:#3e777e;background:#ecf3f1}.cat-card .portrait{height:64px;width:64px;flex:0 0 64px}.cat-info{min-width:0;flex:1}.cat-card .cat-name{display:block;font-size:18px;font-weight:1000;line-height:1.15}.cat-card .cat-desc{display:block;font-size:14px;line-height:1.3;color:#4e6073;margin:5px 0}.cat-card .cat-status{display:block;font-size:15px;color:#326869;font-weight:1000}.cat-card.locked .cat-status{color:#8b5a3f}
+.detail-heading{display:flex;align-items:center;gap:12px}.detail-heading .portrait{width:78px;height:78px;flex:0 0 78px}.detail-heading h3{font-size:25px;letter-spacing:-.03em;margin:0 0 4px}.detail-heading p{font-size:15px;color:var(--muted);margin:0;line-height:1.35}.stats-four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:16px 0}.little-stat{background:#e7e9e1;border:1px solid #c1c7c1;border-radius:11px;text-align:center;padding:9px 2px}.little-stat b{display:block;font-size:19px;color:var(--navy);font-variant-numeric:tabular-nums}.little-stat span{display:block;font-size:13px;color:#4e6073;font-weight:1000;margin-top:2px}
+.upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.upgrade{background:#fff;border:2px solid #bfcbcf;color:var(--ink);text-align:left;min-height:99px;border-radius:13px;padding:12px}.upgrade strong{display:block;font-size:17px;line-height:1.2}.upgrade small{font-size:14px;display:block;color:#516171;margin:5px 0}.upgrade em{font-style:normal;font-weight:1000;font-size:16px;color:#82583a}.equip-btn{width:100%;margin-top:13px;min-height:54px;font-size:18px}.subnote{font-size:15px;line-height:1.45;color:var(--muted)}
+.back-cats{font-size:16px;color:var(--navy);font-weight:1000;background:none;border:0;padding:5px 0 14px}
+.squad-detail{display:grid;gap:10px}.squad-line{display:flex;align-items:center;gap:11px;padding:10px;background:#eaf0f4;border:1px solid #bac7d2;border-radius:12px}.squad-line .portrait{width:54px;height:54px;flex:none}.squad-line .detail{flex:1;min-width:0}.squad-line b{display:block;font-size:18px}.squad-line small{font-size:14px;color:var(--muted)}.squad-line button{background:var(--ice);border:1px solid #91a4b4;border-radius:9px;color:var(--navy);min-height:45px;padding:8px 10px;font-size:15px;font-weight:950}.drawer-action{width:100%;margin:12px 0 0}
+.help-area{font-size:17px;line-height:1.55}.help-area p{margin:0 0 15px}.help-area h3{font-size:21px;margin:20px 0 6px}.help-area .settings-btn{display:block;width:100%;margin:12px 0;min-height:48px}.warning{color:#7c4653;font-size:15px}
+.start-over-btn{display:block;width:100%;min-height:60px;background:#ffc482;color:#253556;font-size:21px;border:2px solid #986d47;box-shadow:0 3px 0 #aa7955}.start-over-note{font-size:15px!important;color:#4a5e70!important;margin:7px 0 18px!important}.modal .modal-cancel{background:#e1e9f7;color:#2b3a67;border:2px solid #a5b3c5;box-shadow:none}
+.overlay{position:fixed;inset:0;z-index:30;background:#101e35d9;display:flex;align-items:center;justify-content:center;padding:15px}.modal{max-width:430px;width:100%;background:var(--paper);border:4px solid var(--olive);border-radius:22px;text-align:center;padding:23px 20px;box-shadow:0 12px 0 #182440}.modal .big{font-size:48px}.modal h2{font-size:29px;line-height:1.15;margin:8px 0}.modal p{font-size:18px;line-height:1.4;color:var(--muted)}.modal .btn{width:100%;margin-top:8px;font-size:19px;min-height:55px}
+.toast{position:fixed;z-index:40;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);pointer-events:none;background:var(--navy);color:white;border:1px solid var(--olive);box-shadow:0 6px 20px #0006;border-radius:12px;font-size:16px;font-weight:950;max-width:94vw;padding:12px 15px;opacity:0;transition:opacity .2s;text-align:center}.toast.show{opacity:1}
+@media(max-width:600px){.shell{padding-left:6px;padding-right:6px;gap:6px}.masthead{min-height:47px}.masthead h1{font-size:27px}.brand-note,.subtitle{display:none}.round-tag{font-size:13px;padding:9px}.hud{gap:5px}.stat{padding:7px 6px;flex-direction:column;gap:0}.stat .lbl{font-size:14px}.stat .val{font-size:23px}.field-wrap{border-width:2px;border-radius:13px}.battle-label{font-size:13px;top:5px;padding:6px 8px}.health-card{padding:5px 8px}.health-top{font-size:13px}.health-top b{font-size:17px}.control-row{gap:5px;grid-template-columns:minmax(0,1.75fr) minmax(0,1.05fr) minmax(0,1.1fr) 44px}.control-row .btn{font-size:15px;min-height:48px;padding:7px 3px}.squad{gap:4px}.squad-card{height:84px;padding-top:3px}.squad-card .portrait{width:36px;height:36px}.squad-card .slot-name{font-size:11px;min-height:23px}.squad-card .slot-timer{font-size:11px}.squad-card.empty .plus{line-height:37px;font-size:27px}.bottom-nav{gap:5px}.nav-btn{min-height:59px;font-size:14px}.nav-btn .nav-icon{font-size:22px}.drawer-body{padding:12px}.barracks{grid-template-columns:1fr}.cat-card .portrait{width:60px;height:60px;flex-basis:60px}.stats-four{gap:4px}.little-stat b{font-size:18px}.little-stat span{font-size:12px}.upgrade strong{font-size:16px}}
+@media(max-height:700px){.shell{gap:4px;padding-top:calc(3px + env(safe-area-inset-top));padding-bottom:calc(3px + env(safe-area-inset-bottom))}.masthead{min-height:35px}.masthead h1{font-size:24px}.hud .stat{padding:4px}.stat .val{font-size:19px}.arena{gap:5px}.health-card{padding:3px 7px}.meter{height:5px;margin-top:2px}.squad-box{padding:4px 5px}.squad-card{height:72px;padding-top:2px}.squad-card .portrait{height:28px;width:28px}.squad-card .slot-name{font-size:10px;min-height:20px;line-height:1}.squad-card .slot-timer{font-size:10px}.squad-card.empty .plus{line-height:31px}.squad-top{margin:0 2px 2px}.nav-btn{min-height:46px;padding:4px 2px}.nav-btn .nav-icon{font-size:17px;margin-bottom:0}.control-row .btn{min-height:42px}.drawer{max-height:93dvh}}
+@media(min-width:740px){.field-wrap{max-width:980px;width:100%;align-self:center}.arena{gap:10px}}
+@media(max-height:520px) and (orientation:landscape){.squad-box{display:none}.field-wrap{min-height:95px}.masthead{min-height:31px}.hud .stat{flex-direction:row}.round-tag{padding:5px 11px}.health-card{padding:2px 8px}.bottom-nav .nav-btn{min-height:40px}.arena{gap:4px}}
+.hero-shop-shortcut{width:100%;margin-bottom:14px;background:#ffe0a1;color:#24314f;border:2px solid #9d7440;font-size:18px}
+.heroes-list{display:grid;gap:14px}.hero-card{display:flex;gap:15px;align-items:flex-start;background:#fff;border:2px solid #b3af8f;border-radius:16px;padding:14px}.hero-card .portrait{width:80px;height:80px;flex:0 0 80px}.hero-info{flex:1;min-width:0}.hero-info h3{font-size:22px;margin:0 0 5px}.hero-info p{margin:0 0 8px;font-size:16px;line-height:1.35}.hero-stats{font-weight:950;color:#4e6375;font-size:15px;margin-bottom:9px}.hero-info .btn{min-width:180px;max-width:100%;font-size:17px}.control-row .hero-ready{background:#ffc482;color:#24314f;box-shadow:0 3px 0 #b77b3f}
+@media(max-width:600px){.hero-card{gap:10px;padding:11px}.hero-card .portrait{width:65px;height:65px;flex-basis:65px}.hero-info h3{font-size:19px}.hero-info .btn{font-size:16px;min-width:0;width:100%}}
+.large-text .hero-info h3{font-size:24px}.large-text .hero-info p{font-size:19px}
+.squad-top .boost-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:2px solid #a6d0a2;border-radius:12px;background:#e1f8c9;color:#263e34;font-size:16px;font-weight:1000;min-height:34px;box-shadow:0 2px 0 #427357;white-space:nowrap;position:relative}
+.squad-top .boost-badge:disabled{opacity:.8}.squad-top .boost-badge.ready{background:#d0f1a9;border-color:#e0fc9b}.squad-top .boost-badge .notif-cat{position:absolute;top:-8px;right:-6px;width:14px;height:12px;background:#e14a58;border-radius:50% 50% 45% 45%;border:1.5px solid #fff4f3;box-shadow:0 1px 3px #48181dcc;display:none}.squad-top .boost-badge .notif-cat::before,.squad-top .boost-badge .notif-cat::after{content:'';position:absolute;top:-4px;width:7px;height:7px;background:#e14a58;border:1.5px solid #fff4f3;border-bottom:0;border-right:0;transform:rotate(45deg);border-radius:1px}.squad-top .boost-badge .notif-cat::before{left:1px}.squad-top .boost-badge .notif-cat::after{right:1px;transform:scaleX(-1) rotate(45deg)}.squad-top .boost-badge.has-notif .notif-cat{display:block}
+.boost-wallet{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:12px 13px;border-radius:13px;background:#e2f2d7;border:2px solid #92af82;margin-bottom:12px}
+.boost-wallet b{font-size:23px;color:#213c35}.boost-wallet span{font-size:16px;color:#395b48;font-weight:850}
+.boost-squad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:15px}
+.boost-choice{padding:6px 2px;min-height:79px;border:2px solid #a1b6bc;background:#fff;border-radius:12px;color:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0}
+.boost-choice.selected{background:#d6f1d5;border-color:#327c60;box-shadow:inset 0 0 0 1px #327c60}
+.boost-choice .portrait{width:min(100%,43px);height:39px}.boost-choice small{font-weight:950;font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.boost-heading{display:flex;align-items:center;gap:10px;margin:0 0 11px}.boost-heading .portrait{width:58px;height:58px;flex:none}.boost-heading h3{font-size:23px;margin:0}.boost-heading p{margin:3px 0 0;font-size:15px;font-weight:750;color:#536975}
+.boost-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.boost-upgrade{border:2px solid #92b6a0;background:#fff;border-radius:13px;min-height:104px;text-align:left;padding:10px 12px;color:#23344d}
+.boost-upgrade strong{display:block;font-size:18px;line-height:1.15}.boost-upgrade small{display:block;font-size:14px;margin-top:4px;color:#496072;font-weight:750}.boost-upgrade em{display:block;font-size:17px;font-weight:1000;color:#30694b;font-style:normal;margin-top:6px}.boost-upgrade:disabled{opacity:.53}.boost-upgrade:focus-visible{outline:3px solid #a26b3b}
+.boost-explainer{font-size:15px;line-height:1.4;font-weight:700;color:#4e6470;margin:10px 0 0}
+@media(max-width:600px){.squad-top .boost-badge{font-size:14px;padding:3px 8px}.boost-squad{gap:4px}.boost-choice{min-height:71px}.boost-choice .portrait{height:35px}.boost-wallet b{font-size:22px}.boost-upgrade{min-height:94px;padding:9px}}
+.large-text .boost-upgrade strong{font-size:22px}.large-text .boost-upgrade small{font-size:17px}.large-text .boost-upgrade em{font-size:20px}.large-text .boost-explainer{font-size:18px}
+.large-text .cat-card .cat-name{font-size:21px}.large-text .cat-card .cat-desc{font-size:17px}.large-text .cat-card .cat-status{font-size:18px}.large-text .panel-intro,.large-text .subnote{font-size:19px}.large-text .detail-heading p{font-size:18px}.large-text .little-stat span{font-size:15px}.large-text .upgrade strong{font-size:20px}.large-text .upgrade small{font-size:17px}.large-text .upgrade em{font-size:19px}.large-text .help-area{font-size:21px}.large-text .squad-line small{font-size:17px}.large-text .squad-line b{font-size:21px}
+.kennel-meter-wrap{position:relative;margin-top:5px;padding-top:5px}.kennel-meter-wrap .meter{margin-top:0}.boss-marker{position:absolute;top:-12px;transform:translateX(-50%);color:#364565;font-size:15px;line-height:17px;filter:drop-shadow(0 1px 1px #fff);pointer-events:none}.boss-marker.spent{opacity:.3;filter:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Readable unit-stat chips inside the scrolling barracks drawer. */
+.cat-card .unit-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:8px 0 7px;min-width:0}
+.cat-card .unit-stats span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;border:1px solid #bfcbda;border-radius:9px;background:#eaf0f7;color:#243453;padding:6px 3px;font-size:14px;font-weight:1000;line-height:1.13;font-variant-numeric:tabular-nums}
+.cat-card .unit-stats small{font-size:12px;font-weight:850;color:#51617b;letter-spacing:.02em}
+.cat-card .unit-stats .unit-value{font-size:16px;font-weight:1000}
+.kennel-stats-trigger{display:block;width:100%;text-align:left;cursor:pointer;font:inherit}
+.kennel-stats-trigger:focus-visible{outline:3px solid #ffc482;outline-offset:2px}
+.kennel-hint{font-size:12px;font-weight:950;opacity:.8}
+.dog-stats-legend{margin:0 0 11px;color:#4c5d72;font-size:15px;font-weight:750;line-height:1.35}
+.enemy-roster{display:grid;gap:11px}
+.enemy-card{border:2px solid #c7cbd0;border-radius:14px;padding:12px;background:#fff;color:var(--ink)}
+.enemy-card.boss-card{border-color:#b28a75;background:#fff9ee}
+.enemy-card-top{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.enemy-avatar{flex:0 0 53px;width:53px;height:53px;border-radius:12px;background:#e4ebf2;display:grid;place-items:center;font-size:32px;border:1px solid #bac6d3}
+.enemy-card h3{margin:0;font-weight:1000;font-size:21px;line-height:1.1}
+.enemy-card .enemy-desc{font-size:14px;color:#4e6073;font-weight:700;line-height:1.3;margin:4px 0 0}
+.enemy-card .unit-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.enemy-card .unit-stats span{display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;border:1px solid #c7cfda;border-radius:10px;background:#eef2f8;padding:8px 3px;text-align:center}
+.enemy-card .unit-stats small{font-size:12px;font-weight:850;color:#4e6172}
+.enemy-card .unit-stats b{font-size:18px;font-weight:1000;color:#243453;font-variant-numeric:tabular-nums}
+.enemy-card .extra-stats{font-size:14px;color:#4e6172;font-weight:800;margin:8px 1px 0}
+.large-text .cat-card .unit-stats small,.large-text .enemy-card .unit-stats small{font-size:14px}
+.large-text .cat-card .unit-stats .unit-value,.large-text .enemy-card .unit-stats b{font-size:20px}
+@media(max-width:600px){.cat-card .unit-stats span{padding:5px 1px}.cat-card .unit-stats small{font-size:11px}.cat-card .unit-stats .unit-value{font-size:15px}.cat-card{align-items:flex-start}.cat-card .portrait{margin-top:13px}.kennel-hint{font-size:11px}}
+
+/* In-flow banner: occupies its own space below the controls (never floats over gameplay). */
+.game-ad-footer{flex:none;min-width:0;min-height:67px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px 4px 5px;border:1px solid #768baa;border-radius:11px;background:#203352;color:#e3e8f2}
+.game-ad-footer .ad-label{font-size:10px;line-height:1;letter-spacing:.15em;font-weight:800;text-transform:uppercase;color:#b5c9dc}
+.game-ad-footer .adsbygoogle{display:inline-block;width:320px;height:50px;max-width:100%}
+@media(max-width:600px){.game-ad-footer{min-height:65px;padding:2px 2px 3px;border-radius:9px}.game-ad-footer .ad-label{font-size:9px}}
+@media(max-height:700px){.game-ad-footer{min-height:62px;padding:2px 2px 3px}}
+</style>
+<!-- AdSense: load once, only on the game page -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
+</head>
+<body>
+<main class="shell">
+<header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div id="phaseTag" class="round-tag">🐈 READY</div></header>
+<div class="hud" role="group" aria-label="Battle stats">
+<div class="stat"><span class="lbl">🐟 Coins</span><span class="val" id="goldStat">24</span></div>
+<div class="stat"><span class="lbl">⚔️ Level</span><span class="val" id="levelStat">1</span></div>
+<div class="stat"><span class="lbl">🐶 Dogs</span><span class="val" id="dogCountStat">0</span></div>
+</div>
+<section class="arena" aria-label="Battlefield and controls">
+<div class="field-wrap"><canvas id="battle" width="960" height="500" role="img" aria-label="Cat castle at the left, dog castle at the right. Cat and dog armies march and battle along the path."></canvas><div class="battle-label" id="battleLabel">Choose your cats and start the siege</div></div>
+<div class="castle-health" aria-label="Castle health">
+<div class="health-card"><div class="health-top"><span>🐱 Cat castle</span><b id="catHpStat">180</b></div><div class="meter cats"><div id="catMeter" style="width:100%"></div></div></div>
+<button id="dogCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Open dog army stats" title="Tap to view dog stats"><div class="health-top"><span>🐶 Dog castle <small class="kennel-hint">ⓘ</small></span><b id="dogHpStat">100</b></div><div class="kennel-meter-wrap"><div class="meter dogs"><div id="dogMeter" style="width:100%"></div></div><span id="bossMarker65" class="boss-marker" style="left:35%" title="Boss appears at 65% kennel health" aria-label="Boss at 65% kennel health">🐾</span><span id="bossMarker30" class="boss-marker" style="left:70%" title="Boss appears at 30% kennel health" aria-label="Boss at 30% kennel health" hidden>🐾</span></div></button>
+</div>
+<div class="control-row"><button id="startBtn" class="btn primary">▶ Start level 1</button><button id="pauseBtn" class="btn" disabled>⏸ Pause</button><button id="speedBtn" class="btn">⏩ 1×</button><button id="fullscreenBtn" class="btn" aria-label="Fullscreen battlefield" title="Fullscreen battlefield">⛶</button></div>
+<div class="squad-box"><div class="squad-top"><span id="squadHint">🐱 SQUAD · Tap to train</span><button id="boostBadge" type="button" class="boost-badge" aria-label="Open catnip battle upgrades">🌿 <span id="nipStat">0</span> · Boost<span id="boostNotif" class="notif-cat" aria-hidden="true"></span></button></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
+</section>
+<nav class="bottom-nav" aria-label="Game menus"><button class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="train"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
+<aside class="game-ad-footer" aria-label="Advertisement">
+  <span class="ad-label">Advertisement</span>
+  <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404"></ins>
+</aside>
+</main>
+<div id="drawerBackdrop" class="drawer-backdrop" hidden><section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1"><header class="drawer-header"><div><h2 id="drawerTitle">Your cats</h2><p id="drawerSubtitle">Unlock fighters and build your army</p></div><button id="closeDrawer" class="close-drawer" aria-label="Close menu">×</button></header><div id="drawerBody" class="drawer-body">
+<div id="panelCats" class="drawer-panel"><button id="heroShopBtn" type="button" class="btn hero-shop-shortcut">⭐ Legendary cats · Level 5+</button><p class="panel-intro">Tap a cat to inspect or unlock it. DMG = damage per hit, RANGE = attack reach, HP = health per cat. Permanent upgrades appear here; temporary catnip boosts apply during battle.</p><div id="barracks" class="barracks"></div></div>
+<div id="panelSquad" class="drawer-panel" hidden><p class="panel-intro">You can bring up to five cat types per level. Each one has its own spawn timer.</p><div id="squadDetails" class="squad-detail"></div><button class="btn primary drawer-action" data-open-panel="cats">+ Browse all cats</button></div>
+<div id="panelTrain" class="drawer-panel" hidden><button id="backToCats" class="back-cats">‹ All cats</button><div id="details"></div></div>
+<div id="panelBoost" class="drawer-panel" hidden><div class="boost-wallet"><div><b>🌿 Catnip: <span id="boostNip">0</span></b><div><span>Earned immediately from dog defeats</span></div></div></div><div id="boostRoster" class="boost-squad" aria-label="Choose a cat to boost"></div><div id="boostDetail"></div><p class="boost-explainer">All battle boosts disappear when you start a new level. Fish coins and permanent training stay saved. Opening this menu pauses combat.</p></div>
+<div id="panelHeroes" class="drawer-panel" hidden><p class="panel-intro">Available after clearing level 4. Buy a champion with fish coins, then tap its large summon button during battle. Champions use a cooldown and do <strong>not</strong> fill a squad slot.</p><div id="heroesList" class="heroes-list"></div></div>
+<div id="panelDogs" class="drawer-panel" hidden><p class="dog-stats-legend">Current level <b id="dogPreviewLevel">1</b> · RANGE is attack reach in battlefield units. Dog stats rise each level. Longer sieges may strengthen incoming dogs. Tap the kennel to check its defenders anytime.</p><div id="dogRoster" class="enemy-roster"></div></div>
+<div id="panelHelp" class="drawer-panel help-area" hidden><button id="startOverBtn" class="btn start-over-btn" type="button">↻ Start Over · Level 1</button><p class="start-over-note">Testing only · starts a fresh save with just the Tabby Squire and 24 fish coins.</p><h3>⚔️ How to play</h3><p>Pick up to five different cats. Press <strong>Start level</strong>. Every cat type marches out automatically according to its own timer.</p><p>Defeat dogs to earn <strong>🌿 catnip</strong> immediately. Tap <strong>Boost</strong> to spend it on temporary Power, Speed, Lives or Spawn upgrades for your squad. Catnip starts at zero each level. <strong>🐟 Fish coins</strong> are saved for permanent upgrades between levels.</p><p>Tap the <strong>dog castle</strong> on the battlefield or its health card to inspect enemy stats. Dogs march out as occasional single scouts and slower, stronger groups. There is no final wave to wait for: when cats reach the kennel and no dogs remain, they can damage its gate immediately. 🐾 markers on kennel health show when its guardians appear.</p><p>Castle gates take controlled strikes rather than instant damage from every cat standing nearby.</p><h3>🔎 Easier viewing</h3><p>Use <strong>⛶</strong> to enlarge the battlefield, or turn your phone sideways for a wider battle view. The battle pauses while a menu is open. At level 5, dog bosses defend their castle once its health falls below 65%; tap Summon to deploy a purchased legendary cat.</p><button id="biggerTextBtn" class="btn settings-btn">A+ Extra-large menu text: Off</button><button id="howBtn" class="btn settings-btn">Show quick instructions</button><p class="warning">Start Over resets coins, cat unlocks, heroes, upgrades, levels, and battle catnip. It asks you to confirm before deleting your current progress.</p></div>
+</div></section></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="overlay" class="overlay" hidden><div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalTitle"><div id="modalIcon" class="big">🏰</div><h2 id="modalTitle">Level cleared!</h2><p id="modalText"></p><button id="modalBtn" class="btn primary">Continue</button><button id="modalCancel" class="btn quiet modal-cancel" type="button" hidden>Keep my progress</button></div></div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), canvas=$('battle'),ctx=canvas.getContext('2d'),W=960,H=500;
+const STORAGE='claws-vs-paws-castle-clash-v1';
+const CATS=[
+ {id:'tabby',name:'Tabby Squire',short:'Tabby',fur:'#f4b16d',belly:'#ffe4b3',mark:'stripes',weapon:'sword',desc:'Balanced sword fighter',cost:0,power:12,attack:1.05,spawn:5.6,range:32,speed:43},
+ {id:'fluffy',name:'Fluffy Axer',short:'Fluffy',fur:'#ffffff',belly:'#fff5eb',mark:'fluffy',weapon:'axe',desc:'Slow, heavy ax strikes',cost:65,power:20,attack:1.55,spawn:8.0,range:32,speed:34},
+ {id:'siamese',name:'Siamese Ranger',short:'Siamese',fur:'#ffe4b6',belly:'#fff6d8',mark:'siamese',weapon:'bow',desc:'Long-range crossbow',cost:95,power:10,attack:1.28,spawn:7.2,range:175,speed:39},
+ {id:'tuxedo',name:'Tuxedo Ninja',short:'Tuxedo',fur:'#506176',belly:'#ffffff',mark:'tuxedo',weapon:'star',desc:'Fast throwing stars',cost:165,power:7,attack:.63,spawn:4.6,range:115,speed:54},
+ {id:'ginger',name:'Ginger Guard',short:'Ginger',fur:'#ffa956',belly:'#ffe3a9',mark:'stripes',weapon:'shield',desc:'Heavy front-line fighter',cost:235,power:16,attack:1.45,spawn:8.9,range:33,speed:31},
+ {id:'calico',name:'Calico Witch',short:'Calico',fur:'#fff0d6',belly:'#ffffff',mark:'calico',weapon:'wand',desc:'Splash magic attacks',cost:305,power:14,attack:1.65,spawn:7.8,range:160,speed:35},
+ {id:'sphynx',name:'Sphynx Spark',short:'Sphynx',fur:'#f2b4be',belly:'#ffe2df',mark:'sphynx',weapon:'bolt',desc:'Quick electric bolts',cost:380,power:12,attack:.83,spawn:6.1,range:155,speed:43},
+ {id:'maine',name:'Maine Coon',short:'Maine Coon',fur:'#b78e63',belly:'#f3d4ad',mark:'fluffy',weapon:'hammer',desc:'Massive armored bruiser',cost:465,power:29,attack:1.85,spawn:9.6,range:38,speed:29}
+];
+// Legendary cats are purchased separately and never occupy one of the five squad slots.
+const HEROES=[
+ {id:'lion',name:'Lionheart Captain',short:'Lionheart',fur:'#ffc76e',belly:'#fff0bb',mark:'stripes',weapon:'sword',desc:'Armored, high-health frontline champion',cost:230,level:5,power:51,attack:1.15,range:43,speed:40,hp:265,cooldown:52,scale:1.62},
+ {id:'panther',name:'Moonshadow Panther',short:'Moonshadow',fur:'#6974a7',belly:'#c8cbed',mark:'tuxedo',weapon:'star',desc:'Swift ranged champion with splash damage',cost:380,level:7,power:36,attack:.88,range:165,speed:50,hp:175,cooldown:60,scale:1.45}
+];
+const CATMAP=Object.fromEntries([...CATS,...HEROES].map(c=>[c.id,c]));
+const HEROMAP=Object.fromEntries(HEROES.map(h=>[h.id,h]));
+const DOGS={
+ mutt:{fur:'#d9a279',belly:'#ffe1b8',maxHp:25,power:7,attack:1.45,speed:32,range:31,loot:1},
+ beagle:{fur:'#f0bb7d',belly:'#fff6d7',maxHp:20,power:6,attack:1.1,speed:53,range:28,loot:2},
+ bulldog:{fur:'#bd9186',belly:'#f5d4bb',maxHp:60,power:11,attack:1.75,speed:23,range:35,loot:3},
+ husky:{fur:'#9eb6ca',belly:'#ffffff',maxHp:30,power:7,attack:1.75,speed:30,range:130,loot:2,projectile:true},
+ mastiff:{fur:'#a77b65',belly:'#e7bca0',maxHp:175,power:15,attack:1.85,speed:18,range:43,loot:2,boss:true},
+ gatekeeper:{fur:'#ef9474',belly:'#ffdfb4',maxHp:180,power:18,attack:1.45,speed:26,range:44,loot:7,boss:true}
+};
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+let save={level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null};
+function normalize(data){if(!data || typeof data!=='object')return;save.level=clamp(Math.floor(Number(data.level)||1),1,999);save.coins=clamp(Math.floor(Number(data.coins)||0),0,999999);save.unlocked=Array.isArray(data.unlocked)?[...new Set(['tabby',...data.unlocked.filter(id=>CATMAP[id])])]:['tabby'];save.squad=Array.isArray(data.squad)?[...new Set(data.squad.filter(id=>save.unlocked.includes(id)))].slice(0,5):['tabby'];if(!save.squad.length)save.squad=['tabby'];save.heroUnlocked=Array.isArray(data.heroUnlocked)?[...new Set(data.heroUnlocked.filter(id=>HEROMAP[id]))]:[];save.heroSelected=save.heroUnlocked.includes(data.heroSelected)?data.heroSelected:(save.heroUnlocked[0]||null);save.upgrades={};for(const c of CATS){const u=data.upgrades?.[c.id]||{};save.upgrades[c.id]={power:clamp(Math.floor(Number(u.power)||0),0,12),attack:clamp(Math.floor(Number(u.attack)||0),0,10),lives:clamp(Math.floor(Number(u.lives)||0),0,5),spawn:clamp(Math.floor(Number(u.spawn)||0),0,10)};}}
+try{const s=localStorage.getItem(STORAGE);if(s)normalize(JSON.parse(s));}catch(e){console.warn('Could not load previous save',e)}
+for(const c of CATS)if(!save.upgrades[c.id])save.upgrades[c.id]={power:0,attack:0,lives:0,spawn:0};
+function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(save));}catch(e){}}
+function stat(c){const u=save.upgrades[c.id];return {power:Math.round(c.power*(1+u.power*.20)),attack:Math.max(.33,c.attack*Math.pow(.91,u.attack)),spawn:clamp(c.spawn*Math.pow(.95,u.spawn),4,11),lives:1+u.lives,hp:22*(1+u.lives),range:c.range,speed:c.speed};}
+// The second currency and these bonuses exist only for the current battle.
+function emptyBattleUpgrades(){return Object.fromEntries(CATS.map(c=>[c.id,{power:0,attack:0,lives:0,spawn:0}]));}
+let catnip=0,battleUpgrades=emptyBattleUpgrades(),boostSelected='tabby';
+function fieldStat(c){const s=stat(c),u=battleUpgrades[c.id];if(!u)return s;const lives=Math.min(6,s.lives+u.lives);return {...s,power:Math.round(s.power*(1+u.power*.18)),attack:Math.max(.30,s.attack*Math.pow(.92,u.attack)),spawn:clamp(s.spawn*Math.pow(.92,u.spawn),3.8,11),lives,hp:22*lives};}
+function boostMaxed(c,kind){const u=battleUpgrades[c.id];return u[kind]>=3||(kind==='lives'&&fieldStat(c).lives>=6)||(kind==='spawn'&&fieldStat(c).spawn<=3.81);}
+function boostCost(c,kind){const base={power:6,attack:8,lives:9,spawn:10}[kind];return Math.round((base+Math.ceil(c.cost/130))*Math.pow(1.8,battleUpgrades[c.id][kind]));}
+function canAffordAnyBattleBoost(){if(phase!=='battle')return false;for(const id of save.squad){const c=CATMAP[id];if(!c)continue;for(const kind of ['power','attack','lives','spawn']){if(!boostMaxed(c,kind) && catnip>=boostCost(c,kind))return true;}}return false;}
+function buyBoost(c,kind){if(phase!=='battle'||!save.squad.includes(c.id)||boostMaxed(c,kind))return false;const cost=boostCost(c,kind);if(catnip<cost){message('Need '+(cost-catnip)+' more catnip!');return false;}
+ const prior=fieldStat(c);catnip-=cost;battleUpgrades[c.id][kind]++;const current=fieldStat(c);
+ if(kind==='spawn'&&spawnTimers[c.id]!==undefined)spawnTimers[c.id]=Math.max(.15,spawnTimers[c.id]*current.spawn/prior.spawn);
+ for(const u of cats){if(u.hero||u.id!==c.id)continue;const oldMax=u.maxHp;u.maxHp=current.hp;u.hp=Math.min(u.maxHp,Math.max(1,u.hp+Math.max(0,u.maxHp-oldMax)));u.power=current.power;u.attack=current.attack;u.cd=Math.min(u.cd,u.attack);}
+ message('🌿 '+c.short+' gained a battle boost!');updateUI(true);return true;
+}
+// Higher training tiers unlock as you complete more levels; old purchases remain intact.
+function trainingCap(){return Math.min(10,Math.max(1,Math.floor((save.level+1)/3)));}
+function upgradeCost(c,kind){const u=save.upgrades[c.id];const rank=u[kind];return Math.round((kind==='lives'?85:kind==='spawn'?80:72)*Math.pow(1.55,rank)+(c.cost*.23));}
+function victoryReward(level){return Math.min(82,18+level*7);}
+
+function dogCastleMax(){if(save.level===1)return 90;return Math.round(115+(save.level-1)*73+Math.max(0,save.level-4)*24)}
+function catCastleMax(){return 165+Math.min(140,(save.level-1)*6)}
+let drawerOpen=false, drawerAutoPause=false, drawerPreviousFocus=null;
+let phase='prepare', selected='tabby', clock=0, time=0, speed=1, paused=false, cats=[],dogs=[],shots=[],particles=[],floaters=[],spawnTimers={},catHp=catCastleMax(),dogHp=dogCastleMax(),catDefenseCd=2.5,dogDefenseCd=2.5,lastTs=0,uiAcc=0,uid=0,shake=0,finalNotice='',toastTimer;
+let pendingCoins=0, heroCd=0, gateBossTriggered=false, secondBossTriggered=false, dogBossWarning=0;
+// Shared castle strike timers prevent an entire stacked army from deleting a tower in one frame.
+let dogCastleStrikeCd=0, catCastleStrikeCd=0;
+const yPath=336;
+// Dogs arrive indefinitely: quick solo scouts between slower, heavier formations.
+// These are internal spawn cycles, not levels or player-visible waves.
+let soloDogTimer=0,groupDogTimer=0,groupDogGap=0,groupDogQueue=[],dogGroupsSent=0;
+function soloInterval(){if(save.level===1)return 14+Math.random()*3;if(save.level===2)return 11.8+Math.random()*2;return Math.max(6.6,10.4-save.level*.47)+(Math.random()*2.0);}
+function groupInterval(){if(save.level===1)return 37+Math.random()*4;if(save.level===2)return 30+Math.random()*3;return Math.max(17,27-save.level*.85)+Math.random()*3;}
+function soloDogType(){return (save.level>=3&&Math.random()<.30)?'beagle':'mutt';}
+function assembleDogGroup(){
+ const level=save.level,reinforcements=level>=3?Math.floor(dogGroupsSent/3):0;
+ const count=Math.min(8,2+Math.floor((level-1)/2)+reinforcements+(Math.random()<.5?1:0));
+ const order=[];
+ for(let i=0;i<count;i++){
+  if(level>=4&&i===count-1&&Math.random()<.4)order.push('husky');
+  else if(level>=2&&i===0&&Math.random()<.70)order.push('bulldog');
+  else order.push(i%2?'beagle':'mutt');
+ }
+ return order;
+}
+function spawnDogTraffic(dt){
+ soloDogTimer-=dt;groupDogTimer-=dt;
+ if(soloDogTimer<=0){
+  if(dogs.length<15)spawnDog(soloDogType());
+  soloDogTimer=soloInterval();
+ }
+ if(groupDogQueue.length){
+  groupDogGap-=dt;
+  if(groupDogGap<=0&&dogs.length<17){
+   spawnDog(groupDogQueue.shift());
+   groupDogGap=1.7+Math.random()*.55;
+  }
+ }
+ if(groupDogTimer<=0 && groupDogQueue.length===0){
+  groupDogQueue=assembleDogGroup();dogGroupsSent++;
+  groupDogGap=.65;
+  groupDogTimer=groupInterval();
+ }
+}
+function resetBattle(){cats=[];dogs=[];shots=[];particles=[];floaters=[];time=0;paused=false;spawnTimers={};soloDogTimer=3;groupDogTimer=save.level===1?25:save.level===2?20:14;groupDogGap=0;groupDogQueue=[];dogGroupsSent=0;pendingCoins=0;catnip=0;battleUpgrades=emptyBattleUpgrades();boostSelected=save.squad[0]||'tabby';heroCd=0;gateBossTriggered=false;secondBossTriggered=false;dogBossWarning=0;catHp=catCastleMax();dogHp=dogCastleMax();catDefenseCd=2.1;dogDefenseCd=2.1;dogCastleStrikeCd=0;catCastleStrikeCd=0;shake=0;updateUI(true);}
+function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}message('🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
+function endBattle(won){if(phase!=='battle')return;phase=won?'win':'loss';paused=false;
+ if(won){const reward=victoryReward(save.level);const finished=save.level;const earned=reward+pendingCoins;save.coins+=earned;save.level++;persist();
+ modal('🏆','Level '+finished+' conquered!','Your cats earned 🐟 '+reward+' for the win and 🐟 '+pendingCoins+' for defeated dogs (🐟 '+earned+' total). Battle catnip and boosts reset next level. '+(finished===4?'Legendary cat champions are now unlocked in the Heroes shop!':'Train and choose your next siege carefully.'),'Prepare level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();message('Plan your next siege!');});}
+ else{const consolation=8+Math.min(7,Math.floor(pendingCoins*.20));save.coins+=consolation;persist();modal('💔','The cat castle fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip and battle boosts reset when you retry. Try a different squad or invest in permanent training.','Retry level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();});}
+ updateUI(true);}
+
+function modal(icon,title,description,button,action){$('modalCancel').hidden=true;$('modalCancel').onclick=null;$('modalIcon').textContent=icon;$('modalTitle').textContent=title;$('modalText').textContent=description;$('modalBtn').textContent=button;$('modalBtn').onclick=action;$('overlay').hidden=false;}
+function hideModal(){$('overlay').hidden=true;}
+function message(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
+function tip(t){/* Concise messages appear in the top battle banner. */}
+function catPortrait(c){const face=c.mark==='siamese'?'#806657':c.fur;let markings='';if(c.mark==='stripes')markings='<path d="M23 20l-3 8M32 16v11M41 20l3 8" stroke="#8b5837" stroke-width="4" stroke-linecap="round"/>';if(c.mark==='calico')markings='<path d="M14 27q6-11 16-8l-3 12Z" fill="#a96947"/><path d="M35 19q12-5 16 8l-12 4Z" fill="#333d4c"/>';if(c.mark==='tuxedo')markings='<path d="M22 36q10 8 20 0v12H22Z" fill="#f8f6eb"/>';if(c.mark==='siamese')markings='<ellipse cx="32" cy="34" rx="17" ry="15" fill="#846456"/>';if(c.mark==='fluffy')markings='<path d="M12 31l-5 3 5 6-4 5 8 3q15 12 32 0l8-3-4-5 5-6-5-3" fill="'+c.belly+'"/>';let tool=c.weapon==='sword'?'⚔️':c.weapon==='axe'?'🪓':c.weapon==='bow'?'🏹':c.weapon==='star'?'✦':c.weapon==='shield'?'🛡️':c.weapon==='wand'?'✧':c.weapon==='bolt'?'⚡':'🔨';return `<svg class="portrait" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="57" rx="22" ry="4" fill="#8495a355"/><path d="M13 30 12 9l15 12M51 30 52 9 37 21" fill="${c.fur}" stroke="#405262" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 24 16 14l9 10M48 24 48 14l-9 10" fill="#efb3aa"/><circle cx="32" cy="37" r="23" fill="${c.fur}" stroke="#405262" stroke-width="2"/>${markings}<ellipse cx="32" cy="39" rx="14" ry="12" fill="${c.mark==='siamese'?face:c.belly}"/><ellipse cx="26" cy="36" rx="2.4" ry="3" fill="#243750"/><ellipse cx="38" cy="36" rx="2.4" ry="3" fill="#243750"/><path d="m29 44 3 2 3-2-3-2Z" fill="#d5788c"/><path d="M32 46v2m0 0-4 2m4-2 4 2" stroke="#6c6670" stroke-width="1.2" fill="none"/><text x="53" y="61" font-size="16" text-anchor="middle">${tool}</text></svg>`;}
+function rosterLocked(){return phase==='battle';}
+function choose(id){selected=id;renderBarracks();renderDetails();openDrawer('train');}
+function buyCat(c){if(rosterLocked()){message('Train between battles!');return;}if(save.unlocked.includes(c.id))return;if(save.level<catUnlockLevel(c)){message('Unlocks at level '+catUnlockLevel(c)+'!');return;}if(save.coins<c.cost){message('Need '+(c.cost-save.coins)+' more fish coins!');return;}save.coins-=c.cost;save.unlocked.push(c.id);if(save.squad.length<5)save.squad.push(c.id);selected=c.id;persist();message('🐱 '+c.name+' joined your army!');updateUI(true);}
+function catUnlockLevel(c){return {tabby:1,fluffy:2,siamese:3,tuxedo:4,ginger:5,calico:6,sphynx:7,maine:8}[c.id]||1;}
+function equip(c){if(rosterLocked()){message('Squad locked during battle!');return;}if(!save.unlocked.includes(c.id)){buyCat(c);return;}if(save.squad.includes(c.id)){if(save.squad.length===1){message('Keep at least one cat equipped!');return;}save.squad=save.squad.filter(id=>id!==c.id);message(c.short+' returned to the barracks.');}else{if(save.squad.length>=5){message('Five slots full — unequip one first.');return;}save.squad.push(c.id);message(c.short+' added to your squad!');}persist();updateUI(true);}
+function improve(c,kind){if(rosterLocked()){message('Upgrades are between levels!');return;}if(!save.unlocked.includes(c.id))return;const u=save.upgrades[c.id];if((kind==='lives'&&u.lives>=5)||(kind!=='lives'&&u[kind]>=10)){message('Maxed out!');return;}if(u[kind]>=trainingCap()){message('Next training rank unlocks at a later level!');return;}const cost=upgradeCost(c,kind);if(save.coins<cost){message('Need '+(cost-save.coins)+' more fish coins!');return;}save.coins-=cost;u[kind]++;persist();message('✨ '+c.short+' '+({power:'power',attack:'attack speed',spawn:'spawn rate',lives:'lives'}[kind])+' improved!');updateUI(true);}
+function renderSquad(){const el=$('squad');el.innerHTML='';for(let i=0;i<5;i++){let id=save.squad[i],c=CATMAP[id],div=document.createElement('button');div.className='squad-card '+(c?'filled':'empty');div.disabled=false;if(c){div.innerHTML='<span class="num">'+(i+1)+'</span>'+catPortrait(c)+'<div class="slot-name">'+c.short+'</div><div class="slot-timer" id="timer-'+c.id+'">'+stat(c).spawn.toFixed(1)+'s</div><div class="slot-progress"><div id="progress-'+c.id+'"></div></div>';div.addEventListener('click',()=>{if(phase==='battle'){boostSelected=c.id;openDrawer('boost');}else choose(c.id);});}else{div.innerHTML='<span class="num">'+(i+1)+'</span><div class="plus">+</div><div class="slot-name">Add cat</div>';div.addEventListener('click',()=>{openDrawer('cats');message('Pick a cat to unlock or equip.');});}el.appendChild(div);}}
+function catStatsMarkup(c){const t=phase==='battle'?fieldStat(c):stat(c);return '<div class="unit-stats" aria-label="Damage '+t.power+', range '+t.range+', HP '+t.hp+'"><span><small>DMG</small><b class="unit-value">'+t.power+'</b></span><span><small>RANGE</small><b class="unit-value">'+t.range+'</b></span><span><small>HP</small><b class="unit-value">'+t.hp+'</b></span></div>';}
+function dogPreviewStats(type){
+ const d=DOGS[type],L=save.level;
+ const rally=phase==='battle'&&L>=2?Math.min(.65,Math.max(0,time-110)/200):0;
+ const hp=Math.round(d.maxHp*(1+(L-1)*.29)*(1+rally)*(L>=3&&!d.boss?1.10:1));
+ const damage=d.power*(1+(L-1)*.17)*(1+rally*.75)*(L>=3&&!d.boss?1.08:1);
+ const move=d.speed*(d.boss?1:1.18);
+ const hitEvery=d.attack*(d.boss?1:.92);
+ return {hp:type==='gatekeeper'?Math.round(hp*1.16):hp,power:Math.round(damage*10)/10,range:d.range,attacks:(1/hitEvery).toFixed(2),speed:Math.round(move)};
+}
+function renderDogRoster(){
+ const roster=$('dogRoster');if(!roster)return;
+ $('dogPreviewLevel').textContent=save.level;
+ const details={mutt:['Mutt','🐕','Basic swordless frontline fighter'],beagle:['Beagle Scout','🐶','Fast solo scout'],bulldog:['Bulldog','🐕‍🦺','Slow, tough melee defender'],husky:['Husky','🐺','Ranged bone-thrower'],gatekeeper:['Kennel Guardian','🐕','Castle boss · level 5+ at 65% HP; another at level 8+ at 30%'],mastiff:['Mastiff','🐕','Reserve boss · not currently in regular spawns']};
+ roster.innerHTML='';
+ for(const id of ['mutt','beagle','bulldog','husky','gatekeeper','mastiff']){
+  const [name,emoji,desc]=details[id],t=dogPreviewStats(id),boss=Boolean(DOGS[id].boss);
+  const card=document.createElement('article');card.className='enemy-card'+(boss?' boss-card':'');
+  card.innerHTML='<div class="enemy-card-top"><div class="enemy-avatar" aria-hidden="true">'+emoji+'</div><div><h3>'+name+'</h3><p class="enemy-desc">'+desc+'</p></div></div>'+ 
+  '<div class="unit-stats"><span><small>DMG</small><b>'+t.power+'</b></span><span><small>RANGE</small><b>'+t.range+'</b></span><span><small>HP</small><b>'+t.hp+'</b></span></div>'+ 
+  '<div class="extra-stats">⚡ '+t.attacks+' hits/s · 👣 Move '+t.speed+'</div>';
+  roster.appendChild(card);
+ }
+}
+function renderBarracks(){const el=$('barracks');el.innerHTML='';for(const c of CATS){const owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),b=document.createElement('button');b.className='cat-card '+(c.id===selected?'selected ':'')+(owned?'':'locked ')+(equipped?'equipped':'');b.setAttribute('aria-pressed',String(c.id===selected));b.innerHTML=catPortrait(c)+'<div class="cat-info"><span class="cat-name">'+c.name+'</span><span class="cat-desc">'+c.desc+'</span>'+catStatsMarkup(c)+'<span class="cat-status">'+(equipped?'✓ In squad':owned?'Ready to equip':save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c)+' · 🐟 '+c.cost:'🔒 🐟 '+c.cost+' to unlock')+'</span></div>';b.addEventListener('click',()=>choose(c.id));el.appendChild(b);}}
+function renderDetails(){const c=CATMAP[selected],owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),s=stat(c),u=save.upgrades[c.id],el=$('details');const label=kind=>kind==='power'?`⚔️ Power ${s.power}`:kind==='attack'?`💨 Attack ${(1/s.attack).toFixed(2)}/s`:kind==='lives'?`❤️ Lives ${s.lives}/6`:`⏱️ Spawn ${s.spawn.toFixed(1)}s`;
+el.innerHTML='<div class="detail-heading">'+catPortrait(c)+'<div><h3>'+c.name+'</h3><p>'+c.desc+'. '+(owned?'Owned and trainable.':save.level<catUnlockLevel(c)?'Available at level '+catUnlockLevel(c)+'.':'Unlock to recruit this fighter.')+'</p></div></div>'+
+'<div class="stats-four"><div class="little-stat"><b>'+s.power+'</b><span>POWER</span></div><div class="little-stat"><b>'+(1/s.attack).toFixed(2)+'/s</b><span>ATTACK</span></div><div class="little-stat"><b>'+s.lives+'/6</b><span>LIVES</span></div><div class="little-stat"><b>'+s.spawn.toFixed(1)+'s</b><span>SPAWN</span></div></div>'+
+'<div class="subnote" style="margin:0 0 10px">❤️ HP '+s.hp+' · 🎯 Range '+s.range+' (battlefield units)</div><div class="upgrades" id="upgradeGrid"></div><button id="equipBtn" class="btn '+(owned?'green':'primary')+' equip-btn" '+(phase==='battle'?'disabled':'')+'>'+(!owned?(save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c):'🔓 Unlock for 🐟 '+c.cost):equipped?'− Unequip cat':'+ Equip cat')+'</button>'+
+'<p class="subnote">Each life adds 22 HP to every spawned cat. Attack speed controls how often it hits; spawn rate controls how often another copy marches out.</p>';
+const grid=$('upgradeGrid');for(const kind of ['power','attack','lives','spawn']){const maxed=kind==='lives'?u[kind]>=5:u[kind]>=10;const tierLocked=u[kind]>=trainingCap()&&!maxed;const b=document.createElement('button');b.className='upgrade';b.disabled=!owned||phase==='battle'||maxed||tierLocked||save.coins<upgradeCost(c,kind);b.innerHTML='<strong>'+label(kind)+'</strong><small>'+({power:'Stronger strikes',attack:'Attack more often',lives:'More hit points',spawn:'New cats arrive faster'}[kind])+'</small><em>'+(maxed?'MAXED':tierLocked?'Level gate':'🐟 '+upgradeCost(c,kind))+'</em>';b.addEventListener('click',()=>improve(c,kind));grid.appendChild(b);}$('equipBtn').addEventListener('click',()=>equip(c));}
+function updateTimers(){if(phase!=='battle'){for(const id of save.squad){const c=CATMAP[id];const t=$('timer-'+id),p=$('progress-'+id);if(t)t.textContent=stat(c).spawn.toFixed(1)+'s';if(p)p.style.width='0%';}return;}for(const id of save.squad){const s=fieldStat(CATMAP[id]),remaining=Math.max(0,spawnTimers[id]||0),t=$('timer-'+id),p=$('progress-'+id);if(t)t.textContent=remaining.toFixed(1)+'s';if(p)p.style.width=((1-remaining/s.spawn)*100).toFixed(1)+'%';}}
+function renderSquadDetails(){const el=$('squadDetails');el.innerHTML='';for(let i=0;i<5;i++){let c=CATMAP[save.squad[i]],row=document.createElement('div');row.className='squad-line';if(c){const st=stat(c);row.innerHTML=catPortrait(c)+'<div class="detail"><b>'+(i+1)+'. '+c.name+'</b><small>Spawns every '+st.spawn.toFixed(1)+'s · '+st.lives+' lives</small></div><button type="button">Train ›</button>';row.querySelector('button').addEventListener('click',()=>choose(c.id));}else{row.innerHTML='<div style="font-size:28px;width:54px;text-align:center">＋</div><div class="detail"><b>'+(i+1)+'. Empty slot</b><small>Choose a cat from the barracks</small></div><button type="button">Cats ›</button>';row.querySelector('button').addEventListener('click',()=>openDrawer('cats'));}el.appendChild(row);}}
+function renderBattleBoost(){const wallet=$('boostNip'),roster=$('boostRoster'),detail=$('boostDetail');if(!wallet)return;wallet.textContent=catnip;
+ if(!save.squad.includes(boostSelected))boostSelected=save.squad[0]||'tabby';
+ roster.innerHTML='';for(const id of save.squad){const c=CATMAP[id],b=document.createElement('button');b.type='button';b.className='boost-choice '+(boostSelected===id?'selected':'');b.setAttribute('aria-pressed',String(boostSelected===id));b.innerHTML=catPortrait(c)+'<small>'+c.short+'</small>';b.addEventListener('click',()=>{boostSelected=id;renderBattleBoost();});roster.appendChild(b);}
+ const c=CATMAP[boostSelected];if(!c){detail.textContent='Equip a cat before battle.';return;}const t=fieldStat(c),u=battleUpgrades[c.id];
+ detail.innerHTML='<div class="boost-heading">'+catPortrait(c)+'<div><h3>'+c.name+'</h3><p>Current battle upgrades · 🌿 spent only here</p></div></div><div class="boost-grid" id="boostGrid"></div>';
+ const specs={power:['⚔️ Power','+18% damage per boost',()=>String(t.power)],attack:['💨 Attack','Attacks more often',()=>(1/t.attack).toFixed(2)+'/s'],lives:['❤️ Lives','Extra health on all copies',()=>t.lives+'/6'],spawn:['⏱️ Spawn','Summon more frequently',()=>t.spawn.toFixed(1)+'s']};
+ for(const kind of ['power','attack','lives','spawn']){const [name,desc,value]=specs[kind],maxed=boostMaxed(c,kind),cost=boostCost(c,kind),b=document.createElement('button');b.type='button';b.className='boost-upgrade';b.disabled=phase!=='battle'||maxed||catnip<cost;b.innerHTML='<strong>'+name+': '+value()+'</strong><small>'+desc+' · '+u[kind]+'/3</small><em>'+(phase!=='battle'?'Start the battle':maxed?'MAX': '🌿 '+cost+' catnip')+'</em>';b.addEventListener('click',()=>buyBoost(c,kind));$('boostGrid').appendChild(b);}
+}
+function renderHeroes(){const el=$('heroesList');if(!el)return;el.innerHTML='';
+ for(const h of HEROES){const owned=save.heroUnlocked.includes(h.id),selected=save.heroSelected===h.id,available=save.level>=h.level;const card=document.createElement('article');card.className='hero-card';
+ card.innerHTML=catPortrait(h)+'<div class="hero-info"><h3>'+h.name+'</h3><p>'+h.desc+'</p><div class="hero-stats">❤️ '+h.hp+' · ⚔️ '+h.power+' · ⏱️ '+h.cooldown+'s</div><button class="btn '+(selected?'green':'primary')+'" '+(!available||phase==='battle'||(!owned&&save.coins<h.cost)?'disabled':'')+'>'+(!available?'🔒 Reach level '+h.level:!owned?'Buy 🐟 '+h.cost:selected?'✓ Selected':'Choose champion')+'</button></div>';
+ card.querySelector('button').addEventListener('click',()=>{if(phase==='battle'){message('Recruit between battles!');return;}if(!available)return;if(!owned){if(save.coins<h.cost)return;save.coins-=h.cost;save.heroUnlocked.push(h.id);}save.heroSelected=h.id;persist();renderHeroes();updateUI(true);message('🦁 '+h.name+' is ready to summon!');});el.appendChild(card);}}
+function summonHero(){const h=HEROMAP[save.heroSelected];if(phase!=='battle'||paused||!h||heroCd>0||cats.some(u=>u.hero&&u.hp>0))return false;
+ cats.push({uid:++uid,team:'cat',id:h.id,type:h.id,x:158,y:yPath-8,hp:h.hp+Math.max(0,save.level-5)*16,maxHp:h.hp+Math.max(0,save.level-5)*16,power:h.power,attack:h.attack,range:h.range,speed:h.speed,cd:.2,anim:0,hit:0,weapon:h.weapon,scale:h.scale,hero:true});
+ heroCd=h.cooldown;puff(158,yPath,24,'#ffe08c');message('⭐ '+h.name+' joins the siege!');updateHUD();return true;}
+function heroAction(){if(phase==='prepare'){enterBattle();return;}if(phase!=='battle')return;
+ if(save.level<5)return;
+ if(!save.heroSelected){openDrawer('heroes');return;}
+ if(!paused&&!heroCd&&!cats.some(u=>u.hero&&u.hp>0))summonHero();}
+const drawerNames={cats:['🐾 Cat barracks','Tap a cat to inspect or unlock'],squad:['🛡️ Your squad','Five types max per level'],train:['⚒️ Cat training','Permanent upgrades and equipment'],heroes:['⭐ Legendary cats','Unlock after beating level 4 · tap to summon'],boost:['🌿 Battle boosts','Use catnip earned from dog kills · resets each level'],dogs:['🐶 Dog defenders','Current-level enemy stats and kennel guardians'],help:['⚙️ More & help','Instructions and game settings']};
+function openDrawer(which){if(!drawerNames[which])return;const backdrop=$('drawerBackdrop');if(!drawerOpen){drawerPreviousFocus=document.activeElement;drawerAutoPause=phase==='battle'&&!paused;if(drawerAutoPause)paused=true;drawerOpen=true;backdrop.hidden=false;}for(const key of Object.keys(drawerNames))$('panel'+key[0].toUpperCase()+key.slice(1)).hidden=key!==which;$('drawerTitle').textContent=drawerNames[which][0];$('drawerSubtitle').textContent=drawerNames[which][1];if(which==='squad')renderSquadDetails();if(which==='cats')renderBarracks();if(which==='train')renderDetails();if(which==='heroes')renderHeroes();if(which==='boost')renderBattleBoost();if(which==='dogs')renderDogRoster();$('drawerBody').scrollTop=0;$('closeDrawer').focus();updateHUD();}
+function closeDrawer(){if(!drawerOpen)return;$('drawerBackdrop').hidden=true;drawerOpen=false;if(drawerAutoPause&&phase==='battle')paused=false;drawerAutoPause=false;updateHUD();if(drawerPreviousFocus&&typeof drawerPreviousFocus.focus==='function')drawerPreviousFocus.focus();}
+function updateHUD(){ $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catCastleMax()*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8;$('bossMarker30').classList.toggle('spent',secondBossTriggered);
+ $('phaseTag').textContent=phase==='battle'?'⚔️ BATTLE':phase==='win'?'🏆 VICTORY':phase==='loss'?'💔 DEFEAT':'🐈 READY';
+ const b=$('startBtn');if(phase==='prepare'){b.disabled=false;b.textContent='▶ Start level '+save.level;b.classList.remove('hero-ready');}
+ else if(phase==='battle'&&save.level>=5){const active=cats.some(u=>u.hero&&u.hp>0),h=HEROMAP[save.heroSelected];b.disabled=paused||active||heroCd>0;b.classList.toggle('hero-ready',Boolean(h)&&!active&&heroCd<=0&&!paused);b.textContent=!h?'⭐ Heroes':active?'⭐ Champion out':heroCd>0?'⏳ '+Math.ceil(heroCd)+'s':'⭐ Summon '+h.short;}
+ else{b.disabled=true;b.textContent=phase==='battle'?'⚔️ Battle underway':phase==='win'?'🏆 Won!':'💔 Retry';b.classList.remove('hero-ready');}
+ $('squadHint').textContent=phase==='battle'?'🐱 SQUAD · Tap cat to boost':'🐱 SQUAD · Tap to train';
+ const boostReady=canAffordAnyBattleBoost();$('boostBadge').classList.toggle('ready',phase==='battle'&&catnip>=6);$('boostBadge').classList.toggle('has-notif',boostReady);$('boostBadge').setAttribute('aria-label','🌿 '+catnip+' catnip. Open battle boosts'+(boostReady?' — upgrades available':''));
+ $('trainNavBtn').dataset.openPanel=phase==='battle'?'boost':'train';$('trainNavBtn').querySelector('.nav-icon').textContent=phase==='battle'?'🌿':'⚒️';$('trainNavText').textContent=phase==='battle'?'Boost':'Train';
+ $('pauseBtn').disabled=phase!=='battle';$('pauseBtn').textContent=paused?'▶ Resume':'⏸ Pause';$('speedBtn').textContent='⏩ '+speed+'×';
+ if(phase==='battle'){
+  const atGate=cats.some(u=>u.hp>0&&u.x>=817);
+  const opponents=dogs.some(d=>d.hp>0);
+  $('battleLabel').textContent=paused?'⏸ Battle paused':dogBossWarning>0?'🐶 KENNEL GUARDIAN!':atGate&&!opponents?'🏰 Gate under attack!':atGate?'⚔️ Clear the dogs to hit the gate':'🐱 March on the dog castle!';
+ }
+ else if(phase==='prepare')$('battleLabel').textContent='🐈 Select your cats → Start level';else $('battleLabel').textContent=phase==='win'?'🏆 Cats conquered the kennel!':'💔 Dogs breached the cat castle';
+ const heroMenu=$('heroShopBtn');if(heroMenu)heroMenu.textContent=save.level<5?'⭐ Legendary cats · Level 5+':'⭐ Legendary cats · '+(save.heroSelected?'Selected: '+HEROMAP[save.heroSelected].short:'Choose your champion');}
+
+function updateUI(full=false){updateHUD();updateTimers();if(full){renderSquad();renderBarracks();renderDetails();renderHeroes();renderBattleBoost();if(drawerOpen&&!$('panelSquad').hidden)renderSquadDetails();updateTimers();}}
+function spawnCat(id){const c=CATMAP[id],s=fieldStat(c);if(cats.length>=Math.min(16,10+Math.floor(save.level/2)))return;cats.push({uid:++uid,team:'cat',id,type:c.id,x:155,y:yPath+Math.random()*30-15,hp:s.hp,maxHp:s.hp,power:s.power,attack:s.attack,range:s.range,speed:s.speed,cd:Math.random()*.28,anim:Math.random()*10,hit:0,weapon:c.weapon,scale:c.id==='maine'?1.35:c.id==='ginger'?1.18:1});puff(155,yPath,3,'#fbf4db');}
+function spawnDog(type){const base=DOGS[type],L=save.level;
+ // Long sieges get tougher instead of trapping an underpowered squad in a stalemate.
+ const rally=L>=2?Math.min(.65,Math.max(0,time-110)/200):0;
+ const hp=Math.round(base.maxHp*(1+(L-1)*.29)*(1+rally)*(L>=3&&!base.boss?1.10:1));
+ dogs.push({uid:++uid,team:'dog',type,x:808,y:yPath+Math.random()*26-13,hp,maxHp:hp,power:base.power*(1+(L-1)*.17)*(1+rally*.75)*(L>=3&&!base.boss?1.08:1),attack:base.attack*(base.boss?1:.92),range:base.range,speed:base.speed*(base.boss?1:1.18),cd:Math.random()*.35,anim:Math.random()*10,hit:0,weapon:base.projectile?'bone':'bite',scale:base.boss?1.58:type==='bulldog'?1.24:1});puff(815,yPath,5,'#f5d3b5');}
+function floatText(x,y,t,col){floaters.push({x,y,text:t,color:col,age:0,life:.88});}
+function puff(x,y,n,color){for(let i=0;i<n;i++)particles.push({x:x+Math.random()*12-6,y:y+Math.random()*12-6,vx:(Math.random()-.5)*55,vy:-15-Math.random()*30,life:.35+Math.random()*.3,max:.65,r:2+Math.random()*3,color});}
+function projectile(attacker,target,power,weapon,team,splash){shots.push({x:attacker.x+(team==='cat'?15:-15),y:attacker.y-22,target:target.uid,team,power,weapon,splash,velocity:weapon==='bolt'?390:weapon==='star'?310:weapon==='wand'?255:weapon==='bone'?235:280});}
+function damage(target,amount){if(!target||target.hp<=0)return;target.hp-=amount;target.hit=.16;
+ floatText(target.x,target.y-52,'-'+Math.max(1,Math.round(amount)),target.team==='cat'?'#fff8ce':'#ffc8b4');puff(target.x,target.y-20,2,target.team==='cat'?'#d5ecdb':'#e9b39e');
+ if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(22+save.level*7,pendingCoins+loot);const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
+ else puff(target.x,target.y-20,8,'#e6f2c8');}}
+
+function attackUnit(u,target){u.cd=u.attack;if(u.range>50){projectile(u,target,u.power,u.weapon,u.team,u.hero&&u.id==='panther'?105:u.weapon==='wand'?55:0);}else{damage(target,u.power);puff(target.x,target.y-24,2,'#fff9e9');}}
+function enemyTarget(u,opponents,range){let chosen=null,dist=1e10;for(const t of opponents){if(t.hp<=0)continue;const gap=Math.abs(t.x-u.x);if(gap<dist){dist=gap;chosen=t;}}return chosen&&dist<=range?chosen:null;}
+function stepUnits(dt){dogCastleStrikeCd=Math.max(0,dogCastleStrikeCd-dt);catCastleStrikeCd=Math.max(0,catCastleStrikeCd-dt);for(const u of [...cats,...dogs]){if(u.hp<=0)continue;u.cd=Math.max(0,u.cd-dt);u.hit=Math.max(0,u.hit-dt);u.anim+=dt*(2.5+u.speed/25);const isCat=u.team==='cat';const others=isCat?dogs:cats;const target=enemyTarget(u,others,u.range+14*u.scale);const nearCastle=isCat?u.x>=817:u.x<=141;if(target){if(u.cd<=0)attackUnit(u,target);}else if(nearCastle){if(u.cd<=0){u.cd=u.attack;if(isCat&&dogs.some(d=>d.hp>0)){u.cd=Math.max(.5,u.attack);if(Math.random()<.065)floatText(883,244,'🛡️ GATE HELD','#fff3bd');}else{
+ // Only one castle strike per side every 0.9s. Individual attack cooldowns
+ // still run, but a crowd cannot stack dozens of hits in the same instant.
+ const ready=isCat?dogCastleStrikeCd<=0:catCastleStrikeCd<=0;
+ if(ready){
+  const cap=12+save.level*2.1;
+  const strike=Math.max(1,Math.round(Math.min(u.power,cap)*(u.hero?1.20:1)));
+  if(isCat){dogHp=Math.max(0,dogHp-strike);dogCastleStrikeCd=.90;}
+  else{catHp=Math.max(0,catHp-strike);catCastleStrikeCd=.90;}
+  floatText(isCat?883:73,245,'-'+strike,isCat?'#ffc59e':'#ffffff');
+  shake=Math.min(4,shake+1.0);puff(isCat?868:100,300,6,isCat?'#f8c6b1':'#d4e8e2');
+ }
+ }}}
+else{let goal=isCat?823:137;let move=Math.min(Math.abs(goal-u.x),u.speed*dt);u.x+=(isCat?1:-1)*move;u.y+=Math.sin(time*2+u.uid)*dt*.8;}}
+}
+// Dog castles also defend themselves, preventing an endless one-unit rush.
+function towers(dt){catDefenseCd-=dt;dogDefenseCd-=dt;if(dogDefenseCd<=0){const target=cats.filter(u=>u.hp>0&&u.x>669).sort((a,b)=>b.x-a.x)[0];if(target){projectile({x:886,y:260},target,8+save.level*1.9,'bone','dog',0);dogDefenseCd=save.level>=5?1.7:2.25;}else dogDefenseCd=.15;}
+if(catDefenseCd<=0){const target=dogs.filter(u=>u.hp>0&&u.x<285).sort((a,b)=>a.x-b.x)[0];if(target){projectile({x:71,y:249},target,7+save.level*.45,'star','cat',0);catDefenseCd=2.8;}else catDefenseCd=.15;}}
+function stepProjectiles(dt){for(let i=shots.length-1;i>=0;i--){const p=shots[i],target=(p.team==='cat'?dogs:cats).find(u=>u.uid===p.target&&u.hp>0);if(!target){shots.splice(i,1);continue;}const tx=target.x,ty=target.y-22,dx=tx-p.x,dy=ty-p.y,d=Math.hypot(dx,dy);if(d<Math.max(12,p.velocity*dt)){p.x=tx;p.y=ty;damage(target,p.power);if(p.splash){for(const other of (p.team==='cat'?dogs:cats)){if(other!==target&&other.hp>0&&Math.abs(other.x-tx)<p.splash)damage(other,p.power*.53);}}puff(tx,ty,5,p.team==='cat'?'#e2dbf8':'#fae2b3');shots.splice(i,1);}else{p.x+=dx/d*p.velocity*dt;p.y+=dy/d*p.velocity*dt;}}}
+function checkKennelBoss(){if(save.level<5)return;
+ // Every level 5+ has a boss at 65% kennel integrity. Level 8+ adds one at 30%.
+ const fractions=save.level>=8?[[.65,'first'],[.30,'second']]:[[.65,'first']];
+ for(const [fraction,key] of fractions){if((key==='first'&&gateBossTriggered)||(key==='second'&&secondBossTriggered))continue;
+ if(dogHp>0&&dogHp<=dogCastleMax()*fraction){if(key==='first')gateBossTriggered=true;else secondBossTriggered=true;
+ spawnDog('gatekeeper');const boss=dogs[dogs.length-1];boss.hp=Math.round(boss.hp*1.16);boss.maxHp=boss.hp;boss.x=797;boss.y=yPath-8;
+ dogBossWarning=5;puff(814,yPath,18,'#ffc482');message('🐶 KENNEL GUARDIAN! A boss has appeared!');}}
+}
+function updateBattle(dt){if(phase!=='battle'||paused)return;dt*=speed;time+=dt;
+ heroCd=Math.max(0,heroCd-dt);dogBossWarning=Math.max(0,dogBossWarning-dt);
+ spawnDogTraffic(dt);
+ for(const id of save.squad){spawnTimers[id]-=dt;if(spawnTimers[id]<=0){spawnCat(id);spawnTimers[id]+=fieldStat(CATMAP[id]).spawn;}}
+ stepUnits(dt);towers(dt);stepProjectiles(dt);
+ cats=cats.filter(u=>u.hp>0);dogs=dogs.filter(u=>u.hp>0);
+ checkKennelBoss();
+ if(dogHp<=0){dogHp=0;endBattle(true);}else if(catHp<=0){catHp=0;endBattle(false);}
+}
+
+function advanceVisuals(dt){clock+=dt;shake=Math.max(0,shake-dt*9);for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=70*dt;if(p.life<=0)particles.splice(i,1);}for(let i=floaters.length-1;i>=0;i--){const f=floaters[i];f.age+=dt;f.y-=25*dt;if(f.age>=f.life)floaters.splice(i,1);}}
+function roundRect(x,y,w,h,r,fill,stroke,lw=1){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}}
+function ellipse(x,y,rx,ry,col){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();}
+function poly(points,fill,stroke='',lw=1){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}}
+function line(x1,y1,x2,y2,color,width=2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();}
+function world(){const sky=ctx.createLinearGradient(0,0,0,400);sky.addColorStop(0,'#91a7c4');sky.addColorStop(1,'#d6e3f8');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+// clouds
+for(let i=0;i<5;i++){let x=((i*223+clock*(i%2?2.8:4.4))%1170)-100;let y=50+(i%3)*33;ellipse(x,y,43,16,'#fef5efab');ellipse(x-20,y-6,24,16,'#fef5efd5');ellipse(x+15,y-8,27,18,'#fef5efcb');}
+poly([[0,200],[100,163],[215,206],[314,172],[414,214],[544,177],[653,211],[766,173],[960,219],[960,500],[0,500]],'#9ca9a7');poly([[0,250],[131,219],[237,241],[337,219],[455,254],[591,226],[718,247],[846,216],[960,245],[960,500],[0,500]],'#87999a');roundRect(0,285,W,215,0,'#96a48c');
+// shrubs distant
+for(let i=0;i<24;i++){let x=i*45+14,y=255+(i*11)%28;ellipse(x,y,23,15,i%3?'#778c7e':'#809580');ellipse(x-14,y+6,14,10,'#718a78');}
+// clear winding dirt path between castles
+ctx.beginPath();ctx.moveTo(98,329);ctx.bezierCurveTo(230,300,290,360,443,333);ctx.bezierCurveTo(600,307,702,344,851,331);ctx.lineWidth=138;ctx.strokeStyle='#77776b';ctx.lineCap='round';ctx.stroke();ctx.lineWidth=131;ctx.strokeStyle='#b3af8f';ctx.stroke();ctx.lineWidth=116;ctx.strokeStyle='#decbb1';ctx.stroke();
+for(let i=0;i<40;i++){let x=116+i*19;let y=yPath+Math.sin(x/94)*10+(i%3-1)*43;ellipse(x,y,i%4===0?5:2.5,i%4===0?2.4:1.7,'#9d91787d');}
+for(let i=0;i<36;i++){let x=(i*173+53)%960,y=388+(i*59)%104;ellipse(x,y,2,6,'#849b80');line(x,y+5,x+3,y-5,'#718e78',1.3);}
+// road side flowers
+for(let i=0;i<16;i++){let x=(i*79+40)%930,y=i%2?443:255;ellipse(x,y,5,5,i%3?'#fef5ef':'#9d5c63');ellipse(x,y,2,2,'#ffc482');}
+// castles sit at each end of path
+castle(52,220,'cat');castle(902,220,'dog');
+// lower edging
+roundRect(0,478,W,22,0,'#566f72');line(0,476,960,476,'#b3af8f',3);
+}
+let visualAspect=1;function sceneAspectCorrection(){return visualAspect;}
+function castle(x,y,team){ctx.save();const aspect=sceneAspectCorrection();const castleScale=Math.min(1.45,(y+127-10)/(204*aspect));ctx.translate(x,y+127);ctx.scale(castleScale,castleScale*aspect);ctx.translate(0,-127);let isCat=team==='cat',base=isCat?'#8295b6':'#b29c96',light=isCat?'#d6e3f8':'#e4bb97',dark=isCat?'#2b3a67':'#584b53',flag=isCat?'#66999b':'#9d5c63';
+// foundation + towers (broader and shorter)
+ellipse(0,127,98,16,'#416b5b50');roundRect(-66,15,132,112,8,base,dark,5);roundRect(-76,-22,42,78,4,base,dark,5);roundRect(34,-22,42,78,4,base,dark,5);
+for(let col=-1;col<=1;col++)for(let row=0;row<4;row++){let bx=col*36-13+(row%2)*8,by=28+row*17;line(bx-15,by,bx+13,by,'#edf2df74',2);}
+for(let tx of [-64,47]){for(let i=0;i<3;i++)roundRect(tx-13+i*14,-34,12,14,1,light,dark,2);}for(let i=0;i<6;i++)roundRect(-60+i*21,-4,17,16,2,light,dark,2);
+// center door
+roundRect(-22,76,44,51,[19,19,2,2],dark,'#344b57',3);line(0,79,0,126,'#e4cfab',2);ellipse(10,99,2.5,2.5,'#f3d188');
+// window
+roundRect(-10,16,20,21,8,'#38586e','#e4dcbd',3);
+// flags
+line(0,-7,0,-77,'#38556a',4);poly([[1,-77],[isCat?60:-60,-69],[1,-57]],flag,'#ffffff80',1.5);
+ctx.font='bold 21px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff6dc';ctx.fillText(isCat?'🐱':'🐶',0,-60);
+// roof shapes
+poly([[-81,-22],[-54,-61],[-29,-22]],dark);poly([[29,-22],[54,-61],[81,-22]],dark);
+// small battlement cat ears / dog bones
+if(isCat){poly([[-17,-4],[-2,-20],[13,-4]],'#e2e6cf');poly([[2,-4],[16,-20],[28,-4]],'#e2e6cf');}
+else{line(-25,-12,19,-13,'#fff6de',5);ellipse(-26,-12,6,7,'#fff6de');ellipse(19,-13,6,7,'#fff6de');}
+ctx.restore();}
+// A discreet, ground-level vitality halo replaces the red/green bars over heads.
+// Undamaged fighters keep the battlefield clean; wounded fighters show how much
+// strength remains. Bosses and legendary champions retain a halo at full health.
+function drawVitalityRing(u,isCat){
+ const fraction=clamp(u.hp/u.maxHp,0,1);
+ if(fraction>=.999&&!u.hero&&!DOGS[u.type]?.boss)return;
+ const rx=u.hero||DOGS[u.type]?.boss?32:26, ry=7;
+ ctx.save();
+ ctx.lineWidth=3;
+ ctx.strokeStyle='#25354fba';
+ ctx.beginPath();ctx.ellipse(0,22,rx,ry,0,0,Math.PI*2);ctx.stroke();
+ ctx.strokeStyle=isCat?'#ffe29f':'#d7c7fa';
+ ctx.lineWidth=4;ctx.lineCap='round';
+ ctx.beginPath();ctx.ellipse(0,22,rx,ry,0,0,Math.PI*2*fraction);ctx.stroke();
+ ctx.restore();
+}
+function drawFighter(u){const isCat=u.team==='cat',c=isCat?CATMAP[u.id]:DOGS[u.type];ctx.save();ctx.translate(u.x,u.y);ctx.scale(u.scale*1.42,u.scale*1.42*sceneAspectCorrection()*(isCat?1.12:1));if(!isCat)ctx.scale(-1,1);const bob=Math.sin(u.anim)*1.5;ctx.translate(0,bob);ellipse(0,17,29,5,'#40584d55');
+// tail: raised cat, curled dog
+ctx.beginPath();ctx.moveTo(-17,0);ctx.bezierCurveTo(isCat?-35:-40,-8,isCat?-35:-20,-23,isCat?-20:-42,-21);ctx.strokeStyle=c.fur;ctx.lineWidth=isCat?8:11;ctx.lineCap='round';ctx.stroke();
+if(u.hero){ellipse(0,-26,32,30,'#ffcf664a');}
+// paws and torso (shorter, chubbier)
+roundRect(-17,4,12,15,5,c.fur,'#48535a',1.5);roundRect(5,4,12,15,5,c.fur,'#48535a',1.5);ellipse(0,-1,24,17,c.fur);ellipse(2,0,15,12,c.belly);
+// ears and faces
+if(isCat){poly([[-21,-18],[-24,-35],[-3,-26]],c.fur,'#596066',2);poly([[20,-18],[24,-35],[3,-26]],c.fur,'#596066',2);poly([[-17,-24],[-18,-33],[-7,-25]],'#eeb5b2');poly([[13,-24],[19,-33],[6,-25]],'#eeb5b2');}
+else{poly([[-16,-19],[-31,-32],[-28,-15]],c.fur,'#605455',1.5);poly([[15,-19],[31,-32],[26,-14]],c.fur,'#605455',1.5);}
+ellipse(0,-20,isCat?23:24,isCat?14:12,u.hit>0?'#fff7cf':c.fur);
+// markings
+if(isCat){if(c.mark==='stripes'){for(let j=-1;j<=1;j++)line(j*8-4,-29,j*6-1,-24,'#93653d',3.2);}if(c.mark==='siamese')ellipse(2,-19,16,8,'#8a6758');if(c.mark==='tuxedo')ellipse(1,-16,13,8,'#fff4e4');if(c.mark==='calico'){ellipse(-12,-24,10,6,'#a96d4a');ellipse(13,-25,8,6,'#3c4651');}if(c.mark==='fluffy'){for(let j=-2;j<=2;j++)ellipse(j*8,-9,8,5,c.belly);}}else{ellipse(7,-14,16,7,c.belly);if(u.type==='beagle')ellipse(-11,-23,8,8,'#825139');if(u.type==='husky')ellipse(0,-26,19,6,'#e4f3ed');if(u.type==='mastiff')roundRect(-14,-7,29,8,5,'#615053');}
+// eyes/nose
+ellipse(-8,-21,2.5,2.6,'#26394a');ellipse(8,-21,2.5,2.6,'#26394a');ellipse(isCat?1:7,-15,isCat?3:4,2.3,isCat?'#d98592':'#503c42');if(isCat){line(-10,-14,-22,-16,'#7b6964',1);line(10,-14,22,-16,'#7b6964',1);}
+if(!isCat&&c.boss){poly([[-19,-31],[-12,-40],[-3,-34],[5,-42],[14,-34],[19,-31]],'#e2a85d','#664847',2);ellipse(0,-32,4,3,'#fff3bd');}
+if(u.hero){poly([[-15,-37],[-11,-50],[0,-41],[10,-50],[15,-37]],'#ffd36e','#715539',2);ellipse(0,-39,4,3,'#f4f7ff');}
+// Arms, weapons
+roundRect(12,-2,8,11,3,c.fur);if(isCat){ctx.save();ctx.translate(21,-7);drawWeapon(u.weapon);ctx.restore();}else{if(u.weapon==='bone'){ctx.save();ctx.translate(21,-5);line(0,8,5,-15,'#ecdec7',4);ellipse(5,-16,5,4,'#f7e8cd');ctx.restore();}else{poly([[16,-11],[24,-8],[18,-4]],'#f5f6de');}}
+// Draw the health crescent on the ground, below the paws—not above the head.
+drawVitalityRing(u,isCat);
+ctx.restore();}
+function drawWeapon(w){ctx.lineCap='round';if(w==='sword'){line(-2,16,14,-29,'#80909d',6);line(0,13,16,-31,'#e6f2f4',3);line(-9,5,10,13,'#b98153',5);}else if(w==='axe'){line(1,17,13,-26,'#95684f',5);poly([[12,-30],[32,-22],[26,-7],[9,-13]],'#c3dae3','#718b93',2);}else if(w==='bow'){line(-3,14,-3,-26,'#946a4f',4);ctx.beginPath();ctx.arc(0,-6,23,-Math.PI/2,Math.PI/2);ctx.strokeStyle='#8b6845';ctx.lineWidth=4;ctx.stroke();line(0,-29,0,16,'#eef0d4',2);line(-3,-4,22,-4,'#c4d5cf',3);poly([[22,-4],[14,-9],[14,1]],'#e7f1ee');}else if(w==='star'){ctx.fillStyle='#eff0d5';ctx.font='35px system-ui';ctx.fillText('✦',-5,4);}else if(w==='shield'){roundRect(-2,-18,29,32,9,'#729ba9','#e9dfac',4);line(12,-14,12,8,'#e9dfac',3);line(3,-2,22,-2,'#e9dfac',3);}else if(w==='wand'){line(0,17,11,-29,'#855979',5);ellipse(12,-31,8,8,'#d3a4e8');ellipse(12,-31,3,3,'#fff0cf');}else if(w==='bolt'){ctx.fillStyle='#ffec78';ctx.font='31px system-ui';ctx.fillText('ϟ',1,-2);}else if(w==='hammer'){line(0,17,8,-25,'#79594b',7);roundRect(-3,-33,33,15,4,'#b2bfc2','#667987',3);}}
+function drawShots(){for(const s of shots){const color=s.team==='cat'?'#fff1bc':'#f7d6b5';ellipse(s.x,s.y,s.weapon==='wand'?7:4,s.weapon==='wand'?7:4,color);if(s.weapon==='star'){ctx.fillStyle='#fff4d8';ctx.font='20px system-ui';ctx.fillText('✦',s.x-7,s.y+4);}if(s.weapon==='bone'){line(s.x-5,s.y-3,s.x+4,s.y+3,'#fcf5d5',4);}}}
+function render(){const rect=canvas.getBoundingClientRect();visualAspect=rect.height?clamp((rect.width/W)/(rect.height/H),.35,1.6):1;ctx.save();if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);world();
+// centerline marching troops ordered by y for overlap
+[...cats,...dogs].sort((a,b)=>a.y-b.y).forEach(drawFighter);drawShots();for(const p of particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ellipse(p.x,p.y,p.r,p.r,p.color);}ctx.globalAlpha=1;
+for(const f of floaters){ctx.globalAlpha=clamp(1-f.age/f.life,0,1);ctx.font='900 18px system-ui';ctx.textAlign='center';ctx.fillStyle='#28384d';ctx.fillText(f.text,f.x+1,f.y+1);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}ctx.globalAlpha=1;
+// castle name tags inside scene
+roundRect(10,431,142,26,9,'#2b3a67ec');roundRect(800,431,150,26,9,'#584b53ea');ctx.fillStyle='#fef5ef';ctx.textAlign='center';ctx.font='900 14px system-ui';ctx.fillText('🐱 CAT CASTLE',81,449);ctx.fillText('DOG KENNEL 🐶',875,449);ctx.restore();}
+function frame(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.055,(ts-lastTs)/1000);lastTs=ts;updateBattle(dt);advanceVisuals(dt);uiAcc+=dt;if(uiAcc>.12){updateHUD();updateTimers();uiAcc=0;}render();requestAnimationFrame(frame);}
+document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openDrawer(b.dataset.openPanel)));
+$('closeDrawer').addEventListener('click',closeDrawer);
+$('drawerBackdrop').addEventListener('click',e=>{if(e.target===$('drawerBackdrop'))closeDrawer();});
+$('backToCats').addEventListener('click',()=>openDrawer('cats'));
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawerOpen){e.preventDefault();closeDrawer();}});
+let largerText=false;try{largerText=localStorage.getItem('claws-vs-paws-large-text')==='1';}catch(e){}function setLargerText(on){largerText=on;document.body.classList.toggle('large-text',on);$('biggerTextBtn').textContent='A+ Extra-large menu text: '+(on?'On':'Off');try{localStorage.setItem('claws-vs-paws-large-text',on?'1':'0');}catch(e){}}setLargerText(largerText);$('biggerTextBtn').addEventListener('click',()=>setLargerText(!largerText));
+// Castle itself is the tap target on the battle canvas, even on a stretched phone layout.
+canvas.addEventListener('click',e=>{const rect=canvas.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width*W,y=(e.clientY-rect.top)/rect.height*H;if(x>=793&&y>=112&&y<=410)openDrawer('dogs');});
+$('dogCastleStatsBtn').addEventListener('click',()=>openDrawer('dogs'));
+$('boostBadge').addEventListener('click',()=>openDrawer('boost'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
+$('fullscreenBtn').addEventListener('click',()=>{const el=document.querySelector('.shell');if(!document.fullscreenElement&&el.requestFullscreen)el.requestFullscreen().catch(()=>message('Fullscreen unavailable on this device.'));else if(document.exitFullscreen)document.exitFullscreen();});
+function startOverFromZero(){
+ try{localStorage.removeItem(STORAGE);}catch(e){}
+ save={level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null};
+ for(const c of CATS)save.upgrades[c.id]={power:0,attack:0,lives:0,spawn:0};
+ selected='tabby';speed=1;phase='prepare';resetBattle();hideModal();closeDrawer();persist();updateUI(true);message('Fresh start! Level 1 · Tabby only.');
+}
+$('startOverBtn').addEventListener('click',()=>{
+ modal('🔄','Start Over from Level 1?','This permanently replaces your current progress with a fresh game: 24 fish coins, only the Tabby Squire, no upgrades, and no legendary cats.','Yes, start over',startOverFromZero);
+ $('modalCancel').hidden=false;
+ $('modalCancel').onclick=hideModal;
+ $('modalCancel').focus();
+});
+$('howBtn').addEventListener('click',()=>modal('🐱','How to play','Pick up to five cats in the barracks. They spawn automatically on their own countdowns when you start a level. March right and break the dog kennel whenever no dogs remain on the field. Dogs arrive as occasional solo scouts and slower groups, and bosses emerge at kennel-health thresholds! 🐟 Fish coins from defeated dogs are banked on victory. Each dog also drops 🌿 catnip immediately: tap Boost to improve equipped cats during combat. Catnip and temporary boosts reset every level. After level 4, purchase a legendary cat in Cats → Heroes and summon it manually in battle. Dog bosses appear when their castle health reaches a set threshold.','Let’s play!',hideModal));
+window.addEventListener('keydown',e=>{if(drawerOpen||!$('overlay').hidden)return;if(e.code==='Space'){e.preventDefault();if(phase==='prepare')enterBattle();else if(phase==='battle')$('pauseBtn').click();}else if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){const id=save.squad[Number(e.code.slice(-1))-1];if(id)choose(id);}});
+// Test hook only on explicitly requested local ?test=1 URL.
+if(new URLSearchParams(location.search).get('test')==='1')window.__gameTest={tick:(seconds)=>{for(let i=0;i<seconds*40;i++){updateBattle(1/40);advanceVisuals(1/40);}updateUI(true);},state:()=>({phase,level:save.level,coins:save.coins,catHp,dogHp,dogGroupsSent,soloDogTimer,groupDogTimer,groupDogQueue:[...groupDogQueue],catCount:cats.length,dogCount:dogs.length,catTypes:cats.map(u=>u.id),dogTypes:dogs.map(u=>u.type),pendingCoins,catnip,battleUpgrades:JSON.parse(JSON.stringify(battleUpgrades)),heroCd,hero:save.heroSelected,gateBossTriggered,secondBossTriggered,spawnTimers:{...spawnTimers},squad:[...save.squad],drawerOpen,paused}),openPanel:openDrawer,closePanel:closeDrawer,unlock:id=>{save.coins=10000;buyCat(CATMAP[id]);},upgrade:(id,kind)=>{save.coins=10000;improve(CATMAP[id],kind);},setLevel:n=>{save.level=n;phase='prepare';resetBattle();updateUI(true);},coins:n=>{save.coins=n;updateUI(true);},getSave:()=>JSON.parse(JSON.stringify(save)),summon:summonHero,grantCatnip:n=>{catnip+=n;updateUI(true);},boost:(id,kind)=>buyBoost(CATMAP[id],kind),getFieldStat:id=>fieldStat(CATMAP[id]),getDogStat:id=>dogPreviewStats(id),killDog:type=>{spawnDog(type||'mutt');damage(dogs[dogs.length-1],9999);updateUI(true);},damageKennel:n=>{dogHp=Math.max(0,dogHp-n);checkKennelBoss();updateHUD();},damageCatCastle:n=>{catHp=Math.max(0,catHp-n);updateHUD();},clearDogs:()=>{dogs=[];shots=[];updateHUD();},atKennel:()=>{for(const c of cats){c.x=823;c.cd=0;}updateHUD();},traffic:(solo,group)=>{soloDogTimer=solo;groupDogTimer=group;groupDogQueue=[];},spawnDog:spawnDog};
+resetBattle();updateUI(true);requestAnimationFrame(frame);
+})();
+</script>
+<script>
+// Ask Google to fill the reserved banner only on the published HTTPS site.
+if (location.protocol === 'https:') {
+  try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
+  catch (err) { console.info('AdSense banner could not initialize.', err); }
+}
+</script>
+</body>
+</html>
