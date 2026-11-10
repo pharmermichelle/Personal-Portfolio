@@ -460,12 +460,12 @@ const HEROES=[
 const CATMAP=Object.fromEntries([...CATS,...HEROES].map(c=>[c.id,c]));
 const HEROMAP=Object.fromEntries(HEROES.map(h=>[h.id,h]));
 const DOGS={
- mutt:{fur:'#d9a279',belly:'#ffe1b8',maxHp:25,power:7,attack:1.45,speed:32,range:31,loot:1},
- beagle:{fur:'#f0bb7d',belly:'#fff6d7',maxHp:20,power:6,attack:1.1,speed:53,range:28,loot:2},
- bulldog:{fur:'#bd9186',belly:'#f5d4bb',maxHp:60,power:11,attack:1.75,speed:23,range:35,loot:3},
- husky:{fur:'#9eb6ca',belly:'#ffffff',maxHp:30,power:7,attack:1.75,speed:30,range:130,loot:2,projectile:true},
- mastiff:{fur:'#a77b65',belly:'#e7bca0',maxHp:175,power:15,attack:1.85,speed:18,range:43,loot:2,boss:true},
- gatekeeper:{fur:'#ef9474',belly:'#ffdfb4',maxHp:180,power:18,attack:1.45,speed:26,range:44,loot:7,boss:true}
+ mutt:{fur:'#7e6858',belly:'#dcc8b7',maxHp:25,power:7,attack:1.45,speed:32,range:31,loot:1},
+ beagle:{fur:'#8e765f',belly:'#f2e8d8',maxHp:20,power:6,attack:1.1,speed:53,range:28,loot:2},
+ bulldog:{fur:'#7b8797',belly:'#dbe2ea',maxHp:60,power:11,attack:1.75,speed:23,range:35,loot:3},
+ husky:{fur:'#5d7fa1',belly:'#eef6ff',maxHp:30,power:7,attack:1.75,speed:30,range:130,loot:2,projectile:true},
+ mastiff:{fur:'#6d5b63',belly:'#cdb6bc',maxHp:175,power:15,attack:1.85,speed:18,range:43,loot:2,boss:true},
+ gatekeeper:{fur:'#7a4f57',belly:'#efccb8',maxHp:180,power:18,attack:1.45,speed:26,range:44,loot:7,boss:true}
 };
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 let save={level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null};
@@ -765,20 +765,20 @@ function drawVitalityRing(u,isCat){
  ctx.beginPath();ctx.ellipse(0,22,rx,ry,0,0,Math.PI*2*fraction);ctx.stroke();
  ctx.restore();
 }
-function drawFighter(u){const isCat=u.team==='cat',c=isCat?CATMAP[u.id]:DOGS[u.type];ctx.save();ctx.translate(u.x,u.y);ctx.scale(u.scale*1.42,u.scale*1.42*sceneAspectCorrection()*(isCat?1.12:1));if(!isCat)ctx.scale(-1,1);const bob=Math.sin(u.anim)*1.5;ctx.translate(0,bob);ellipse(0,17,29,5,'#40584d55');
+function drawFighter(u){const isCat=u.team==='cat',c=isCat?CATMAP[u.id]:DOGS[u.type];ctx.save();ctx.translate(u.x,u.y);const sx=u.scale*(isCat?1.42:1.56),sy=u.scale*(isCat?1.59:1.72)*sceneAspectCorrection();ctx.scale(sx,sy);if(!isCat)ctx.scale(-1,1);const bob=Math.sin(u.anim)*(isCat?1.5:1.2);ctx.translate(0,bob);ellipse(0,17,isCat?29:32,5,'#40584d55');
 // tail: raised cat, curled dog
 ctx.beginPath();ctx.moveTo(-17,0);ctx.bezierCurveTo(isCat?-35:-40,-8,isCat?-35:-20,-23,isCat?-20:-42,-21);ctx.strokeStyle=c.fur;ctx.lineWidth=isCat?8:11;ctx.lineCap='round';ctx.stroke();
 if(u.hero){ellipse(0,-26,32,30,'#ffcf664a');}
-// paws and torso (shorter, chubbier)
-roundRect(-17,4,12,15,5,c.fur,'#48535a',1.5);roundRect(5,4,12,15,5,c.fur,'#48535a',1.5);ellipse(0,-1,24,17,c.fur);ellipse(2,0,15,12,c.belly);
+// paws and torso: cats stay compact, dogs are broader and easier to read
+roundRect(-17,4,isCat?12:13,isCat?15:17,5,c.fur,'#48535a',1.5);roundRect(5,4,isCat?12:13,isCat?15:17,5,c.fur,'#48535a',1.5);ellipse(0,isCat?-1:0,isCat?24:28,isCat?17:18,c.fur);ellipse(isCat?2:7,isCat?0:1,isCat?15:18,isCat?12:13,c.belly);
 // ears and faces
 if(isCat){poly([[-21,-18],[-24,-35],[-3,-26]],c.fur,'#596066',2);poly([[20,-18],[24,-35],[3,-26]],c.fur,'#596066',2);poly([[-17,-24],[-18,-33],[-7,-25]],'#eeb5b2');poly([[13,-24],[19,-33],[6,-25]],'#eeb5b2');}
-else{poly([[-16,-19],[-31,-32],[-28,-15]],c.fur,'#605455',1.5);poly([[15,-19],[31,-32],[26,-14]],c.fur,'#605455',1.5);}
-ellipse(0,-20,isCat?23:24,isCat?14:12,u.hit>0?'#fff7cf':c.fur);
+else{poly([[-18,-18],[-34,-33],[-29,-12]],c.fur,'#4c4f56',1.8);poly([[16,-18],[34,-33],[28,-11]],c.fur,'#4c4f56',1.8);}
+ellipse(isCat?0:3,-20,isCat?23:27,isCat?14:14,u.hit>0?'#fff7cf':c.fur);
 // markings
-if(isCat){if(c.mark==='stripes'){for(let j=-1;j<=1;j++)line(j*8-4,-29,j*6-1,-24,'#93653d',3.2);}if(c.mark==='siamese')ellipse(2,-19,16,8,'#8a6758');if(c.mark==='tuxedo')ellipse(1,-16,13,8,'#fff4e4');if(c.mark==='calico'){ellipse(-12,-24,10,6,'#a96d4a');ellipse(13,-25,8,6,'#3c4651');}if(c.mark==='fluffy'){for(let j=-2;j<=2;j++)ellipse(j*8,-9,8,5,c.belly);}}else{ellipse(7,-14,16,7,c.belly);if(u.type==='beagle')ellipse(-11,-23,8,8,'#825139');if(u.type==='husky')ellipse(0,-26,19,6,'#e4f3ed');if(u.type==='mastiff')roundRect(-14,-7,29,8,5,'#615053');}
+if(isCat){if(c.mark==='stripes'){for(let j=-1;j<=1;j++)line(j*8-4,-29,j*6-1,-24,'#93653d',3.2);}if(c.mark==='siamese')ellipse(2,-19,16,8,'#8a6758');if(c.mark==='tuxedo')ellipse(1,-16,13,8,'#fff4e4');if(c.mark==='calico'){ellipse(-12,-24,10,6,'#a96d4a');ellipse(13,-25,8,6,'#3c4651');}if(c.mark==='fluffy'){for(let j=-2;j<=2;j++)ellipse(j*8,-9,8,5,c.belly);}}else{ellipse(11,-15,18,8,c.belly);ellipse(20,-16,8,6,c.belly);if(u.type==='beagle')ellipse(-11,-23,8,8,'#5f4737');if(u.type==='husky')ellipse(0,-26,19,6,'#eef7ff');if(u.type==='bulldog')roundRect(-16,-12,14,10,4,'#ebf0f4','#66717d',1);if(u.type==='mastiff')roundRect(-14,-7,30,9,5,'#4f4348');if(u.type==='gatekeeper'){ellipse(-8,-25,11,7,'#d7a183');ellipse(2,-29,7,5,'#d7a183');}}
 // eyes/nose
-ellipse(-8,-21,2.5,2.6,'#26394a');ellipse(8,-21,2.5,2.6,'#26394a');ellipse(isCat?1:7,-15,isCat?3:4,2.3,isCat?'#d98592':'#503c42');if(isCat){line(-10,-14,-22,-16,'#7b6964',1);line(10,-14,22,-16,'#7b6964',1);}
+ellipse(isCat?-8:-6,-21,2.5,2.6,'#26394a');ellipse(isCat?8:8,-21,2.5,2.6,'#26394a');ellipse(isCat?1:12,-15,isCat?3:4,2.3,isCat?'#d98592':'#43343a');if(isCat){line(-10,-14,-22,-16,'#7b6964',1);line(10,-14,22,-16,'#7b6964',1);}else{line(7,-14,16,-16,'#5e5355',1.6);}
 if(!isCat&&c.boss){poly([[-19,-31],[-12,-40],[-3,-34],[5,-42],[14,-34],[19,-31]],'#e2a85d','#664847',2);ellipse(0,-32,4,3,'#fff3bd');}
 if(u.hero){poly([[-15,-37],[-11,-50],[0,-41],[10,-50],[15,-37]],'#ffd36e','#715539',2);ellipse(0,-39,4,3,'#f4f7ff');}
 // Arms, weapons
