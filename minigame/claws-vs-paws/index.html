@@ -541,10 +541,10 @@ function catCastleStats(){
  return {base,level,squad,training,total:base+level+squad+training};
 }
 function catCastleMax(){return catCastleStats().total;}
+let activeBonus=null,bonusOriginalSquad=null;
 let drawerOpen=false, drawerAutoPause=false, drawerPreviousFocus=null;
 let phase='prepare', selected='tabby', clock=0, time=0, speed=1, paused=false, cats=[],dogs=[],shots=[],particles=[],floaters=[],spawnTimers={},catHp=catCastleMax(),catBattleMax=catCastleMax(),dogHp=dogCastleMax(),catDefenseCd=2.5,dogDefenseCd=2.5,lastTs=0,uiAcc=0,uid=0,shake=0,finalNotice='',toastTimer;
 let pendingCoins=0, heroCd=0, heroSummonsUsed=0, gateBossTriggered=false, secondBossTriggered=false, thirdBossTriggered=false, dogBossWarning=0;
-let activeBonus=null,bonusOriginalSquad=null;
 // Shared castle strike timers prevent an entire stacked army from deleting a tower in one frame.
 let dogCastleStrikeCd=0, catCastleStrikeCd=0;
 const yPath=336;
