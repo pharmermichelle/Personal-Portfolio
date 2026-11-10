@@ -190,6 +190,30 @@ canvas{width:100%;height:100%;display:block}
 .kennel-meter-wrap .boss-marker::before{content:"";position:absolute;left:calc(50% - 1px);bottom:100%;height:11px;width:2px;background:#7b4a54;box-shadow:0 0 0 1px #ffe7b6}
 .kennel-meter-wrap .boss-marker.spent{opacity:.4;filter:grayscale(.6)}
 @media(max-height:700px){.kennel-meter-wrap{padding-bottom:13px}.kennel-meter-wrap .boss-marker{font-size:9px;line-height:11px}}
+
+.map-hud-btn{text-align:inherit;cursor:pointer;font:inherit}
+.map-hud-btn:focus-visible,.map-bonus:focus-visible{outline:3px solid #ffc482;outline-offset:2px}
+.map-panel-intro{font-size:16px;line-height:1.45;margin:0 0 13px;color:#445875;font-weight:750}
+.map-route{position:relative;padding:5px 0 8px}
+.map-route::before{content:"";position:absolute;top:25px;bottom:27px;left:28px;width:3px;border-radius:3px;background:#9eb1be;z-index:0}
+.map-row{position:relative;display:flex;align-items:center;gap:13px;min-height:83px}
+.map-main{display:flex;align-items:center;gap:11px;width:49%;min-width:0}
+.map-node{z-index:1;flex:0 0 56px;height:56px;width:56px;border:3px solid #b0bfcc;border-radius:50%;background:#e9eff4;color:#576778;display:grid;place-items:center;font-size:18px;font-weight:1000;box-shadow:0 2px 0 #8fa0b0}
+.map-node.done{background:#5c9498;border-color:#ccdfd9;color:#fff}
+.map-node.current{background:#fff0c7;border-color:#d8a657;color:#25395a}
+.map-node .portrait{width:46px;height:46px}
+.map-node-label{min-width:0;font-size:17px;font-weight:950;line-height:1.25;color:#243956}
+.map-node-label small{display:block;font-size:13px;color:#51677b;font-weight:700}
+.map-bonus{min-width:0;flex:1;min-height:56px;border:2px dashed #b8a7a4;border-radius:13px;padding:7px 8px;text-align:left;background:#fdf1df;color:#36465f;font-size:14px;font-weight:950;line-height:1.18}
+.map-bonus small{display:block;font-size:12px;font-weight:750;line-height:1.2;margin-top:4px;color:#536172}
+.map-bonus:disabled{opacity:.55}
+.map-bonus.done{border-style:solid;border-color:#86b6a3;background:#e8f3eb}
+.map-branch{height:2px;flex:0 0 9px;background:#b8a7a4}
+.map-active{border:2px solid #66999b;border-radius:14px;background:#eaf4f3;padding:12px;margin-bottom:15px;color:#294558}
+.map-active strong{font-size:19px}.map-active p{font-size:15px;line-height:1.4;margin:6px 0 11px}
+.map-active .btn{min-height:48px;width:100%}
+@media(max-width:600px){.map-row{gap:8px;min-height:79px}.map-main{width:48%;gap:7px}.map-node{flex-basis:48px;width:48px;height:48px}.map-node .portrait{width:40px;height:40px}.map-route::before{left:24px}.map-node-label{font-size:15px}.map-bonus{font-size:13px;padding:7px 5px}.map-bonus small{font-size:11px}.map-branch{flex-basis:4px}}
+.large-text .map-node-label{font-size:20px}.large-text .map-bonus{font-size:17px}.large-text .map-bonus small{font-size:15px}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -199,14 +223,14 @@ canvas{width:100%;height:100%;display:block}
 <header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div class="mast-actions"><div id="phaseTag" class="round-tag">🐈 READY</div><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute game audio" aria-pressed="true" title="Toggle game sound">🔊</button></div></header>
 <div class="hud" role="group" aria-label="Battle stats">
 <div class="stat"><span class="lbl">🐟 Coins</span><span class="val" id="goldStat">24</span></div>
-<div class="stat"><span class="lbl">⚔️ Level</span><span class="val" id="levelStat">1</span></div>
+<button class="stat map-hud-btn" id="mapBtn" type="button" aria-label="Open campaign map"><span class="lbl">🗺️ Map</span><span class="val" id="levelStat">1</span></button>
 <div class="stat"><span class="lbl">🐶 Dogs</span><span class="val" id="dogCountStat">0</span></div>
 </div>
 <section class="arena" aria-label="Battlefield and controls">
 <div class="field-wrap"><canvas id="battle" width="960" height="500" role="img" aria-label="Cat castle at the left, dog castle at the right. Cat and dog armies march and battle along the path."></canvas><div class="battle-label" id="battleLabel">Choose your cats and start the siege</div></div>
 <div class="castle-health" aria-label="Castle health">
 <button id="catCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Inspect cat castle health and defense bonuses" title="Tap to see your castle's health bonuses"><div class="health-top"><span>🐱 Cat castle <small class="kennel-hint">ⓘ</small></span><b id="catHpStat">165</b></div><div class="meter cats"><div id="catMeter" style="width:100%"></div></div><div class="cat-castle-note" id="catCastleNote">Max 165 · Squad +0</div></button>
-<button id="dogCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Open dog army stats" title="Tap to view dog stats"><div class="health-top"><span>🐶 Dog castle <small class="kennel-hint">ⓘ</small></span><b id="dogHpStat">100</b></div><div class="kennel-meter-wrap"><div class="meter dogs"><div id="dogMeter" style="width:100%"></div></div><span id="bossMarker65" class="boss-marker" style="left:65%" title="Boss appears at 65% kennel health" aria-label="Boss at 65% kennel health">65%</span><span id="bossMarker30" class="boss-marker" style="left:30%" title="Boss appears at 30% kennel health" aria-label="Boss at 30% kennel health" hidden>30%</span></div></button>
+<button id="dogCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Open dog army stats" title="Tap to view dog stats"><div class="health-top"><span>🐶 Dog castle <small class="kennel-hint">ⓘ</small></span><b id="dogHpStat">100</b></div><div class="kennel-meter-wrap"><div class="meter dogs"><div id="dogMeter" style="width:100%"></div></div><span id="bossMarker65" class="boss-marker" style="left:65%" title="Boss appears at 65% kennel health" aria-label="Boss at 65% kennel health">65%</span><span id="bossMarker30" class="boss-marker" style="left:30%" title="Boss appears at 30% kennel health" aria-label="Boss at 30% kennel health" hidden>30%</span><span id="bossMarker15" class="boss-marker" style="left:15%" title="Boss appears at 15% kennel health" aria-label="Boss at 15% kennel health" hidden>15%</span></div></button>
 </div>
 <div class="control-row"><button id="startBtn" class="btn primary">▶ Start level 1</button><button id="pauseBtn" class="btn" disabled>⏸ Pause</button><button id="speedBtn" class="btn">⏩ 1×</button><button id="fullscreenBtn" class="btn" aria-label="Fullscreen battlefield" title="Fullscreen battlefield">⛶</button></div>
 <div class="squad-box"><div class="squad-top"><span id="squadHint">🐱 SQUAD · Tap to train</span><button id="boostBadge" type="button" class="boost-badge" aria-label="Open catnip battle upgrades">🌿 <span id="nipStat">0</span> · Boost<span id="boostNotif" class="notif-cat" aria-hidden="true"></span></button></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
@@ -218,11 +242,12 @@ canvas{width:100%;height:100%;display:block}
 </aside>
 </main>
 <div id="drawerBackdrop" class="drawer-backdrop" hidden><section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1"><header class="drawer-header"><div><h2 id="drawerTitle">Your cats</h2><p id="drawerSubtitle">Unlock fighters and build your army</p></div><button id="closeDrawer" class="close-drawer" aria-label="Close menu">×</button></header><div id="drawerBody" class="drawer-body">
+<div id="panelMap" class="drawer-panel" hidden><p class="map-panel-intro">Your cat avatar follows the main campaign. Side branches unlock optional challenge battles with special squad restrictions.</p><div id="mapContent"></div></div>
 <div id="panelCats" class="drawer-panel"><button id="heroShopBtn" type="button" class="btn hero-shop-shortcut">⭐ Legendary cats · Level 5+</button><p class="panel-intro">Tap a cat to inspect or unlock it. DMG = damage per hit, RANGE = attack reach, HP = health per cat. Permanent upgrades appear here; temporary catnip boosts apply during battle.</p><div id="barracks" class="barracks"></div></div>
 <div id="panelSquad" class="drawer-panel" hidden><p class="panel-intro">You can bring up to five cat types per level. Each one has its own spawn timer.</p><div id="squadDetails" class="squad-detail"></div><button class="btn primary drawer-action" data-open-panel="cats">+ Browse all cats</button></div>
 <div id="panelTrain" class="drawer-panel" hidden><button id="backToCats" class="back-cats">‹ All cats</button><div id="details"></div></div>
 <div id="panelBoost" class="drawer-panel" hidden><div class="boost-wallet"><div><b>🌿 Catnip: <span id="boostNip">0</span></b><div><span>Earned immediately from dog defeats</span></div></div></div><div id="boostRoster" class="boost-squad" aria-label="Choose a cat to boost"></div><div id="boostDetail"></div><p class="boost-explainer">All battle boosts disappear when you start a new level. Fish coins and permanent training stay saved. Opening this menu pauses combat.</p></div>
-<div id="panelHeroes" class="drawer-panel" hidden><p class="panel-intro">Available after clearing level 4. Buy a champion with fish coins, then tap its large summon button during battle. Champions use a cooldown and do <strong>not</strong> fill a squad slot.</p><div id="heroesList" class="heroes-list"></div></div>
+<div id="panelHeroes" class="drawer-panel" hidden><p class="panel-intro">Available after clearing level 4. Buy a champion with fish coins, then tap its large summon button during battle. Champions share limited summons per level and do <strong>not</strong> fill a squad slot. One or two dog bosses allow one total hero summon; three bosses allow three total summons. Bonus battles allow no heroes.</p><div id="heroesList" class="heroes-list"></div></div>
 <div id="panelCastle" class="drawer-panel" hidden><p class="panel-intro">Your cat castle gets stronger each level. Equipped cats and permanent HP training add extra defenses. Tap the health card anytime to see how much.</p><div id="castleBreakdown" class="castle-breakdown"></div></div>
 <div id="panelDogs" class="drawer-panel" hidden><p class="dog-stats-legend">Current level <b id="dogPreviewLevel">1</b> · RANGE is attack reach in battlefield units. Dog stats rise each level. Longer sieges may strengthen incoming dogs. Tap the kennel to check its defenders anytime.</p><div id="dogRoster" class="enemy-roster"></div></div>
 <div id="panelHelp" class="drawer-panel help-area" hidden><section class="audio-settings" aria-label="Sound and music settings">
