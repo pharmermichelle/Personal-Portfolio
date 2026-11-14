@@ -214,6 +214,47 @@ canvas{width:100%;height:100%;display:block}
 .map-active .btn{min-height:48px;width:100%}
 @media(max-width:600px){.map-row{gap:8px;min-height:79px}.map-main{width:48%;gap:7px}.map-node{flex-basis:48px;width:48px;height:48px}.map-node .portrait{width:40px;height:40px}.map-route::before{left:24px}.map-node-label{font-size:15px}.map-bonus{font-size:13px;padding:7px 5px}.map-bonus small{font-size:11px}.map-branch{flex-basis:4px}}
 .large-text .map-node-label{font-size:20px}.large-text .map-bonus{font-size:17px}.large-text .map-bonus small{font-size:15px}
+
+/* The Purr-suit Trail: watercolor landscape, winding track and side-quest forks. */
+.trail-banner{margin:0 0 12px;padding:14px;border:2px solid #b9c4aa;border-radius:17px;background:linear-gradient(115deg,#f9eccc,#dcefe2);color:#31496a}
+.trail-kicker{font-size:11px;letter-spacing:.16em;font-weight:1000;color:#658178;text-transform:uppercase}
+.trail-banner h3{font-size:clamp(25px,5vw,31px);letter-spacing:-.04em;line-height:1.12;margin:5px 0}
+.trail-banner p{margin:0;font-size:15px;line-height:1.38;font-weight:750;color:#506876}
+.trail-summary{border:2px solid #dfb974;border-radius:14px;padding:13px;margin:0 0 12px;background:#fff0cd;color:#374765}
+.trail-summary strong{font-size:19px;display:block;line-height:1.2}
+.trail-summary p{font-size:15px;line-height:1.4;margin:5px 0 10px;font-weight:800}
+.trail-summary .btn{display:block;width:100%;min-height:45px}
+.trail-hint{border-radius:12px;border:1px solid #aac4b4;background:#e8f2e7;margin:0 0 12px;padding:10px;font-size:14px;line-height:1.4;color:#3c5c62;font-weight:800}
+.trail-land{position:relative;border:2px solid #9cb8a2;border-radius:19px;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 12% 14%,#fff4d890 0 7%,transparent 8%),radial-gradient(ellipse at 85% 45%,#b6d3ab95 0 10%,transparent 11%),radial-gradient(ellipse at 13% 79%,#b4d4b498 0 13%,transparent 14%),linear-gradient(#e9f5e5,#dbead8 55%,#eaf2d6)}
+.trail-land::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.32;background-image:radial-gradient(#93aa8a 1px,transparent 1px);background-size:22px 22px}
+.trail-lines{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.trail-road-edge{fill:none;stroke:#9eab91;stroke-width:37;stroke-linecap:round;stroke-linejoin:round}
+.trail-road-sand{fill:none;stroke:#d9b88b;stroke-width:27;stroke-linecap:round;stroke-linejoin:round}
+.trail-road-dashes{fill:none;stroke:#f9ebcb;stroke-width:2.5;stroke-dasharray:2 14;stroke-linecap:round}
+.trail-spur-edge{fill:none;stroke:#acb497;stroke-width:12;stroke-dasharray:3 10;stroke-linecap:round}
+.trail-spur{fill:none;stroke:#fff0c8;stroke-width:5;stroke-dasharray:3 10;stroke-linecap:round}
+.trail-stop{position:absolute;z-index:3;transform:translateX(-50%);width:130px;display:flex;align-items:center;flex-direction:column;gap:4px;pointer-events:none}
+.trail-dot{height:57px;width:57px;border:3px solid #a9b9ba;border-radius:50%;display:grid;place-items:center;background:#eaf0ed;color:#5a7180;font-size:20px;font-weight:1000;box-shadow:0 3px 0 #728b8a,0 4px 10px #334e4f35;flex:none}
+.trail-dot.done{border-color:#467879;background:#70a6a0;color:#fff;box-shadow:0 3px 0 #2e626a}
+.trail-dot.current{border:4px solid #d3a153;background:#fff2ce;box-shadow:0 0 0 5px #fff1cfa8,0 3px 0 #ab7c43}
+.trail-dot .portrait{width:47px;height:47px}
+.trail-dot.arrived{animation:trail-pop .7s ease-out}
+.trail-level-label{max-width:128px;padding:3px 7px;text-align:center;border-radius:10px;border:1px solid #cbd8c8;background:#fff7e6d9;color:#334b66;font-weight:1000;font-size:14px;line-height:1.15}
+.trail-level-label small{display:block;font-size:11px;color:#537476;font-weight:850;margin-top:2px}
+.trail-stop.is-current .trail-level-label{background:#fff0bf;border-color:#d2ab6a}
+.trail-branch{position:absolute;z-index:4;transform:translate(-50%,-50%);left:78.5%;width:42%;max-width:180px;min-height:66px;background:#fff1dfe8;color:#574b60;border:2px dashed #bda08a;border-radius:14px;padding:7px 5px;font-size:13px;font-weight:1000;line-height:1.15;box-shadow:0 3px 0 #8f806336}
+.trail-branch small{display:block;font-size:11px;font-weight:800;margin-top:3px;color:#726e70}
+.trail-branch:disabled{opacity:.63;filter:grayscale(.3)}
+.trail-branch.done{border-style:solid;border-color:#74a991;background:#e7f2e3}
+.trail-branch:focus-visible{outline:3px solid #dc9b56;outline-offset:3px}
+.trail-scenery{position:absolute;z-index:2;pointer-events:none;opacity:.7;font-size:22px;user-select:none}
+.trail-traveler{position:absolute;z-index:6;pointer-events:none;width:66px;height:66px;border:4px solid #d3a150;border-radius:50%;display:grid;place-items:center;background:#ffedc8;box-shadow:0 0 0 8px #fff4c879,0 3px 12px #5b584b77;transform:translate(-50%,-50%)}
+.trail-traveler .portrait{width:53px;height:53px}
+.trail-footer{font-size:13px;font-weight:800;text-align:center;color:#5d7971;margin:10px 0 0}
+@keyframes trail-pop{0%{transform:scale(.6)}50%{transform:scale(1.17);box-shadow:0 0 0 12px #ffca754f}100%{transform:scale(1)}}
+@media(max-width:600px){.trail-banner{padding:11px}.trail-banner p{font-size:14px}.trail-stop{width:112px}.trail-dot{width:51px;height:51px}.trail-dot .portrait{width:41px;height:41px}.trail-level-label{max-width:110px;font-size:13px}.trail-level-label small{font-size:10px}.trail-branch{min-height:61px;font-size:12px}.trail-branch small{font-size:10px}.trail-scenery{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.trail-dot.arrived{animation:none}}
+
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -223,7 +264,7 @@ canvas{width:100%;height:100%;display:block}
 <header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div class="mast-actions"><div id="phaseTag" class="round-tag">🐈 READY</div><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute game audio" aria-pressed="true" title="Toggle game sound">🔊</button></div></header>
 <div class="hud" role="group" aria-label="Battle stats">
 <div class="stat"><span class="lbl">🐟 Coins</span><span class="val" id="goldStat">24</span></div>
-<button class="stat map-hud-btn" id="mapBtn" type="button" aria-label="Open campaign map"><span class="lbl">🗺️ Map</span><span class="val" id="levelStat">1</span></button>
+<button class="stat map-hud-btn" id="mapBtn" type="button" aria-label="Open the Purr-suit Trail map"><span class="lbl">🐾 Trail</span><span class="val" id="levelStat">1</span></button>
 <div class="stat"><span class="lbl">🐶 Dogs</span><span class="val" id="dogCountStat">0</span></div>
 </div>
 <section class="arena" aria-label="Battlefield and controls">
@@ -242,7 +283,7 @@ canvas{width:100%;height:100%;display:block}
 </aside>
 </main>
 <div id="drawerBackdrop" class="drawer-backdrop" hidden><section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1"><header class="drawer-header"><div><h2 id="drawerTitle">Your cats</h2><p id="drawerSubtitle">Unlock fighters and build your army</p></div><button id="closeDrawer" class="close-drawer" aria-label="Close menu">×</button></header><div id="drawerBody" class="drawer-body">
-<div id="panelMap" class="drawer-panel" hidden><p class="map-panel-intro">Your cat avatar follows the main campaign. Side branches unlock optional challenge battles with special squad restrictions.</p><div id="mapContent"></div></div>
+<div id="panelMap" class="drawer-panel" hidden><div id="mapContent"></div></div>
 <div id="panelCats" class="drawer-panel"><button id="heroShopBtn" type="button" class="btn hero-shop-shortcut">⭐ Legendary cats · Level 5+</button><p class="panel-intro">Tap a cat to inspect or unlock it. DMG = damage per hit, RANGE = attack reach, HP = health per cat. Permanent upgrades appear here; temporary catnip boosts apply during battle.</p><div id="barracks" class="barracks"></div></div>
 <div id="panelSquad" class="drawer-panel" hidden><p class="panel-intro">You can bring up to five cat types per level. Each one has its own spawn timer.</p><div id="squadDetails" class="squad-detail"></div><button class="btn primary drawer-action" data-open-panel="cats">+ Browse all cats</button></div>
 <div id="panelTrain" class="drawer-panel" hidden><button id="backToCats" class="back-cats">‹ All cats</button><div id="details"></div></div>
@@ -652,6 +693,7 @@ el.innerHTML='<div class="detail-heading">'+catPortrait(c)+'<div><h3>'+c.name+'<
 const grid=$('upgradeGrid');for(const kind of ['power','attack','lives','spawn']){const maxed=kind==='lives'?u[kind]>=5:u[kind]>=10;const tierLocked=u[kind]>=trainingCap()&&!maxed;const b=document.createElement('button');b.className='upgrade';b.disabled=!owned||phase==='battle'||maxed||tierLocked||save.coins<upgradeCost(c,kind);b.innerHTML='<strong>'+label(kind)+'</strong><small>'+({power:'Stronger strikes',attack:'Attack more often',lives:'Adds 22 HP per cat, not extra spawns',spawn:'New cats arrive faster'}[kind])+'</small><em>'+(maxed?'MAXED':tierLocked?'Level gate':'🐟 '+upgradeCost(c,kind))+'</em>';b.addEventListener('click',()=>improve(c,kind));grid.appendChild(b);}$('equipBtn').addEventListener('click',()=>equip(c));}
 function updateTimers(){for(const id of save.squad){const c=CATMAP[id],st=phase==='battle'?fieldStat(c):stat(c),remaining=phase==='battle'?Math.max(0,spawnTimers[id]||0):st.spawn,p=$('progress-'+id),track=$('track-'+id),hp=$('hp-'+id);const percent=phase==='battle'?clamp((1-remaining/st.spawn)*100,0,100):0;if(p)p.style.width=percent.toFixed(1)+'%';if(hp)hp.textContent='❤️ '+st.lives+'/6 · '+st.hp+'HP';if(track){track.setAttribute('aria-valuenow',String(Math.round(percent)));track.setAttribute('aria-valuetext',remaining.toFixed(1)+' seconds until '+c.name+' spawns');track.classList.toggle('ready',percent>=99);}}}
 
+let trailAdvance=null,trailCelebration=null;
 function finishBonus(){if(!activeBonus)return;save.squad=bonusOriginalSquad||['tabby'];activeBonus=null;bonusOriginalSquad=null;}
 function startBonus(milestone){
  if(phase!=='prepare'){message('Finish the current battle first!');return false;}
@@ -665,31 +707,71 @@ function startBonus(milestone){
  message(bonus.emoji+' '+bonus.title+' — '+bonus.rule);
  return true;
 }
+
 function renderCampaignMap(){
  const wrap=$('mapContent');if(!wrap)return;
  wrap.innerHTML='';
- if(activeBonus){const box=document.createElement('section');box.className='map-active';box.innerHTML='<strong>'+activeBonus.emoji+' '+activeBonus.title+'</strong><p>'+activeBonus.rule+' Your usual squad will return when this challenge ends.</p><button class="btn quiet" type="button">Exit bonus challenge</button>';
- box.querySelector('button').onclick=()=>{if(phase!=='prepare'){message('Finish the battle to leave.');return;}finishBonus();resetBattle();updateUI(true);renderCampaignMap();};
- wrap.appendChild(box);}
- const trail=document.createElement('div');trail.className='map-route';
- const first=Math.max(1,save.level-3),last=save.level+5;
- for(let level=first;level<=last;level++){
-  const row=document.createElement('div');row.className='map-row';
-  const main=document.createElement('div');main.className='map-main';
-  const dot=document.createElement('div');dot.className='map-node '+(level<save.level?'done':level===save.level?'current':'');
-  dot.innerHTML=level===save.level?catPortrait(CATMAP.tabby):level<save.level?'✓':String(level);
-  const label=document.createElement('div');label.className='map-node-label';label.innerHTML='Level '+level+'<small>'+(level<save.level?'Cleared':level===save.level?'You are here':'Coming up')+'</small>';
-  main.append(dot,label);row.appendChild(main);
-  if(level%4===0){const config=bonusForMilestone(level),done=save.bonusCleared.includes(level),unlocked=save.level>level;
-   const branch=document.createElement('div');branch.className='map-branch';row.appendChild(branch);
-   const btn=document.createElement('button');btn.type='button';btn.className='map-bonus'+(done?' done':'');btn.disabled=!unlocked||phase!=='prepare';
-   btn.innerHTML=config.emoji+' '+config.title+'<small>'+(done?'✓ Cleared · replay':unlocked?'Bonus 🐟 '+config.reward:'🔒 After level '+level)+'</small>';
-   btn.title=config.rule;btn.setAttribute('aria-label',config.title+'. '+config.rule);
-   btn.onclick=()=>startBonus(level);row.appendChild(btn);
-  }else{const empty=document.createElement('div');empty.style.flex='1';row.appendChild(empty);}
-  trail.appendChild(row);
+ const heading=document.createElement('section');heading.className='trail-banner';
+ heading.innerHTML='<div class="trail-kicker">The feline frontline · Campaign map</div><h3>🐾 The Purr-suit Trail</h3><p>Follow the winding pawprints! Conquer each kennel and discover side quests for extra fish coins.</p>';
+ wrap.appendChild(heading);
+ if(trailCelebration){
+  const result=trailCelebration, box=document.createElement('section');box.className='trail-summary';box.setAttribute('role','status');
+  box.innerHTML='<strong>'+(result.bonus?'🌟 Side path conquered!':'🏆 Level '+result.level+' conquered!')+'</strong><p>🐟 '+result.earned+' fish coins earned. '+(result.bonus?'Your normal squad is back.':'Next stop: Level '+save.level+'!')+'</p><button class="btn primary" type="button">🐈 Prepare Level '+save.level+'</button>';
+  box.querySelector('button').onclick=()=>closeDrawer();wrap.appendChild(box);
+ }else if(activeBonus){
+  const box=document.createElement('section');box.className='trail-summary';box.innerHTML='<strong>'+activeBonus.emoji+' '+activeBonus.title+'</strong><p>'+activeBonus.rule+' Your regular squad will return afterward.</p><button type="button" class="btn primary">⚔️ Prepare bonus battle</button>';
+  box.querySelector('button').onclick=()=>closeDrawer();wrap.appendChild(box);
+ }else{
+  const hint=document.createElement('div');hint.className='trail-hint';hint.textContent='🐱 Level '+save.level+' awaits! Close this map to prepare your squad. Side paths unlock after every four levels.';wrap.appendChild(hint);
  }
- wrap.appendChild(trail);
+ if(activeBonus&&!trailCelebration){
+  const leave=document.createElement('button');leave.type='button';leave.className='btn quiet';leave.style.cssText='width:100%;margin-bottom:12px';leave.textContent='↩ Exit bonus challenge';
+  leave.onclick=()=>{if(phase!=='prepare'){message('Finish the battle first!');return;}finishBonus();resetBattle();updateUI(true);renderCampaignMap();};wrap.appendChild(leave);
+ }
+ const first=Math.max(1,save.level-3),last=Math.max(8,save.level+5);
+ const spacing=123,y0=83,height=(last-first)*spacing+174;
+ const land=document.createElement('div');land.className='trail-land';land.style.height=height+'px';land.setAttribute('role','group');land.setAttribute('aria-label','Winding path of campaign levels and bonus challenges');
+ const px=lv=>lv%4===0?26:lv%4===1?30:lv%4===2?72:67;
+ const points=Array.from({length:last-first+1},(_,i)=>({level:first+i,x:px(first+i),y:y0+i*spacing}));
+ const lookup=new Map(points.map(p=>[p.level,p]));
+ let d='M '+(points[0].x*3.6)+' '+points[0].y;
+ for(let i=1;i<points.length;i++){const p=points[i-1],q=points[i],middle=(p.y+q.y)/2;d+=' C '+(p.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+q.y;}
+ let paths='<path class="trail-road-edge" d="'+d+'"/><path class="trail-road-sand" d="'+d+'"/><path class="trail-road-dashes" d="'+d+'"/>';
+ for(const p of points)if(p.level%4===0){
+  const side='M '+(p.x*3.6)+' '+p.y+' Q 172 '+(p.y-26)+' 283 '+p.y;
+  paths+='<path class="trail-spur-edge" d="'+side+'"/><path class="trail-spur" d="'+side+'"/>';
+ }
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','trail-lines');svg.setAttribute('viewBox','0 0 360 '+height);svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');svg.innerHTML=paths;land.appendChild(svg);
+ points.forEach((p,i)=>{
+  if(p.level%4!==0&&i%2===0){const flora=document.createElement('span');flora.className='trail-scenery';flora.textContent=['🌲','🍄','🌼','🌿'][i%4];flora.style.left=(p.x>50?10:85)+'%';flora.style.top=(p.y-23)+'px';land.appendChild(flora);}
+  const stop=document.createElement('div');stop.className='trail-stop'+(p.level===save.level?' is-current':'');stop.style.left=p.x+'%';stop.style.top=(p.y-28)+'px';
+  const node=document.createElement('div');node.className='trail-dot '+(p.level<save.level?'done':p.level===save.level?'current':'next');node.id='trail-node-'+p.level;
+  node.innerHTML=p.level===save.level&&!(trailAdvance&&trailAdvance.to===p.level)?catPortrait(CATMAP.tabby):p.level<save.level?'✓':String(p.level);
+  const label=document.createElement('div');label.className='trail-level-label';label.innerHTML='LEVEL '+p.level+'<small>'+(p.level<save.level?'✓ Cleared':p.level===save.level?'🐱 You are here':'Up ahead')+'</small>';stop.append(node,label);land.appendChild(stop);
+  if(p.level%4===0){
+   const cfg=bonusForMilestone(p.level),unlocked=save.level>p.level,done=save.bonusCleared.includes(p.level);
+   const b=document.createElement('button');b.type='button';b.className='trail-branch'+(done?' done':'');b.style.top=p.y+'px';b.disabled=!unlocked||phase!=='prepare';
+   b.innerHTML=cfg.emoji+' '+cfg.title+'<small>'+(done?'✓ Cleared · replay':unlocked?'🐟 '+cfg.reward+' coin reward':'🔒 After Level '+p.level)+'</small>';
+   b.title=cfg.rule;b.setAttribute('aria-label',cfg.title+'. '+cfg.rule);b.onclick=()=>{trailCelebration=null;startBonus(p.level);};land.appendChild(b);
+  }
+ });
+ wrap.appendChild(land);
+ const footer=document.createElement('p');footer.className='trail-footer';footer.textContent='🐾 Every pawstep is progress. Keep on purr-suing victory!';wrap.appendChild(footer);
+ if(trailAdvance){
+  const from=lookup.get(trailAdvance.from),to=lookup.get(trailAdvance.to);
+  if(from&&to){
+   const traveler=document.createElement('div');traveler.className='trail-traveler';traveler.style.left=from.x+'%';traveler.style.top=from.y+'px';traveler.innerHTML=catPortrait(CATMAP.tabby);land.appendChild(traveler);
+   const destination=$('trail-node-'+to.level);
+   const arrived=()=>{traveler.remove();if(destination){destination.innerHTML=catPortrait(CATMAP.tabby);destination.classList.add('arrived');}};
+   const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+   if(!reduced&&typeof traveler.animate==='function'){
+    const frames=[];for(let k=0;k<=24;k++){const t=k/24,bend=Math.sin(Math.PI*t)*(to.x>from.x?-6:6);frames.push({left:(from.x+(to.x-from.x)*t+bend)+'%',top:(from.y+(to.y-from.y)*t)+'px',offset:t});}
+    traveler.animate(frames,{duration:1650,easing:'ease-in-out',fill:'forwards'}).onfinish=arrived;
+   }else arrived();
+   const body=$('drawerBody');if(body&&to.level>first+2)body.scrollTop=Math.max(0,land.offsetTop+to.y-body.clientHeight*.53);
+  }
+  trailAdvance=null;
+ }
 }
 
 function renderSquadDetails(){const el=$('squadDetails');el.innerHTML='';for(let i=0;i<5;i++){let c=CATMAP[save.squad[i]],row=document.createElement('div');row.className='squad-line';if(c){const st=stat(c);row.innerHTML=catPortrait(c)+'<div class="detail"><b>'+(i+1)+'. '+c.name+'</b><small>Spawns every '+st.spawn.toFixed(1)+'s · ❤️ '+st.lives+'/6 · '+st.hp+' HP</small></div><button type="button">Train ›</button>';row.querySelector('button').addEventListener('click',()=>choose(c.id));}else{row.innerHTML='<div style="font-size:28px;width:54px;text-align:center">＋</div><div class="detail"><b>'+(i+1)+'. Empty slot</b><small>Choose a cat from the barracks</small></div><button type="button">Cats ›</button>';row.querySelector('button').addEventListener('click',()=>openDrawer('cats'));}el.appendChild(row);}}
@@ -712,7 +794,7 @@ function heroAction(){if(phase==='prepare'){enterBattle();return;}if(phase!=='ba
  if(save.level<5||activeBonus||heroSummonsUsed>=heroSummonLimit())return;
  if(!save.heroSelected){openDrawer('heroes');return;}
  if(!paused&&!heroCd&&!cats.some(u=>u.hero&&u.hp>0))summonHero();}
-const drawerNames={map:['🗺️ Campaign trail','Main route and optional side challenges'],castle:['🏰 Cat castle defenses','Level, squad and training bonuses'],cats:['🐾 Cat barracks','Tap a cat to inspect or unlock'],squad:['🛡️ Your squad','Five types max per level'],train:['⚒️ Cat training','Permanent upgrades and equipment'],heroes:['⭐ Legendary cats','Unlock after beating level 4 · tap to summon'],boost:['🌿 Battle boosts','Use catnip earned from dog kills · resets each level'],dogs:['🐶 Dog defenders','Current-level enemy stats and kennel guardians'],help:['⚙️ More & help','Instructions and game settings']};
+const drawerNames={map:['🐾 The Purr-suit Trail','Follow the pawprints · find bonus adventures'],castle:['🏰 Cat castle defenses','Level, squad and training bonuses'],cats:['🐾 Cat barracks','Tap a cat to inspect or unlock'],squad:['🛡️ Your squad','Five types max per level'],train:['⚒️ Cat training','Permanent upgrades and equipment'],heroes:['⭐ Legendary cats','Unlock after beating level 4 · tap to summon'],boost:['🌿 Battle boosts','Use catnip earned from dog kills · resets each level'],dogs:['🐶 Dog defenders','Current-level enemy stats and kennel guardians'],help:['⚙️ More & help','Instructions and game settings']};
 function openDrawer(which){if(!drawerNames[which])return;const backdrop=$('drawerBackdrop');if(!drawerOpen){drawerPreviousFocus=document.activeElement;drawerAutoPause=phase==='battle'&&!paused;if(drawerAutoPause)paused=true;drawerOpen=true;backdrop.hidden=false;}for(const key of Object.keys(drawerNames))$('panel'+key[0].toUpperCase()+key.slice(1)).hidden=key!==which;$('drawerTitle').textContent=drawerNames[which][0];$('drawerSubtitle').textContent=drawerNames[which][1];if(which==='map')renderCampaignMap();if(which==='squad')renderSquadDetails();if(which==='cats')renderBarracks();if(which==='train')renderDetails();if(which==='heroes')renderHeroes();if(which==='boost')renderBattleBoost();if(which==='dogs')renderDogRoster();if(which==='castle')renderCastleDetails();$('drawerBody').scrollTop=0;$('closeDrawer').focus();updateHUD();}
 function closeDrawer(){if(!drawerOpen)return;$('drawerBackdrop').hidden=true;drawerOpen=false;if(drawerAutoPause&&phase==='battle')paused=false;drawerAutoPause=false;updateHUD();if(drawerPreviousFocus&&typeof drawerPreviousFocus.focus==='function')drawerPreviousFocus.focus();}
 function updateHUD(){ if(phase==='prepare'){catBattleMax=catCastleMax();catHp=catBattleMax;}const castle=catCastleStats();$('catCastleNote').textContent='Max '+catBattleMax+' · Squad +'+castle.squad; $('catCastleStatsBtn').setAttribute('aria-label','Cat castle '+Math.ceil(catHp)+' of '+catBattleMax+' HP. Squad bonus '+castle.squad+'. Tap to inspect defense bonuses.'); $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=activeBonus?'★':save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catBattleMax*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8||!!activeBonus;$('bossMarker30').classList.toggle('spent',secondBossTriggered);$('bossMarker15').hidden=save.level<12||!!activeBonus;$('bossMarker15').classList.toggle('spent',thirdBossTriggered);$('bossMarker65').hidden=save.level<5||!!activeBonus;
