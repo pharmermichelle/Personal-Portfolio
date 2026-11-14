@@ -34,6 +34,18 @@ canvas{display:block;width:100%;height:100%;touch-action:manipulation}
 .drawer-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--navy);color:#fff;gap:10px;min-height:68px}.drawer-header h2{font-size:25px;margin:0;font-weight:1000;letter-spacing:-.04em}.drawer-header p{margin:1px 0 0;color:#e4e8f4;font-size:14px}.close-drawer{width:47px;height:47px;border:2px solid #b3af8f;background:var(--ice);color:var(--navy);border-radius:12px;font-size:28px;font-weight:900}
 .drawer-body{padding:16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0}.drawer-panel{min-width:0}.panel-intro{margin:0 0 15px;font-size:16px;line-height:1.4;color:#495a69;font-weight:650}
 .barracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cat-card{border:2px solid #c3c9cb;border-radius:14px;background:#fff;min-width:0;display:flex;gap:12px;align-items:center;padding:11px;text-align:left;color:var(--ink)}.cat-card.selected{border-color:#3e777e;background:#ecf3f1}.cat-card .portrait{height:64px;width:64px;flex:0 0 64px}.cat-info{min-width:0;flex:1}.cat-card .cat-name{display:block;font-size:18px;font-weight:1000;line-height:1.15}.cat-card .cat-desc{display:block;font-size:14px;line-height:1.3;color:#4e6073;margin:5px 0}.cat-card .cat-status{display:block;font-size:15px;color:#326869;font-weight:1000}.cat-card.locked .cat-status{color:#8b5a3f}
+/* Barracks-only styling: each cat has a light fur-tinted card, and its
+   original SVG portrait survives as a barely visible large backdrop.
+   The modern character image is the only artwork shown in the small avatar. */
+.cat-card.fur-tinted{position:relative;isolation:isolate;overflow:hidden;background:color-mix(in srgb,var(--cat-fur) 16%,#fff);border-color:color-mix(in srgb,var(--cat-fur) 39%,#aeb8c1)}
+.cat-card.fur-tinted.selected{background:color-mix(in srgb,var(--cat-fur) 14%,#e9f5f3);border-color:#3e777e;box-shadow:inset 0 0 0 1px #3e777e38}
+.cat-card.fur-tinted .cat-card-watermark{position:absolute;z-index:0;right:12px;top:50%;transform:translateY(-50%) rotate(-12deg);width:170px;height:170px;opacity:.055;pointer-events:none;filter:grayscale(.35);display:block}
+.cat-card.fur-tinted .cat-card-watermark > .portrait{display:block;width:100%;height:100%}
+.cat-card.fur-tinted > .portrait,.cat-card.fur-tinted > .cat-info{position:relative;z-index:1}
+/* The SVG avatar remains in the DOM for broken-image fallback, but is hidden
+   while the polished character image is present. */
+.cat-card.fur-tinted > .lion-portrait:has(> img) > svg{opacity:0}
+@media(max-width:600px){.cat-card.fur-tinted .cat-card-watermark{right:4px;width:150px;height:150px}}
 .detail-heading{display:flex;align-items:center;gap:12px}.detail-heading .portrait{width:78px;height:78px;flex:0 0 78px}.detail-heading h3{font-size:25px;letter-spacing:-.03em;margin:0 0 4px}.detail-heading p{font-size:15px;color:var(--muted);margin:0;line-height:1.35}.stats-four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:16px 0}.little-stat{background:#e7e9e1;border:1px solid #c1c7c1;border-radius:11px;text-align:center;padding:9px 2px}.little-stat b{display:block;font-size:19px;color:var(--navy);font-variant-numeric:tabular-nums}.little-stat span{display:block;font-size:13px;color:#4e6073;font-weight:1000;margin-top:2px}
 .upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.upgrade{background:#fff;border:2px solid #bfcbcf;color:var(--ink);text-align:left;min-height:99px;border-radius:13px;padding:12px}.upgrade strong{display:block;font-size:17px;line-height:1.2}.upgrade small{font-size:14px;display:block;color:#516171;margin:5px 0}.upgrade em{font-style:normal;font-weight:1000;font-size:16px;color:#82583a}.equip-btn{width:100%;margin-top:13px;min-height:54px;font-size:18px}.subnote{font-size:15px;line-height:1.45;color:var(--muted)}
 .back-cats{font-size:16px;color:var(--navy);font-weight:1000;background:none;border:0;padding:5px 0 14px}
@@ -792,7 +804,20 @@ function renderDogRoster(){
   roster.appendChild(card);
  }
 }
-function renderBarracks(){const el=$('barracks');el.innerHTML='';for(const c of CATS){const owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),b=document.createElement('button');b.className='cat-card '+(c.id===selected?'selected ':'')+(owned?'':'locked ')+(equipped?'equipped':'');b.setAttribute('aria-pressed',String(c.id===selected));b.innerHTML=catPortrait(c)+'<div class="cat-info"><span class="cat-name">'+c.name+'</span><span class="cat-desc">'+c.desc+'</span>'+catStatsMarkup(c)+'<span class="cat-status">'+(equipped?'✓ In squad':owned?(c.bonusAt?'🎭 Bonus recruit · Ready to equip':'Ready to equip'):c.bonusAt?'🎭 Win '+bonusForMilestone(c.bonusAt).title:save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c)+' · 🐟 '+c.cost:'🔒 🐟 '+c.cost+' to unlock')+'</span></div>';b.addEventListener('click',()=>choose(c.id));el.appendChild(b);}}
+function renderBarracks(){
+ const el=$('barracks');el.innerHTML='';
+ for(const c of CATS){
+  const owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),b=document.createElement('button');
+  b.className='cat-card fur-tinted '+(c.id===selected?'selected ':'')+(owned?'':'locked ')+(equipped?'equipped':'');
+  b.style.setProperty('--cat-fur',c.fur);
+  b.setAttribute('aria-pressed',String(c.id===selected));
+  const legacyArt=catPortrait({...c,id:c.id+'-vector'});
+  b.innerHTML='<span class="cat-card-watermark" aria-hidden="true">'+legacyArt+'</span>'+catPortrait(c)+
+   '<div class="cat-info"><span class="cat-name">'+c.name+'</span><span class="cat-desc">'+c.desc+'</span>'+catStatsMarkup(c)+
+   '<span class="cat-status">'+(equipped?'✓ In squad':owned?(c.bonusAt?'🎭 Bonus recruit · Ready to equip':'Ready to equip'):c.bonusAt?'🎭 Win '+bonusForMilestone(c.bonusAt).title:save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c)+' · 🐟 '+c.cost:'🔒 🐟 '+c.cost+' to unlock')+'</span></div>';
+  b.addEventListener('click',()=>choose(c.id));el.appendChild(b);
+ }
+}
 function renderDetails(){const c=CATMAP[selected],owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),s=stat(c),u=save.upgrades[c.id],el=$('details');const label=kind=>kind==='power'?`⚔️ Power ${s.power}`:kind==='attack'?`💨 Attack ${(1/s.attack).toFixed(2)}/s`:kind==='lives'?`❤️ HP Tier ${s.lives}/6 (${s.hp} HP)`:`⏱️ Spawn ${s.spawn.toFixed(1)}s`;
 el.innerHTML='<div class="detail-heading">'+catPortrait(c)+'<div><h3>'+c.name+'</h3><p>'+c.desc+'. '+(owned?'Owned and trainable.':c.bonusAt?'Win '+bonusForMilestone(c.bonusAt).title+' to recruit this undercover cat.':save.level<catUnlockLevel(c)?'Available at level '+catUnlockLevel(c)+'.':'Unlock to recruit this fighter.')+'</p></div></div>'+
 '<div class="stats-four"><div class="little-stat"><b>'+s.power+'</b><span>POWER</span></div><div class="little-stat"><b>'+(1/s.attack).toFixed(2)+'/s</b><span>ATTACK</span></div><div class="little-stat"><b>'+s.lives+'/6</b><span>HP TIER</span></div><div class="little-stat"><b>'+s.spawn.toFixed(1)+'s</b><span>SPAWN</span></div></div>'+
