@@ -323,6 +323,78 @@ canvas{width:100%;height:100%;display:block}
  .hero-card.character-tint>.character-ghost{width:155px;height:155px;right:-6px}
  .enemy-card.character-tint>.character-ghost{font-size:90px}
 }
+
+/* Storybook squad polish: soft painting, light outlines, enlarged portraits and legible bars. */
+.squad-box{
+ border:1px solid #8dbab6;border-radius:16px;padding:7px 8px 9px;
+ background:linear-gradient(180deg,#eaf8f9a0,#cfebd69c),url('./assets/arena-storybook.webp') center 78%/cover;
+ box-shadow:inset 0 1px 0 #fff8,0 2px 8px #17364d24;
+}
+.squad-top{position:relative;display:flex;justify-content:center;align-items:center;min-height:38px;margin:0 2px 6px}
+.squad-title{
+ display:inline-flex;align-items:center;justify-content:center;gap:6px;
+ border:1px solid #b7d1d5;border-radius:999px;padding:4px 17px;
+ background:#f8fcf6ed;color:#244360;box-shadow:0 2px 6px #18394d16;
+ font-size:22px;font-weight:950;line-height:1.2;letter-spacing:.015em;
+}
+.squad-catnip-total{
+ position:absolute;right:0;top:50%;transform:translateY(-50%);
+ display:inline-flex;align-items:center;gap:3px;
+ border:1px solid #8abda5;border-radius:999px;padding:4px 7px;
+ background:#f2faebf0;color:#234e38;font-size:14px;font-weight:900;white-space:nowrap;
+}
+.squad-catnip-total[hidden]{display:none!important}
+.squad{gap:6px}
+.squad-card,.squad-card.filled{
+ height:127px;min-width:0;padding:6px 3px 7px;gap:3px;
+ border:1px solid #a7c0c4;border-radius:13px;
+ box-shadow:0 2px 4px #203f5630;background:#fffbf5;color:#203956;
+}
+.squad-card.filled.character-tint{
+ background:color-mix(in srgb,var(--character-fur) 9%,#fffbf6);
+ border-color:#a6c6b4;
+}
+.squad-card .portrait,.squad-card.filled .portrait{width:min(100%,70px);height:70px;min-height:0;flex:none}
+.squad-card .slot-name{
+ font-size:15px;font-weight:950;line-height:1.1;color:#1d3857;
+ min-height:0;max-height:32px;padding:0 1px;overflow-wrap:normal;word-break:normal;
+}
+.squad-card .slot-progress{
+ width:calc(100% - 6px);height:11px;flex:0 0 11px;margin-top:auto;
+ background:#d9e5ed;border:1px solid #7197a8;border-radius:9px;
+}
+.squad-card .slot-progress div{background:linear-gradient(90deg,#3897a6,#62bba4)}
+.squad-card.boost-ready{border-color:#65a771}
+.squad-card .slot-nip-ready{
+ position:absolute;z-index:3;right:2px;top:2px;display:grid;place-items:center;
+ width:25px;height:25px;border:1px solid #6da46d;border-radius:50%;
+ background:#e1f5c8;box-shadow:0 1px 4px #1c4b343b;font-size:17px;line-height:1;pointer-events:none;
+}
+.squad-card .slot-nip-ready[hidden]{display:none!important}
+.squad-card.empty{justify-content:center;background:#fffbf6f5}
+.squad-card.empty .slot-name{font-size:14px}
+.squad-card:focus-visible{outline:3px solid #267f96;outline-offset:2px}
+@media(max-width:600px){
+ .squad-box{padding:6px 6px 8px}.squad{gap:4px}
+ .squad-title{font-size:19px;padding:4px 12px}
+ .squad-catnip-total{font-size:12px;padding:3px 5px}
+ .squad-card,.squad-card.filled{height:115px;padding:5px 2px 6px}
+ .squad-card .portrait,.squad-card.filled .portrait{width:min(100%,60px);height:60px}
+ .squad-card .slot-name{font-size:13px}
+ .squad-card.empty .slot-name{font-size:12px}
+ .squad-card .slot-progress{height:10px;flex-basis:10px}
+ .squad-card .slot-nip-ready{width:23px;height:23px;font-size:16px}
+}
+@media(max-height:700px){
+ .squad-box{padding:4px 5px 5px}
+ .squad-top{min-height:30px;margin-bottom:3px}
+ .squad-title{font-size:17px;padding:3px 11px}
+ .squad-card,.squad-card.filled{height:97px;padding:3px 2px 5px}
+ .squad-card .portrait,.squad-card.filled .portrait{width:min(100%,49px);height:49px}
+ .squad-card .slot-name{font-size:12px}
+ .squad-card.empty .slot-name{font-size:11px}
+ .squad-card .slot-progress{height:9px;flex-basis:9px}
+}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -342,7 +414,7 @@ canvas{width:100%;height:100%;display:block}
 <button id="dogCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Open dog army stats" title="Tap to view dog stats"><div class="health-top"><span>🐶 Dog castle <small class="kennel-hint">ⓘ</small></span><b id="dogHpStat">100</b></div><div class="kennel-meter-wrap"><div class="meter dogs"><div id="dogMeter" style="width:100%"></div></div><span id="bossMarker65" class="boss-marker" style="left:65%" title="Boss appears at 65% kennel health" aria-label="Boss at 65% kennel health">65%</span><span id="bossMarker30" class="boss-marker" style="left:30%" title="Boss appears at 30% kennel health" aria-label="Boss at 30% kennel health" hidden>30%</span><span id="bossMarker15" class="boss-marker" style="left:15%" title="Boss appears at 15% kennel health" aria-label="Boss at 15% kennel health" hidden>15%</span></div></button>
 </div>
 <div class="control-row"><button id="startBtn" class="btn primary">▶ Start level 1</button><button id="pauseBtn" class="btn" disabled>⏸ Pause</button><button id="speedBtn" class="btn">⏩ 1×</button><button id="fullscreenBtn" class="btn" aria-label="Fullscreen battlefield" title="Fullscreen battlefield">⛶</button></div>
-<div class="squad-box"><div class="squad-top"><span id="squadHint">🐱 SQUAD · Tap to train</span><button id="boostBadge" type="button" class="boost-badge" aria-label="Open catnip battle upgrades">🌿 <span id="nipStat">0</span> · Boost<span id="boostNotif" class="notif-cat" aria-hidden="true"></span></button></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
+<div class="squad-box"><div class="squad-top"><span id="squadHint" class="squad-title">🐱 SQUAD</span><span id="squadNipTotal" class="squad-catnip-total" title="Current battle catnip" hidden>🌿 <span id="nipStat">0</span></span></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
 </section>
 <nav class="bottom-nav" aria-label="Game menus"><button class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="train"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
 <aside class="game-ad-footer" aria-label="Advertisement">
@@ -668,6 +740,8 @@ function fieldStat(c){const s=stat(c),u=battleUpgrades[c.id];if(!u)return s;cons
 function boostMaxed(c,kind){const u=battleUpgrades[c.id];return u[kind]>=3||(kind==='lives'&&fieldStat(c).lives>=6)||(kind==='spawn'&&fieldStat(c).spawn<=3.81);}
 function boostCost(c,kind){const base={power:6,attack:8,lives:9,spawn:10}[kind];return Math.round((base+Math.ceil(c.cost/130))*Math.pow(1.8,battleUpgrades[c.id][kind]));}
 function canAffordAnyBattleBoost(){if(phase!=='battle')return false;for(const id of save.squad){const c=CATMAP[id];if(!c)continue;for(const kind of ['power','attack','lives','spawn']){if(!boostMaxed(c,kind) && catnip>=boostCost(c,kind))return true;}}return false;}
+// UI-only readiness: per-cat notification follows the same affordability rules.
+function canAffordBattleBoostFor(c){return phase==='battle'&&!!c&&['power','attack','lives','spawn'].some(kind=>!boostMaxed(c,kind)&&catnip>=boostCost(c,kind));}
 function buyBoost(c,kind){if(phase!=='battle'||!save.squad.includes(c.id)||boostMaxed(c,kind))return false;const cost=boostCost(c,kind);if(catnip<cost){message('Need '+(cost-catnip)+' more catnip!');return false;}
  const prior=fieldStat(c);catnip-=cost;battleUpgrades[c.id][kind]++;const current=fieldStat(c);
  if(kind==='spawn'&&spawnTimers[c.id]!==undefined)spawnTimers[c.id]=Math.max(.15,spawnTimers[c.id]*current.spawn/prior.spawn);
@@ -796,7 +870,37 @@ function buyCat(c){if(c.bonusAt){message('🎭 Win '+bonusForMilestone(c.bonusAt
 function catUnlockLevel(c){if(c.bonusAt)return c.bonusAt+1;return {tabby:1,fluffy:2,siamese:3,tuxedo:4,ginger:5,calico:6,sphynx:7,maine:8}[c.id]||1;}
 function equip(c){if(activeBonus){message('Bonus squad is locked to the challenge rules.');return;}if(rosterLocked()){message('Squad locked during battle!');return;}if(!save.unlocked.includes(c.id)){buyCat(c);return;}if(save.squad.includes(c.id)){if(save.squad.length===1){message('Keep at least one cat equipped!');return;}save.squad=save.squad.filter(id=>id!==c.id);message(c.short+' returned to the barracks.');}else{if(save.squad.length>=5){message('Five slots full — unequip one first.');return;}save.squad.push(c.id);message(c.short+' added to your squad!');}persist();updateUI(true);}
 function improve(c,kind){if(activeBonus){message('Leave bonus mode to train cats!');return;}if(rosterLocked()){message('Upgrades are between levels!');return;}if(!save.unlocked.includes(c.id))return;const u=save.upgrades[c.id];if((kind==='lives'&&u.lives>=5)||(kind!=='lives'&&u[kind]>=10)){message('Maxed out!');return;}if(u[kind]>=trainingCap()){message('Next training rank unlocks at a later level!');return;}const cost=upgradeCost(c,kind);if(save.coins<cost){message('Need '+(cost-save.coins)+' more fish coins!');return;}save.coins-=cost;u[kind]++;persist();sound.effect('boost');message('✨ '+c.short+' '+({power:'power',attack:'attack speed',spawn:'spawn rate',lives:'lives'}[kind])+' improved!');updateUI(true);}
-function renderSquad(){const el=$('squad');el.innerHTML='';for(let i=0;i<5;i++){let id=save.squad[i],c=CATMAP[id],div=document.createElement('button');div.className='squad-card '+(c?'filled':'empty');div.disabled=false;if(c){tintCharacter(div,c.fur);const st=phase==='battle'?fieldStat(c):stat(c);div.setAttribute('aria-label',c.name+', '+st.hp+' health, next spawn in '+st.spawn.toFixed(1)+' seconds. Tap to '+(phase==='battle'?'boost':'train')+'.');div.innerHTML=catLegacyGhost(c)+'<span class="num">'+(i+1)+'</span>'+catPortrait(c)+'<div class="slot-name">'+c.short+'</div><div class="slot-hp" id="hp-'+c.id+'">❤️ '+st.lives+'/6 · '+st.hp+'HP</div><div class="slot-progress" id="track-'+c.id+'" role="progressbar" aria-label="'+c.name+' next spawn progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-'+c.id+'"></div></div>';div.addEventListener('click',()=>{if(phase==='battle'){boostSelected=c.id;openDrawer('boost');}else choose(c.id);});}else{div.innerHTML='<span class="num">'+(i+1)+'</span><div class="plus">+</div><div class="slot-name">Add cat</div>';div.addEventListener('click',()=>{openDrawer('cats');message('Pick a cat to unlock or equip.');});}el.appendChild(div);}}
+function renderSquad(){
+ const el=$('squad');el.innerHTML='';
+ for(let i=0;i<5;i++){
+  const id=save.squad[i],c=CATMAP[id],div=document.createElement('button');
+  div.type='button';div.className='squad-card '+(c?'filled':'empty');div.disabled=false;
+  if(c){
+   tintCharacter(div,c.fur);div.id='squad-slot-'+c.id;
+   const st=phase==='battle'?fieldStat(c):stat(c),ready=canAffordBattleBoostFor(c);
+   div.classList.toggle('boost-ready',ready);
+   div.setAttribute('aria-label',c.name+', '+st.hp+' HP. Tap to '+(phase==='battle'?'boost':'train')+'.'+(ready?' Catnip boost available.':''));
+   div.innerHTML='<span class="num">'+(i+1)+'</span>'+catPortrait(c)+
+    '<span class="slot-name">'+c.short+'</span>'+
+    '<span class="slot-nip-ready" id="nip-ready-'+c.id+'" aria-hidden="true"'+(ready?'':' hidden')+'>🌿</span>'+
+    '<div class="slot-progress" id="track-'+c.id+'" role="progressbar" aria-label="'+c.name+' next spawn progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-'+c.id+'"></div></div>';
+   div.addEventListener('click',()=>{if(phase==='battle'){boostSelected=c.id;openDrawer('boost');}else choose(c.id);});
+  }else{
+   div.innerHTML='<span class="num">'+(i+1)+'</span><div class="plus">+</div><div class="slot-name">Add cat</div>';
+   div.addEventListener('click',()=>{openDrawer('cats');message('Pick a cat to unlock or equip.');});
+  }
+  el.appendChild(div);
+ }
+}
+function syncSquadBoostIndicators(){
+ for(const id of save.squad){
+  const c=CATMAP[id],card=$('squad-slot-'+id),leaf=$('nip-ready-'+id);
+  if(!c||!card||!leaf)continue;
+  const ready=canAffordBattleBoostFor(c),st=phase==='battle'?fieldStat(c):stat(c);
+  leaf.hidden=!ready;card.classList.toggle('boost-ready',ready);
+  card.setAttribute('aria-label',c.name+', '+st.hp+' HP. Tap to '+(phase==='battle'?'boost':'train')+'.'+(ready?' Catnip boost available.':''));
+ }
+}
 function catStatsMarkup(c){const t=phase==='battle'?fieldStat(c):stat(c);return '<div class="unit-stats" aria-label="Damage '+t.power+', range '+t.range+', HP '+t.hp+'"><span><small>DMG</small><b class="unit-value">'+t.power+'</b></span><span><small>RANGE</small><b class="unit-value">'+t.range+'</b></span><span><small>HP</small><b class="unit-value">'+t.hp+'</b></span></div>';}
 function dogPreviewStats(type){
  const d=DOGS[type],L=activeBonus?activeBonus.milestone+1:save.level;
@@ -854,7 +958,7 @@ el.innerHTML='<div class="detail-heading character-tint" style="--character-fur:
 '<div class="subnote" style="margin:0 0 10px">❤️ HP '+s.hp+' · 🎯 Range '+s.range+' (battlefield units)</div><div class="upgrades" id="upgradeGrid"></div><button id="equipBtn" class="btn '+(owned?'green':'primary')+' equip-btn" '+(phase==='battle'||(!owned&&c.bonusAt)?'disabled':'')+'>'+(!owned?(c.bonusAt?'🎭 Side mission reward':save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c):'🔓 Unlock for 🐟 '+c.cost):equipped?'− Unequip cat':'+ Equip cat')+'</button>'+
 '<p class="subnote">Each HP tier adds 22 health to each cat. A cat at 2/6 has 44 HP, not two respawns. Hero summon charges are separate. Attack speed controls how often it hits; spawn rate controls how often another copy marches out.</p>';
 const grid=$('upgradeGrid');for(const kind of ['power','attack','lives','spawn']){const maxed=kind==='lives'?u[kind]>=5:u[kind]>=10;const tierLocked=u[kind]>=trainingCap()&&!maxed;const b=document.createElement('button');b.className='upgrade';b.disabled=!owned||phase==='battle'||maxed||tierLocked||save.coins<upgradeCost(c,kind);b.innerHTML='<strong>'+label(kind)+'</strong><small>'+({power:'Stronger strikes',attack:'Attack more often',lives:'Adds 22 HP per cat, not extra spawns',spawn:'New cats arrive faster'}[kind])+'</small><em>'+(maxed?'MAXED':tierLocked?'Level gate':'🐟 '+upgradeCost(c,kind))+'</em>';b.addEventListener('click',()=>improve(c,kind));grid.appendChild(b);}$('equipBtn').addEventListener('click',()=>equip(c));}
-function updateTimers(){for(const id of save.squad){const c=CATMAP[id],st=phase==='battle'?fieldStat(c):stat(c),remaining=phase==='battle'?Math.max(0,spawnTimers[id]||0):st.spawn,p=$('progress-'+id),track=$('track-'+id),hp=$('hp-'+id);const percent=phase==='battle'?clamp((1-remaining/st.spawn)*100,0,100):0;if(p)p.style.width=percent.toFixed(1)+'%';if(hp)hp.textContent='❤️ '+st.lives+'/6 · '+st.hp+'HP';if(track){track.setAttribute('aria-valuenow',String(Math.round(percent)));track.setAttribute('aria-valuetext',remaining.toFixed(1)+' seconds until '+c.name+' spawns');track.classList.toggle('ready',percent>=99);}}}
+function updateTimers(){for(const id of save.squad){const c=CATMAP[id],st=phase==='battle'?fieldStat(c):stat(c),remaining=phase==='battle'?Math.max(0,spawnTimers[id]||0):st.spawn,p=$('progress-'+id),track=$('track-'+id);const percent=phase==='battle'?clamp((1-remaining/st.spawn)*100,0,100):0;if(p)p.style.width=percent.toFixed(1)+'%';if(track){track.setAttribute('aria-valuenow',String(Math.round(percent)));track.setAttribute('aria-valuetext',remaining.toFixed(1)+' seconds until '+c.name+' spawns');track.classList.toggle('ready',percent>=99);}}}
 
 let trailAdvance=null,trailCelebration=null;
 function finishBonus(){if(!activeBonus)return;save.squad=bonusOriginalSquad||['tabby'];activeBonus=null;bonusOriginalSquad=null;}
@@ -988,8 +1092,7 @@ function updateHUD(){ if(phase==='prepare'){catBattleMax=catCastleMax();catHp=ca
  const b=$('startBtn');if(phase==='prepare'){b.disabled=false;b.textContent=activeBonus?'▶ Start bonus':'▶ Start level '+save.level;b.classList.remove('hero-ready');}
  else if(phase==='battle'&&save.level>=5&&!activeBonus){const active=cats.some(u=>u.hero&&u.hp>0),h=HEROMAP[save.heroSelected],remaining=heroSummonLimit()-heroSummonsUsed;b.disabled=paused||remaining<=0||active||heroCd>0;b.classList.toggle('hero-ready',Boolean(h)&&remaining>0&&!active&&heroCd<=0&&!paused);b.textContent=remaining<=0?'⭐ Summons used':!h?'⭐ Heroes':active?'⭐ Champion '+remaining+' left':heroCd>0?'⏳ '+Math.ceil(heroCd)+'s':'⭐ Summon '+remaining+'/'+heroSummonLimit();}
  else{b.disabled=true;b.textContent=phase==='battle'?'⚔️ Battle underway':phase==='win'?'🏆 Won!':'💔 Retry';b.classList.remove('hero-ready');}
- $('squadHint').textContent=phase==='battle'?'🐱 SQUAD · Tap cat to boost':'🐱 SQUAD · Tap to train';
- const boostReady=canAffordAnyBattleBoost();$('boostBadge').classList.toggle('ready',phase==='battle'&&catnip>=6);$('boostBadge').classList.toggle('has-notif',boostReady);$('boostBadge').setAttribute('aria-label','🌿 '+catnip+' catnip. Open battle boosts'+(boostReady?' — upgrades available':''));
+ $('squadNipTotal').hidden=phase!=='battle';syncSquadBoostIndicators();
  $('trainNavBtn').dataset.openPanel=phase==='battle'?'boost':'train';$('trainNavBtn').querySelector('.nav-icon').textContent=phase==='battle'?'🌿':'⚒️';$('trainNavText').textContent=phase==='battle'?'Boost':'Train';
  $('pauseBtn').disabled=phase!=='battle';$('pauseBtn').textContent=paused?'▶ Resume':'⏸ Pause';$('speedBtn').textContent='⏩ '+speed+'×';
  if(phase==='battle'){
@@ -1187,7 +1290,7 @@ let largerText=false;try{largerText=localStorage.getItem('claws-vs-paws-large-te
 // Castle itself is the tap target on the battle canvas, even on a stretched phone layout.
 canvas.addEventListener('click',e=>{const rect=canvas.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width*W,y=(e.clientY-rect.top)/rect.height*H;if(x>=793&&y>=112&&y<=410)openDrawer('dogs');else if(x<=166&&y>=112&&y<=410)openDrawer('castle');});
 $('dogCastleStatsBtn').addEventListener('click',()=>openDrawer('dogs'));$('catCastleStatsBtn').addEventListener('click',()=>openDrawer('castle'));
-$('mapBtn').addEventListener('click',()=>openDrawer('map'));$('boostBadge').addEventListener('click',()=>openDrawer('boost'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
+$('mapBtn').addEventListener('click',()=>openDrawer('map'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
 $('fullscreenBtn').addEventListener('click',()=>{const el=document.querySelector('.shell');if(!document.fullscreenElement&&el.requestFullscreen)el.requestFullscreen().catch(()=>message('Fullscreen unavailable on this device.'));else if(document.exitFullscreen)document.exitFullscreen();});
 function startOverFromZero(){
  try{localStorage.removeItem(STORAGE);}catch(e){}
