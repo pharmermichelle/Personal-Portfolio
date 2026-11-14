@@ -428,6 +428,187 @@ canvas{width:100%;height:100%;display:block}
  .squad-card.empty .slot-name{font-size:11px}
  .squad-card .slot-progress{height:9px;flex-basis:9px}
 }
+/* Purr-suit Trail: approved storybook scenery, original game logic untouched. */
+.drawer:has(#panelMap:not([hidden])){
+  border-color:#afc9b2;
+  background:#fff9ef;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-header{
+  min-height:95px;
+  background:linear-gradient(100deg,#25385ff5 0%,#304d7eea 70%,#2c568cbb 100%),
+    url('./assets/arena-storybook.webp') center 27%/cover no-repeat;
+  border-bottom:1px solid #aac9c6;
+  position:relative;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-header h2{
+  font-size:clamp(25px,5vw,31px);
+  line-height:1.1;
+  letter-spacing:-.025em;
+  text-wrap:balance;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-header p{
+  font-size:15px;
+  line-height:1.3;
+  font-weight:700;
+  color:#eaf4ff;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-body{background:#fff9ef;padding:15px 14px 24px}
+/* Drawer heading already names the Trail; keep the extra banner in the DOM for continuity. */
+#panelMap .trail-banner{display:none}
+#panelMap .trail-shop-links{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px;padding:0;margin:0 0 14px;border:0;
+}
+#panelMap .trail-shop-path{display:none}
+#panelMap .trail-shop-link{
+  position:relative;min-height:80px;padding:14px 8px 11px;
+  border:1.5px solid #d7be91;border-radius:17px;
+  background:linear-gradient(145deg,#fff7e7,#fff0d1);
+  box-shadow:0 3px 0 #bba47e65,0 3px 10px #5b70502b;
+  color:#223f61;font-size:18px;font-weight:950;line-height:1.12;
+  text-align:center;white-space:normal;
+}
+#panelMap .trail-shop-link small{
+  display:block;font-size:14px;font-weight:800;
+  color:#53716e;line-height:1.2;margin-top:6px;
+}
+#panelMap .trail-shop-link:last-child{
+  border-color:#aac8ae;background:linear-gradient(145deg,#f1f8ec,#e0f0df);
+}
+#panelMap .trail-shop-link::after{
+  content:'❧';position:absolute;right:8px;bottom:3px;
+  color:#8cb77e;font-size:22px;opacity:.75;
+}
+#panelMap .trail-shop-link:active:not(:disabled){transform:translateY(1px);box-shadow:0 1px 0 #aaa8a1}
+#panelMap .trail-shop-link:focus-visible{outline:3px solid #267f96;outline-offset:3px}
+#panelMap .trail-hint{
+  border:1.5px solid #b4cbb4;border-radius:18px;
+  padding:12px 14px;margin:0 0 16px;
+  background:linear-gradient(130deg,#f3f6e9,#e7f1df);
+  box-shadow:0 2px 6px #344e3330;
+  color:#294d61;font-size:16px;font-weight:850;line-height:1.42;
+}
+#panelMap .trail-summary{
+  border:1.5px solid #d4b477;border-radius:16px;
+  padding:14px 16px;background:linear-gradient(145deg,#fff3d9,#fffaf0);
+  box-shadow:0 2px 7px #57452c28;
+}
+#panelMap .trail-summary strong{font-size:21px;color:#254361}
+#panelMap .trail-summary p{font-size:16px;color:#37586c}
+#panelMap .trail-land{
+  position:relative;isolation:isolate;overflow:hidden;
+  border:1.5px solid #8caf94;border-radius:21px;
+  background:#bfdb9d url('./assets/trail-storybook.webp') center top/100% 100% no-repeat;
+  box-shadow:inset 0 2px 5px #fff9,0 5px 12px #355c3440;
+}
+#panelMap .trail-land::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,#fffef30d 0%,transparent 22%,#e5efb40a 100%);
+}
+#panelMap .trail-land::after{display:none}
+#panelMap .trail-lines{z-index:1}
+#panelMap .trail-road-edge{stroke:#a5aa85;stroke-width:38;stroke-linejoin:round;stroke-linecap:round}
+#panelMap .trail-road-sand{stroke:#e8c89a;stroke-width:31;stroke-linejoin:round;stroke-linecap:round}
+#panelMap .trail-road-dashes{stroke:#fffae7;stroke-width:2.8;stroke-dasharray:2.5 14;stroke-linecap:round}
+#panelMap .trail-spur-edge{stroke:#b8ae85;stroke-width:13;stroke-dasharray:3 9;stroke-linecap:round}
+#panelMap .trail-spur{stroke:#fff5cf;stroke-width:6;stroke-dasharray:3 9;stroke-linecap:round}
+#panelMap .trail-stop{z-index:3;width:145px;gap:5px}
+#panelMap .trail-dot{
+  display:grid;place-items:center;flex:none;
+  width:63px;height:63px;border:3px solid #839d9a;border-radius:50%;
+  background:linear-gradient(145deg,#fffdf4,#e1eee7);color:#365475;
+  font-size:22px;font-weight:1000;
+  box-shadow:0 3px 0 #547b76,0 3px 9px #36564166;
+}
+#panelMap .trail-dot.done{
+  border-color:#326f69;color:#fff;
+  background:linear-gradient(140deg,#84c8ac,#3b987e);
+  text-shadow:0 1px 1px #2757484f;
+  box-shadow:0 3px 0 #2f6b61,0 4px 9px #27574859;
+}
+#panelMap .trail-dot.current{
+  border:3px solid #dca750;
+  background:radial-gradient(circle at 40% 35%,#fff9d9,#ffdd88);
+  box-shadow:0 0 0 5px #fff5d9c9,0 3px 10px #b58955bd;
+}
+#panelMap .trail-dot .portrait{width:52px;height:52px}
+#panelMap .trail-level-label{
+  max-width:147px;padding:6px 9px;text-align:center;
+  border:1px solid #c7c8ac;border-radius:14px;
+  background:#fff7e4ef;color:#244361;
+  box-shadow:0 3px 8px #5f63332d;
+  font-weight:1000;font-size:16px;line-height:1.15;
+}
+#panelMap .trail-level-label small{
+  display:block;max-width:145px;margin-top:4px;
+  color:#3f6372;font-size:13px;font-weight:850;line-height:1.22;
+  white-space:normal;
+}
+#panelMap .trail-stop.is-current .trail-level-label{
+  border-color:#d6aa63;background:#ffecb9;
+}
+#panelMap .trail-branch{
+  width:42%;max-width:190px;min-height:77px;
+  border:2px solid #e3ba88;border-radius:18px;
+  background:linear-gradient(135deg,#fff8e9ee,#fff1d8f7);
+  box-shadow:0 3px 9px #6a6c484d;
+  padding:9px 7px;color:#2f4964;font-size:15px;font-weight:1000;line-height:1.16;
+}
+#panelMap .trail-branch small{
+  color:#4e6573;font-size:12px;font-weight:850;
+  margin-top:4px;line-height:1.2;
+}
+#panelMap .trail-branch:disabled{opacity:.82;filter:none}
+#panelMap .trail-branch.done{border-color:#79aa87;background:#e6f3dff0}
+#panelMap .trail-branch:focus-visible{outline:3px solid #267f96;outline-offset:4px}
+#panelMap .trail-scenery{opacity:.52;filter:saturate(.78);font-size:20px}
+#panelMap .trail-traveler{border-color:#d9a34c;background:#fff0cb}
+#panelMap .trail-pet-shop{
+  filter:drop-shadow(0 5px 4px #4f664756);
+  width:43%;max-width:155px;
+}
+#panelMap .trail-pet-shop .shop-roof{
+  height:25px;width:91%;background:#688999;border-bottom:3px solid #385f72;
+}
+#panelMap .trail-pet-shop .shop-awning{
+  height:17px;border:1.5px solid #be8b72;border-radius:5px 5px 0 0;
+  background:repeating-linear-gradient(90deg,#fff4e2 0 16px,#dd9285 16px 31px);
+}
+#panelMap .trail-pet-shop .shop-house{
+  width:91%;min-height:66px;padding:7px 5px;background:#fff5df;
+  border:1.5px solid #a5a18a;border-top:0;border-radius:0 0 10px 10px;
+}
+#panelMap .trail-pet-shop .shop-title{font-size:14px}
+#panelMap .trail-pet-shop .shop-price{font-size:12px}
+#panelMap .trail-footer{font-size:15px;color:#476c66;margin-top:15px}
+@media(max-width:600px){
+ .drawer:has(#panelMap:not([hidden])) .drawer-header{min-height:92px}
+ .drawer:has(#panelMap:not([hidden])) .drawer-header h2{font-size:clamp(24px,5.2vw,29px)}
+ .drawer:has(#panelMap:not([hidden])) .drawer-header p{font-size:14px}
+ .drawer:has(#panelMap:not([hidden])) .drawer-body{padding:13px 10px 20px}
+ #panelMap .trail-shop-links{gap:8px;margin-bottom:12px}
+ #panelMap .trail-shop-link{min-height:77px;font-size:17px;padding:12px 6px 10px}
+ #panelMap .trail-shop-link small{font-size:13px}
+ #panelMap .trail-hint{font-size:15px;padding:11px 12px}
+ #panelMap .trail-stop{width:129px}
+ #panelMap .trail-dot{width:56px;height:56px;font-size:20px}
+ #panelMap .trail-dot .portrait{width:47px;height:47px}
+ #panelMap .trail-level-label{max-width:128px;padding:5px 6px;font-size:15px}
+ #panelMap .trail-level-label small{max-width:126px;font-size:12px;line-height:1.2}
+ #panelMap .trail-branch{min-height:72px;font-size:14px;padding:7px 4px}
+ #panelMap .trail-branch small{font-size:12px}
+ #panelMap .trail-pet-shop{max-width:142px}
+ #panelMap .trail-pet-shop .shop-title{font-size:13px}
+ #panelMap .trail-pet-shop .shop-price{font-size:11px}
+}
+@media(max-width:380px){
+ #panelMap .trail-shop-link{font-size:15px}
+ #panelMap .trail-stop{width:120px}
+ #panelMap .trail-level-label{max-width:120px;font-size:14px;padding:4px 4px}
+ #panelMap .trail-level-label small{font-size:11.5px}
+ #panelMap .trail-branch{width:43%;font-size:13px}
+ #panelMap .trail-branch small{font-size:11px}
+}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
