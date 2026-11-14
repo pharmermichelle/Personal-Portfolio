@@ -278,6 +278,10 @@ canvas{width:100%;height:100%;display:block}
 .trail-shop-links .trail-shop-link:first-of-type{background:#fff0d4;border-color:#d4b78e}
 .trail-hint{font-size:13px}
 @media(max-width:600px){.trail-pet-shop{max-width:132px;min-height:98px}.trail-pet-shop .shop-roof{height:20px}.trail-pet-shop .shop-house{min-height:60px;padding:5px 3px}.trail-pet-shop .shop-title{font-size:12px}.trail-pet-shop .shop-price{font-size:10px}.trail-level-label small{font-size:10px}}
+/* Full-body OpenArt portrait with the original SVG underneath as a graceful fallback. */
+.lion-portrait{display:inline-block;position:relative;vertical-align:middle;overflow:hidden}
+.lion-portrait>svg{width:100%;height:100%;display:block}
+.lion-portrait>img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -551,6 +555,12 @@ const HEROES=[
 ];
 const CATMAP=Object.fromEntries([...CATS,...HEROES].map(c=>[c.id,c]));
 const HEROMAP=Object.fromEntries(HEROES.map(h=>[h.id,h]));
+// OpenArt Lionheart Captain character art; keep existing vector character as an offline fallback.
+// Replace with a local hosted asset when the original PNG has been added to this repository.
+const LIONHEART_ART_URL='https://cdn.openart.ai/watermarked_images/MbzZ6EMIad2YIAtZGbAq/thumbnail_0156bcd1_1794688671757.webp';
+const lionSprite=new Image();
+lionSprite.decoding='async';
+lionSprite.src=LIONHEART_ART_URL;
 const DOGS={
  mutt:{fur:'#7e6858',belly:'#dcc8b7',maxHp:25,power:7,attack:1.45,speed:32,range:31,loot:1},
  beagle:{fur:'#8e765f',belly:'#f2e8d8',maxHp:20,power:6,attack:1.1,speed:53,range:28,loot:2},
@@ -702,7 +712,7 @@ function modal(icon,title,description,button,action){$('modalCancel').hidden=tru
 function hideModal(){$('overlay').hidden=true;}
 function message(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
 function tip(t){/* Concise messages appear in the top battle banner. */}
-function catPortrait(c){const face=c.mark==='siamese'?'#806657':c.fur;let markings='';if(c.mark==='stripes')markings='<path d="M23 20l-3 8M32 16v11M41 20l3 8" stroke="#8b5837" stroke-width="4" stroke-linecap="round"/>';if(c.mark==='calico')markings='<path d="M14 27q6-11 16-8l-3 12Z" fill="#a96947"/><path d="M35 19q12-5 16 8l-12 4Z" fill="#333d4c"/>';if(c.mark==='tuxedo')markings='<path d="M22 36q10 8 20 0v12H22Z" fill="#f8f6eb"/>';if(c.mark==='siamese')markings='<ellipse cx="32" cy="34" rx="17" ry="15" fill="#846456"/>';if(c.mark==='fluffy')markings='<path d="M12 31l-5 3 5 6-4 5 8 3q15 12 32 0l8-3-4-5 5-6-5-3" fill="'+c.belly+'"/>';let tool=c.weapon==='sword'?'⚔️':c.weapon==='axe'?'🪓':c.weapon==='bow'?'🏹':c.weapon==='star'?'✦':c.weapon==='shield'?'🛡️':c.weapon==='wand'?'✧':c.weapon==='bolt'?'⚡':'🔨';const costumeHat=c.costume==='dalmatian'?'<path d="M8 25Q14 12 31 14Q50 12 56 26L51 30Q31 25 13 30Z" fill="#f8f7f1" stroke="#606b74" stroke-width="1.5"/><ellipse cx="21" cy="22" rx="5" ry="3.5" fill="#343a45"/><ellipse cx="42" cy="20" rx="4" ry="4" fill="#343a45"/><path d="M12 24Q3 27 7 40L12 41L18 30" fill="#f8f7f1" stroke="#606b74" stroke-width="1.2"/><path d="M51 24Q60 28 57 40L52 41L47 30" fill="#f8f7f1" stroke="#606b74" stroke-width="1.2"/>':
+function catPortrait(c){if(c.id==='lion'){const fallback=catPortrait({...c,id:'lion-vector'});return '<span class="portrait lion-portrait">'+fallback+'<img src="'+LIONHEART_ART_URL+'" alt="" loading="lazy" decoding="async" onerror="this.remove()"></span>';}const face=c.mark==='siamese'?'#806657':c.fur;let markings='';if(c.mark==='stripes')markings='<path d="M23 20l-3 8M32 16v11M41 20l3 8" stroke="#8b5837" stroke-width="4" stroke-linecap="round"/>';if(c.mark==='calico')markings='<path d="M14 27q6-11 16-8l-3 12Z" fill="#a96947"/><path d="M35 19q12-5 16 8l-12 4Z" fill="#333d4c"/>';if(c.mark==='tuxedo')markings='<path d="M22 36q10 8 20 0v12H22Z" fill="#f8f6eb"/>';if(c.mark==='siamese')markings='<ellipse cx="32" cy="34" rx="17" ry="15" fill="#846456"/>';if(c.mark==='fluffy')markings='<path d="M12 31l-5 3 5 6-4 5 8 3q15 12 32 0l8-3-4-5 5-6-5-3" fill="'+c.belly+'"/>';let tool=c.weapon==='sword'?'⚔️':c.weapon==='axe'?'🪓':c.weapon==='bow'?'🏹':c.weapon==='star'?'✦':c.weapon==='shield'?'🛡️':c.weapon==='wand'?'✧':c.weapon==='bolt'?'⚡':'🔨';const costumeHat=c.costume==='dalmatian'?'<path d="M8 25Q14 12 31 14Q50 12 56 26L51 30Q31 25 13 30Z" fill="#f8f7f1" stroke="#606b74" stroke-width="1.5"/><ellipse cx="21" cy="22" rx="5" ry="3.5" fill="#343a45"/><ellipse cx="42" cy="20" rx="4" ry="4" fill="#343a45"/><path d="M12 24Q3 27 7 40L12 41L18 30" fill="#f8f7f1" stroke="#606b74" stroke-width="1.2"/><path d="M51 24Q60 28 57 40L52 41L47 30" fill="#f8f7f1" stroke="#606b74" stroke-width="1.2"/>':
  c.costume==='husky'?'<path d="M9 26L10 6L23 18Q32 11 41 18L53 6L55 27Q33 19 9 27Z" fill="#c8d7e8" stroke="#52687c" stroke-width="1.7"/><path d="M15 10L16 22L23 19M50 10L47 22L41 19" fill="#7592a7"/><path d="M20 21Q32 15 44 21" fill="none" stroke="#fafbfb" stroke-width="4"/>':
  c.costume==='bulldog'?'<path d="M9 24Q16 12 32 15Q48 12 55 25L53 31Q32 26 11 31Z" fill="#b38a75" stroke="#6d5d60" stroke-width="1.7"/><path d="M12 22Q0 24 6 40L13 43L18 29M52 22Q64 24 58 40L51 43L46 29" fill="#99746a" stroke="#6d5d60" stroke-width="1.5"/><ellipse cx="32" cy="23" rx="6" ry="4" fill="#f2dfc5"/>':'';return `<svg class="portrait" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="57" rx="22" ry="4" fill="#8495a355"/><path d="M13 30 12 9l15 12M51 30 52 9 37 21" fill="${c.fur}" stroke="#405262" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 24 16 14l9 10M48 24 48 14l-9 10" fill="#efb3aa"/><circle cx="32" cy="37" r="23" fill="${c.fur}" stroke="#405262" stroke-width="2"/>${markings}${costumeHat}<ellipse cx="32" cy="39" rx="14" ry="12" fill="${c.mark==='siamese'?face:c.belly}"/><ellipse cx="26" cy="36" rx="2.4" ry="3" fill="${c.mark==='shadow'?'#f9d78c':'#243750'}"/><ellipse cx="38" cy="36" rx="2.4" ry="3" fill="${c.mark==='shadow'?'#f9d78c':'#243750'}"/><path d="m29 44 3 2 3-2-3-2Z" fill="#d5788c"/><path d="M32 46v2m0 0-4 2m4-2 4 2" stroke="#6c6670" stroke-width="1.2" fill="none"/><text x="53" y="61" font-size="16" text-anchor="middle">${tool}</text></svg>`;}
 function rosterLocked(){return phase==='battle';}
@@ -1014,6 +1024,15 @@ function drawVitalityRing(u,isCat){
  ctx.restore();
 }
 function drawFighter(u){const isCat=u.team==='cat',c=isCat?CATMAP[u.id]:DOGS[u.type];ctx.save();ctx.translate(u.x,u.y);const sx=u.scale*(isCat?1.42:1.56),sy=u.scale*(isCat?1.59:1.72)*sceneAspectCorrection();ctx.scale(sx,sy);if(!isCat)ctx.scale(-1,1);const bob=Math.sin(u.anim)*(isCat?1.5:1.2);ctx.translate(0,bob);ellipse(0,17,isCat?29:32,5,'#40584d55');
+// Lionheart uses his custom artwork on the battlefield; never change combat hitboxes or stats.
+// If OpenArt's CDN image isn't available, the original hand-drawn cat below still works.
+if(isCat&&u.id==='lion'&&lionSprite.complete&&lionSprite.naturalWidth>0){
+  ellipse(0,-26,32,30,'#ffcf664a');
+  ctx.drawImage(lionSprite,-47,-65,94,94);
+  drawVitalityRing(u,true);
+  ctx.restore();
+  return;
+}
 // tail: raised cat, curled dog
 ctx.beginPath();ctx.moveTo(-17,0);ctx.bezierCurveTo(isCat?-35:-40,-8,isCat?-35:-20,-23,isCat?-20:-42,-21);ctx.strokeStyle=c.fur;ctx.lineWidth=isCat?8:11;ctx.lineCap='round';ctx.stroke();
 if(u.hero){ellipse(0,-26,32,30,'#ffcf664a');}
