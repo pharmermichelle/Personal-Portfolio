@@ -609,6 +609,116 @@ canvas{width:100%;height:100%;display:block}
  #panelMap .trail-branch{width:43%;font-size:13px}
  #panelMap .trail-branch small{font-size:11px}
 }
+/* Trail visual precision pass: match approved storybook sample without replacing map controls. */
+.drawer:has(#panelMap:not([hidden])) .close-drawer{background:#fff3da;border:1px solid #d8c292;box-shadow:0 2px 5px #142a4840;color:#233c64;border-radius:14px}
+.drawer:has(#panelMap:not([hidden])){border-color:#a9c5b2;background:#fff7ed}
+.drawer:has(#panelMap:not([hidden])) .drawer-header{
+ background:#263d6c url('./assets/trail-header-scene.svg') center/cover no-repeat;
+ border-bottom:2px solid #c5d2bb;min-height:79px;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-header h2{
+ font-family:Georgia,Cambria,'Times New Roman',serif;
+ font-weight:900;font-size:clamp(24px,6.5vw,32px);
+ letter-spacing:-.02em;line-height:1.06;color:#fff9ef;
+ text-shadow:0 1px 1px #10274950;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-header p{
+ font-family:system-ui,sans-serif;font-size:13px;font-weight:700;
+ color:#f0f5ff;line-height:1.25;letter-spacing:-.025em;
+}
+.drawer:has(#panelMap:not([hidden])) .drawer-body{background:#fff8ee;padding:15px 13px 24px}
+#panelMap .trail-shop-links{gap:12px;margin-bottom:14px}
+#panelMap .trail-shop-link{
+ font-family:Georgia,Cambria,serif;
+ background:linear-gradient(145deg,#fff9eb,#ffedc8);
+ border:1.5px solid #ddbd88;border-radius:20px;
+ color:#263b5b;box-shadow:0 3px 0 #8b7d5d44,0 4px 9px #314e4426;
+ font-size:20px;font-weight:900;
+}
+#panelMap .trail-shop-link:last-child{
+ border-color:#a6c5a5;background:linear-gradient(145deg,#f6f7e9,#e4f4dd);
+}
+#panelMap .trail-shop-link::before,#panelMap .trail-shop-link::after{
+ content:"";position:absolute;bottom:2px;width:39px;height:26px;pointer-events:none;
+ background:url("./assets/squad-leaves.svg") center/contain no-repeat;opacity:.82;
+}
+#panelMap .trail-shop-link::before{left:2px}
+#panelMap .trail-shop-link::after{right:2px;transform:scaleX(-1)}
+#panelMap .trail-shop-link small{
+ font-family:system-ui,sans-serif;font-size:14px;font-weight:800;
+ color:#54736d;margin-top:4px;
+}
+#panelMap .trail-hint{
+ background:linear-gradient(145deg,#f5f7e9,#e7f1e0);
+ border:1px solid #b3ceb2;border-radius:17px;
+ font-size:16px;line-height:1.4;color:#293f62;
+}
+#panelMap .trail-land{
+ border:1.5px solid #adccaa;border-radius:19px;
+ background:#bcd99a url('./assets/trail-meadow.webp') center top/100% 100% no-repeat;
+ box-shadow:0 4px 10px #45643b35;
+}
+#panelMap .trail-land::before{background:none}
+#panelMap .trail-land::after{display:none}
+#panelMap .trail-road-edge{stroke:#a3a17a;stroke-width:38}
+#panelMap .trail-road-sand{stroke:#eac490;stroke-width:31}
+#panelMap .trail-road-dashes{stroke:#fff6dd;stroke-width:2.9;stroke-dasharray:3 15}
+#panelMap .trail-dot.done{
+ border:3px solid #377c6e;
+ background:linear-gradient(140deg,#80d0ad,#339b82);
+ box-shadow:0 3px 0 #26665e,0 5px 9px #365a4a50;
+}
+#panelMap .trail-dot.current{
+ border:4px solid #c9913e;background:#ffefbe;
+ box-shadow:0 0 0 5px #fff7dda8,0 4px 10px #8b642f66;
+}
+#panelMap .trail-level-label{
+ border:1px solid #dacba7;border-radius:15px;
+ background:linear-gradient(145deg,#fffaf0f8,#fff0d5f5);
+ color:#203a5b;box-shadow:0 4px 8px #51683a38;
+ font-family:Georgia,Cambria,serif;font-weight:900;
+ font-size:16px;padding:6px 9px;
+}
+#panelMap .trail-level-label small{
+ font-family:system-ui,sans-serif;font-size:13px;font-weight:800;
+ color:#426775;
+}
+#panelMap .trail-stop.is-current .trail-level-label{
+ background:linear-gradient(#ffefc3,#ffe5a3);border-color:#e6b15c;
+}
+#panelMap .trail-branch{
+ border:2px solid #e6bf8c;border-radius:19px;
+ background:linear-gradient(150deg,#fffaf0fa,#ffebccf8);
+ color:#283e5d;box-shadow:0 3px 6px #715d3d38;
+ font-family:Georgia,Cambria,serif;font-size:16px;
+}
+#panelMap .trail-branch small{
+ font-family:system-ui,sans-serif;font-weight:850;font-size:12px;
+}
+#panelMap .trail-pet-shop .shop-house{
+ background:#fff3da;border:1.5px solid #aa9977;
+ box-shadow:0 2px 4px #52694830;
+}
+#panelMap .trail-pet-shop .shop-title{
+ font-family:Georgia,Cambria,serif;font-weight:900;font-size:14px;
+}
+@media(max-width:600px){
+ .drawer:has(#panelMap:not([hidden])) .drawer-header{min-height:78px}
+ .drawer:has(#panelMap:not([hidden])) .drawer-header h2{font-size:clamp(24px,6.7vw,29px)}
+ .drawer:has(#panelMap:not([hidden])) .drawer-header p{font-size:12.6px}
+ .drawer:has(#panelMap:not([hidden])) .drawer-body{padding:12px 10px 22px}
+ #panelMap .trail-shop-link{font-size:18px;min-height:78px;padding:12px 5px}
+ #panelMap .trail-shop-link small{font-size:13px}
+ #panelMap .trail-level-label{font-size:15px;padding:5px 6px}
+ #panelMap .trail-level-label small{font-size:12px}
+ #panelMap .trail-branch{font-size:14px}
+}
+@media(max-width:380px){
+ .drawer:has(#panelMap:not([hidden])) .drawer-header h2{font-size:23px}
+ #panelMap .trail-shop-link{font-size:16px}
+ #panelMap .trail-branch{font-size:13px}
+}
+#panelMap .trail-scenery{display:none}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
