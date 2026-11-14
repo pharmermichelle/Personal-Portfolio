@@ -1059,7 +1059,16 @@ function roundRect(x,y,w,h,r,fill,stroke,lw=1){ctx.beginPath();ctx.roundRect(x,y
 function ellipse(x,y,rx,ry,col){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();}
 function poly(points,fill,stroke='',lw=1){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}}
 function line(x1,y1,x2,y2,color,width=2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();}
-function world(){const sky=ctx.createLinearGradient(0,0,0,400);sky.addColorStop(0,'#91a7c4');sky.addColorStop(1,'#d6e3f8');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+// Approved Storybook Arena (November 2026): local artwork, original Canvas world as fallback.
+const arenaBackdrop=new Image();
+arenaBackdrop.decoding='async';
+arenaBackdrop.src='./assets/arena-storybook.webp';
+function world(){
+ if(arenaBackdrop.complete&&arenaBackdrop.naturalWidth>0){
+  ctx.drawImage(arenaBackdrop,0,0,W,H);
+  return;
+ }
+ const sky=ctx.createLinearGradient(0,0,0,400);sky.addColorStop(0,'#91a7c4');sky.addColorStop(1,'#d6e3f8');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
 // clouds
 for(let i=0;i<5;i++){let x=((i*223+clock*(i%2?2.8:4.4))%1170)-100;let y=50+(i%3)*33;ellipse(x,y,43,16,'#fef5efab');ellipse(x-20,y-6,24,16,'#fef5efd5');ellipse(x+15,y-8,27,18,'#fef5efcb');}
 poly([[0,200],[100,163],[215,206],[314,172],[414,214],[544,177],[653,211],[766,173],[960,219],[960,500],[0,500]],'#9ca9a7');poly([[0,250],[131,219],[237,241],[337,219],[455,254],[591,226],[718,247],[846,216],[960,245],[960,500],[0,500]],'#87999a');roundRect(0,285,W,215,0,'#96a48c');
