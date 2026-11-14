@@ -265,6 +265,19 @@ canvas{width:100%;height:100%;display:block}
 @keyframes trail-cat-idle{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
 @media(prefers-reduced-motion:reduce){.trail-dot.arrived,.trail-stop.is-current .trail-dot .portrait{animation:none}}
 
+
+/* In-world cat pet store: same purchases and upgrades as the existing barracks. */
+.trail-pet-shop{position:absolute;z-index:5;left:20%;width:39%;max-width:142px;min-height:104px;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:transparent;padding:0;cursor:pointer;color:#293e57;font:inherit;text-align:center;filter:drop-shadow(0 4px 2px #6884775a)}
+.trail-pet-shop:focus-visible{outline:3px solid #d6a455;outline-offset:4px;border-radius:12px}
+.trail-pet-shop .shop-roof{display:block;height:23px;width:87%;max-width:119px;background:#647e87;clip-path:polygon(0 100%,11% 35%,16% 55%,24% 0,50% 19%,76% 0,84% 55%,89% 35%,100% 100%);border-bottom:4px solid #293d52}
+.trail-pet-shop .shop-awning{display:block;width:92%;height:14px;border:2px solid #647e87;border-radius:5px 5px 0 0;background:repeating-linear-gradient(90deg,#fcf0d7 0 14px,#cd8782 14px 27px)}
+.trail-pet-shop .shop-house{display:flex;flex-direction:column;align-items:center;justify-content:center;width:89%;min-height:62px;padding:6px 4px 5px;background:#fff5e1;border:2px solid #667f85;border-top:0;border-radius:0 0 9px 9px;line-height:1.07}
+.trail-pet-shop .shop-title{display:block;font-size:14px;font-weight:1000;color:#243a59;letter-spacing:-.02em}
+.trail-pet-shop .shop-price{display:block;font-size:11px;font-weight:850;color:#8b614b;margin-top:4px}
+.trail-pet-shop:active .shop-house{background:#ffe3bc}
+.trail-shop-links .trail-shop-link:first-of-type{background:#fff0d4;border-color:#d4b78e}
+.trail-hint{font-size:13px}
+@media(max-width:600px){.trail-pet-shop{max-width:132px;min-height:98px}.trail-pet-shop .shop-roof{height:20px}.trail-pet-shop .shop-house{min-height:60px;padding:5px 3px}.trail-pet-shop .shop-title{font-size:12px}.trail-pet-shop .shop-price{font-size:10px}.trail-level-label small{font-size:10px}}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -762,17 +775,18 @@ function startBonus(milestone){
 }
 
 function trailUnlockHint(level){
- const moments={1:'🐱 Fluffy in the shop',2:'🏹 Siamese joins the hunt',3:'🥷 Ninja on the loose',4:'⭐ Hero Den opens',5:'🪄 Calico magic',6:'⚡ Sphynx sparks',7:'🔨 Maine Coon joins',8:'🐺 Husky hideout',9:'🐟 Fishy fortunes',10:'⚔️ Sharper claws',11:'🐶 Triple boss next',12:'🎭 Bulldog disguise'};
- return moments[level]||(level%4===0?'🎭 New side quest':level%3===0?'🐟 Bonus fish haul':'⚔️ Claw-some challenge');
+ // These cats are AVAILABLE TO BUY after clearing the level, never automatically awarded.
+ const moments={1:'🐟 Buy Fluffy',2:'🐟 Buy Siamese',3:'🐟 Buy Tuxedo',4:'🐟 Buy Ginger + heroes',5:'🐟 Buy Calico',6:'🐟 Buy Sphynx',7:'🐟 Buy Maine Coon',8:'🎭 Husky side quest',9:'🐟 More fish to earn',10:'⚔️ Tougher kennel',11:'🐶 Triple boss ahead',12:'🎭 Bulldog side quest'};
+ return moments[level]||(level%4===0?'🎭 Side quest opens':level%3===0?'🐟 Fish coin payday':'⚔️ New dog defenses');
 }
 function renderCampaignMap(){
  const wrap=$('mapContent');if(!wrap)return;
  wrap.innerHTML='';
  const heading=document.createElement('section');heading.className='trail-banner';
- heading.innerHTML='<div class="trail-kicker">The feline frontline · Campaign map</div><h3>🐾 The Purr-suit Trail</h3><p>Follow the winding pawprints! Conquer each kennel and discover side quests for extra fish coins.</p>';
+ heading.innerHTML='<div class="trail-kicker">The feline frontline · Campaign map</div><h3>🐾 The Purr-suit Trail</h3><p>Clear levels to unlock cats for purchase with 🐟 fish coins. Win side quests to earn disguise cats.</p>';
  wrap.appendChild(heading);
  const shops=document.createElement('div');shops.className='trail-shop-links';
- shops.innerHTML='<span class="trail-shop-path" aria-hidden="true">┄┄ 🐾 ┄┄</span><button type="button" class="trail-shop-link">🛍️ Purr-chase Pals<small>Cat barracks</small></button><button type="button" class="trail-shop-link">⭐ Hero Den<small>Legendary cats</small></button>';
+ shops.innerHTML='<span class="trail-shop-path" aria-hidden="true">┄┄ 🐾 ┄┄</span><button type="button" class="trail-shop-link">🐱 Cat Pet Shop<small>Spend 🐟 coins</small></button><button type="button" class="trail-shop-link">⭐ Hero Den<small>Legendary cats</small></button>';
  shops.querySelectorAll('button')[0].addEventListener('click',()=>openDrawer('cats'));
  shops.querySelectorAll('button')[1].addEventListener('click',()=>openDrawer('heroes'));
  wrap.appendChild(shops);
@@ -784,7 +798,7 @@ function renderCampaignMap(){
   const box=document.createElement('section');box.className='trail-summary';box.innerHTML='<strong>'+activeBonus.emoji+' '+activeBonus.title+'</strong><p>'+activeBonus.rule+' Your regular squad will return afterward.</p><button type="button" class="btn primary">⚔️ Prepare bonus battle</button>';
   box.querySelector('button').onclick=()=>closeDrawer();wrap.appendChild(box);
  }else{
-  const hint=document.createElement('div');hint.className='trail-hint';hint.textContent='🐱 Next siege: Level '+save.level+'. Visit the shops above, or close the trail to ready your squad.';wrap.appendChild(hint);
+  const hint=document.createElement('div');hint.className='trail-hint';hint.textContent='🐱 Level '+save.level+' is next. Shop cats cost fish coins; bonus disguise cats are won in side quests.';wrap.appendChild(hint);
  }
  if(activeBonus&&!trailCelebration){
   const leave=document.createElement('button');leave.type='button';leave.className='btn quiet';leave.style.cssText='width:100%;margin-bottom:12px';leave.textContent='↩ Exit bonus challenge';
@@ -796,6 +810,9 @@ function renderCampaignMap(){
  const px=lv=>lv%4===0?26:lv%4===1?30:lv%4===2?72:67;
  const points=Array.from({length:last-first+1},(_,i)=>({level:first+i,x:px(first+i),y:y0+i*spacing}));
  const lookup=new Map(points.map(p=>[p.level,p]));
+ // Keep the single shop beside the current stretch of the campaign.
+ const shopLevel=2+4*Math.max(0,Math.round((save.level-2)/4));
+ const shopPoint=lookup.get(shopLevel)||points[Math.min(1,points.length-1)];
  let d='M '+(points[0].x*3.6)+' '+points[0].y;
  for(let i=1;i<points.length;i++){const p=points[i-1],q=points[i],middle=(p.y+q.y)/2;d+=' C '+(p.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+q.y;}
  let paths='<path class="trail-road-edge" d="'+d+'"/><path class="trail-road-sand" d="'+d+'"/><path class="trail-road-dashes" d="'+d+'"/>';
@@ -803,6 +820,8 @@ function renderCampaignMap(){
   const side='M '+(p.x*3.6)+' '+p.y+' Q 172 '+(p.y-26)+' 283 '+p.y;
   paths+='<path class="trail-spur-edge" d="'+side+'"/><path class="trail-spur" d="'+side+'"/>';
  }
+ const shopPath='M '+(shopPoint.x*3.6)+' '+shopPoint.y+' Q 170 '+(shopPoint.y-25)+' 68 '+shopPoint.y;
+ paths+='<path class="trail-spur-edge" d="'+shopPath+'"/><path class="trail-spur" d="'+shopPath+'"/>';
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','trail-lines');svg.setAttribute('viewBox','0 0 360 '+height);svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');svg.innerHTML=paths;land.appendChild(svg);
  points.forEach((p,i)=>{
   if(p.level%4!==0&&i%2===0){const flora=document.createElement('span');flora.className='trail-scenery';flora.textContent=['🌲','🍄','🌼','🌿'][i%4];flora.style.left=(p.x>50?10:85)+'%';flora.style.top=(p.y-23)+'px';land.appendChild(flora);}
@@ -813,10 +832,17 @@ function renderCampaignMap(){
   if(p.level%4===0){
    const cfg=bonusForMilestone(p.level),unlocked=save.level>p.level,done=save.bonusCleared.includes(p.level);
    const b=document.createElement('button');b.type='button';b.className='trail-branch'+(done?' done':'');b.style.top=p.y+'px';b.disabled=!unlocked||phase!=='prepare';
-   b.innerHTML=cfg.emoji+' '+cfg.title+'<small>'+(done?'✓ Prize claimed · replay':unlocked?(cfg.rewardCat?'🎁 '+CATMAP[cfg.rewardCat].short+' + 🐟 '+cfg.reward:'🐟 '+cfg.reward+' fish coins'):(cfg.rewardCat?'🎭 '+CATMAP[cfg.rewardCat].short+' · ':'')+'🔒 After Level '+p.level)+'</small>';
+   b.innerHTML=cfg.emoji+' '+cfg.title+'<small>'+(done?'✓ Prize won · replay':unlocked?(cfg.rewardCat?'🎁 WIN '+CATMAP[cfg.rewardCat].short+' + 🐟 '+cfg.reward:'🐟 '+cfg.reward+' fish coins'):(cfg.rewardCat?'🎭 WIN '+CATMAP[cfg.rewardCat].short+' · ':'')+'🔒 After Level '+p.level)+'</small>';
    b.title=cfg.rule;b.setAttribute('aria-label',cfg.title+'. '+cfg.rule);b.onclick=()=>{trailCelebration=null;startBonus(p.level);};land.appendChild(b);
   }
  });
+ const shop=document.createElement('button');
+ shop.type='button';shop.className='trail-pet-shop';shop.style.top=shopPoint.y+'px';
+ shop.title='Open the Cat Pet Shop to spend fish coins on unlocked cats';
+ shop.setAttribute('aria-label','Open Cat Pet Shop. Spend fish coins to purchase cats unlocked through level completion.');
+ shop.innerHTML='<span class="shop-roof" aria-hidden="true"></span><span class="shop-awning" aria-hidden="true"></span><span class="shop-house"><span class="shop-title">🐱 Cat Pet Shop</span><span class="shop-price">🐟 Buy cats here</span></span>';
+ shop.addEventListener('click',()=>openDrawer('cats'));
+ land.appendChild(shop);
  wrap.appendChild(land);
  const footer=document.createElement('p');footer.className='trail-footer';footer.textContent='🐾 Every pawstep is progress. Keep on purr-suing victory!';wrap.appendChild(footer);
  if(trailAdvance){
