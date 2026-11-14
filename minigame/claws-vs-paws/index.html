@@ -627,13 +627,40 @@ function spawnDogTraffic(dt){
  }
 }
 function resetBattle(){cats=[];dogs=[];shots=[];particles=[];floaters=[];time=0;paused=false;spawnTimers={};soloDogTimer=3;groupDogTimer=activeBonus?16:save.level===1?25:save.level===2?20:14;groupDogGap=0;groupDogQueue=[];dogGroupsSent=0;pendingCoins=0;catnip=0;battleUpgrades=emptyBattleUpgrades();boostSelected=save.squad[0]||'tabby';heroCd=0;heroSummonsUsed=0;gateBossTriggered=false;secondBossTriggered=false;thirdBossTriggered=false;dogBossWarning=0;catBattleMax=catCastleMax();catHp=catBattleMax;dogHp=dogCastleMax();catDefenseCd=2.1;dogDefenseCd=2.1;dogCastleStrikeCd=0;catCastleStrikeCd=0;shake=0;updateUI(true);}
-function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}sound.unlock();message(activeBonus?'⭐ Bonus challenge!':'🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
-function endBattle(won){if(phase!=='battle')return;phase=won?'win':'loss';paused=false;sound.effect(won?'victory':'defeat',true);
- if(activeBonus){const mission=activeBonus;const newClear=won&&!save.bonusCleared.includes(mission.milestone);const reward=newClear?mission.reward:0;if(won){if(newClear){save.coins+=reward;save.bonusCleared.push(mission.milestone);} }else save.coins+=5;finishBonus();persist();modal(won?'🏆':'💔',won?'Bonus completed!':'Bonus challenge failed',won?(newClear?'First-time reward: 🐟 '+reward+'. ':'')+'Your main campaign stays at level '+save.level+'.': 'The challenge has ended. Your main campaign and usual squad are unchanged.','Return to level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();});updateUI(true);return;}
- if(won){const reward=victoryReward(save.level);const finished=save.level;const earned=reward+pendingCoins;save.coins+=earned;save.level++;persist();
- modal('🏆','Level '+finished+' conquered!','Your cats earned 🐟 '+reward+' for the win and 🐟 '+pendingCoins+' for defeated dogs (🐟 '+earned+' total). Battle catnip and boosts reset next level. '+(finished===4?'Legendary cat champions are now unlocked in the Heroes shop!':'Train and choose your next siege carefully.'),'Prepare level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();message('Plan your next siege!');});}
- else{const consolation=8+Math.min(7,Math.floor(pendingCoins*.20));save.coins+=consolation;persist();modal('💔','The cat castle fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip and battle boosts reset when you retry. Try a different squad or invest in permanent training.','Retry level '+save.level,()=>{phase='prepare';resetBattle();hideModal();closeDrawer();});}
- updateUI(true);}
+function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}trailCelebration=null;trailAdvance=null;resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}sound.unlock();message(activeBonus?'⭐ Bonus challenge!':'🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
+
+function endBattle(won){
+ if(phase!=='battle')return;
+ phase=won?'win':'loss';paused=false;sound.effect(won?'victory':'defeat',true);
+ if(activeBonus){
+  const mission=activeBonus,firstClear=won&&!save.bonusCleared.includes(mission.milestone),reward=firstClear?mission.reward:0;
+  if(won&&firstClear){save.coins+=reward;save.bonusCleared.push(mission.milestone);}
+  if(!won)save.coins+=5;
+  finishBonus();persist();
+  if(won){
+   trailAdvance=null;trailCelebration={level:mission.milestone,earned:reward,bonus:true};
+   phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');return;
+  }
+  modal('💔','Bonus challenge failed','Your usual squad is safe, and the campaign is unchanged. 🐟 5 consolation coins earned.','Return to the Purr-suit Trail',()=>{
+   phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
+  });
+  updateUI(true);return;
+ }
+ if(won){
+  const reward=victoryReward(save.level),finished=save.level,earned=reward+pendingCoins;
+  save.coins+=earned;save.level++;persist();
+  trailAdvance={from:finished,to:save.level};trailCelebration={level:finished,earned,bonus:false};
+  phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
+  message('🐾 Level '+finished+' conquered! Your cat is moving along the trail.');
+  return;
+ }
+ const consolation=8+Math.min(7,Math.floor(pendingCoins*.20));
+ save.coins+=consolation;persist();
+ modal('💔','The cat castle fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip resets when you retry.','Return to the Purr-suit Trail',()=>{
+  phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
+ });
+ updateUI(true);
+}
 
 function modal(icon,title,description,button,action){$('modalCancel').hidden=true;$('modalCancel').onclick=null;$('modalIcon').textContent=icon;$('modalTitle').textContent=title;$('modalText').textContent=description;$('modalBtn').textContent=button;$('modalBtn').onclick=action;$('overlay').hidden=false;}
 function hideModal(){$('overlay').hidden=true;}
@@ -698,6 +725,7 @@ function finishBonus(){if(!activeBonus)return;save.squad=bonusOriginalSquad||['t
 function startBonus(milestone){
  if(phase!=='prepare'){message('Finish the current battle first!');return false;}
  if(activeBonus)finishBonus();
+ trailCelebration=null;trailAdvance=null;
  if(milestone%4!==0||milestone<4||save.level<=milestone)return false;
  const bonus=bonusForMilestone(milestone);
  const allowed=bonus.allowed.filter(id=>save.unlocked.includes(id)).slice(0,bonus.maxSlots);
@@ -970,7 +998,7 @@ function startOverFromZero(){
  try{localStorage.removeItem(STORAGE);}catch(e){}
  save={level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null,bonusCleared:[]};
  for(const c of CATS)save.upgrades[c.id]={power:0,attack:0,lives:0,spawn:0};
- selected='tabby';speed=1;phase='prepare';activeBonus=null;bonusOriginalSquad=null;resetBattle();hideModal();closeDrawer();persist();updateUI(true);message('Fresh start! Level 1 · Tabby only.');
+ selected='tabby';speed=1;phase='prepare';activeBonus=null;bonusOriginalSquad=null;trailCelebration=null;trailAdvance=null;resetBattle();hideModal();closeDrawer();persist();updateUI(true);message('Fresh start! Level 1 · Tabby only.');
 }
 $('startOverBtn').addEventListener('click',()=>{
  modal('🔄','Start Over from Level 1?','This permanently replaces your current progress with a fresh game: 24 fish coins, only the Tabby Squire, no upgrades, and no legendary cats.','Yes, start over',startOverFromZero);
@@ -981,8 +1009,8 @@ $('startOverBtn').addEventListener('click',()=>{
 $('howBtn').addEventListener('click',()=>modal('🐱','How to play','Pick up to five cats in the barracks. They spawn automatically on their own countdowns when you start a level. March right and break the dog kennel whenever no dogs remain on the field. Dogs arrive as occasional solo scouts and slower groups, and bosses emerge at kennel-health thresholds! 🐟 Fish coins from defeated dogs are banked on victory. Each dog also drops 🌿 catnip immediately: tap Boost to improve equipped cats during combat. Catnip and temporary boosts reset every level. After level 4, purchase a legendary cat in Cats → Heroes and summon it manually in battle. Dog bosses appear when their castle health reaches a set threshold.','Let’s play!',hideModal));
 window.addEventListener('keydown',e=>{if(drawerOpen||!$('overlay').hidden)return;if(e.code==='Space'){e.preventDefault();if(phase==='prepare')enterBattle();else if(phase==='battle')$('pauseBtn').click();}else if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){const id=save.squad[Number(e.code.slice(-1))-1];if(id)choose(id);}});
 // Test hook only on explicitly requested local ?test=1 URL.
-if(new URLSearchParams(location.search).get('test')==='1')window.__gameTest={bonusForMilestone,bossCountForLevel,heroSummonLimit,getHeroSummonsUsed:()=>heroSummonsUsed,startBonus,finishBonus,tick:(seconds)=>{for(let i=0;i<seconds*40;i++){updateBattle(1/40);advanceVisuals(1/40);}updateUI(true);},state:()=>({phase,level:save.level,coins:save.coins,catHp,dogHp,dogGroupsSent,soloDogTimer,groupDogTimer,groupDogQueue:[...groupDogQueue],catCount:cats.length,dogCount:dogs.length,catTypes:cats.map(u=>u.id),dogTypes:dogs.map(u=>u.type),pendingCoins,catnip,battleUpgrades:JSON.parse(JSON.stringify(battleUpgrades)),heroCd,heroSummonsUsed,heroSummonLimit:heroSummonLimit(),hero:save.heroSelected,activeBonus:activeBonus?.title||null,bonusCleared:[...save.bonusCleared],gateBossTriggered,secondBossTriggered,thirdBossTriggered,spawnTimers:{...spawnTimers},squad:[...save.squad],drawerOpen,paused}),openPanel:openDrawer,closePanel:closeDrawer,unlock:id=>{save.coins=10000;buyCat(CATMAP[id]);},upgrade:(id,kind)=>{save.coins=10000;improve(CATMAP[id],kind);},setLevel:n=>{save.level=n;phase='prepare';resetBattle();updateUI(true);},coins:n=>{save.coins=n;updateUI(true);},getSave:()=>JSON.parse(JSON.stringify(save)),summon:summonHero,grantCatnip:n=>{catnip+=n;updateUI(true);},boost:(id,kind)=>buyBoost(CATMAP[id],kind),getFieldStat:id=>fieldStat(CATMAP[id]),getDogStat:id=>dogPreviewStats(id),killDog:type=>{spawnDog(type||'mutt');damage(dogs[dogs.length-1],9999);updateUI(true);},damageKennel:n=>{dogHp=Math.max(0,dogHp-n);checkKennelBoss();updateHUD();},damageCatCastle:n=>{catHp=Math.max(0,catHp-n);updateHUD();},clearDogs:()=>{dogs=[];shots=[];updateHUD();},atKennel:()=>{for(const c of cats){c.x=823;c.cd=0;}updateHUD();},traffic:(solo,group)=>{soloDogTimer=solo;groupDogTimer=group;groupDogQueue=[];},spawnDog:spawnDog};
-resetBattle();updateUI(true);requestAnimationFrame(frame);
+if(new URLSearchParams(location.search).get('test')==='1')window.__gameTest={bonusForMilestone,bossCountForLevel,heroSummonLimit,getHeroSummonsUsed:()=>heroSummonsUsed,startBonus,finishBonus,renderCampaignMap,simulateVictory:()=>{if(phase!=='battle')return false;endBattle(true);return true;},tick:(seconds)=>{for(let i=0;i<seconds*40;i++){updateBattle(1/40);advanceVisuals(1/40);}updateUI(true);},state:()=>({phase,level:save.level,coins:save.coins,catHp,dogHp,dogGroupsSent,soloDogTimer,groupDogTimer,groupDogQueue:[...groupDogQueue],catCount:cats.length,dogCount:dogs.length,catTypes:cats.map(u=>u.id),dogTypes:dogs.map(u=>u.type),pendingCoins,catnip,battleUpgrades:JSON.parse(JSON.stringify(battleUpgrades)),heroCd,heroSummonsUsed,heroSummonLimit:heroSummonLimit(),hero:save.heroSelected,activeBonus:activeBonus?.title||null,bonusCleared:[...save.bonusCleared],gateBossTriggered,secondBossTriggered,thirdBossTriggered,spawnTimers:{...spawnTimers},squad:[...save.squad],drawerOpen,paused}),openPanel:openDrawer,closePanel:closeDrawer,unlock:id=>{save.coins=10000;buyCat(CATMAP[id]);},upgrade:(id,kind)=>{save.coins=10000;improve(CATMAP[id],kind);},setLevel:n=>{save.level=n;phase='prepare';resetBattle();updateUI(true);},coins:n=>{save.coins=n;updateUI(true);},getSave:()=>JSON.parse(JSON.stringify(save)),summon:summonHero,grantCatnip:n=>{catnip+=n;updateUI(true);},boost:(id,kind)=>buyBoost(CATMAP[id],kind),getFieldStat:id=>fieldStat(CATMAP[id]),getDogStat:id=>dogPreviewStats(id),killDog:type=>{spawnDog(type||'mutt');damage(dogs[dogs.length-1],9999);updateUI(true);},damageKennel:n=>{dogHp=Math.max(0,dogHp-n);checkKennelBoss();updateHUD();},damageCatCastle:n=>{catHp=Math.max(0,catHp-n);updateHUD();},clearDogs:()=>{dogs=[];shots=[];updateHUD();},atKennel:()=>{for(const c of cats){c.x=823;c.cd=0;}updateHUD();},traffic:(solo,group)=>{soloDogTimer=solo;groupDogTimer=group;groupDogQueue=[];},spawnDog:spawnDog};
+resetBattle();updateUI(true);requestAnimationFrame(frame);openDrawer('map');
 })();
 </script>
 <script>
