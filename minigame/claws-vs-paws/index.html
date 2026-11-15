@@ -862,6 +862,69 @@ canvas{width:100%;height:100%;display:block}
 }
 .modal p{white-space:pre-line}
 html:fullscreen,html:-webkit-full-screen{overflow:auto}
+
+/* Compact Purr-suit Trail: fixed viewport, large buttons and no route scrolling. */
+.drawer:has(#panelMap:not([hidden])){height:min(96dvh,850px);max-height:96dvh}
+.drawer:has(#panelMap:not([hidden])) .drawer-body{
+ flex:1;min-height:0;display:flex;flex-direction:column;
+ padding:10px 11px 11px;overflow:hidden;
+}
+#panelMap:not([hidden]){flex:1;min-height:0;display:flex;flex-direction:column}
+#panelMap #mapContent{display:flex;flex:1;flex-direction:column;min-height:0;gap:8px}
+#panelMap .trail-shop-links{flex:0 0 auto;margin:0}
+#panelMap .trail-hint{flex:0 0 auto;margin:0;padding:7px 10px;font-size:14px;line-height:1.3}
+#panelMap .trail-summary{flex:0 0 auto;margin:0;padding:8px 12px}
+#panelMap .trail-summary strong{font-size:18px}
+#panelMap .trail-summary p{font-size:14px;line-height:1.24;margin:4px 0}
+#panelMap .trail-summary .btn{min-height:41px}
+#panelMap .trail-jump-nav{
+ flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;margin:0;
+}
+#panelMap .trail-jump-nav button{
+ position:relative;min-width:0;min-height:45px;padding:6px 3px;
+ background:#fffaf0;color:#264662;font-size:14px;font-weight:950;line-height:1.15;
+ border:1px solid #9dbba6;border-radius:12px;box-shadow:0 2px 0 #98b1a2;
+}
+#panelMap .trail-jump-nav button[aria-pressed="true"]{background:#e1f3dc;border-color:#72a38b}
+#panelMap .trail-jump-nav button[hidden]{display:none!important}
+#panelMap .trail-jump-nav button:focus-visible{outline:3px solid #276b82;outline-offset:2px}
+#panelMap .trail-mission-notice{
+ position:absolute;top:-6px;right:-4px;display:grid;place-items:center;
+ min-width:21px;height:21px;padding:0 4px;border-radius:50%;
+ background:#c85257;color:white;border:2px solid #fff8e6;
+ font-size:12px;line-height:1;box-shadow:0 2px 4px #2b3a674f;
+}
+#panelMap .trail-window{
+ position:relative;flex:1;min-height:165px;overflow:hidden;isolation:isolate;
+ border:1px solid #8caf94;border-radius:19px;background:#b5dc8c;
+ contain:layout paint;
+}
+#panelMap .trail-window .trail-land{
+ position:absolute;left:0;top:0;right:0;width:100%;
+ border:0;border-radius:0;box-shadow:none;will-change:transform;
+ transition:transform .28s ease;
+}
+#panelMap .trail-view-label{
+ position:absolute;z-index:10;top:8px;left:8px;
+ padding:5px 10px;border:1px solid #a5c7b1;border-radius:999px;
+ color:#25445f;background:#fff8e8ed;font-size:14px;font-weight:950;
+ pointer-events:none;box-shadow:0 2px 5px #304d4540;
+}
+#panelMap .trail-footer{display:none}
+@media(max-width:600px){
+ .drawer:has(#panelMap:not([hidden])) .drawer-body{padding:8px 8px 9px}
+ #panelMap .trail-shop-link{min-height:65px;font-size:16px;padding:9px 4px}
+ #panelMap .trail-shop-link small{font-size:12px;margin-top:4px}
+ #panelMap .trail-hint{font-size:13px;padding:7px 9px}
+ #panelMap .trail-jump-nav button{min-height:44px;font-size:13px}
+}
+@media(max-height:690px){
+ #panelMap .trail-shop-link{min-height:57px}
+ #panelMap .trail-hint{display:none}
+ #panelMap .trail-jump-nav button{min-height:41px}
+}
+@media(prefers-reduced-motion:reduce){#panelMap .trail-window .trail-land{transition:none!important}}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1452,6 +1515,7 @@ function trailUnlockHint(level){
 function renderCampaignMap(){
  const wrap=$('mapContent');if(!wrap)return;
  wrap.innerHTML='';
+ const missingMilestones=[];for(let m=4;m<save.level;m+=4)if(!save.bonusCleared.includes(m))missingMilestones.push(m);
  const heading=document.createElement('section');heading.className='trail-banner';
  heading.innerHTML='<div class="trail-kicker">The feline frontline · Campaign map</div><h3>🐾 The Purr-suit Trail</h3><p>Clear levels to unlock cats for purchase with 🐟 fish coins. Win side quests to earn disguise cats.</p>';
  wrap.appendChild(heading);
@@ -1468,20 +1532,29 @@ function renderCampaignMap(){
   const box=document.createElement('section');box.className='trail-summary';box.innerHTML='<strong>'+activeBonus.emoji+' '+activeBonus.title+'</strong><p>'+activeBonus.rule+' Your regular squad will return afterward.</p><button type="button" class="btn primary">⚔️ Prepare bonus battle</button>';
   box.querySelector('button').onclick=()=>closeDrawer();wrap.appendChild(box);
  }else{
-  const hint=document.createElement('div');hint.className='trail-hint';hint.textContent='🐱 Level '+save.level+' is next. Shop cats cost fish coins; bonus disguise cats are won in side quests.';wrap.appendChild(hint);
+  const hint=document.createElement('div');hint.className='trail-hint';hint.textContent='🐱 Level '+save.level+' next · 🐟 Spend coins on cats and training.';wrap.appendChild(hint);
  }
  if(activeBonus&&!trailCelebration){
   const leave=document.createElement('button');leave.type='button';leave.className='btn quiet';leave.style.cssText='width:100%;margin-bottom:12px';leave.textContent='↩ Exit bonus challenge';
   leave.onclick=()=>{if(phase!=='prepare'){message('Finish the battle first!');return;}finishBonus();resetBattle();updateUI(true);renderCampaignMap();};wrap.appendChild(leave);
  }
- const first=Math.max(1,save.level-3),last=Math.max(8,save.level+5);
+ const jumpNav=document.createElement('nav');jumpNav.className='trail-jump-nav';
+ jumpNav.setAttribute('aria-label','Jump to locations on the trail');
+ jumpNav.innerHTML='<button type="button" data-jump="current">🎯 Current</button>'+
+  '<button type="button" data-jump="shop">🏪 Shop</button>'+
+  '<button type="button" data-jump="missed">🎁 Missions'+(missingMilestones.length?'<span class="trail-mission-notice" aria-hidden="true">'+(missingMilestones.length>9?'9+':missingMilestones.length)+'</span>':'')+'</button>';
+ const missedButton=jumpNav.querySelector('[data-jump="missed"]');
+ missedButton.hidden=missingMilestones.length===0;
+ if(missingMilestones.length)missedButton.setAttribute('aria-label',missingMilestones.length+' unfinished side quests. Jump to the next one.');
+ wrap.appendChild(jumpNav);
+ const shopLevel=2+4*Math.max(0,Math.round((save.level-2)/4));
+ const first=Math.max(1,Math.min(save.level-3,shopLevel,...missingMilestones)),last=Math.max(8,save.level+5,shopLevel);
  const spacing=123,y0=83,height=(last-first)*spacing+174;
  const land=document.createElement('div');land.className='trail-land';land.style.height=height+'px';land.setAttribute('role','group');land.setAttribute('aria-label','Winding path of campaign levels and bonus challenges');
  const px=lv=>lv%4===0?26:lv%4===1?30:lv%4===2?72:67;
  const points=Array.from({length:last-first+1},(_,i)=>({level:first+i,x:px(first+i),y:y0+i*spacing}));
  const lookup=new Map(points.map(p=>[p.level,p]));
  // Keep the single shop beside the current stretch of the campaign.
- const shopLevel=2+4*Math.max(0,Math.round((save.level-2)/4));
  const shopPoint=lookup.get(shopLevel)||points[Math.min(1,points.length-1)];
  let d='M '+(points[0].x*3.6)+' '+points[0].y;
  for(let i=1;i<points.length;i++){const p=points[i-1],q=points[i],middle=(p.y+q.y)/2;d+=' C '+(p.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+middle+' '+(q.x*3.6)+' '+q.y;}
@@ -1501,7 +1574,7 @@ function renderCampaignMap(){
   const label=document.createElement('div');label.className='trail-level-label';label.innerHTML='LEVEL '+p.level+'<small>'+(p.level<save.level?'✓ ':'')+trailUnlockHint(p.level)+'</small>';stop.append(node,label);land.appendChild(stop);
   if(p.level%4===0){
    const cfg=bonusForMilestone(p.level),unlocked=save.level>p.level,done=save.bonusCleared.includes(p.level);
-   const b=document.createElement('button');b.type='button';b.className='trail-branch'+(done?' done':'');b.style.top=p.y+'px';b.disabled=!unlocked||phase!=='prepare';
+   const b=document.createElement('button');b.type='button';b.className='trail-branch'+(done?' done':'');b.style.top=p.y+'px';b.dataset.trailY=String(p.y);b.disabled=!unlocked||phase!=='prepare';
    b.innerHTML=cfg.emoji+' '+cfg.title+'<small>'+(done?'✓ Prize won · replay':unlocked?(cfg.rewardCat?'🎁 WIN '+CATMAP[cfg.rewardCat].short+' + 🐟 '+cfg.reward:'🐟 '+cfg.reward+' fish coins'):(cfg.rewardCat?'🎭 WIN '+CATMAP[cfg.rewardCat].short+' · ':'')+'🔒 After Level '+p.level)+'</small>';
    b.title=cfg.rule;b.setAttribute('aria-label',cfg.title+'. '+cfg.rule);b.onclick=()=>{trailCelebration=null;startBonus(p.level);};land.appendChild(b);
   }
@@ -1513,7 +1586,41 @@ function renderCampaignMap(){
  shop.innerHTML='<span class="shop-roof" aria-hidden="true"></span><span class="shop-awning" aria-hidden="true"></span><span class="shop-house"><span class="shop-title">🐱 Cat Pet Shop</span><span class="shop-price">🐟 Buy cats here</span></span>';
  shop.addEventListener('click',()=>openDrawer('cats'));
  land.appendChild(shop);
- wrap.appendChild(land);
+ const windowFrame=document.createElement('div');
+ windowFrame.className='trail-window';
+ windowFrame.setAttribute('role','region');
+ windowFrame.setAttribute('aria-label','Trail map centered on current level');
+ const viewLabel=document.createElement('span');viewLabel.className='trail-view-label';
+ viewLabel.setAttribute('aria-live','polite');viewLabel.textContent='Level '+save.level;
+ windowFrame.append(land,viewLabel);wrap.appendChild(windowFrame);
+ let missingIndex=0;
+ const jumpButtons=[...jumpNav.querySelectorAll('button')];
+ function focusTrailLevel(level,kind='current',smooth=true){
+  const p=lookup.get(level);if(!p)return;
+  const h=windowFrame.clientHeight||360;
+  const offset=clamp(Math.round(h*.40-p.y),Math.min(0,h-height),Math.max(0,Math.round(h*.40-y0)));
+  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  land.style.transitionDuration=smooth&&!reduced?'280ms':'0ms';
+  land.style.transform='translate3d(0,'+offset+'px,0)';
+  viewLabel.textContent=kind==='missed'?'🎁 Side quest · Level '+level:kind==='shop'?'🏪 Cat Pet Shop':'Level '+level;
+  windowFrame.setAttribute('aria-label','Trail map near level '+level);
+  for(const b of land.querySelectorAll('.trail-branch')){
+   const y=Number(b.dataset.trailY)+offset;
+   b.tabIndex=!b.disabled&&y>=-50&&y<h+50?0:-1;
+  }
+  const shopY=shopPoint.y+offset;
+  shop.tabIndex=shopY>=-65&&shopY<h+65?0:-1;
+  for(const b of jumpButtons)b.setAttribute('aria-pressed',String(b.dataset.jump===kind));
+ }
+ jumpNav.querySelector('[data-jump="current"]').addEventListener('click',()=>focusTrailLevel(save.level));
+ jumpNav.querySelector('[data-jump="shop"]').addEventListener('click',()=>focusTrailLevel(shopPoint.level,'shop'));
+ missedButton.addEventListener('click',()=>{
+  if(!missingMilestones.length)return;
+  focusTrailLevel(missingMilestones[missingIndex],'missed');
+  missingIndex=(missingIndex+1)%missingMilestones.length;
+ });
+ requestAnimationFrame(()=>{if(windowFrame.isConnected)focusTrailLevel(save.level,'current',false);});
+
  const footer=document.createElement('p');footer.className='trail-footer';footer.textContent='🐾 Every pawstep is progress. Keep on purr-suing victory!';wrap.appendChild(footer);
  if(trailAdvance){
   const from=lookup.get(trailAdvance.from),to=lookup.get(trailAdvance.to);
@@ -1526,7 +1633,7 @@ function renderCampaignMap(){
     const frames=[];for(let k=0;k<=24;k++){const t=k/24,bend=Math.sin(Math.PI*t)*(to.x>from.x?-6:6);frames.push({left:(from.x+(to.x-from.x)*t+bend)+'%',top:(from.y+(to.y-from.y)*t)+'px',offset:t});}
     traveler.animate(frames,{duration:1650,easing:'ease-in-out',fill:'forwards'}).onfinish=arrived;
    }else arrived();
-   const body=$('drawerBody');if(body&&to.level>first+2)body.scrollTop=Math.max(0,land.offsetTop+to.y-body.clientHeight*.53);
+   // Map now follows the level inside the fixed viewport, without scrolling.
   }
   trailAdvance=null;
  }
