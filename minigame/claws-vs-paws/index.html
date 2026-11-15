@@ -860,6 +860,8 @@ canvas{width:100%;height:100%;display:block}
 .shell:fullscreen,.shell:-webkit-full-screen{
  zoom:1!important;width:100%!important;min-width:0!important;max-width:100%!important;
 }
+.modal p{white-space:pre-line}
+html:fullscreen,html:-webkit-full-screen{overflow:auto}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1216,7 +1218,8 @@ function buyBoost(c,kind){if(phase!=='battle'||!save.squad.includes(c.id)||boost
 // Higher training tiers unlock as you complete more levels; old purchases remain intact.
 function trainingCap(){return Math.min(10,Math.max(1,Math.floor((save.level+1)/3)));}
 function upgradeCost(c,kind){const u=save.upgrades[c.id];const rank=u[kind];return Math.round((kind==='lives'?85:kind==='spawn'?80:72)*Math.pow(1.55,rank)+(c.cost*.23));}
-function victoryReward(level){return Math.min(82,18+level*7);}
+// Later castles are tougher, so victory coins grow with campaign progress (no 82-coin cap).
+function victoryReward(level){return Math.round(24+11*level+4*Math.max(0,level-4));}
 
 function dogCastleMax(){const L=activeBonus?activeBonus.milestone+1:save.level;if(L===1)return 90;return Math.round(115+(L-1)*73+Math.max(0,L-4)*24)}
 function catCastleStats(){
@@ -1545,14 +1548,50 @@ function renderHeroes(){const el=$('heroesList');if(!el)return;el.innerHTML='<p 
 function summonHero(){const h=HEROMAP[save.heroSelected];if(phase!=='battle'||paused||!h||heroCd>0||heroSummonsUsed>=heroSummonLimit()||cats.some(u=>u.hero&&u.hp>0))return false;
  cats.push({uid:++uid,team:'cat',id:h.id,type:h.id,x:158,y:yPath-8,hp:h.hp+Math.max(0,save.level-5)*16,maxHp:h.hp+Math.max(0,save.level-5)*16,power:h.power,attack:h.attack,range:h.range,speed:h.speed,cd:.2,anim:0,hit:0,weapon:h.weapon,scale:h.scale,hero:true});
  heroSummonsUsed++;heroCd=h.cooldown;sound.effect('hero',true);puff(158,yPath,24,'#ffe08c');message('⭐ '+h.name+' joins the siege!');updateHUD();return true;}
-function heroAction(){if(phase==='prepare'){enterBattle();return;}if(phase!=='battle')return;
+// Short, optional tutorial plus one gentle spending reminder per level.
+const TUTORIAL_KEY='claws-vs-paws-tutorial-seen-v1';
+let spendReminderLevel=null,boostTipShown=false;
+function hasAffordablePermanentPurchase(){
+ if(activeBonus||phase!=='prepare')return false;
+ if(CATS.some(c=>!c.bonusAt&&!save.unlocked.includes(c.id)&&save.level>=catUnlockLevel(c)&&save.coins>=c.cost))return true;
+ if(HEROES.some(h=>!save.heroUnlocked.includes(h.id)&&save.level>=h.level&&save.coins>=h.cost))return true;
+ return CATS.some(c=>save.unlocked.includes(c.id)&&['power','attack','lives','spawn'].some(kind=>{
+  const u=save.upgrades[c.id];if(!u)return false;
+  const max=kind==='lives'?5:10;
+  return u[kind]<max&&u[kind]<trainingCap()&&save.coins>=upgradeCost(c,kind);
+ }));
+}
+function showTutorial(firstVisit=false){
+ modal('🐾','Quick paws tutorial',
+  '🐱 Choose cats and train between levels.\n⚔️ Start a battle. Blue bars show when cats spawn.\n🌿 Tap a cat with a leaf to buy a battle boost.\n🐟 Spend coins on cats and permanent upgrades.',
+  'Got it!',()=>{
+   hideModal();
+   if(firstVisit)try{localStorage.setItem(TUTORIAL_KEY,'1');}catch(e){}
+  });
+}
+function maybeShowFirstTutorial(){
+ try{if(localStorage.getItem(TUTORIAL_KEY)==='1')return;}catch(e){}
+ showTutorial(true);
+}
+function offerStartSpendingReminder(){
+ if(!hasAffordablePermanentPurchase()||spendReminderLevel===save.level)return false;
+ spendReminderLevel=save.level;
+ modal('🐟','Coins ready to spend',
+  'You have '+save.coins+' fish coins.\nYou can buy cats or permanent training before battle.',
+  'Review cats',()=>{hideModal();openDrawer('cats');});
+ $('modalCancel').hidden=false;
+ $('modalCancel').textContent='▶ Start anyway';
+ $('modalCancel').onclick=()=>{hideModal();enterBattle();};
+ return true;
+}
+function heroAction(){if(phase==='prepare'){if(!offerStartSpendingReminder())enterBattle();return;}if(phase!=='battle')return;
  if(save.level<5||activeBonus||heroSummonsUsed>=heroSummonLimit())return;
  if(!save.heroSelected){openDrawer('heroes');return;}
  if(!paused&&!heroCd&&!cats.some(u=>u.hero&&u.hp>0))summonHero();}
 const drawerNames={map:['🐾 The Purr-suit Trail','Follow the pawprints · find bonus adventures'],castle:['🏰 Cat castle defenses','Level, squad and training bonuses'],cats:['🐾 Cat barracks','Tap a cat to inspect or unlock'],squad:['🛡️ Your squad','Five types max per level'],train:['⚒️ Cat training','Permanent upgrades and equipment'],heroes:['⭐ Legendary cats','Unlock after beating level 4 · tap to summon'],boost:['🌿 Battle boosts','Use catnip earned from dog kills · resets each level'],dogs:['🐶 Dog defenders','Current-level enemy stats and kennel guardians'],help:['⚙️ More & help','Instructions and game settings']};
 function openDrawer(which){if(!drawerNames[which])return;const backdrop=$('drawerBackdrop');if(!drawerOpen){drawerPreviousFocus=document.activeElement;drawerAutoPause=phase==='battle'&&!paused;if(drawerAutoPause)paused=true;drawerOpen=true;backdrop.hidden=false;}for(const key of Object.keys(drawerNames))$('panel'+key[0].toUpperCase()+key.slice(1)).hidden=key!==which;$('drawerTitle').textContent=drawerNames[which][0];$('drawerSubtitle').textContent=drawerNames[which][1];if(which==='map')renderCampaignMap();if(which==='squad')renderSquadDetails();if(which==='cats')renderBarracks();if(which==='train')renderDetails();if(which==='heroes')renderHeroes();if(which==='boost')renderBattleBoost();if(which==='dogs')renderDogRoster();if(which==='castle')renderCastleDetails();$('drawerBody').scrollTop=0;$('closeDrawer').focus();updateHUD();}
 function closeDrawer(){if(!drawerOpen)return;$('drawerBackdrop').hidden=true;drawerOpen=false;if(drawerAutoPause&&phase==='battle')paused=false;drawerAutoPause=false;updateHUD();if(drawerPreviousFocus&&typeof drawerPreviousFocus.focus==='function')drawerPreviousFocus.focus();}
-function updateHUD(){ if(phase==='prepare'){catBattleMax=catCastleMax();catHp=catBattleMax;}const castle=catCastleStats();$('catCastleNote').textContent='Max '+catBattleMax+' · Squad +'+castle.squad; $('catCastleStatsBtn').setAttribute('aria-label','Cat castle '+Math.ceil(catHp)+' of '+catBattleMax+' HP. Squad bonus '+castle.squad+'. Tap to inspect defense bonuses.'); $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=activeBonus?'★':save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catBattleMax*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8||!!activeBonus;$('bossMarker30').classList.toggle('spent',secondBossTriggered);$('bossMarker15').hidden=save.level<12||!!activeBonus;$('bossMarker15').classList.toggle('spent',thirdBossTriggered);$('bossMarker65').hidden=save.level<5||!!activeBonus;
+function updateHUD(){ if(phase==='battle'&&!boostTipShown&&canAffordAnyBattleBoost()&&!drawerOpen&&$('overlay').hidden){boostTipShown=true;message('🌿 Tap the leaf on a cat to boost it.');} if(phase==='prepare'){catBattleMax=catCastleMax();catHp=catBattleMax;}const castle=catCastleStats();$('catCastleNote').textContent='Max '+catBattleMax+' · Squad +'+castle.squad; $('catCastleStatsBtn').setAttribute('aria-label','Cat castle '+Math.ceil(catHp)+' of '+catBattleMax+' HP. Squad bonus '+castle.squad+'. Tap to inspect defense bonuses.'); $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=activeBonus?'★':save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catBattleMax*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8||!!activeBonus;$('bossMarker30').classList.toggle('spent',secondBossTriggered);$('bossMarker15').hidden=save.level<12||!!activeBonus;$('bossMarker15').classList.toggle('spent',thirdBossTriggered);$('bossMarker65').hidden=save.level<5||!!activeBonus;
  $('phaseTag').textContent=phase==='battle'?'⚔️ BATTLE':phase==='win'?'🏆 VICTORY':phase==='loss'?'💔 DEFEAT':'🐈 READY';
  const b=$('startBtn');if(phase==='prepare'){b.disabled=false;b.textContent=activeBonus?'▶ Start bonus':'▶ Start level '+save.level;b.classList.remove('hero-ready');}
  else if(phase==='battle'&&save.level>=5&&!activeBonus){const active=cats.some(u=>u.hero&&u.hp>0),h=HEROMAP[save.heroSelected],remaining=heroSummonLimit()-heroSummonsUsed;b.disabled=paused||remaining<=0||active||heroCd>0;b.classList.toggle('hero-ready',Boolean(h)&&remaining>0&&!active&&heroCd<=0&&!paused);b.textContent=remaining<=0?'⭐ Summons used':!h?'⭐ Heroes':active?'⭐ Champion '+remaining+' left':heroCd>0?'⏳ '+Math.ceil(heroCd)+'s':'⭐ Summon '+remaining+'/'+heroSummonLimit();}
@@ -1581,7 +1620,7 @@ function projectile(attacker,target,power,weapon,team,splash){shots.push({x:atta
 function damage(target,amount){if(!target||target.hp<=0)return;target.hp-=amount;target.hit=.16;
  sound.effect(target.hp<=0?(target.team==='cat'?'catDown':target.type==='gatekeeper'?'bossDown':'dogDown'):(target.team==='cat'?'catHurt':'dogHurt'));
  floatText(target.x,target.y-52,'-'+Math.max(1,Math.round(amount)),target.team==='cat'?'#fff8ce':'#ffc8b4');puff(target.x,target.y-20,2,target.team==='cat'?'#d5ecdb':'#e9b39e');
- if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(22+save.level*7,pendingCoins+loot);const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20,dalmatian:4}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
+ if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(26+save.level*10+Math.max(0,save.level-5)*3,pendingCoins+loot);const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20,dalmatian:4}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
  else puff(target.x,target.y-20,8,'#e6f2c8');}}
 
 function attackUnit(u,target){u.cd=u.attack;sound.effect(u.team==='dog'?(u.weapon==='bone'?'bone':'bite'):(['sword','axe','bow','star','wand','bolt','hammer','shield'].includes(u.weapon)?u.weapon:'sword'));if(u.range>50){projectile(u,target,u.power,u.weapon,u.team,u.hero&&u.id==='panther'?105:u.weapon==='wand'?55:0);}else{damage(target,u.power);puff(target.x,target.y-24,2,'#fff9e9');}}
@@ -1756,7 +1795,22 @@ let largerText=false;try{largerText=localStorage.getItem('claws-vs-paws-large-te
 canvas.addEventListener('click',e=>{const rect=canvas.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width*W,y=(e.clientY-rect.top)/rect.height*H;if(x>=793&&y>=112&&y<=410)openDrawer('dogs');else if(x<=166&&y>=112&&y<=410)openDrawer('castle');});
 $('dogCastleStatsBtn').addEventListener('click',()=>openDrawer('dogs'));$('catCastleStatsBtn').addEventListener('click',()=>openDrawer('castle'));
 $('mapBtn').addEventListener('click',()=>openDrawer('map'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
-$('fullscreenBtn').addEventListener('click',()=>{const el=document.querySelector('.shell');if(!document.fullscreenElement&&el.requestFullscreen)el.requestFullscreen().catch(()=>message('Fullscreen unavailable on this device.'));else if(document.exitFullscreen)document.exitFullscreen();});
+// Fullscreen the document, not only .shell: dialogs and toasts are siblings of .shell.
+$('fullscreenBtn').addEventListener('click',()=>{
+ const active=document.fullscreenElement||document.webkitFullscreenElement;
+ if(active){
+  const exit=document.exitFullscreen||document.webkitExitFullscreen;
+  if(exit)exit.call(document);
+  return;
+ }
+ const root=document.documentElement;
+ const request=root.requestFullscreen||root.webkitRequestFullscreen;
+ if(!request){message('Fullscreen unavailable on this device.');return;}
+ try{
+  const result=request.call(root);
+  if(result&&typeof result.catch==='function')result.catch(()=>message('Fullscreen unavailable on this device.'));
+ }catch(e){message('Fullscreen unavailable on this device.');}
+});
 function startOverFromZero(){
  try{localStorage.removeItem(STORAGE);}catch(e){}
  save={level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null,bonusCleared:[]};
@@ -1769,11 +1823,11 @@ $('startOverBtn').addEventListener('click',()=>{
  $('modalCancel').onclick=hideModal;
  $('modalCancel').focus();
 });
-$('howBtn').addEventListener('click',()=>modal('🐱','How to play','Pick up to five cats in the barracks. They spawn automatically on their own countdowns when you start a level. March right and break the dog kennel whenever no dogs remain on the field. Dogs arrive as occasional solo scouts and slower groups, and bosses emerge at kennel-health thresholds! 🐟 Fish coins from defeated dogs are banked on victory. Each dog also drops 🌿 catnip immediately: tap Boost to improve equipped cats during combat. Catnip and temporary boosts reset every level. After level 4, purchase a legendary cat in Cats → Heroes and summon it manually in battle. Dog bosses appear when their castle health reaches a set threshold.','Let’s play!',hideModal));
-window.addEventListener('keydown',e=>{if(drawerOpen||!$('overlay').hidden)return;if(e.code==='Space'){e.preventDefault();if(phase==='prepare')enterBattle();else if(phase==='battle')$('pauseBtn').click();}else if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){const id=save.squad[Number(e.code.slice(-1))-1];if(id)choose(id);}});
+$('howBtn').addEventListener('click',()=>showTutorial(false));
+window.addEventListener('keydown',e=>{if(drawerOpen||!$('overlay').hidden)return;if(e.code==='Space'){e.preventDefault();if(phase==='prepare')heroAction();else if(phase==='battle')$('pauseBtn').click();}else if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){const id=save.squad[Number(e.code.slice(-1))-1];if(id)choose(id);}});
 // Test hook only on explicitly requested local ?test=1 URL.
 if(new URLSearchParams(location.search).get('test')==='1')window.__gameTest={bonusForMilestone,trailUnlockHint,bossCountForLevel,heroSummonLimit,getHeroSummonsUsed:()=>heroSummonsUsed,startBonus,finishBonus,renderCampaignMap,simulateVictory:()=>{if(phase!=='battle')return false;endBattle(true);return true;},tick:(seconds)=>{for(let i=0;i<seconds*40;i++){updateBattle(1/40);advanceVisuals(1/40);}updateUI(true);},state:()=>({phase,level:save.level,coins:save.coins,catHp,dogHp,dogGroupsSent,soloDogTimer,groupDogTimer,groupDogQueue:[...groupDogQueue],catCount:cats.length,dogCount:dogs.length,catTypes:cats.map(u=>u.id),dogTypes:dogs.map(u=>u.type),pendingCoins,catnip,battleUpgrades:JSON.parse(JSON.stringify(battleUpgrades)),heroCd,heroSummonsUsed,heroSummonLimit:heroSummonLimit(),hero:save.heroSelected,activeBonus:activeBonus?.title||null,bonusCleared:[...save.bonusCleared],gateBossTriggered,secondBossTriggered,thirdBossTriggered,spawnTimers:{...spawnTimers},squad:[...save.squad],drawerOpen,paused}),openPanel:openDrawer,closePanel:closeDrawer,unlock:id=>{save.coins=10000;buyCat(CATMAP[id]);},upgrade:(id,kind)=>{save.coins=10000;improve(CATMAP[id],kind);},setLevel:n=>{save.level=n;phase='prepare';resetBattle();updateUI(true);},coins:n=>{save.coins=n;updateUI(true);},getSave:()=>JSON.parse(JSON.stringify(save)),summon:summonHero,grantCatnip:n=>{catnip+=n;updateUI(true);},boost:(id,kind)=>buyBoost(CATMAP[id],kind),getFieldStat:id=>fieldStat(CATMAP[id]),getDogStat:id=>dogPreviewStats(id),killDog:type=>{spawnDog(type||'mutt');damage(dogs[dogs.length-1],9999);updateUI(true);},damageKennel:n=>{dogHp=Math.max(0,dogHp-n);checkKennelBoss();updateHUD();},damageCatCastle:n=>{catHp=Math.max(0,catHp-n);updateHUD();},clearDogs:()=>{dogs=[];shots=[];updateHUD();},atKennel:()=>{for(const c of cats){c.x=823;c.cd=0;}updateHUD();},traffic:(solo,group)=>{soloDogTimer=solo;groupDogTimer=group;groupDogQueue=[];},spawnDog:spawnDog};
-resetBattle();updateUI(true);requestAnimationFrame(frame);openDrawer('map');
+resetBattle();updateUI(true);requestAnimationFrame(frame);openDrawer('map');maybeShowFirstTutorial();
 })();
 </script>
 <script>
