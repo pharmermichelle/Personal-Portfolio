@@ -959,8 +959,8 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 #panelMap .trail-preview-summary{font-size:15px;color:#436272;line-height:1.3;font-weight:750;margin:0}
 #panelMap .trail-preview-enemies{display:grid;gap:6px}
 #panelMap .trail-preview-enemy{display:flex;align-items:center;gap:8px;background:#fffbf3;border:1px solid #b5cdbf;border-radius:11px;padding:7px 8px;min-height:45px}
-#panelMap .trail-preview-enemy b{font-size:15px;color:#243d5a}
-#panelMap .trail-preview-enemy small{display:block;font-size:13px;color:#4b6675;font-weight:850;margin-top:2px}
+#panelMap .trail-preview-enemy b{font-size:17px;color:#243d5a}
+#panelMap .trail-preview-enemy small{display:block;font-size:14px;color:#4b6675;font-weight:850;margin-top:2px}
 #panelMap .trail-preview-enemy .enemy-icon{font-size:24px;flex:none}
 #panelMap .trail-preview-action{margin-top:auto;min-height:48px;width:100%;font-size:17px;border-radius:12px;border:1px solid #88a996;background:#e3f2df;color:#204b44;font-weight:1000}
 #panelMap .trail-preview-action:disabled{opacity:1;background:#e1e5e6;color:#667581}
@@ -1864,7 +1864,7 @@ function stepUnits(dt){dogCastleStrikeCd=Math.max(0,dogCastleStrikeCd-dt);catCas
 else{let goal=isCat?823:137;let move=Math.min(Math.abs(goal-u.x),u.speed*dt);u.x+=(isCat?1:-1)*move;u.y+=Math.sin(time*2+u.uid)*dt*.8;}}
 }
 // Dog castles also defend themselves, preventing an endless one-unit rush.
-function towers(dt){catDefenseCd-=dt;dogDefenseCd-=dt;if(dogDefenseCd<=0){const target=cats.filter(u=>u.hp>0&&u.x>669).sort((a,b)=>b.x-a.x)[0];if(target){projectile({x:886,y:260},target,8+battleLevel()*1.9,'bone','dog',0);dogDefenseCd=save.level>=5?1.7:2.25;}else dogDefenseCd=.15;}
+function towers(dt){catDefenseCd-=dt;dogDefenseCd-=dt;if(dogDefenseCd<=0){const target=cats.filter(u=>u.hp>0&&u.x>669).sort((a,b)=>b.x-a.x)[0];if(target){projectile({x:886,y:260},target,8+battleLevel()*1.9,'bone','dog',0);dogDefenseCd=battleLevel()>=5?1.7:2.25;}else dogDefenseCd=.15;}
 if(catDefenseCd<=0){const target=dogs.filter(u=>u.hp>0&&u.x<285).sort((a,b)=>a.x-b.x)[0];if(target){projectile({x:71,y:249},target,7+battleLevel()*.45,'star','cat',0);catDefenseCd=2.8;}else catDefenseCd=.15;}}
 function stepProjectiles(dt){for(let i=shots.length-1;i>=0;i--){const p=shots[i],target=(p.team==='cat'?dogs:cats).find(u=>u.uid===p.target&&u.hp>0);if(!target){shots.splice(i,1);continue;}const tx=target.x,ty=target.y-22,dx=tx-p.x,dy=ty-p.y,d=Math.hypot(dx,dy);if(d<Math.max(12,p.velocity*dt)){p.x=tx;p.y=ty;damage(target,p.power);if(p.splash){for(const other of (p.team==='cat'?dogs:cats)){if(other!==target&&other.hp>0&&Math.abs(other.x-tx)<p.splash)damage(other,p.power*.53);}}puff(tx,ty,5,p.team==='cat'?'#e2dbf8':'#fae2b3');shots.splice(i,1);}else{p.x+=dx/d*p.velocity*dt;p.y+=dy/d*p.velocity*dt;}}}
 function checkKennelBoss(){if(bossCountForLevel(battleLevel())===0)return;
