@@ -941,6 +941,31 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 .cat-card.available-for-purchase .cat-status{color:#28674e}
 .cat-card.available-for-purchase.affordable{border-color:#4b987d}
 .equip-btn.available-for-purchase{background:#d8f1de;color:#1e5041;border:1px solid #82b69b}
+
+/* Interactive storybook trail level preview. */
+#panelMap .trail-stop{appearance:none;border:0;background:transparent;padding:0;cursor:pointer;pointer-events:auto;text-align:center;color:#25405d}
+#panelMap .trail-stop .trail-dot,#panelMap .trail-stop .trail-level-label{pointer-events:none}
+#panelMap .trail-stop:focus-visible{outline:3px solid #276d7a;outline-offset:3px;border-radius:13px}
+#panelMap .trail-level-preview{
+ position:absolute;z-index:22;inset:8px;overflow:auto;overscroll-behavior:contain;
+ padding:12px;border:1px solid #7fada5;border-radius:16px;
+ background:linear-gradient(155deg,#fff9e9fc,#edf7e9fc);
+ box-shadow:0 8px 25px #203c4b8a;display:flex;flex-direction:column;gap:8px;
+}
+#panelMap .trail-level-preview[hidden]{display:none!important}
+#panelMap .trail-preview-head{display:flex;justify-content:space-between;align-items:start;gap:6px}
+#panelMap .trail-preview-head strong{color:#213f5d;font-size:clamp(21px,4vw,26px);line-height:1.15}
+#panelMap .trail-preview-exit{min-width:44px;min-height:44px;border:1px solid #9eb9b8;background:#e6f0f4;color:#263e60;border-radius:12px;font-size:25px;font-weight:900}
+#panelMap .trail-preview-summary{font-size:15px;color:#436272;line-height:1.3;font-weight:750;margin:0}
+#panelMap .trail-preview-enemies{display:grid;gap:6px}
+#panelMap .trail-preview-enemy{display:flex;align-items:center;gap:8px;background:#fffbf3;border:1px solid #b5cdbf;border-radius:11px;padding:7px 8px;min-height:45px}
+#panelMap .trail-preview-enemy b{font-size:15px;color:#243d5a}
+#panelMap .trail-preview-enemy small{display:block;font-size:13px;color:#4b6675;font-weight:850;margin-top:2px}
+#panelMap .trail-preview-enemy .enemy-icon{font-size:24px;flex:none}
+#panelMap .trail-preview-action{margin-top:auto;min-height:48px;width:100%;font-size:17px;border-radius:12px;border:1px solid #88a996;background:#e3f2df;color:#204b44;font-weight:1000}
+#panelMap .trail-preview-action:disabled{opacity:1;background:#e1e5e6;color:#667581}
+#panelMap .trail-preview-action:focus-visible,#panelMap .trail-preview-exit:focus-visible{outline:3px solid #267888;outline-offset:2px}
+@media(max-width:600px){#panelMap .trail-level-preview{padding:10px 9px;gap:7px}#panelMap .trail-preview-enemy{padding:5px 7px}#panelMap .trail-preview-summary{font-size:14px}}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1300,7 +1325,10 @@ function upgradeCost(c,kind){const u=save.upgrades[c.id];const rank=u[kind];retu
 // Later castles are tougher, so victory coins grow with campaign progress (no 82-coin cap).
 function victoryReward(level){return Math.round(24+11*level+4*Math.max(0,level-4));}
 
-function dogCastleMax(){const L=activeBonus?activeBonus.milestone+1:save.level;if(L===1)return 90;return Math.round(115+(L-1)*73+Math.max(0,L-4)*24)}
+let replayLevel=null;
+function battleLevel(){return replayLevel??save.level;}
+function dogCastleMaxForLevel(L){if(L===1)return 90;return Math.round(115+(L-1)*73+Math.max(0,L-4)*24)}
+function dogCastleMax(){return dogCastleMaxForLevel(activeBonus?activeBonus.milestone+1:battleLevel());}
 function catCastleStats(){
  // The walls grow with the campaign and the strength of the five-cat defense lineup.
  // Temporary battle catnip buffs do not permanently reinforce a castle.
@@ -1449,9 +1477,9 @@ function syncSquadBoostIndicators(){
  }
 }
 function catStatsMarkup(c){const t=phase==='battle'?fieldStat(c):stat(c);return '<div class="unit-stats" aria-label="Damage '+t.power+', range '+t.range+', HP '+t.hp+'"><span><small>DMG</small><b class="unit-value">'+t.power+'</b></span><span><small>RANGE</small><b class="unit-value">'+t.range+'</b></span><span><small>HP</small><b class="unit-value">'+t.hp+'</b></span></div>';}
-function dogPreviewStats(type){
- const d=DOGS[type],L=activeBonus?activeBonus.milestone+1:save.level;
- const rally=phase==='battle'&&L>=2?Math.min(.65,Math.max(0,time-110)/200):0;
+function dogPreviewStats(type,previewLevel=null){
+ const d=DOGS[type],L=previewLevel??(activeBonus?activeBonus.milestone+1:battleLevel());
+ const rally=previewLevel===null&&phase==='battle'&&L>=2?Math.min(.65,Math.max(0,time-110)/200):0;
  const hp=Math.round(d.maxHp*(1+(L-1)*.29)*(1+rally)*(L>=3&&!d.boss?1.10:1));
  const damage=d.power*(1+(L-1)*.17)*(1+rally*.75)*(L>=3&&!d.boss?1.08:1);
  const move=d.speed*(d.boss?1:1.18);
@@ -1610,10 +1638,10 @@ function renderCampaignMap(){
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','trail-lines');svg.setAttribute('viewBox','0 0 360 '+height);svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');svg.innerHTML=paths;land.appendChild(svg);
  points.forEach((p,i)=>{
   if(p.level%4!==0&&i%2===0){const flora=document.createElement('span');flora.className='trail-scenery';flora.textContent=['🌲','🍄','🌼','🌿'][i%4];flora.style.left=(p.x>50?10:85)+'%';flora.style.top=(p.y-23)+'px';land.appendChild(flora);}
-  const stop=document.createElement('div');stop.className='trail-stop'+(p.level===save.level?' is-current':'');stop.style.left=p.x+'%';stop.style.top=(p.y-28)+'px';
-  const node=document.createElement('div');node.className='trail-dot '+(p.level<save.level?'done':p.level===save.level?'current':'next');node.id='trail-node-'+p.level;
+  const stop=document.createElement('button');stop.type='button';stop.className='trail-stop'+(p.level===save.level?' is-current':'');stop.setAttribute('aria-label','Inspect Level '+p.level+' enemy stats');stop.addEventListener('click',()=>showLevelPreview(p.level));stop.style.left=p.x+'%';stop.style.top=(p.y-28)+'px';
+  const node=document.createElement('span');node.className='trail-dot '+(p.level<save.level?'done':p.level===save.level?'current':'next');node.id='trail-node-'+p.level;
   node.innerHTML=p.level===save.level&&!(trailAdvance&&trailAdvance.to===p.level)?catPortrait(CATMAP.tabby):p.level<save.level?'✓':String(p.level);
-  const label=document.createElement('div');label.className='trail-level-label';label.innerHTML='LEVEL '+p.level+'<small>'+(p.level<save.level?'✓ ':'')+trailUnlockHint(p.level)+'</small>';stop.append(node,label);land.appendChild(stop);
+  const label=document.createElement('span');label.className='trail-level-label';label.innerHTML='LEVEL '+p.level+'<small>'+(p.level<save.level?'✓ ':'')+trailUnlockHint(p.level)+'</small>';stop.append(node,label);land.appendChild(stop);
   if(p.level%4===0){
    const cfg=bonusForMilestone(p.level),unlocked=save.level>p.level,done=save.bonusCleared.includes(p.level);
    const b=document.createElement('button');b.type='button';b.className='trail-branch'+(done?' done':'');b.style.top=p.y+'px';b.dataset.trailY=String(p.y);b.disabled=!unlocked||phase!=='prepare';
@@ -1635,6 +1663,45 @@ function renderCampaignMap(){
  const viewLabel=document.createElement('span');viewLabel.className='trail-view-label';
  viewLabel.setAttribute('aria-live','polite');viewLabel.textContent='Level '+save.level;
  windowFrame.append(land,viewLabel);wrap.appendChild(windowFrame);
+
+ const levelPreview=document.createElement('section');
+ levelPreview.className='trail-level-preview';levelPreview.hidden=true;
+ levelPreview.setAttribute('aria-label','Enemy statistics for selected level');
+ levelPreview.innerHTML='<div class="trail-preview-head"><strong id="trailPreviewTitle">Level</strong><button type="button" class="trail-preview-exit" aria-label="Close level details">✕</button></div><p class="trail-preview-summary" id="trailPreviewSummary"></p><div class="trail-preview-enemies" id="trailPreviewEnemies"></div><button type="button" class="trail-preview-action" id="trailPreviewAction"></button>';
+ windowFrame.appendChild(levelPreview);
+ levelPreview.querySelector('.trail-preview-exit').addEventListener('click',()=>{levelPreview.hidden=true;});
+ function showLevelPreview(level){
+  const unlocked=level<=save.level,practice=level<save.level;
+  levelPreview.querySelector('#trailPreviewTitle').textContent='🐾 Level '+level;
+  levelPreview.querySelector('#trailPreviewSummary').textContent=
+   practice?'✓ Completed · Replay for fun; no coins or progression':
+   unlocked?'⚔️ Current challenge · 🏰 '+dogCastleMaxForLevel(level)+' HP':
+   '🔒 Complete Level '+(level-1)+' first';
+  const types=['mutt',...(level>=2?['bulldog']:[]),...(level>=3?['beagle']:[]),...(level>=4?['husky']:[]),...(level>=5?['gatekeeper']:[])];
+  const names={mutt:['Mutt','🐕'],beagle:['Beagle Scout','🐶'],bulldog:['Bulldog','🐕‍🦺'],husky:['Husky','🐺'],gatekeeper:['Kennel Guardian','🛡️']};
+  const cards=levelPreview.querySelector('#trailPreviewEnemies');cards.innerHTML='';
+  for(const type of types){
+   const st=dogPreviewStats(type,level),row=document.createElement('div');
+   row.className='trail-preview-enemy';
+   row.innerHTML='<span class="enemy-icon" aria-hidden="true">'+names[type][1]+'</span><div><b>'+names[type][0]+'</b><small>⚔️ '+Math.round(st.power)+' DMG · ❤️ '+st.hp+' HP · 🎯 '+st.range+' range</small></div>';
+   cards.appendChild(row);
+  }
+  if(level>=8){const note=document.createElement('p');note.className='trail-preview-summary';note.textContent='🐶 '+(level>=12?'3':'2')+' guardians defend the kennel at HP milestones.';cards.appendChild(note);}
+  const action=levelPreview.querySelector('#trailPreviewAction');
+  action.disabled=!unlocked||phase!=='prepare';
+  action.textContent=!unlocked?'🔒 Paws off until Level '+level:
+   phase!=='prepare'?'⏳ Finish this battle first':
+   practice?'🐾 Purr-sue Level '+level+' again!':'🐱 Pounce into Level '+level+'!';
+  action.onclick=()=>{
+   if(action.disabled)return;
+   if(activeBonus)finishBonus();
+   replayLevel=practice?level:null;trailCelebration=null;trailAdvance=null;
+   closeDrawer();resetBattle();updateUI(true);
+   message(practice?'🐾 Practice level '+level+' · no coin rewards':'🐱 Level '+level+' ready. Start when you are!');
+  };
+  levelPreview.hidden=false;levelPreview.querySelector('.trail-preview-exit').focus();
+ }
+
  let missingIndex=0;
  const jumpButtons=[...jumpNav.querySelectorAll('button')];
  function focusTrailLevel(level,kind='current',smooth=true){
