@@ -1385,7 +1385,7 @@ function endBattle(won){
  updateUI(true);
 }
 
-function modal(icon,title,description,button,action){$('modalCancel').hidden=true;$('modalCancel').onclick=null;$('modalIcon').textContent=icon;$('modalTitle').textContent=title;$('modalText').textContent=description;$('modalBtn').textContent=button;$('modalBtn').onclick=action;$('overlay').hidden=false;}
+function modal(icon,title,description,button,action){$('modalCancel').hidden=true;$('modalCancel').onclick=null;$('modalCancel').textContent='Keep my progress';$('modalIcon').textContent=icon;$('modalTitle').textContent=title;$('modalText').textContent=description;$('modalBtn').textContent=button;$('modalBtn').onclick=action;$('overlay').hidden=false;}
 function hideModal(){$('overlay').hidden=true;}
 function message(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200);}
 function tip(t){/* Concise messages appear in the top battle banner. */}
