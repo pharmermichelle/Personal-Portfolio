@@ -974,6 +974,27 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 .modal.screen-guide p{white-space:pre-line;font-size:clamp(18px,4.4vw,20px);line-height:1.42;text-align:left;color:#344d60;font-weight:750;margin:8px 0 17px}
 .modal.screen-guide #modalBtn{min-height:57px;font-size:20px;border:1px solid #b39b74;background:#ffd4a1;color:#24405a;box-shadow:0 2px 0 #bd9867}
 @media(max-height:570px){.modal.screen-guide{padding:12px 14px}.modal.screen-guide h2{font-size:24px}.modal.screen-guide p{font-size:18px}}
+
+/* Academy artwork and sword sparring polish — mobile friendly */
+.academy-map-landmark{background:linear-gradient(150deg,#c7dfd6,#fae9bd 58%,#cbd9a7)}
+.academy-map-copy{max-width:61%}
+.academy-yard-art{width:38%;max-width:255px;min-width:108px;align-self:center;filter:drop-shadow(0 5px 5px #384c4d44)}
+.academy-yard-art img{display:block;width:100%;height:auto;max-height:185px;object-fit:cover;border:2px solid #c39e66;border-radius:14px;box-shadow:0 2px 0 #6a876c}
+.academy-meter.sword{height:91px;background:linear-gradient(#f4f5ef,#cfdbe3);isolation:isolate;overflow:hidden}
+.academy-meter.sword::before{content:"";position:absolute;inset:28px 8px 28px 19px;background:linear-gradient(#fbffff 1%,#ccd8e6 42%,#f9ffff 57%,#9fb5c7 99%);clip-path:polygon(0 33%,9% 33%,13% 0,88% 0,100% 50%,88% 100%,13% 100%,9% 67%,0 67%);filter:drop-shadow(0 2px 2px #345);z-index:0}
+.academy-meter.sword::after{content:"";position:absolute;left:10px;top:50%;height:54px;width:25px;transform:translateY(-50%);border-radius:8px;background:linear-gradient(90deg,#8f673c,#f3ca78,#a47440);box-shadow:inset 0 0 0 2px #86603a;z-index:1}
+.academy-meter.sword .zone{z-index:1;inset-block:29px;left:39%;width:22%;border:2px solid #397f6b;border-radius:6px;background:rgba(100,208,133,.55)}
+.academy-meter.sword .zone::after{top:-22px;font-size:10px;color:#265e4b}
+.academy-meter.sword .needle{z-index:2;top:20px;bottom:20px;background:#ba4c46;box-shadow:0 0 0 2px #fff9e2,0 1px 5px #283e62}
+.hero-collection-bar{margin-top:5px;padding:5px 8px;min-height:37px;width:100%;display:flex;align-items:center;gap:8px;overflow:hidden;text-align:left;border-radius:10px;background:#f4ead3;border:1px solid #d2b87b;color:#2b3a67;box-shadow:0 2px 0 #6d796e;font-size:12px;font-weight:900}
+.hero-collection-bar .hero-bar-label{flex:0 0 auto;color:#3a4969;font-weight:1000;white-space:nowrap}
+.hero-collection-bar .hero-bar-items{display:flex;min-width:0;flex:1;align-items:center;gap:7px;overflow:hidden;white-space:nowrap}
+.hero-collection-bar .hero-bar-item{display:inline-flex;align-items:center;gap:2px;min-width:0;white-space:nowrap}
+.hero-collection-bar .hero-bar-item .portrait{width:27px;height:27px;flex:0 0 27px}
+.hero-collection-bar .hero-bar-item.active{color:#28635c}
+.hero-collection-bar .hero-bar-item span:last-child{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:390px){.hero-collection-bar{font-size:11px;gap:5px;padding:3px 6px}.hero-collection-bar .hero-bar-item .portrait{width:23px;height:23px;flex-basis:23px}.academy-map-copy{max-width:65%}.academy-yard-art{width:34%;min-width:95px}}
+
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1024,7 +1045,7 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 <button id="dogCastleStatsBtn" type="button" class="health-card kennel-stats-trigger" aria-label="Open dog army stats" title="Tap to view dog stats"><div class="health-top"><span>🐶 Dog Castle <small class="kennel-hint">ⓘ</small></span><b id="dogHpStat">100</b></div><div class="kennel-meter-wrap"><div class="meter dogs"><div id="dogMeter" style="width:100%"></div></div><span id="bossMarker65" class="boss-marker" style="left:65%" title="Boss appears at 65% kennel health" aria-label="Boss at 65% kennel health">65%</span><span id="bossMarker30" class="boss-marker" style="left:30%" title="Boss appears at 30% kennel health" aria-label="Boss at 30% kennel health" hidden>30%</span><span id="bossMarker15" class="boss-marker" style="left:15%" title="Boss appears at 15% kennel health" aria-label="Boss at 15% kennel health" hidden>15%</span></div></button>
 </div>
 <div class="control-row"><button id="startBtn" class="btn primary">▶ Start level 1</button><button id="pauseBtn" class="btn" disabled>⏸ Pause</button><button id="speedBtn" class="btn">⏩ 1×</button><button id="fullscreenBtn" class="btn" aria-label="Fullscreen battlefield" title="Fullscreen battlefield">⛶</button></div>
-<div class="squad-box"><div class="squad-top"><span id="squadHint" class="squad-title">🐱 SQUAD</span><span id="squadNipTotal" class="squad-catnip-total" title="Current battle catnip" hidden>🌿 <span id="nipStat">0</span></span></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
+<div class="squad-box"><div class="squad-top"><span id="squadHint" class="squad-title">🐱 SQUAD</span><span id="squadNipTotal" class="squad-catnip-total" title="Current battle catnip" hidden>🌿 <span id="nipStat">0</span></span></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div><button type="button" id="ownedHeroBar" class="hero-collection-bar" aria-label="Open your legendary heroes" hidden></button></div>
 </section>
 <nav class="bottom-nav" aria-label="Game menus"><button id="catsNavBtn" class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="cats"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
 <aside class="game-ad-footer" aria-label="Advertisement">
@@ -1349,19 +1370,19 @@ function academyCleanPending(p){
  if(!Number.isFinite(cost)||cost<1||cost>1000000||!Number.isFinite(attempts)||attempts<0||attempts>2||!Number.isFinite(best)||best<0||best>100)return null;
  return {id:p.id,kind:p.kind,cost,attempts,best};
 }
-function academyRefundRate(score){return score>=80?.30:score>=50?.20:score>=20?.10:0;}
+function academyRefundRate(score){return Math.max(0,Math.min(100,Math.round(Number(score)||0)))/100;}
 function academySelectedCat(){return save.unlocked.includes(academyCat)?academyCat:(save.unlocked[0]||'tabby');}
 function academyOpen(){if(phase==='battle'||activeBonus){message('Finish the current battle or side challenge before visiting the Academy!');return;}academyCat=academySelectedCat();openDrawer('academy');}
 function academyMapMarkup(){
  return '<section class="academy-map-landmark" aria-label="The Cat Training Academy">'+
- '<div class="academy-map-inner"><div class="academy-map-copy"><h3>🏟️ Cat Training Academy</h3><p>Practice swordplay, archery, shield defense, and sprinting. Earn back up to 30% of training coins!</p><button id="academyTrailBtn" class="btn primary" type="button">'+(save.academyPending?'🐾 Resume Training':'⚔️ Visit Academy')+'</button></div>'+
- '<div class="academy-yard-art" aria-hidden="true"><svg viewBox="0 0 150 155" xmlns="http://www.w3.org/2000/svg"><path d="M7 123L74 88l69 35v28H7Z" fill="#90aa8f"/><path d="M20 60l54-38 54 38v70H20Z" fill="#f8e7be" stroke="#4e6873" stroke-width="5"/><path d="M9 61l65-46 67 46-11 14-56-36-56 36Z" fill="#a65f61" stroke="#6a4e5c" stroke-width="4"/><path d="M58 128V93a16 16 0 0 1 32 0v35Z" fill="#7d5760" stroke="#2b3a67" stroke-width="4"/><path d="M34 81h14v16H34Zm68 0h14v16h-14Z" fill="#8fc7d9" stroke="#445b65" stroke-width="3"/><path d="M66 12h17v18H66Z" fill="#f8c67d" stroke="#6a4e5c" stroke-width="3"/><text x="75" y="77" text-anchor="middle" font-size="19">🐱</text><text x="12" y="146" font-size="23">🎯</text><text x="118" y="146" font-size="23">⚔️</text></svg></div></div></section>';
+ '<div class="academy-map-inner"><div class="academy-map-copy"><h3>🏟️ Cat Training Academy</h3><p>Practice swordplay, archery, shield defense, and sprinting. Your best score can refund up to 100% of training coins!</p><button id="academyTrailBtn" class="btn primary" type="button">'+(save.academyPending?'🐾 Resume Training':'⚔️ Visit Academy')+'</button></div>'+
+ '<div class="academy-yard-art" aria-hidden="true"><img src="./assets/academy-storybook.webp" alt="" loading="lazy" decoding="async"></div></div></section>';
 }
 function academyRender(){
  const panel=$('academyContent');if(!panel)return;
  if(academyRound){academyRenderRound();return;}
  const p=save.academyPending;
- let html='<section class="academy-intro"><p class="academy-kicker">The Purr-fect Place to Practice</p><h3>🏟️ Cat Training Academy</h3><p>Buy a permanent upgrade at full price, then play a short challenge. Your best of <b>two scored attempts</b> earns a <b>0–30% fish coin refund</b>.</p></section>';
+ let html='<section class="academy-intro"><p class="academy-kicker">The Purr-fect Place to Practice</p><h3>🏟️ Cat Training Academy</h3><p>Buy a permanent upgrade at full price, then play a short challenge. Play up to <b>two scored attempts</b>. Your <b>best score out of 100 becomes your refund percent</b>: 55 points refunds 55% of the fish coins you spent. A purr-fect 100 refunds the full price!</p></section>';
  if(academyReceipt){
   html+='<section class="academy-receipt"><div>🏆 Training Complete!</div><h3>'+academyReceipt.cat+' · '+ACADEMY_KIND[academyReceipt.kind].tag+'</h3><p>Best score: '+academyReceipt.best+'/100 · '+Math.round(academyReceipt.rate*100)+'% refund</p><b>🐟 +'+academyReceipt.refund+' coins returned</b><p class="academy-rule">Permanent upgrade retained. Ready to train another cat!</p></section>';
   academyReceipt=null;
@@ -1370,7 +1391,7 @@ function academyRender(){
    const c=CATMAP[p.id],a=ACADEMY_KIND[p.kind],rate=academyRefundRate(p.best);
    html+='<section class="academy-result"><p class="academy-tag">Purchased Upgrade — Refund Pending</p><h3>'+a.icon+' '+c.name+'</h3><p>'+a.title+' · Original cost 🐟 '+p.cost+'</p>'+
    '<div class="stars">'+(p.best>=80?'⭐⭐⭐':p.best>=50?'⭐⭐':p.best>=20?'⭐':'🐾')+'</div>'+
-   '<p><b>Best: '+p.best+'/100</b> · Attempts '+p.attempts+'/2</p><p>Current expected refund: <b>🐟 '+Math.floor(p.cost*rate)+'</b></p>'+
+   '<p><b>Best: '+p.best+'/100</b> · Attempts '+p.attempts+'/2</p><p>Earn back <b>'+Math.round(rate*100)+'% of the original price</b>: 🐟 <b>'+Math.round(p.cost*rate)+'</b> coins</p>'+
    (p.attempts<2?'<button id="academyAttempt" type="button" class="btn primary academy-primary">'+(p.attempts===0?'▶ Start First Attempt':'🔁 Try Second Attempt')+'</button>':'')+
    (p.attempts>0?'<button id="academyClaim" type="button" class="btn green academy-secondary">🐟 Claim Best Refund</button>':'')+
    '<p class="academy-rule">Your upgrade is already purchased and saved. You can close the game and resume this unfinished session later. A refund can be claimed only once.</p></section>';
@@ -1391,7 +1412,7 @@ function academyRender(){
  const c=CATMAP[selected],u=save.upgrades[selected],kind=academyKind,locked=u[kind]>=(kind==='lives'?5:10)||u[kind]>=trainingCap(),cost=upgradeCost(c,kind);
  html+='<div class="academy-cost"><span>🐟 Your Balance: '+save.coins+'</span><span>Training: '+cost+'</span></div>'+
  '<button id="academyBuy" type="button" class="btn primary academy-primary" '+(locked||save.coins<cost?'disabled':'')+'>Buy '+ACADEMY_KIND[kind].tag+' Upgrade · 🐟 '+cost+'</button>'+
- '<p class="academy-rule">The <b>full price</b> is deducted and the permanent stat increases immediately. After your practice attempts, fish coins are refunded based on the better score (0%, 10%, 20%, or 30%). '+(locked?'Choose another unlocked exercise.':save.coins<cost?'Earn more coins to purchase.':'')+'</p>';
+ '<p class="academy-rule">The <b>full price</b> is deducted and the permanent stat increases immediately. After your two practice attempts, your best score determines the percentage of spent coins refunded. Score 55 for 55% back; earn 100 for a purr-fect full refund! '+(locked?'Choose another unlocked exercise.':save.coins<cost?'Earn more coins to purchase.':'')+'</p>';
  panel.innerHTML=html;
  panel.querySelectorAll('[data-academy-cat]').forEach(b=>b.addEventListener('click',()=>{academyCat=b.dataset.academyCat;academyRender();}));
  panel.querySelectorAll('[data-academy-kind]').forEach(b=>b.addEventListener('click',()=>{academyKind=b.dataset.academyKind;academyRender();}));
@@ -1421,7 +1442,7 @@ function academyRenderRound(){
  const r=academyRound,info=ACADEMY_KIND[r.kind],panel=$('academyContent');
  let html='<div class="academy-play"><div class="academy-play-title">'+info.icon+' '+info.title+'</div><div class="academy-play-help">'+info.instruction+'</div><div class="academy-progress">Challenge '+(r.step+1)+' of 6 · '+(save.academyPending.attempts+1)+' of 2 attempts</div>';
  if(r.kind==='power'||r.kind==='attack'){
-  html+='<div class="academy-meter '+(r.kind==='attack'?'archery':'')+'"><div class="zone"></div><div class="needle" id="academyNeedle"></div></div>'+
+  html+='<div class="academy-meter '+(r.kind==='attack'?'archery':'sword')+'"><div class="zone"></div><div class="needle" id="academyNeedle"></div></div>'+
   '<button id="academyTap" class="btn primary academy-primary" type="button">'+(r.kind==='attack'?'🏹 Fire Arrow!':'⚔️ Swing Sword!')+'</button>'+
   '<p class="academy-rule" style="text-align:center">Aim for the center. Perfect timing scores the most points.</p>';
  }else if(r.kind==='lives'){
@@ -1482,7 +1503,7 @@ function academyFinishRound(score){
 }
 function academyClaim(){
  const p=save.academyPending;if(!p||p.attempts<1||academyRound)return;
- const rate=academyRefundRate(p.best),refund=Math.floor(p.cost*rate),cat=CATMAP[p.id]?.short||'Cat';
+ const rate=academyRefundRate(p.best),refund=Math.round(p.cost*rate),cat=CATMAP[p.id]?.short||'Cat';
  // One save commit applies the refund and clears the pending transaction together.
  save.coins+=refund;save.academyPending=null;
  persist();academyReceipt={cat,kind:p.kind,best:p.best,rate,refund};
@@ -1518,7 +1539,7 @@ function buyBoost(c,kind){if(phase!=='battle'||!save.squad.includes(c.id)||boost
 function trainingCap(){return Math.min(10,Math.max(1,Math.floor((save.level+1)/3)));}
 function upgradeCost(c,kind){const u=save.upgrades[c.id];const rank=u[kind];return Math.round((kind==='lives'?85:kind==='spawn'?80:72)*Math.pow(1.55,rank)+(c.cost*.23));}
 // Later castles are tougher, so victory coins grow with campaign progress (no 82-coin cap).
-function victoryReward(level){return Math.round(24+11*level+4*Math.max(0,level-4));}
+function victoryReward(level){return Math.round((24+11*level+4*Math.max(0,level-4))*1.50);}
 
 let replayLevel=null;
 function battleLevel(){return replayLevel??save.level;}
@@ -1625,7 +1646,7 @@ function endBattle(won){
   message('🐾 Level '+finished+' conquered! Your cat is moving along the trail.');
   return;
  }
- const consolation=8+Math.min(7,Math.floor(pendingCoins*.20));
+ const consolation=12+Math.min(11,Math.floor(pendingCoins*.25));
  save.coins+=consolation;persist();
  modal('💔','The Cat Castle Fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip resets when you retry.','Return to the Purr-suit Trail',()=>{
   phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
@@ -1961,6 +1982,15 @@ function renderBattleBoost(){const wallet=$('boostNip'),roster=$('boostRoster'),
  const specs={power:['⚔️ Power','+18% damage per boost',()=>String(t.power)],attack:['💨 Attack','Attacks more often',()=>(1/t.attack).toFixed(2)+'/s'],lives:['❤️ HP Tier','+22 HP per cat · no extra spawns',()=>t.hp+' HP ('+t.lives+'/6)'],spawn:['⏱️ Spawn','Summon more frequently',()=>t.spawn.toFixed(1)+'s']};
  for(const kind of ['power','attack','lives','spawn']){const [name,desc,value]=specs[kind],maxed=boostMaxed(c,kind),cost=boostCost(c,kind),b=document.createElement('button');b.type='button';b.className='boost-upgrade';b.disabled=phase!=='battle'||maxed||catnip<cost;b.innerHTML='<strong>'+name+': '+value()+'</strong><small>'+desc+' · '+u[kind]+'/3</small><em>'+(phase!=='battle'?'Start the battle':maxed?'MAX': '🌿 '+cost+' catnip')+'</em>';b.addEventListener('click',()=>buyBoost(c,kind));$('boostGrid').appendChild(b);}
 }
+function renderOwnedHeroBar(){
+ const bar=$('ownedHeroBar');if(!bar)return;
+ const heroes=HEROES.filter(h=>save.heroUnlocked.includes(h.id));
+ bar.hidden=save.level<5&&!heroes.length;
+ if(bar.hidden)return;
+ bar.innerHTML='<span class="hero-bar-label">⭐ YOUR HEROES</span><span class="hero-bar-items">'+
+ (heroes.length?heroes.map(h=>'<span class="hero-bar-item '+(save.heroSelected===h.id?'active':'')+'">'+catPortrait(h)+'<span>'+h.short+(save.heroSelected===h.id?' ✓':'')+'</span></span>').join(''):'<span>None recruited — tap to visit Hero Den</span>')+'</span>';
+ bar.setAttribute('aria-label','Owned legendary heroes: '+(heroes.length?heroes.map(h=>h.name+(h.id===save.heroSelected?' selected':'')).join(', '):'none')+'. Tap to open Hero Den.');
+}
 function renderHeroes(){const el=$('heroesList');if(!el)return;el.innerHTML='<p class="panel-intro">Battle summons: '+heroSummonsUsed+' / '+heroSummonLimit()+'. Limits are shared across every owned champion and reset each level.</p>';
  for(const h of HEROES){const owned=save.heroUnlocked.includes(h.id),selected=save.heroSelected===h.id,available=save.level>=h.level;const card=document.createElement('article');card.className='hero-card';tintCharacter(card,h.fur);
  card.innerHTML=catLegacyGhost(h)+catPortrait(h)+'<div class="hero-info"><h3>'+h.name+'</h3><p>'+h.desc+'</p><div class="hero-stats">❤️ '+h.hp+' · ⚔️ '+h.power+' · ⏱️ '+h.cooldown+'s</div><button class="btn '+(selected?'green':'primary')+'" '+(!available||phase==='battle'||(!owned&&save.coins<h.cost)?'disabled':'')+'>'+(!available?'🔒 Reach level '+h.level:!owned?'Buy 🐟 '+h.cost:selected?'✓ Selected':'Choose champion')+'</button></div>';
@@ -1985,8 +2015,8 @@ function hasAffordablePermanentPurchase(){
 /* Screen-tip read flags have a separate key: never touch campaign data. */
 const SCREEN_GUIDE_KEY='claws-vs-paws-screen-tutorials-v1';
 const SCREEN_GUIDES={
- academy:{icon:'🏟️',title:'Welcome to the Cat Training Academy',text:'⚔️ Buy a permanent upgrade for full price.\n🎯 Play two scored challenges. Your best score wins.\n🐟 Claim a refund of up to 30% of the coins you spent!'},
- map:{icon:'🗺️',title:'Purr-suit Trail Tips',text:'🎯 Current finds your next level. 🏪 Shop jumps to cat buying.\n🎁 Missions flags unfinished side quests.\nTap a level to meet the paw-ponents before you pounce!'},
+ academy:{icon:'🏟️',title:'Welcome to the Cat Training Academy',text:'⚔️ Buy a permanent upgrade for full price.\n🎯 Play up to two challenges. Your highest score determines your refund percent.\n🐟 Score 55 to get 55% of spent coins back — purr-fect 100 gets all your fish coins back!'},
+ map:{icon:'🗺️',title:'Purr-suit Trail Tips',text:'🐱 Cat Pet Shop and ⭐ Hero Den are buttons: tap to recruit cats or inspect legendary heroes.\n🏟️ Tap Visit Academy to play training games and earn fish coins back.\n🐾 Tap any numbered level circle to preview a battle.\n🎯 Current, 🏪 Shop, and 🎁 Missions are buttons that jump along the trail.'},
  levelPreview:{icon:'🐾',title:'Paw-some Level Preview',text:'⚔️ DMG is damage; ❤️ HP is health; 🎯 RANGE is attack reach.\nTap Pounce to play! Earlier levels are practice only, with no coin rewards.'},
  cats:{icon:'🐟',title:'Cat Barracks Basics',text:'🐟 Fish coins buy cats after you reach their level.\n🔒 A lock means you need a higher level.\nTap a cat to buy, equip, or inspect. Purr-chase wisely!'},
  trainRoster:{icon:'⚒️',title:'Sharpen Those Claws!',text:'🐱 Choose a cat to train.\n🐟 A fish badge means an upgrade is affordable.\nPermanent training stays with your cats between battles!'},
@@ -2000,12 +2030,13 @@ const SCREEN_GUIDES={
 };
 let screenGuideSeen={};
 try{const stored=JSON.parse(localStorage.getItem(SCREEN_GUIDE_KEY)||'{}');if(stored&&typeof stored==='object'&&!Array.isArray(stored))screenGuideSeen=stored;}catch(e){}
+try{if(localStorage.getItem('claws-vs-paws-map-tips-v2')!=='1')delete screenGuideSeen.map;if(localStorage.getItem('claws-vs-paws-academy-tips-v2')!=='1')delete screenGuideSeen.academy;}catch(e){}
 function maybeShowScreenGuide(key){
  const guide=SCREEN_GUIDES[key];
  if(!guide||screenGuideSeen[key]||!$('overlay').hidden)return false;
  modal(guide.icon,guide.title,guide.text,'🐾 Paw-some! Got It',()=>{
   screenGuideSeen[key]=true;
-  try{localStorage.setItem(SCREEN_GUIDE_KEY,JSON.stringify(screenGuideSeen));}catch(e){}
+  try{localStorage.setItem(SCREEN_GUIDE_KEY,JSON.stringify(screenGuideSeen));if(key==='map')localStorage.setItem('claws-vs-paws-map-tips-v2','1');if(key==='academy')localStorage.setItem('claws-vs-paws-academy-tips-v2','1');}catch(e){}
   hideModal();
   if(drawerOpen)$('closeDrawer').focus();
  });
@@ -2061,7 +2092,7 @@ function updateHUD(){ syncCoinNotifications(); if(phase==='battle'&&!boostTipSho
  else if(phase==='prepare')$('battleLabel').textContent=activeBonus?'⭐ '+activeBonus.title+' · '+activeBonus.maxSlots+' cats max':replayLevel!==null?'🐾 Practice Level '+replayLevel+' · No coin rewards':'🐈 Select your cats → Start level';else $('battleLabel').textContent=phase==='win'?'🏆 Cats conquered the kennel!':'💔 Dogs breached the cat castle';
  const heroMenu=$('heroShopBtn');if(heroMenu)heroMenu.textContent=save.level<5?'⭐ Legendary cats · Level 5+':'⭐ Legendary cats · '+(save.heroSelected?'Selected: '+HEROMAP[save.heroSelected].short:'Choose your champion');}
 
-function updateUI(full=false){updateHUD();updateTimers();if(full){renderSquad();renderBarracks();renderDetails();renderHeroes();renderBattleBoost();if(drawerOpen&&!$('panelSquad').hidden)renderSquadDetails();if(drawerOpen&&!$('panelMap').hidden)renderCampaignMap();updateTimers();}}
+function updateUI(full=false){updateHUD();updateTimers();if(full){renderSquad();renderOwnedHeroBar();renderBarracks();renderDetails();renderHeroes();renderBattleBoost();if(drawerOpen&&!$('panelSquad').hidden)renderSquadDetails();if(drawerOpen&&!$('panelMap').hidden)renderCampaignMap();updateTimers();}}
 function spawnCat(id){const c=CATMAP[id],s=fieldStat(c);if(cats.length>=Math.min(16,10+Math.floor(battleLevel()/2)))return;cats.push({uid:++uid,team:'cat',id,type:c.id,x:155,y:yPath+Math.random()*30-15,hp:s.hp,maxHp:s.hp,power:s.power,attack:s.attack,range:s.range,speed:s.speed,cd:Math.random()*.28,anim:Math.random()*10,hit:0,weapon:c.weapon,scale:c.id==='maine'?1.35:c.id==='ginger'?1.18:1});puff(155,yPath,3,'#fbf4db');}
 function spawnDog(type){const base=DOGS[type],L=activeBonus?activeBonus.milestone+1:battleLevel();
  // Long sieges get tougher instead of trapping an underpowered squad in a stalemate.
@@ -2074,7 +2105,7 @@ function projectile(attacker,target,power,weapon,team,splash){shots.push({x:atta
 function damage(target,amount){if(!target||target.hp<=0)return;target.hp-=amount;target.hit=.16;
  sound.effect(target.hp<=0?(target.team==='cat'?'catDown':target.type==='gatekeeper'?'bossDown':'dogDown'):(target.team==='cat'?'catHurt':'dogHurt'));
  floatText(target.x,target.y-52,'-'+Math.max(1,Math.round(amount)),target.team==='cat'?'#fff8ce':'#ffc8b4');puff(target.x,target.y-20,2,target.team==='cat'?'#d5ecdb':'#e9b39e');
- if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(26+battleLevel()*10+Math.max(0,battleLevel()-5)*3,pendingCoins+loot);const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20,dalmatian:4}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
+ if(target.hp<=0){target.hp=0;if(target.team==='dog'){const loot=DOGS[target.type].loot||2;pendingCoins=Math.min(Math.round((26+battleLevel()*10+Math.max(0,battleLevel()-5)*3)*1.7),pendingCoins+Math.max(1,Math.round(loot*1.7)));const nip={mutt:3,beagle:4,bulldog:6,husky:5,mastiff:15,gatekeeper:20,dalmatian:4}[target.type]||3;catnip+=nip;puff(target.x,target.y-20,9,'#bcebb1');floatText(target.x,target.y-60,'🌿 +'+nip,'#ecffca');}
  else puff(target.x,target.y-20,8,'#e6f2c8');}}
 
 function attackUnit(u,target){u.cd=u.attack;sound.effect(u.team==='dog'?(u.weapon==='bone'?'bone':'bite'):(['sword','axe','bow','star','wand','bolt','hammer','shield'].includes(u.weapon)?u.weapon:'sword'));if(u.range>50){projectile(u,target,u.power,u.weapon,u.team,u.hero&&u.id==='panther'?105:u.weapon==='wand'?55:0);}else{damage(target,u.power);puff(target.x,target.y-24,2,'#fff9e9');}}
@@ -2248,7 +2279,7 @@ let largerText=false;try{largerText=localStorage.getItem('claws-vs-paws-large-te
 // Castle itself is the tap target on the battle canvas, even on a stretched phone layout.
 canvas.addEventListener('click',e=>{const rect=canvas.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width*W,y=(e.clientY-rect.top)/rect.height*H;if(x>=793&&y>=112&&y<=410)openDrawer('dogs');else if(x<=166&&y>=112&&y<=410)openDrawer('castle');});
 $('dogCastleStatsBtn').addEventListener('click',()=>openDrawer('dogs'));$('catCastleStatsBtn').addEventListener('click',()=>openDrawer('castle'));
-$('mapBtn').addEventListener('click',()=>openDrawer('map'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
+$('mapBtn').addEventListener('click',()=>openDrawer('map'));$('heroShopBtn').addEventListener('click',()=>openDrawer('heroes'));$('ownedHeroBar').addEventListener('click',()=>openDrawer('heroes'));$('startBtn').addEventListener('click',heroAction);$('pauseBtn').addEventListener('click',()=>{if(phase!=='battle')return;paused=!paused;updateHUD();});$('speedBtn').addEventListener('click',()=>{speed=speed===1?2:speed===2?3:1;updateHUD();});
 // Fullscreen the document, not only .shell: dialogs and toasts are siblings of .shell.
 $('fullscreenBtn').addEventListener('click',()=>{
  const active=document.fullscreenElement||document.webkitFullscreenElement;
