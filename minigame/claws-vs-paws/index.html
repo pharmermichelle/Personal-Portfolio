@@ -719,6 +719,77 @@ canvas{width:100%;height:100%;display:block}
  #panelMap .trail-branch{font-size:13px}
 }
 #panelMap .trail-scenery{display:none}
+
+/* Storybook polish — castle health tiles and battlefield control row only.
+   Colors harmonize with the painted arena and soft squad cards.
+   No change to dimensions, DOM, or interaction logic. */
+.castle-health{gap:10px}
+.castle-health .health-card{
+  background:linear-gradient(180deg,#f4f8f9 0%,#e2f0e8 100%);
+  border:1px solid #a8c6b9;
+  border-radius:14px;
+  box-shadow:0 3px 0 #668d84;
+  color:#244361;
+}
+.castle-health .health-top{
+  color:#284967;
+  font-size:15px;
+  font-weight:950;
+}
+.castle-health .health-top b{
+  color:#243d5c;
+  font-size:20px;
+}
+.castle-health .meter{
+  height:9px;
+  margin-top:6px;
+  background:#d6e5e7;
+  border:1px solid #a1bdb8;
+  border-radius:999px;
+}
+.castle-health .meter.cats div{background:linear-gradient(90deg,#4997a1 0%,#61b3a2 100%)}
+.castle-health .meter.dogs div{background:linear-gradient(90deg,#c37d87 0%,#aa6570 100%)}
+.castle-health .kennel-meter-wrap{margin-top:6px;padding-top:6px}
+.castle-health .boss-marker{color:#6f5872;filter:drop-shadow(0 1px 1px #ffffffd9)}
+.control-row{gap:8px}
+.control-row .btn{
+  border:1px solid #a6c2c4;
+  border-radius:14px;
+  background:linear-gradient(180deg,#f4f8f9 0%,#dfedf3 100%);
+  color:#284362;
+  box-shadow:0 3px 0 #789ca4;
+}
+.control-row .btn.primary{
+  background:linear-gradient(180deg,#ffe1b2 0%,#f9c78c 100%);
+  border:1px solid #d3ab79;
+  color:#243d5c;
+  box-shadow:0 3px 0 #ba8d5c;
+}
+.control-row .btn:not(.primary):not(:disabled):active{
+  background:linear-gradient(180deg,#eaf6f7 0%,#d6e7ed 100%);
+}
+.control-row .btn.primary:not(:disabled):active{
+  background:linear-gradient(180deg,#fbd5a1 0%,#efb875 100%);
+}
+.control-row .btn:disabled{
+  background:linear-gradient(180deg,#dce5e9 0%,#ccd8de 100%);
+  color:#42576c;
+  border-color:#b1c3c8;
+  box-shadow:none;
+  opacity:1;
+}
+#fullscreenBtn{padding-inline:0}
+@media(max-width:600px){
+  .castle-health .health-card{border-radius:13px}
+  .castle-health .health-top{font-size:14px}
+  .castle-health .health-top b{font-size:18px}
+  .castle-health .meter{height:9px}
+  .control-row{gap:6px}
+  .control-row .btn{border-radius:13px}
+}
+@media(max-height:700px){
+  .castle-health .meter{height:6px;margin-top:3px}
+}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
