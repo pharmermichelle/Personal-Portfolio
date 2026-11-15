@@ -790,6 +790,76 @@ canvas{width:100%;height:100%;display:block}
 @media(max-height:700px){
   .castle-health .meter{height:6px;margin-top:3px}
 }
+
+/* Mobile composition lock: use the Motorola 360px layout as the visual reference.
+   Other portrait phones scale that *whole* layout uniformly. Keep vertical
+   scrolling rather than shrinking rows based on the screen's height. */
+@media (max-width:600px) and (orientation:portrait){
+ .shell.mobile-reference-layout{
+  box-sizing:border-box;
+  width:360px;min-width:360px;max-width:none;
+  height:auto;min-height:0;
+  margin-inline:auto;
+  padding:8px 6px 10px;
+  gap:6px;
+  zoom:var(--mobile-reference-scale,1);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+ }
+ .shell.mobile-reference-layout .masthead{min-height:47px}
+ .shell.mobile-reference-layout .masthead h1{font-size:27px}
+ .shell.mobile-reference-layout .mast-actions .round-tag{font-size:11px;padding:8px 6px}
+ .shell.mobile-reference-layout .sound-toggle{min-width:40px;width:40px;height:40px;font-size:20px}
+ .shell.mobile-reference-layout .hud{gap:5px}
+ .shell.mobile-reference-layout .hud .stat{padding:7px 6px}
+ .shell.mobile-reference-layout .stat .lbl{font-size:14px}
+ .shell.mobile-reference-layout .stat .val{font-size:23px}
+ .shell.mobile-reference-layout .arena{gap:7px}
+ .shell.mobile-reference-layout .field-wrap{
+  width:100%;height:auto;min-height:0;max-height:none;
+  aspect-ratio:960 / 500;
+ }
+ .shell.mobile-reference-layout .castle-health{gap:10px}
+ .shell.mobile-reference-layout .health-card{padding:5px 8px}
+ .shell.mobile-reference-layout .health-top{font-size:14px}
+ .shell.mobile-reference-layout .health-top b{font-size:18px}
+ .shell.mobile-reference-layout .control-row{
+  gap:5px;
+  grid-template-columns:minmax(0,1.75fr) minmax(0,1.05fr) minmax(0,1.1fr) 44px;
+ }
+ .shell.mobile-reference-layout .control-row .btn{min-height:48px;font-size:15px;padding:7px 3px}
+ .shell.mobile-reference-layout .squad-box{padding:7px 8px 10px}
+ .shell.mobile-reference-layout .squad-top{min-height:39px;margin:0 0 6px}
+ .shell.mobile-reference-layout .squad-title{
+  min-width:174px;min-height:35px;font-size:21px;padding:3px 10px;
+ }
+ .shell.mobile-reference-layout .squad-title::before,
+ .shell.mobile-reference-layout .squad-title::after{width:55px}
+ .shell.mobile-reference-layout .squad-title::before{left:-49px}
+ .shell.mobile-reference-layout .squad-title::after{right:-49px}
+ .shell.mobile-reference-layout .squad-catnip-total{font-size:12px;padding:3px 6px}
+ .shell.mobile-reference-layout .squad{gap:4px}
+ .shell.mobile-reference-layout .squad-card,
+ .shell.mobile-reference-layout .squad-card.filled{height:120px;padding:4px 2px 6px}
+ .shell.mobile-reference-layout .squad-card .portrait,
+ .shell.mobile-reference-layout .squad-card.filled .portrait{
+  width:min(100%,72px);height:68px;
+ }
+ .shell.mobile-reference-layout .squad-card .slot-name{font-size:15px}
+ .shell.mobile-reference-layout .squad-card.empty .slot-name{font-size:13px}
+ .shell.mobile-reference-layout .squad-card .slot-progress{height:10px;flex-basis:10px}
+ .shell.mobile-reference-layout .bottom-nav{gap:5px}
+ .shell.mobile-reference-layout .bottom-nav .nav-btn{
+  min-height:59px;padding:8px 3px;font-size:14px;
+ }
+ .shell.mobile-reference-layout .bottom-nav .nav-icon{font-size:22px;margin-bottom:2px}
+ .shell.mobile-reference-layout .game-ad-footer{min-height:65px;padding:2px 2px 3px}
+ .shell.mobile-reference-layout .game-ad-footer .ad-label{font-size:9px}
+}
+/* Fullscreen uses the screen normally, without the portrait composition lock. */
+.shell:fullscreen,.shell:-webkit-full-screen{
+ zoom:1!important;width:100%!important;min-width:0!important;max-width:100%!important;
+}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1712,6 +1782,32 @@ if (location.protocol === 'https:') {
   try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
   catch (err) { console.info('AdSense banner could not initialize.', err); }
 }
+</script>
+<script>
+/* Consistent mobile composition without changing the game engine or save data. */
+(()=>{
+ 'use strict';
+ const shell=document.querySelector('.shell');
+ if(!shell)return;
+ const portraitPhone=window.matchMedia('(max-width:600px) and (orientation:portrait)');
+ function syncMobileReferenceLayout(){
+  const enabled=portraitPhone.matches&&!document.fullscreenElement&&!document.webkitFullscreenElement
+   &&window.CSS&&CSS.supports('zoom','1');
+  shell.classList.toggle('mobile-reference-layout',!!enabled);
+  if(enabled){
+   const width=document.documentElement.clientWidth||window.innerWidth;
+   const scale=Math.min(1.25,width/360);
+   shell.style.setProperty('--mobile-reference-scale',scale.toFixed(4));
+  }else{
+   shell.style.removeProperty('--mobile-reference-scale');
+  }
+ }
+ window.addEventListener('resize',syncMobileReferenceLayout,{passive:true});
+ window.addEventListener('orientationchange',syncMobileReferenceLayout,{passive:true});
+ document.addEventListener('fullscreenchange',syncMobileReferenceLayout);
+ document.addEventListener('webkitfullscreenchange',syncMobileReferenceLayout);
+ syncMobileReferenceLayout();
+})();
 </script>
 </body>
 </html>
