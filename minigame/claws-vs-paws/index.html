@@ -925,6 +925,22 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
  #panelMap .trail-jump-nav button{min-height:41px}
 }
 @media(prefers-reduced-motion:reduce){#panelMap .trail-window .trail-land{transition:none!important}}
+
+/* Fish-coin availability badges: Cats, Train and Purr-suit Trail shop. */
+.bottom-nav .nav-btn{position:relative;overflow:visible}
+.bottom-nav .nav-btn.coin-ready::after,
+#panelMap .trail-shop-link.coin-ready::after{
+ content:"🐟";position:absolute;right:3px;top:-7px;
+ display:grid;place-items:center;width:26px;height:26px;
+ border:2px solid #fffaf2;border-radius:50%;background:#c7edf0;
+ color:#244963;box-shadow:0 2px 5px #16284266;
+ font-size:15px;line-height:1;pointer-events:none;z-index:3;
+}
+#panelMap .trail-shop-link{position:relative}
+.cat-card.available-for-purchase{border-color:#7bab9b;background:color-mix(in srgb,var(--cat-fur) 7%,#f9fcf5)}
+.cat-card.available-for-purchase .cat-status{color:#28674e}
+.cat-card.available-for-purchase.affordable{border-color:#4b987d}
+.equip-btn.available-for-purchase{background:#d8f1de;color:#1e5041;border:1px solid #82b69b}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -946,7 +962,7 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 <div class="control-row"><button id="startBtn" class="btn primary">▶ Start level 1</button><button id="pauseBtn" class="btn" disabled>⏸ Pause</button><button id="speedBtn" class="btn">⏩ 1×</button><button id="fullscreenBtn" class="btn" aria-label="Fullscreen battlefield" title="Fullscreen battlefield">⛶</button></div>
 <div class="squad-box"><div class="squad-top"><span id="squadHint" class="squad-title">🐱 SQUAD</span><span id="squadNipTotal" class="squad-catnip-total" title="Current battle catnip" hidden>🌿 <span id="nipStat">0</span></span></div><div id="squad" class="squad" aria-label="Five equipped cat slots"></div></div>
 </section>
-<nav class="bottom-nav" aria-label="Game menus"><button class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="train"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
+<nav class="bottom-nav" aria-label="Game menus"><button id="catsNavBtn" class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="train"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
 <aside class="game-ad-footer" aria-label="Advertisement">
   <span class="ad-label">Advertisement</span>
   <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404"></ins>
@@ -1469,24 +1485,49 @@ function renderDogRoster(){
   roster.appendChild(card);
  }
 }
+// Permanent fish-coin availability, not temporary battle catnip.
+function canBuyAnyCat(){
+ return phase!=='battle'&&!activeBonus&&CATS.some(c=>
+  !c.bonusAt&&!save.unlocked.includes(c.id)&&save.level>=catUnlockLevel(c)&&save.coins>=c.cost);
+}
+function canTrainAnyCat(){
+ if(phase==='battle'||activeBonus)return false;
+ return CATS.some(c=>save.unlocked.includes(c.id)&&['power','attack','lives','spawn'].some(kind=>{
+  const u=save.upgrades[c.id];if(!u)return false;
+  const max=kind==='lives'?5:10;
+  return u[kind]<max&&u[kind]<trainingCap()&&save.coins>=upgradeCost(c,kind);
+ }));
+}
+function syncCoinNotifications(){
+ const cats=$('catsNavBtn'),train=$('trainNavBtn'),buy=canBuyAnyCat(),upgrade=canTrainAnyCat();
+ if(cats){
+  cats.classList.toggle('coin-ready',buy);
+  cats.setAttribute('aria-label',buy?'Cats: a new cat is affordable':'Cats');
+ }
+ if(train){
+  train.classList.toggle('coin-ready',upgrade&&phase!=='battle');
+  train.setAttribute('aria-label',phase==='battle'?'Battle boosts':upgrade?'Train: a permanent upgrade is affordable':'Train');
+ }
+}
 function renderBarracks(){
  const el=$('barracks');el.innerHTML='';
  for(const c of CATS){
   const owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),b=document.createElement('button');
-  b.className='cat-card fur-tinted '+(c.id===selected?'selected ':'')+(owned?'':'locked ')+(equipped?'equipped':'');
+  const levelReady=!c.bonusAt&&save.level>=catUnlockLevel(c),affordable=!owned&&levelReady&&save.coins>=c.cost;
+   b.className='cat-card fur-tinted '+(c.id===selected?'selected ':'')+(owned?'':levelReady?'available-for-purchase ':'locked ')+(equipped?'equipped':'')+(affordable?' affordable':'');
   b.style.setProperty('--cat-fur',c.fur);
   b.setAttribute('aria-pressed',String(c.id===selected));
   const legacyArt=catPortrait({...c,id:c.id+'-vector'});
   b.innerHTML='<span class="cat-card-watermark" aria-hidden="true">'+legacyArt+'</span>'+catPortrait(c)+
    '<div class="cat-info"><span class="cat-name">'+c.name+'</span><span class="cat-desc">'+c.desc+'</span>'+catStatsMarkup(c)+
-   '<span class="cat-status">'+(equipped?'✓ In squad':owned?(c.bonusAt?'🎭 Bonus recruit · Ready to equip':'Ready to equip'):c.bonusAt?'🎭 Win '+bonusForMilestone(c.bonusAt).title:save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c)+' · 🐟 '+c.cost:'🔒 🐟 '+c.cost+' to unlock')+'</span></div>';
+   '<span class="cat-status">'+(equipped?'✓ In squad':owned?(c.bonusAt?'🎭 Bonus recruit · Ready to equip':'Ready to equip'):c.bonusAt?'🎭 Win '+bonusForMilestone(c.bonusAt).title:save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c)+' · 🐟 '+c.cost:save.coins>=c.cost?'🐟 Buy for '+c.cost+' · Ready!':'🐟 '+c.cost+' · Need '+(c.cost-save.coins)+' more')+'</span></div>';
   b.addEventListener('click',()=>choose(c.id));el.appendChild(b);
  }
 }
 function renderDetails(){const c=CATMAP[selected],owned=save.unlocked.includes(c.id),equipped=save.squad.includes(c.id),s=stat(c),u=save.upgrades[c.id],el=$('details');const label=kind=>kind==='power'?`⚔️ Power ${s.power}`:kind==='attack'?`💨 Attack ${(1/s.attack).toFixed(2)}/s`:kind==='lives'?`❤️ HP Tier ${s.lives}/6 (${s.hp} HP)`:`⏱️ Spawn ${s.spawn.toFixed(1)}s`;
 el.innerHTML='<div class="detail-heading character-tint" style="--character-fur:'+c.fur+'">'+catLegacyGhost(c)+catPortrait(c)+'<div><h3>'+c.name+'</h3><p>'+c.desc+'. '+(owned?'Owned and trainable.':c.bonusAt?'Win '+bonusForMilestone(c.bonusAt).title+' to recruit this undercover cat.':save.level<catUnlockLevel(c)?'Available at level '+catUnlockLevel(c)+'.':'Unlock to recruit this fighter.')+'</p></div></div>'+
 '<div class="stats-four"><div class="little-stat"><b>'+s.power+'</b><span>POWER</span></div><div class="little-stat"><b>'+(1/s.attack).toFixed(2)+'/s</b><span>ATTACK</span></div><div class="little-stat"><b>'+s.lives+'/6</b><span>HP TIER</span></div><div class="little-stat"><b>'+s.spawn.toFixed(1)+'s</b><span>SPAWN</span></div></div>'+
-'<div class="subnote" style="margin:0 0 10px">❤️ HP '+s.hp+' · 🎯 Range '+s.range+' (battlefield units)</div><div class="upgrades" id="upgradeGrid"></div><button id="equipBtn" class="btn '+(owned?'green':'primary')+' equip-btn" '+(phase==='battle'||(!owned&&c.bonusAt)?'disabled':'')+'>'+(!owned?(c.bonusAt?'🎭 Side mission reward':save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c):'🔓 Unlock for 🐟 '+c.cost):equipped?'− Unequip cat':'+ Equip cat')+'</button>'+
+'<div class="subnote" style="margin:0 0 10px">❤️ HP '+s.hp+' · 🎯 Range '+s.range+' (battlefield units)</div><div class="upgrades" id="upgradeGrid"></div><button id="equipBtn" class="btn '+(owned?'green':'primary')+' equip-btn '+(!owned&&!c.bonusAt&&save.level>=catUnlockLevel(c)?'available-for-purchase':'')+'" '+(phase==='battle'||(!owned&&c.bonusAt)?'disabled':'')+'>'+(!owned?(c.bonusAt?'🎭 Side mission reward':save.level<catUnlockLevel(c)?'🔒 Level '+catUnlockLevel(c):'🐟 Buy cat · '+c.cost):equipped?'− Unequip cat':'+ Equip cat')+'</button>'+
 '<p class="subnote">Each HP tier adds 22 health to each cat. A cat at 2/6 has 44 HP, not two respawns. Hero summon charges are separate. Attack speed controls how often it hits; spawn rate controls how often another copy marches out.</p>';
 const grid=$('upgradeGrid');for(const kind of ['power','attack','lives','spawn']){const maxed=kind==='lives'?u[kind]>=5:u[kind]>=10;const tierLocked=u[kind]>=trainingCap()&&!maxed;const b=document.createElement('button');b.className='upgrade';b.disabled=!owned||phase==='battle'||maxed||tierLocked||save.coins<upgradeCost(c,kind);b.innerHTML='<strong>'+label(kind)+'</strong><small>'+({power:'Stronger strikes',attack:'Attack more often',lives:'Adds 22 HP per cat, not extra spawns',spawn:'New cats arrive faster'}[kind])+'</small><em>'+(maxed?'MAXED':tierLocked?'Level gate':'🐟 '+upgradeCost(c,kind))+'</em>';b.addEventListener('click',()=>improve(c,kind));grid.appendChild(b);}$('equipBtn').addEventListener('click',()=>equip(c));}
 function updateTimers(){for(const id of save.squad){const c=CATMAP[id],st=phase==='battle'?fieldStat(c):stat(c),remaining=phase==='battle'?Math.max(0,spawnTimers[id]||0):st.spawn,p=$('progress-'+id),track=$('track-'+id);const percent=phase==='battle'?clamp((1-remaining/st.spawn)*100,0,100):0;if(p)p.style.width=percent.toFixed(1)+'%';if(track){track.setAttribute('aria-valuenow',String(Math.round(percent)));track.setAttribute('aria-valuetext',remaining.toFixed(1)+' seconds until '+c.name+' spawns');track.classList.toggle('ready',percent>=99);}}}
@@ -1521,6 +1562,7 @@ function renderCampaignMap(){
  wrap.appendChild(heading);
  const shops=document.createElement('div');shops.className='trail-shop-links';
  shops.innerHTML='<span class="trail-shop-path" aria-hidden="true">┄┄ 🐾 ┄┄</span><button type="button" class="trail-shop-link">🐱 Cat Pet Shop<small>Spend 🐟 coins</small></button><button type="button" class="trail-shop-link">⭐ Hero Den<small>Legendary cats</small></button>';
+ shops.querySelectorAll('button')[0].classList.toggle('coin-ready',canBuyAnyCat());
  shops.querySelectorAll('button')[0].addEventListener('click',()=>openDrawer('cats'));
  shops.querySelectorAll('button')[1].addEventListener('click',()=>openDrawer('heroes'));
  wrap.appendChild(shops);
@@ -1698,7 +1740,7 @@ function heroAction(){if(phase==='prepare'){if(!offerStartSpendingReminder())ent
 const drawerNames={map:['🐾 The Purr-suit Trail','Follow the pawprints · find bonus adventures'],castle:['🏰 Cat castle defenses','Level, squad and training bonuses'],cats:['🐾 Cat barracks','Tap a cat to inspect or unlock'],squad:['🛡️ Your squad','Five types max per level'],train:['⚒️ Cat training','Permanent upgrades and equipment'],heroes:['⭐ Legendary cats','Unlock after beating level 4 · tap to summon'],boost:['🌿 Battle boosts','Use catnip earned from dog kills · resets each level'],dogs:['🐶 Dog defenders','Current-level enemy stats and kennel guardians'],help:['⚙️ More & help','Instructions and game settings']};
 function openDrawer(which){if(!drawerNames[which])return;const backdrop=$('drawerBackdrop');if(!drawerOpen){drawerPreviousFocus=document.activeElement;drawerAutoPause=phase==='battle'&&!paused;if(drawerAutoPause)paused=true;drawerOpen=true;backdrop.hidden=false;}for(const key of Object.keys(drawerNames))$('panel'+key[0].toUpperCase()+key.slice(1)).hidden=key!==which;$('drawerTitle').textContent=drawerNames[which][0];$('drawerSubtitle').textContent=drawerNames[which][1];if(which==='map')renderCampaignMap();if(which==='squad')renderSquadDetails();if(which==='cats')renderBarracks();if(which==='train')renderDetails();if(which==='heroes')renderHeroes();if(which==='boost')renderBattleBoost();if(which==='dogs')renderDogRoster();if(which==='castle')renderCastleDetails();$('drawerBody').scrollTop=0;$('closeDrawer').focus();updateHUD();}
 function closeDrawer(){if(!drawerOpen)return;$('drawerBackdrop').hidden=true;drawerOpen=false;if(drawerAutoPause&&phase==='battle')paused=false;drawerAutoPause=false;updateHUD();if(drawerPreviousFocus&&typeof drawerPreviousFocus.focus==='function')drawerPreviousFocus.focus();}
-function updateHUD(){ if(phase==='battle'&&!boostTipShown&&canAffordAnyBattleBoost()&&!drawerOpen&&$('overlay').hidden){boostTipShown=true;message('🌿 Tap the leaf on a cat to boost it.');} if(phase==='prepare'){catBattleMax=catCastleMax();catHp=catBattleMax;}const castle=catCastleStats();$('catCastleNote').textContent='Max '+catBattleMax+' · Squad +'+castle.squad; $('catCastleStatsBtn').setAttribute('aria-label','Cat castle '+Math.ceil(catHp)+' of '+catBattleMax+' HP. Squad bonus '+castle.squad+'. Tap to inspect defense bonuses.'); $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=activeBonus?'★':save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catBattleMax*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8||!!activeBonus;$('bossMarker30').classList.toggle('spent',secondBossTriggered);$('bossMarker15').hidden=save.level<12||!!activeBonus;$('bossMarker15').classList.toggle('spent',thirdBossTriggered);$('bossMarker65').hidden=save.level<5||!!activeBonus;
+function updateHUD(){ syncCoinNotifications(); if(phase==='battle'&&!boostTipShown&&canAffordAnyBattleBoost()&&!drawerOpen&&$('overlay').hidden){boostTipShown=true;message('🌿 Tap the leaf on a cat to boost it.');} if(phase==='prepare'){catBattleMax=catCastleMax();catHp=catBattleMax;}const castle=catCastleStats();$('catCastleNote').textContent='Max '+catBattleMax+' · Squad +'+castle.squad; $('catCastleStatsBtn').setAttribute('aria-label','Cat castle '+Math.ceil(catHp)+' of '+catBattleMax+' HP. Squad bonus '+castle.squad+'. Tap to inspect defense bonuses.'); $('goldStat').textContent=save.coins;$('nipStat').textContent=catnip;$('catHpStat').textContent=Math.max(0,Math.ceil(catHp));$('dogHpStat').textContent=Math.max(0,Math.ceil(dogHp));$('levelStat').textContent=activeBonus?'★':save.level;$('dogCountStat').textContent=dogs.filter(d=>d.hp>0).length;$('catMeter').style.width=clamp(catHp/catBattleMax*100,0,100)+'%';$('dogMeter').style.width=clamp(dogHp/dogCastleMax()*100,0,100)+'%';$('bossMarker65').hidden=save.level<5;$('bossMarker65').classList.toggle('spent',gateBossTriggered);$('bossMarker30').hidden=save.level<8||!!activeBonus;$('bossMarker30').classList.toggle('spent',secondBossTriggered);$('bossMarker15').hidden=save.level<12||!!activeBonus;$('bossMarker15').classList.toggle('spent',thirdBossTriggered);$('bossMarker65').hidden=save.level<5||!!activeBonus;
  $('phaseTag').textContent=phase==='battle'?'⚔️ BATTLE':phase==='win'?'🏆 VICTORY':phase==='loss'?'💔 DEFEAT':'🐈 READY';
  const b=$('startBtn');if(phase==='prepare'){b.disabled=false;b.textContent=activeBonus?'▶ Start bonus':'▶ Start level '+save.level;b.classList.remove('hero-ready');}
  else if(phase==='battle'&&save.level>=5&&!activeBonus){const active=cats.some(u=>u.hero&&u.hp>0),h=HEROMAP[save.heroSelected],remaining=heroSummonLimit()-heroSummonsUsed;b.disabled=paused||remaining<=0||active||heroCd>0;b.classList.toggle('hero-ready',Boolean(h)&&remaining>0&&!active&&heroCd<=0&&!paused);b.textContent=remaining<=0?'⭐ Summons used':!h?'⭐ Heroes':active?'⭐ Champion '+remaining+' left':heroCd>0?'⏳ '+Math.ceil(heroCd)+'s':'⭐ Summon '+remaining+'/'+heroSummonLimit();}
