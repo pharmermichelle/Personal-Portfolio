@@ -1,7 +1,9 @@
 const SAVE_KEY = "reviveNatureSave_v2";
 const MAX_HEALTH = 10;
 const STARTING_MONEY = 2250; 
-const LAND_PRICES = [1750, 3000, 5000, 8000];
+const LAND_PRICES = [1750, 2500, 3400, 4500];
+const RESTORATION_REWARDS = [120, 180, 240, 320, 750];
+const HYDRO_TICK_MS = 12000;
 const HYDRO_BUILD_COST = 30;
 const HYDRO_DAILY_COST = 2;
 
@@ -26,6 +28,7 @@ async function boot() {
   }
 
   bindStaticEvents();
+  window.setInterval(runHydroAutomation, HYDRO_TICK_MS);
 
   const saved = loadGame();
   if (saved) {
@@ -64,6 +67,22 @@ function bindStaticEvents() {
     toast("Harvest ripe crops directly from their plots.");
   }));
 
+  $("#quick-actions").addEventListener("click", event => {
+    const action = event.target.closest("[data-quick]")?.dataset.quick;
+    if (!action || selectedTileIndex === null) return;
+    if (action === "water" || action === "fertilizer") quickCare(action);
+    if (action === "harvest") harvestPlant(selectedTileIndex);
+    if (action === "plant") openEmptyPlotModal(selectedTileIndex);
+  });
+  let gridZoom = 1;
+  const setGridZoom = value => {
+    gridZoom = Math.round(clamp(value, .85, 1.3) * 100) / 100;
+    $("#farm-grid").style.setProperty("--grid-zoom", gridZoom);
+    $("#zoom-label").textContent = gridZoom === 1 ? "FIT" : Math.round(gridZoom * 100) + "%";
+  };
+  $("#zoom-in-button").addEventListener("click", () => setGridZoom(gridZoom + .15));
+  $("#zoom-out-button").addEventListener("click", () => setGridZoom(gridZoom - .15));
+  $("#zoom-fit-button").addEventListener("click", () => setGridZoom(1));
   setupPlayerDragging();
 }
 
@@ -106,7 +125,8 @@ function startNewGame(startBiomeId) {
     ownedBiomes: [startBiomeId],
     ownedPlots: 1,
     biomes: {},
-    lastPlayed: Date.now()
+    lastPlayed: Date.now(),
+    totalHarvests: 0
   };
 
   state.biomes[startBiomeId] = generateBiomeState(startBiomeId);
@@ -123,6 +143,7 @@ function generateBiomeState(biomeId) {
   return {
     layoutIndex,
     restoredCount: 0,
+    rewardMilestones: 0,
     tiles: layout.map((plantId, index) => ({
       index,
       restored: false,
@@ -153,6 +174,8 @@ function normalizeSave() {
   state.biomes ??= {};
   state.ownedBiomes ??= [];
   state.ownedPlots ??= Math.max(1, state.ownedBiomes.length);
+  state.totalHarvests ??= 0;
+  Object.values(state.biomes).forEach(b => { b.rewardMilestones ??= Math.floor((b.restoredCount || 0) / 5); });
 
   if (state.ownedPlots === 1 && state.money < 0) {
     state.money = 500;
@@ -188,7 +211,7 @@ function renderEverything() {
   $("#current-biome-description").textContent = biome.description;
 
   const stage = $("#world-stage");
-  stage.className = `world-stage ${state.currentBiome}`;
+  stage.className = `world-stage ${state.currentBiome} revival-${Math.min(5, Math.floor(biomeState.restoredCount / 5))}`;
 
   $("#money-value").textContent = `$${Math.floor(state.money).toLocaleString()}`;
   $("#water-value").textContent = state.inventory.water;
@@ -198,6 +221,12 @@ function renderEverything() {
   const progress = Math.round((biomeState.restoredCount / 25) * 100);
   $("#progress-text").textContent = `${progress}%`;
   $("#progress-bar").style.width = `${progress}%`;
+  const tier = Math.floor(biomeState.restoredCount / 5);
+  $("#mission-status").textContent = biomeState.restoredCount === 25 ? "🌳 Biome revived! Explore or keep growing." :
+    `Restore ${(tier + 1) * 5}/25 plots → Earn ${RESTORATION_REWARDS[tier]}`;
+  const total = Object.values(state.biomes).reduce((sum, b) => sum + (b.restoredCount || 0), 0);
+  $("#region-status").textContent = `Region revived: ${total}/100 plots`;
+  $("#wildlife-status").textContent = ["🍂 Healing begins", "🌼 Wildflowers return", "🦋 Butterflies return", "🐝 Bees return", "🐦 Birds return", "🌳 Thriving habitat"][Math.min(5, tier)];
 
   $("#water-price").textContent = `$${biome.waterPrice}`;
   $("#fertilizer-price").textContent = `$${biome.fertilizerPrice}`;
@@ -213,8 +242,13 @@ function renderGrid() {
   grid.innerHTML = "";
 
   biomeState.tiles.forEach((tile, index) => {
-    const el = document.createElement("div");
+    const el = document.createElement("button");
+    el.type = "button";
     el.className = "tile";
+    if (index === selectedTileIndex) el.classList.add("selected");
+    el.setAttribute("aria-label", tile.plant
+      ? `${PLANTS[tile.plant.id].name}, health ${tile.plant.health} of 10${tile.plant.mature ? ", ready to harvest" : ""}`
+      : "Restored plot, ready to plant");
     el.dataset.tileIndex = index;
 
     if (tile.mode === "hydro") el.classList.add("hydro");
@@ -238,7 +272,7 @@ function renderGrid() {
         <div class="health-mini"><span style="width:${plant.health * 10}%"></span></div>
       `;
     } else {
-      const symbol = tile.mode === "hydro" ? "💧" : "＋";
+      const symbol = tile.mode === "hydro" ? "💧" : ({pasture:"🌼",lakeside:"🌾",desert:"🌵",mountain:"🌲"}[state.currentBiome] || "🌱");
       el.innerHTML = `<span class="plant-sprite">${symbol}</span>`;
     }
 
@@ -507,10 +541,20 @@ function harvestPlant(index) {
   }
 
   state.money += saleValue;
+  state.totalHarvests++;
+  let milestoneBonus = 0;
 
   if (!tile.restored) {
     tile.restored = true;
     biomeState.restoredCount += 1;
+    if (biomeState.restoredCount % 5 === 0) {
+      const idx = biomeState.restoredCount / 5 - 1;
+      if (biomeState.rewardMilestones < idx + 1) {
+        milestoneBonus = RESTORATION_REWARDS[idx];
+        biomeState.rewardMilestones = idx + 1;
+        state.money += milestoneBonus;
+      }
+    }
   }
 
   tile.plant = null;
@@ -527,8 +571,7 @@ function harvestPlant(index) {
     return;
   }
 
-  toast(`${info.name} sold for $${saleValue}. Plot permanently restored!`);
-  setTimeout(() => openEmptyPlotModal(index), 450);
+  toast(`${info.name} sold for ${saleValue}. ${milestoneBonus ? `🌟 Restoration bonus: +${milestoneBonus}!` : "The plot is flourishing!"}`);
 }
 
 function openEmptyPlotModal(index) {
@@ -554,7 +597,7 @@ function openEmptyPlotModal(index) {
     ${tile.mode !== "hydro" ? `
       <hr>
       <h3>Build hydroponics — $${HYDRO_BUILD_COST}</h3>
-      <p>Hydro crops automatically gain one treatment step each game day, but lose $${HYDRO_DAILY_COST} of sale value per day.</p>
+      <p>Hydro crops receive automatic care every ${HYDRO_TICK_MS / 1000} seconds while playing. Each cycle reduces sale value by ${HYDRO_DAILY_COST}.</p>
       <button id="build-hydro" class="pixel-button">BUILD HYDROPONICS</button>
     ` : ""}
 
@@ -622,15 +665,67 @@ function interactWithHydro(index) {
     return;
   }
 
-  /*
-    For this prototype, physically visiting a hydro bed advances it one
-    "day." That gives the player a visible way to test automation without
-    needing a real-world timer yet.
-  */
-  advanceHydroDay(tile);
-  saveGame();
-  renderEverything();
-  toast(`Hydro day ${tile.hydroDays}: automatic care applied. -$${HYDRO_DAILY_COST} from final value.`);
+  toast("This bed grows automatically. Come back when its crop is ready!");
+}
+
+function runHydroAutomation() {
+  if (!state) return;
+  let changed = false, ready = 0;
+  Object.values(state.biomes).forEach(b => b.tiles.forEach(tile => {
+    if (tile.mode !== "hydro" || !tile.plant || tile.plant.mature) return;
+    advanceHydroDay(tile);
+    changed = true;
+    if (tile.plant.mature) ready++;
+  }));
+  if (changed) {
+    saveGame();
+    renderEverything();
+    if (ready) toast(`💧 ${ready} hydro crop${ready === 1 ? "" : "s"} ready to harvest!`);
+  }
+}
+
+function quickCare(type) {
+  if (selectedTileIndex === null || !state) return;
+  const tile = state.biomes[state.currentBiome].tiles[selectedTileIndex];
+  if (!tile?.plant || tile.plant.mature || tile.mode === "hydro") return;
+  if (state.carrying && state.carrying !== type) {
+    toast("Use your carried supply first.");
+    return;
+  }
+  if (!state.carrying) {
+    const biome = BIOMES[state.currentBiome];
+    const price = type === "water" ? biome.waterPrice : biome.fertilizerPrice;
+    if (state.money < price) { toast("Not enough money. Harvest ripe crops for income."); return; }
+    state.money -= price;
+    state.inventory[type] += 1;
+  }
+  applyTreatment(selectedTileIndex, type);
+}
+
+function renderQuickActions(tile) {
+  const hint = $("#care-hint"), actions = $("#quick-actions");
+  if (!tile) {
+    hint.textContent = "Tap any crop to inspect and care for it.";
+    actions.innerHTML = "";
+    return;
+  }
+  if (!tile.plant) {
+    hint.textContent = "Healthy soil! Plant another crop or leave it wild.";
+    actions.innerHTML = '<button type="button" class="pixel-button" data-quick="plant">🌱 PLANT CROP</button>';
+    return;
+  }
+  const p = tile.plant, info = PLANTS[p.id];
+  hint.textContent = `${info.sprite} ${info.name} · Health ${p.health}/10 · Water ${p.waterGiven}/${p.minWater} · Nutrients ${p.fertilizerGiven}/${p.minFertilizer}`;
+  if (p.mature) {
+    actions.innerHTML = '<button type="button" class="pixel-button" data-quick="harvest">🌾 HARVEST & SELL</button>';
+    return;
+  }
+  if (tile.mode === "hydro") { actions.innerHTML = '<span class="auto-hint">💧 Automatic care running</span>'; return; }
+  const biome = BIOMES[state.currentBiome];
+  const w = state.carrying === "water" ? 0 : biome.waterPrice, f = state.carrying === "fertilizer" ? 0 : biome.fertilizerPrice;
+  actions.innerHTML = `
+    <button type="button" class="pixel-button care-water" data-quick="water" ${state.money < w || state.carrying === "fertilizer" ? "disabled" : ""}>💧 WATER ${w ? "$" + w : "(HELD)"}</button>
+    <button type="button" class="pixel-button care-fert" data-quick="fertilizer" ${state.money < f || state.carrying === "water" ? "disabled" : ""}>🧪 FERTILIZE ${f ? "$" + f : "(HELD)"}</button>`;
 }
 
 function advanceHydroDay(tile) {
@@ -673,6 +768,7 @@ function renderSelectedPlant() {
   const card = $("#plant-card");
 
   if (selectedTileIndex === null || !state) {
+    renderQuickActions(null);
     card.classList.add("empty");
     $("#plant-name").textContent = "Move to a plant";
     $("#plant-details").innerHTML = "<p>Drag your farmer onto a crop to inspect it.</p>";
@@ -680,6 +776,7 @@ function renderSelectedPlant() {
   }
 
   const tile = state.biomes[state.currentBiome].tiles[selectedTileIndex];
+  renderQuickActions(tile);
 
   if (!tile.plant) {
     card.classList.remove("empty");
