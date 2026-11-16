@@ -1,4 +1,5 @@
 const SAVE_KEY = "reviveNatureSave_v2";
+const TUTORIAL_KEY = "reviveNatureTutorial_v1";
 const MAX_HEALTH = 10;
 const STARTING_MONEY = 2250; 
 const LAND_PRICES = [1750, 2500, 3400, 4500];
@@ -60,6 +61,7 @@ function bindStaticEvents() {
 
   $("#reset-button").addEventListener("click", confirmReset);
   $("#world-button").addEventListener("click", openWorldMap);
+  $("#help-button").addEventListener("click", () => openTutorial(0));
 
   $("#water-station").addEventListener("click", () => movePlayerToElement($("#water-station"), () => buySupply("water")));
   $("#fertilizer-station").addEventListener("click", () => movePlayerToElement($("#fertilizer-station"), () => buySupply("fertilizer")));
@@ -194,6 +196,8 @@ function showGame() {
   ensureCurrentBiome();
   renderEverything();
   requestAnimationFrame(respawnPlayer);
+  // Existing players also get the new walkthrough once, without losing their save.
+  if (!localStorage.getItem(TUTORIAL_KEY)) openTutorial(0);
 }
 
 function ensureCurrentBiome() {
@@ -924,10 +928,69 @@ function confirmReset() {
 
   $("#confirm-reset").addEventListener("click", () => {
     localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(TUTORIAL_KEY);
     location.reload();
   });
 
   $("#close-modal").addEventListener("click", hideModal);
+}
+
+const TUTORIAL_STEPS = [
+  {
+    title: "Welcome, Nature Keeper!",
+    icon: "🌍 🌱 🌻",
+    body: "Your mission is to bring four damaged habitats back to life. Each property has <b>25 struggling plants</b>. Nurse them back to health and harvest them to permanently restore the soil.",
+    note: "Every 5 restored plots earns a cash bonus. You can see your progress in the top bar."
+  },
+  {
+    title: "Tap a Plant",
+    icon: "👆 🌽 🥕",
+    body: "Tap any plant in the 5 × 5 field to select it. The <b>Crop Care</b> buttons at the bottom of your phone let you buy and immediately apply <b>💧 Water</b> or <b>🧪 Fertilizer</b>. Tap as often as needed.",
+    note: "Each plant must reach 10/10 health and receive at least 3 water and 3 fertilizer treatments. You can also drag the farmer between stations and crops."
+  },
+  {
+    title: "Harvest, Earn & Replant",
+    icon: "🌾 💰 🌼",
+    body: "When a plant is ready, tap <b>HARVEST & SELL</b> in the Crop Care bar. You'll earn money and turn its damaged plot into healthy land. Tap an empty plot to plant more crops for income, or simply leave it wild.",
+    note: "A revived plot stays restored even when you grow a new crop on it. You never have to restore that same square twice."
+  },
+  {
+    title: "Explore & Grow",
+    icon: "🗺️ 🏞️ 🦋",
+    body: "Use <b>WORLD MAP</b> below the field to buy another biome when you have enough money. Hydroponic beds on restored plots can grow crops automatically. Each biome has its own plants and costs.",
+    note: "Your game saves automatically in this browser. Tap <b>❔ HELP</b> above the field whenever you want this tour again. Good luck!"
+  }
+];
+
+function finishTutorial() {
+  localStorage.setItem(TUTORIAL_KEY, "seen");
+  hideModal();
+}
+
+function openTutorial(step = 0) {
+  const index = clamp(step, 0, TUTORIAL_STEPS.length - 1);
+  const item = TUTORIAL_STEPS[index];
+  showModal(`
+    <div class="tutorial-content">
+      <p class="tutorial-step">HOW TO PLAY · STEP ${index + 1} OF ${TUTORIAL_STEPS.length}</p>
+      <span class="tutorial-illustration" aria-hidden="true">${item.icon}</span>
+      <h2>${item.title}</h2>
+      <p>${item.body}</p>
+      <p class="tutorial-note">${item.note}</p>
+      <div class="tutorial-navigation">
+        ${index > 0 ? '<button id="tutorial-back" type="button" class="pixel-button secondary">← BACK</button>' : ""}
+        <button id="tutorial-next" type="button" class="pixel-button">${index === TUTORIAL_STEPS.length - 1 ? "START PLAYING ✓" : "NEXT →"}</button>
+        <button id="tutorial-skip" type="button" class="pixel-button tutorial-skip">SKIP TOUR</button>
+      </div>
+    </div>
+  `);
+  $("#tutorial-back")?.addEventListener("click", () => openTutorial(index - 1));
+  $("#tutorial-next").addEventListener("click", () => {
+    if (index === TUTORIAL_STEPS.length - 1) finishTutorial();
+    else openTutorial(index + 1);
+  });
+  $("#tutorial-skip").addEventListener("click", finishTutorial);
+  $("#tutorial-next").focus();
 }
 
 function showModal(html) {
