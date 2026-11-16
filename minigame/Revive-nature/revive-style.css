@@ -775,3 +775,44 @@ button {
   .player { width: 42px; height: 52px; }
   .player-sprite { font-size: 35px; }
 }
+
+
+/* Accessible restoration dashboard and tap-to-care controls */
+.restoration-mission {
+  margin: 12px 0;
+  padding: 12px;
+  background: #f7ecc0;
+  border: 3px solid var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.restoration-mission p { margin: 7px 0 0; }
+#mission-status { font-weight: bold; }
+.quick-care {
+  margin-top: 10px;
+  padding: 14px;
+  border: 3px solid var(--ink);
+  background: #f6efc9;
+  color: #10261d;
+}
+.quick-care p { margin: 8px 0; font-size: 15px; line-height: 1.4; }
+.quick-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.quick-actions button { min-height: 48px; font-size: 15px; flex: 1 1 145px; }
+.quick-actions button:disabled { opacity: .45; cursor: not-allowed; }
+.quick-actions .care-water { background: #21678b; }
+.quick-actions .care-fert { background: #76512a; }
+.tile { cursor: pointer; font-family: inherit; padding: 0; }
+.tile.selected { outline: 4px solid #ffe68b; outline-offset: -4px; z-index: 1; }
+.tile:focus-visible { outline: 4px solid #fff; z-index: 5; }
+.farm-grid { --grid-zoom: 1; scale: var(--grid-zoom); }
+.world-stage.revival-1 { box-shadow: inset 0 0 0 6px rgba(130, 196, 85, .24); }
+.world-stage.revival-2 { box-shadow: inset 0 0 0 9px rgba(130, 196, 85, .3); }
+.world-stage.revival-3 { box-shadow: inset 0 0 0 12px rgba(130, 196, 85, .35); }
+.world-stage.revival-4, .world-stage.revival-5 { box-shadow: inset 0 0 0 16px rgba(130, 196, 85, .4); }
+@media (max-width: 760px) {
+  .quick-care { padding: 12px; }
+  .quick-actions button { font-size: 16px; }
+  .tile { touch-action: manipulation; }
+  .hud span { font-size: 15px; }
+  .zoom-button { min-height: 44px; min-width: 44px; }
+}
