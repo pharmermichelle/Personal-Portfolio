@@ -816,3 +816,51 @@ button {
   .hud span { font-size: 15px; }
   .zoom-button { min-height: 44px; min-width: 44px; }
 }
+
+
+/* v1.3: Phone-first crop action dock. Always within the visible viewport. */
+.help-button { margin-right: auto; white-space: nowrap; background: #dfecd2; }
+.care-direction { font-size: .86em; opacity: .8; }
+.tutorial-content { font-size: 16px; line-height: 1.5; }
+.tutorial-content .tutorial-step { font-weight: bold; letter-spacing: .03em; color: #245432; margin: 0 0 7px; }
+.tutorial-content h2 { font-size: clamp(23px, 5vw, 30px); margin: 4px 0 14px; }
+.tutorial-content p { margin: 10px 0; }
+.tutorial-content .tutorial-illustration { display:block; font-size: 38px; line-height: 1.2; margin: 10px 0; }
+.tutorial-content .tutorial-navigation { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.tutorial-content .tutorial-navigation .pixel-button { min-height: 48px; flex: 1 1 110px; }
+.tutorial-content .tutorial-skip { background: transparent; color: #10261d; box-shadow: none; border: 2px solid #596950; }
+.tutorial-content .tutorial-note { font-size: 14px; padding: 10px; background: #e8dfb8; border-left: 4px solid #4e8b4a; }
+@media (max-width: 760px) {
+  #game-screen.active .game-layout { padding-bottom: calc(194px + env(safe-area-inset-bottom, 0px)); }
+  .quick-care {
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    border-width: 3px 0 0;
+    border-radius: 0;
+    padding: 9px 12px calc(11px + env(safe-area-inset-bottom, 0px));
+    max-height: 37dvh;
+    overflow-y: auto;
+    box-shadow: 0 -5px 17px rgba(0,0,0,.3);
+  }
+  .quick-care > strong { display: block; font-size: 16px; }
+  .quick-care p { margin: 5px 0 8px; font-size: 14px; line-height: 1.3; }
+  .quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+  .quick-actions button { min-height: 49px; font-size: 15px; padding: 9px 5px; width: 100%; }
+  .quick-actions button:only-child { grid-column: 1 / -1; }
+  .zoom-toolbar { gap: 5px; }
+  .zoom-button { padding: 4px 7px; }
+  .help-button { min-width: 72px; }
+  #toast { z-index: 190; bottom: calc(157px + env(safe-area-inset-bottom, 0px)); }
+  .tutorial-content { font-size: 17px; }
+  .tutorial-content .tutorial-navigation .pixel-button { font-size: 15px; }
+}
+@media (max-width: 365px) {
+  .zoom-toolbar { gap: 3px; }
+  .zoom-button { padding: 3px 5px; }
+  .help-button { min-width: 67px; }
+  .care-direction { display: none; }
+}
