@@ -995,6 +995,70 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 .hero-collection-bar .hero-bar-item span:last-child{overflow:hidden;text-overflow:ellipsis}
 @media(max-width:390px){.hero-collection-bar{font-size:11px;gap:5px;padding:3px 6px}.hero-collection-bar .hero-bar-item .portrait{width:23px;height:23px;flex-basis:23px}.academy-map-copy{max-width:65%}.academy-yard-art{width:34%;min-width:95px}}
 
+
+/* Cat Training Academy archery — touch-first pull-back gameplay */
+.academy-archery-court{width:100%;aspect-ratio:600 / 260;min-height:180px;max-height:280px;border:3px solid #77978a;border-radius:15px;overflow:hidden;position:relative;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair;background:#c6e4e8;box-shadow:inset 0 0 0 1px #eff8f1}
+.academy-archery-court:focus-visible{outline:4px solid #e3ab5b;outline-offset:2px}
+.academy-archery-svg{width:100%;height:100%;display:block;pointer-events:none}
+.academy-archery-power{display:flex;align-items:center;gap:9px;margin:13px 0 5px;color:#293e60;font-weight:900;font-size:15px}
+.academy-archery-power span{white-space:nowrap}.academy-archery-power b{font-size:16px;min-width:45px;text-align:right;font-variant-numeric:tabular-nums}
+.academy-archery-power-track{flex:1;min-width:40px;height:18px;border:2px solid #7d96a0;background:#e6e9ea;border-radius:9px;overflow:hidden}
+#academyArcheryPowerFill{height:100%;width:0%;background:linear-gradient(90deg,#8fbba3 0%,#e7c46b 60%,#d97856 100%);transition:width .04s linear}
+.academy-archery-status{min-height:52px;margin:8px 0 6px!important;font-size:17px;line-height:1.35;color:#263c5d;font-weight:900;text-align:center}
+@media(max-width:450px){.academy-archery-court{min-height:165px}.academy-archery-status{font-size:16px}.academy-archery-power{font-size:14px}}
+
+/* Animated sword sparring with a funny padded dog dummy */
+.academy-spar-stage{height:228px;margin:16px 2px 16px;border:3px solid #567c84;border-radius:16px;background:linear-gradient(180deg,#b5d9e6 0%,#dbe8d7 61%,#b1cf9d 62%,#91b680 100%);overflow:hidden;position:relative;isolation:isolate;box-shadow:inset 0 3px 6px #46667735}
+.academy-spar-stage:before{content:"";position:absolute;inset:64% 0 0;background:repeating-linear-gradient(110deg,transparent 0 21px,#7da76b24 22px 29px),linear-gradient(#c9dcb0,#9bba85)}
+.academy-spar-banner{position:absolute;top:7px;left:8px;right:8px;text-align:center;z-index:5;font-size:13px;font-weight:1000;color:#2c456b;letter-spacing:.04em}
+.academy-spar-dog{position:absolute;left:50%;top:34px;transform:translateX(-50%);height:166px;width:153px;filter:drop-shadow(0 7px 3px #4c59434d);z-index:2}
+.academy-spar-sword{position:absolute;left:50%;top:27px;transform:translateX(-50%) rotate(12deg);height:150px;width:68px;filter:drop-shadow(0 3px 2px #293b56a6);z-index:3;will-change:left;pointer-events:none}
+.academy-spar-sword svg{width:100%;height:100%}
+.academy-spar-perfect{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:3px 12px;font-size:12px;font-weight:1000;color:#285d45;border:1px solid #81aa7c;border-radius:14px;background:#f2f6cbd9;white-space:nowrap;z-index:4}
+/* Shield Wall — foam bone practice with funny dog instructor */
+.academy-shield-yard{height:156px;position:relative;overflow:hidden;border-radius:14px;border:2px solid #9da879;margin:13px 2px;background:linear-gradient(#c4dfec,#e2ead8 62%,#b4cf98 63%,#91b980)}
+.academy-shield-knight,.academy-shield-trainer{position:absolute;bottom:16px;font-size:53px;filter:drop-shadow(0 3px 2px #384c4a40)}
+.academy-shield-knight{left:13%}.academy-shield-trainer{right:14%}.academy-shield-trainer small{display:block;background:#fff5d0;color:#435169;border-radius:8px;font-size:10px;font-weight:900;padding:3px 5px}
+.academy-shield-bone{position:absolute;top:38px;left:60%;font-size:33px;animation:academyFoamBone 1.4s ease-in-out infinite alternate}
+.academy-shield-command{font-size:18px;font-weight:850;color:#263e64;text-align:center;background:#fff5d8;border:2px solid #bfac7e;border-radius:11px;padding:12px;margin:12px 0}
+.academy-shield-command strong{font-size:20px}.academy-shield-actions .academy-option{background:linear-gradient(#fffaf0,#e9f1eb)}
+@keyframes academyFoamBone{from{transform:translate(5px,-8px) rotate(-15deg)}to{transform:translate(-30px,8px) rotate(25deg)}}
+@media(prefers-reduced-motion:reduce){.academy-shield-bone{animation:none}}
+/* Laser Chase — colorful side-scrolling cat-runner stage */
+.academy-laser-title{font-size:19px;font-weight:1000;color:#293f64;text-align:center;margin:12px 0 7px}
+.academy-laser-title small{display:block;font-size:14px;font-weight:850;color:#576b75;margin-top:2px}
+.academy-laser-scene{height:222px;position:relative;isolation:isolate;overflow:hidden;border:3px solid #607d85;border-radius:16px;background:linear-gradient(#89caed 0%,#cde9ef 56%,#c5d8a3 57%,#9cbd7a 100%);margin:9px 2px 13px;touch-action:manipulation}
+.academy-laser-cloud{position:absolute;width:76px;height:25px;top:28px;left:20%;border-radius:60%;background:#fefefdaf;filter:blur(2px);animation:laserClouds 9s linear infinite}
+.academy-laser-cloud.cloud-b{top:60px;left:75%;width:50px;animation-duration:11s;animation-delay:-5s}
+.academy-laser-hills{position:absolute;left:-10%;right:-10%;top:58%;height:43%;background:radial-gradient(ellipse at 30% 0,#8db77a 0 33%,transparent 34%),radial-gradient(ellipse at 74% 15%,#a1c48f 0 34%,transparent 35%)}
+.academy-laser-track{position:absolute;left:0;right:0;bottom:0;height:35%;background:repeating-linear-gradient(90deg,transparent 0 16px,#96b68325 17px 22px),linear-gradient(#b7c78c,#8daf75);border-top:4px solid #7caa70;animation:laserGround 1s linear infinite}
+.academy-laser-dot{position:absolute;left:63%;top:60%;height:14px;width:14px;border-radius:50%;background:#f03645;border:3px solid #fff3e7;box-shadow:0 0 0 7px #f146463b,0 0 19px 8px #eb33475b;z-index:6;animation:laserDot 1.3s ease-in-out infinite alternate}
+.academy-laser-beam{position:absolute;left:65%;top:49%;font-size:28px;color:#f86d7b;z-index:5;animation:laserDot 1.3s ease-in-out infinite alternate}
+.academy-laser-cat{position:absolute;left:12%;bottom:21%;width:115px;height:95px;z-index:5;will-change:transform;filter:drop-shadow(0 5px 2px #2c54364c)}
+.academy-laser-cat svg{height:100%;width:100%}
+.academy-laser-cat .cat-front-paw{transform-origin:88px 73px;animation:laserPaws .28s ease-in-out infinite alternate}
+.academy-laser-cat .cat-back-paw{transform-origin:40px 70px;animation:laserPaws .28s ease-in-out infinite alternate-reverse}
+.academy-laser-cat .cat-tail{transform-origin:20px 58px;animation:laserTail .42s ease-in-out infinite alternate}
+.academy-laser-cat.jump{transform:translateY(-36px)!important}
+.academy-laser-cat.duck{transform:scaleY(.65) translateY(12px)!important;transform-origin:center bottom}
+.academy-laser-cat.dodge{transform:translate(12px,-6px)!important}
+.academy-laser-cat.miss{filter:grayscale(.6)}
+.academy-laser-obstacle{position:absolute;bottom:23%;left:96%;width:64px;height:65px;font-size:43px;text-align:center;z-index:4;will-change:left;filter:drop-shadow(0 4px 2px #455e4f56)}
+.academy-laser-obstacle span{display:block;animation:laserObstacle 0.6s ease-in-out infinite alternate}
+.academy-laser-collision{position:absolute;left:19%;bottom:19%;height:15px;width:36px;border-radius:50%;border:2px dashed #ffffffa8;z-index:2;box-shadow:0 0 0 2px #84a86a55}
+.academy-laser-warning{background:#fff6df;border:2px solid #d5bd82;border-radius:12px;font-size:17px;padding:10px 8px;text-align:center;color:#2e4667;line-height:1.2}
+.academy-laser-warning span{font-weight:700;color:#51667a}
+.academy-laser-warning strong{font-weight:1000;display:inline}
+.academy-laser-actions{margin-top:12px}
+.academy-laser-actions .academy-option{background:linear-gradient(#fffefa,#ebf7f2);min-height:91px;border-color:#6c9298}
+@keyframes laserPaws{from{transform:rotate(-23deg)}to{transform:rotate(24deg)}}
+@keyframes laserTail{from{transform:rotate(-18deg)}to{transform:rotate(15deg)}}
+@keyframes laserClouds{from{transform:translateX(80px)}to{transform:translateX(-450px)}}
+@keyframes laserGround{from{background-position:0 0}to{background-position:-112px 0}}
+@keyframes laserDot{from{transform:translate(0,-1px)}to{transform:translate(8px,9px)}}
+@keyframes laserObstacle{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+@media(max-width:440px){.academy-laser-scene{height:190px}.academy-laser-cat{width:94px;height:80px}.academy-laser-obstacle{font-size:38px}.academy-laser-warning{font-size:15px}.academy-spar-stage{height:204px}.academy-spar-dog{top:28px;height:150px}.academy-spar-sword{top:20px;height:139px}}
+@media(prefers-reduced-motion:reduce){.academy-laser-cloud,.academy-laser-track,.academy-laser-dot,.academy-laser-beam,.academy-laser-obstacle span,.academy-laser-cat .cat-front-paw,.academy-laser-cat .cat-back-paw,.academy-laser-cat .cat-tail{animation:none}}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1358,10 +1422,10 @@ function heroLimitForBosses(n){return n>=3?3:n>=1?1:0;}
 function heroSummonLimit(){return heroLimitForBosses(bossCountForLevel(battleLevel()));}
 /* TRAINING ACADEMY: added inside the existing game closure. All saves are preview-isolated. */
 const ACADEMY_KIND={
- power:{icon:'⚔️',title:'Sword Sparring',tag:'Power',instruction:'Time six sword strikes as the red marker crosses the green target.'},
- attack:{icon:'🏹',title:'Archery Range',tag:'Attack',instruction:'Fire six arrows while the moving aim line crosses the bullseye.'},
- lives:{icon:'🛡️',title:'Shield Wall',tag:'HP',instruction:'Block six strikes. Follow each direction, then tap the matching shield.'},
- spawn:{icon:'🐾',title:'Pawprint Sprint',tag:'Spawn',instruction:'Clear six obstacles. Read each one and choose the right move.'}
+ power:{icon:'⚔️',title:'Sword Sparring',tag:'Power',instruction:'The sword swings back and forth. Tap Strike when the blade lines up with the golden target on our goofy dog practice dummy!'},
+ attack:{icon:'🏹',title:'Archery Range',tag:'Attack',instruction:'Pull back to build power, slide up or down to aim, then release to shoot. Six arrows; the closer to the bullseye, the higher your score.'},
+ lives:{icon:'🛡️',title:'Shield Wall',tag:'HP',instruction:'A goofy dog trainer tosses plush bones. Raise your shield LEFT, HIGH, or RIGHT to block six bops!'},
+ spawn:{icon:'🔴',title:'Laser Chase',tag:'Spawn',instruction:'Your cat is chasing a red laser dot! Jump yarn, duck feather wands and dodge water bowls. Tap the right move before a toy reaches your cat.'}
 };
 let academyCat='tabby',academyKind='power',academyRound=null,academyReceipt=null,academyTickId=null;
 function academyCleanPending(p){
@@ -1433,6 +1497,7 @@ function academyStartRound(){
  academyRound={kind:p.kind,step:0,total:0,started:performance.now(),cue:0,position:50,done:false};
  if(p.kind==='lives')academyRound.cue=Math.floor(Math.random()*3);
  if(p.kind==='spawn')academyRound.cue=Math.floor(Math.random()*3);
+ if(p.kind==='attack')academyResetArcheryShot(academyRound);
  academyRenderRound();
  if(academyTickId)cancelAnimationFrame(academyTickId);
  academyTickId=requestAnimationFrame(academyFrame);
@@ -1441,49 +1506,252 @@ function academyRenderRound(){
  if(!academyRound)return;
  const r=academyRound,info=ACADEMY_KIND[r.kind],panel=$('academyContent');
  let html='<div class="academy-play"><div class="academy-play-title">'+info.icon+' '+info.title+'</div><div class="academy-play-help">'+info.instruction+'</div><div class="academy-progress">Challenge '+(r.step+1)+' of 6 · '+(save.academyPending.attempts+1)+' of 2 attempts</div>';
- if(r.kind==='power'||r.kind==='attack'){
-  html+='<div class="academy-meter '+(r.kind==='attack'?'archery':'sword')+'"><div class="zone"></div><div class="needle" id="academyNeedle"></div></div>'+
-  '<button id="academyTap" class="btn primary academy-primary" type="button">'+(r.kind==='attack'?'🏹 Fire Arrow!':'⚔️ Swing Sword!')+'</button>'+
-  '<p class="academy-rule" style="text-align:center">Aim for the center. Perfect timing scores the most points.</p>';
+ if(r.kind==='power'){
+  html+='<div class="academy-spar-stage" role="img" aria-label="Goofy padded dog training dummy in the middle of a practice yard; a sword sweeps side to side in front of the target">'+
+    '<span class="academy-spar-banner">🎯 STRIKE THE PADDED DUMMY</span>'+
+    '<svg class="academy-spar-dog" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 172" aria-hidden="true">'+
+     '<path d="M76 134V168" stroke="#85603b" stroke-width="16" stroke-linecap="round"/><path d="M47 162H105" stroke="#6a4e37" stroke-width="12" stroke-linecap="round"/>'+
+     '<rect x="43" y="83" width="76" height="69" rx="25" fill="#d7a567" stroke="#77513e" stroke-width="5"/>'+
+     '<path d="M39 32Q6 0 10 62Q14 80 35 76L52 54Z" fill="#8c5b4b" stroke="#533b35" stroke-width="5"/>'+
+     '<path d="M116 32Q146 0 151 62Q150 79 126 75L105 54Z" fill="#8c5b4b" stroke="#533b35" stroke-width="5"/>'+
+     '<ellipse cx="80" cy="62" rx="58" ry="52" fill="#eac28a" stroke="#795b43" stroke-width="5"/>'+
+     '<ellipse cx="59" cy="58" rx="7" ry="9" fill="#4b3942"/><ellipse cx="100" cy="58" rx="7" ry="9" fill="#4b3942"/>'+
+     '<ellipse cx="79" cy="84" rx="32" ry="24" fill="#fff0cf"/>'+
+     '<path d="M69 74Q80 66 90 74Q86 88 79 86Q72 88 69 74" fill="#4a3541"/>'+
+     '<path d="M78 88Q75 103 65 93M80 88Q84 104 95 92" fill="none" stroke="#795343" stroke-width="4" stroke-linecap="round"/>'+
+     '<path d="M51 113Q80 102 109 113" fill="none" stroke="#a5794f" stroke-width="4"/>'+
+     '<circle cx="80" cy="123" r="25" fill="#fbefc9" stroke="#c08d4e" stroke-width="5"/><circle cx="80" cy="123" r="17" fill="#ec9a6c"/><circle cx="80" cy="123" r="9" fill="#ffe3a2"/><circle cx="80" cy="123" r="3.5" fill="#7e493f"/>'+
+     '<path d="M29 116H14M130 116H147" stroke="#6b513f" stroke-width="9" stroke-linecap="round"/>'+
+    '</svg>'+
+    '<div id="academyNeedle" class="academy-spar-sword" aria-hidden="true">'+
+     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 160"><path d="M27 5L41 5L43 88L34 105L25 88Z" fill="#eaf7fb" stroke="#476f88" stroke-width="4"/><path d="M34 8V93" stroke="#b5d3e5" stroke-width="4"/><path d="M8 106L60 106" stroke="#9f713b" stroke-width="11" stroke-linecap="round"/><path d="M29 108V149Q34 156 39 149V108" fill="#e5b364" stroke="#794c36" stroke-width="4"/><circle cx="34" cy="151" r="6" fill="#f6d178" stroke="#805032" stroke-width="3"/></svg></div>'+
+    '<span class="academy-spar-perfect">★ PAW-FECT HIT ★</span></div>'+
+   '<button id="academyTap" class="btn primary academy-primary" type="button">⚔️ Strike Dummy!</button>'+
+   '<p class="academy-rule" style="text-align:center">Time your tap as the <b>moving sword</b> passes over the target on the dog dummy. Six strikes!</p>';
+ }else if(r.kind==='attack'){
+  const target=r.archeryTargetY;
+  html+='<div id="academyArcheryCourt" class="academy-archery-court" role="button" tabindex="0" aria-label="Archery range: drag left to draw the arrow, move up or down to aim, release to fire. Arrow keys adjust aim and Space fires for keyboard play.">'+
+   '<svg class="academy-archery-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" preserveAspectRatio="none" aria-hidden="true">'+
+   '<defs><linearGradient id="academySky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b9deef"/><stop offset=".65" stop-color="#d9eadb"/><stop offset="1" stop-color="#a9c99e"/></linearGradient><linearGradient id="academyShaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2cc"/><stop offset="1" stop-color="#ad8253"/></linearGradient></defs>'+
+   '<rect width="600" height="260" rx="18" fill="url(#academySky)"/><path d="M0 191 Q120 174 255 190 T600 182 V260 H0" fill="#83a87c" opacity=".55"/>'+
+   '<path d="M0 219 Q170 204 320 227 T600 217 V260 H0" fill="#6c9a73" opacity=".35"/>'+
+   '<line x1="475" x2="475" y1="35" y2="230" stroke="#82684b" stroke-width="8" opacity=".6"/>'+
+   '<g transform="translate(475 '+target+')"><circle r="62" fill="#f4e4c9" stroke="#6b5642" stroke-width="5"/><circle r="52" fill="#f8faf3"/><circle r="42" fill="#bb5e62"/><circle r="29" fill="#eac06b"/><circle r="16" fill="#fff9e7"/><circle r="7" fill="#5b7c79"/><path d="M-66 0h-10M66 0h10M0 -66v-10M0 66v10" stroke="#566b6f" stroke-width="3"/></g>'+
+   '<path id="academyArcheryGuide" d="M190 135 L475 135" stroke="#314e7b" stroke-dasharray="7 8" stroke-width="3" opacity="0" fill="none"/>'+
+   '<g id="academyArcheryPrediction" opacity="0"><circle r="15" fill="none" stroke="#244f79" stroke-width="3" stroke-dasharray="5 4"/><path d="M-22 0H22M0 -22V22" stroke="#244f79" stroke-width="2"/></g>'+
+   '<path d="M178 62 Q232 133 178 209" fill="none" stroke="#955b37" stroke-width="11" stroke-linecap="round"/>'+
+   '<path id="academyArcheryString" d="M178 62 L190 135 L178 209" stroke="#fff9e9" stroke-width="2.5" fill="none"/>'+
+   '<g id="academyArcheryArrow" transform="translate(190 135)"><line x1="-62" x2="21" y1="0" y2="0" stroke="#73543d" stroke-width="9" stroke-linecap="round"/><line x1="-59" x2="19" y1="-2" y2="-2" stroke="url(#academyShaft)" stroke-width="5"/><path d="M18 -9L38 0 18 9Z" fill="#dbe9ef" stroke="#4c6170" stroke-width="2"/><path d="M-61 -3L-79 -11 -73 0 -79 11 -61 3Z" fill="#397aaa" stroke="#224866" stroke-width="2"/></g>'+
+   '<circle cx="190" cy="135" r="28" fill="transparent"/></svg></div>'+
+   '<div class="academy-archery-power"><span>Draw Power</span><div class="academy-archery-power-track"><div id="academyArcheryPowerFill"></div></div><b id="academyArcheryPowerValue">0%</b></div>'+
+   '<p class="academy-archery-status" id="academyArcheryStatus" role="status">Hold anywhere in the range, pull LEFT, move up/down to aim, then release to shoot.</p>'+
+   '<p class="academy-rule" style="text-align:center">Pull at least 25% to fire. More draw power helps the arrow reach the target. Keyboard: ↑ ↓ to aim, Space to shoot.</p>';
+
  }else if(r.kind==='lives'){
-   const icons=['⬅️ LEFT','⬆️ HIGH','➡️ RIGHT'];
-   html+='<div class="academy-prompt" id="academyPrompt">🐶 Incoming '+icons[r.cue]+'!</div><div class="academy-action-row">'+icons.map((t,i)=>'<button type="button" data-academy-choice="'+i+'" class="academy-option"><span>🛡️</span>'+t+'</button>').join('')+'</div><p class="academy-rule" style="text-align:center">Block the direction shown. Quick accurate blocks earn the highest score.</p>';
+  const icons=['⬅️ LEFT','⬆️ HIGH','➡️ RIGHT'];
+  html+='<div class="academy-shield-yard"><span class="academy-shield-trainer">🐶<small>PLUSH BONE THROWER</small></span><span class="academy-shield-bone" aria-hidden="true">🦴</span><span class="academy-shield-knight">🐱🛡️</span></div>'+
+   '<div class="academy-shield-command">🛡️ Raise shield: <strong>'+icons[r.cue]+'</strong></div>'+
+   '<div class="academy-action-row academy-shield-actions">'+icons.map((t,i)=>'<button type="button" data-academy-choice="'+i+'" class="academy-option"><span>🛡️</span>'+t+'</button>').join('')+'</div>'+
+   '<p class="academy-rule" style="text-align:center">The goofy dog trainer tosses soft toy bones. Raise your shield in the direction shown before the bone bops your cat!</p>';
  }else{
-   const icons=['🪵 Jump the Log','🦴 Duck the Bone','🌿 Sidestep the Bush'];
-   html+='<div class="academy-prompt" id="academyPrompt">'+icons[r.cue]+'</div><div class="academy-runway"><span class="runner" id="academyRunner">🐈</span><span class="hazard">'+['🪵','🦴','🌳'][r.cue]+'</span></div><div class="academy-action-row">'+['⬆️ Jump','⬇️ Duck','↪️ Dodge'].map((t,i)=>'<button type="button" data-academy-choice="'+i+'" class="academy-option"><span>'+['🐾','🐈','⚡'][i]+'</span>'+t+'</button>').join('')+'</div>'+
-   '<p class="academy-rule" style="text-align:center">Choose the right action before you reach the obstacle. Fast and correct earns more points.</p>';
+  const toys=[['🧶','Jump the Yarn Ball!'],['🪶','Duck the Feather Wand!'],['🥣','Dodge the Water Bowl!']];
+  const toy=toys[r.cue];
+  html+='<div class="academy-laser-title">🔴 LASER CHASE <small>Follow that dot, whiskers!</small></div>'+
+  '<div id="academyLaserScene" class="academy-laser-scene" role="img" aria-label="Orange tabby cat running through a grassy training field, chasing a red laser pointer dot, with an obstacle approaching from the right">'+
+   '<div class="academy-laser-cloud cloud-a"></div><div class="academy-laser-cloud cloud-b"></div><div class="academy-laser-hills"></div>'+
+   '<div class="academy-laser-beam">✦</div><div class="academy-laser-dot"></div><div class="academy-laser-track"></div>'+
+   '<div id="academyLaserCat" class="academy-laser-cat" aria-hidden="true">'+
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 105">'+
+    '<g class="cat-tail"><path d="M19 57C-7 50 3 23 11 32C16 40 5 49 25 46" stroke="#b96332" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M10 35L19 39" stroke="#7e492f" stroke-width="4"/></g>'+
+    '<g class="cat-back-paw"><path d="M41 74L31 97" stroke="#a85d31" stroke-width="14" stroke-linecap="round"/></g>'+
+    '<ellipse cx="56" cy="63" rx="39" ry="30" fill="#efa248" stroke="#9f5835" stroke-width="4"/>'+
+    '<path d="M36 41L31 58M61 36L57 52M79 44L77 56" stroke="#b86634" stroke-width="6"/>'+
+    '<g class="cat-front-paw"><path d="M84 73L97 96" stroke="#dc8838" stroke-width="14" stroke-linecap="round"/></g>'+
+    '<path d="M75 25L81 5L96 20M109 29L119 7L124 41" fill="#efa248" stroke="#a45a32" stroke-width="4" stroke-linejoin="round"/>'+
+    '<ellipse cx="101" cy="42" rx="29" ry="28" fill="#f6ae59" stroke="#9f5835" stroke-width="4"/>'+
+    '<path d="M94 44Q99 38 103 44M113 45Q118 39 121 45" fill="none" stroke="#3e3c4a" stroke-width="3"/>'+
+    '<circle cx="111" cy="54" r="4" fill="#b95f73"/><path d="M109 57Q115 66 120 58" stroke="#7d4c4a" stroke-width="2" fill="none"/>'+
+    '<path d="M114 56L125 54M114 59L126 62" stroke="#815747" stroke-width="1.8"/>'+
+    '</svg></div>'+
+   '<div id="academyLaserObstacle" class="academy-laser-obstacle" aria-hidden="true"><span>'+toy[0]+'</span></div>'+
+   '<div class="academy-laser-collision" aria-hidden="true"></div></div>'+
+  '<div class="academy-laser-warning" aria-live="polite"><span>Next toy:</span> <strong>'+toy[1]+'</strong></div>'+
+  '<div class="academy-action-row academy-laser-actions">'+['⬆️ Jump','⬇️ Duck','↪️ Dodge'].map((t,i)=>'<button type="button" data-academy-choice="'+i+'" class="academy-option"><span>'+['🐾','🙀','⚡'][i]+'</span>'+t+'</button>').join('')+'</div>'+
+  '<p class="academy-rule" style="text-align:center">Your cat runs on its own. Tap the right move <b>before the toy reaches the paw circle</b>. Perfect timing earns the most points; early correct moves still count!</p>';
+
  }
  html+='<div id="academyRoundFeedback" aria-live="polite" class="academy-progress">Score so far: '+Math.round(r.total/Math.max(1,r.step))+'</div></div>';
  panel.innerHTML=html;
  $('academyTap')?.addEventListener('click',academyTimingTap);
+ if(r.kind==='attack')academyBindArcheryCourt();
  panel.querySelectorAll('[data-academy-choice]').forEach(btn=>btn.addEventListener('click',()=>academyChoice(Number(btn.dataset.academyChoice))));
 }
 function academyFrame(now){
  if(!academyRound){academyTickId=null;return;}
  const r=academyRound,elapsed=(now-r.started)/1000;
- if(r.kind==='power'||r.kind==='attack'){
+ if(r.kind==='power'){
   const relaxed=(document.body.classList.contains('large-text')||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches));
-  const rate=r.kind==='attack'?(relaxed?.55:.78):(relaxed?.65:.88);
+  const rate=relaxed?.65:.88;
   r.position=50+49*Math.sin(elapsed*Math.PI*rate*2);
   const node=$('academyNeedle');if(node)node.style.left=r.position.toFixed(1)+'%';
+ }else if(r.kind==='attack'){
+  academyAnimateArrow(now,r);
+  if(!academyRound){academyTickId=null;return;}
  }else if(r.kind==='spawn'){
-  const node=$('academyRunner');if(node)node.style.left=(Math.min(83,elapsed*13)).toFixed(1)+'%';
+  const progress=Math.min(1,Math.max(0,elapsed/3.65));
+  const obstacle=$('academyLaserObstacle');
+  if(obstacle)obstacle.style.left=(96-78*progress).toFixed(2)+'%';
+  const cat=$('academyLaserCat');
+  if(cat)cat.style.transform='translateY('+(-3*Math.sin(elapsed*13)).toFixed(2)+'px)';
  }
  // Prevent a timed challenge from becoming stuck if the player does not react.
- if((r.kind==='lives'&&elapsed>10)||(r.kind==='spawn'&&elapsed>7.0)){academyAdvance(0);}
+ if((r.kind==='lives'&&elapsed>10)||(r.kind==='spawn'&&elapsed>3.75)){academyAdvance(0);}
  academyTickId=requestAnimationFrame(academyFrame);
 }
 function academyTimingTap(){
- if(!academyRound||!['power','attack'].includes(academyRound.kind))return;
+ if(!academyRound||academyRound.kind!=='power')return;
  const miss=Math.abs(academyRound.position-50);
- const score=Math.max(0,Math.min(100,Math.round(100-miss*(academyRound.kind==='attack'?2.45:2.15))));
+ const score=Math.max(0,Math.min(100,Math.round(100-miss*2.15)));
  academyAdvance(score);
 }
+
+// Finger-drag archery: pull back to charge, angle vertically to aim, release to shoot.
+// Works with Pointer Events (touch, stylus, mouse), plus keyboard fallbacks.
+function academyResetArcheryShot(r){
+ r.archeryTargetY=87+Math.round(Math.random()*90);
+ r.archeryPower=0;r.archeryAimY=135;r.archeryX=190;r.archeryDrag=null;
+ r.archeryFlight=null;r.done=false;
+}
+function academyArcheryClamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function academyArcheryPoint(event){
+ const bounds=$('academyArcheryCourt')?.getBoundingClientRect();
+ if(!bounds||!bounds.width||!bounds.height)return {x:190,y:135};
+ return {x:(event.clientX-bounds.left)/bounds.width*600,y:(event.clientY-bounds.top)/bounds.height*260};
+}
+function academyArcheryPredicted(r){
+ return {x:190+285*Math.min(1,r.archeryPower/.68),y:r.archeryAimY};
+}
+function academyArcheryDrawPreview(r){
+ if(!r||r.kind!=='attack')return;
+ const power=r.archeryPower||0,pred=academyArcheryPredicted(r),active=!!r.archeryDrag;
+ const nockX=190-70*power,nockY=135+(135-r.archeryAimY)*-.12;
+ const angle=Math.atan2(pred.y-135,pred.x-190)*180/Math.PI;
+ const arrow=$('academyArcheryArrow'),string=$('academyArcheryString'),guide=$('academyArcheryGuide'),crosshair=$('academyArcheryPrediction');
+ if(arrow)arrow.setAttribute('transform','translate('+nockX.toFixed(1)+' '+nockY.toFixed(1)+') rotate('+angle.toFixed(1)+')');
+ if(string)string.setAttribute('d','M178 62 L'+nockX.toFixed(1)+' '+nockY.toFixed(1)+' L178 209');
+ if(guide){guide.setAttribute('d','M190 135 L'+pred.x.toFixed(1)+' '+pred.y.toFixed(1));guide.setAttribute('opacity',active?'0.9':'0');}
+ if(crosshair){crosshair.setAttribute('transform','translate('+pred.x.toFixed(1)+' '+pred.y.toFixed(1)+')');crosshair.setAttribute('opacity',active?'0.82':'0');}
+ const fill=$('academyArcheryPowerFill'),value=$('academyArcheryPowerValue');
+ if(fill)fill.style.width=Math.round(power*100)+'%';
+ if(value)value.textContent=Math.round(power*100)+'%';
+ const label=$('academyArcheryStatus');
+ if(label&&active)label.textContent=power<.25?'Keep pulling LEFT to build power.':'Release to shoot! Adjust up/down to hit the center.';
+}
+function academyArcheryPointerDown(event){
+ const r=academyRound;if(!r||r.kind!=='attack'||r.done||r.archeryDrag)return;
+ if(event.pointerType==='mouse'&&event.button!==0)return;
+ event.preventDefault();
+ const pt=academyArcheryPoint(event);
+ r.archeryDrag={pointerId:event.pointerId,startX:pt.x,startY:pt.y};
+ const court=$('academyArcheryCourt');try{court?.setPointerCapture(event.pointerId);}catch(e){}
+ academyArcheryMove(event);
+}
+function academyArcheryMove(event){
+ const r=academyRound;if(!r||r.kind!=='attack'||r.done||!r.archeryDrag||r.archeryDrag.pointerId!==event.pointerId)return;
+ event.preventDefault();
+ const point=academyArcheryPoint(event),dx=point.x-r.archeryDrag.startX,dy=point.y-r.archeryDrag.startY;
+ r.archeryPower=academyArcheryClamp(-dx/125,0,1);
+ r.archeryAimY=academyArcheryClamp(135-dy*1.45,48,212);
+ academyArcheryDrawPreview(r);
+}
+function academyArcheryPointerUp(event){
+ const r=academyRound;if(!r||r.kind!=='attack'||!r.archeryDrag||r.archeryDrag.pointerId!==event.pointerId)return;
+ event.preventDefault();academyArcheryMove(event);
+ r.archeryDrag=null;
+ const court=$('academyArcheryCourt');try{if(court?.hasPointerCapture(event.pointerId))court.releasePointerCapture(event.pointerId);}catch(e){}
+ if(r.archeryPower<.25){
+  r.archeryPower=0;r.archeryAimY=135;academyArcheryDrawPreview(r);
+  const status=$('academyArcheryStatus');if(status)status.textContent='Not enough power. Pull farther LEFT and release again.';
+  return;
+ }
+ academyArcheryFire(r);
+}
+function academyArcheryPointerCancel(event){
+ const r=academyRound;if(!r||r.kind!=='attack'||!r.archeryDrag||r.archeryDrag.pointerId!==event.pointerId)return;
+ r.archeryDrag=null;r.archeryPower=0;r.archeryAimY=135;academyArcheryDrawPreview(r);
+ const label=$('academyArcheryStatus');if(label)label.textContent='Draw canceled. Touch and pull again.';
+}
+function academyArcheryFire(r){
+ if(!r||r!==academyRound||r.done||r.kind!=='attack')return;
+ const pred=academyArcheryPredicted(r);
+ const dx=(475-pred.x)*.8,dy=r.archeryTargetY-pred.y;
+ const distance=Math.hypot(dx,dy);
+ const score=academyArcheryClamp(Math.round(100-Math.max(0,distance-7)*2.05),0,100);
+ r.done=true;r.archeryFlight={start:performance.now(),x:pred.x,y:pred.y,score};
+ const guide=$('academyArcheryGuide'),aim=$('academyArcheryPrediction');
+ if(guide)guide.setAttribute('opacity','0');if(aim)aim.setAttribute('opacity','0');
+ const status=$('academyArcheryStatus');if(status)status.textContent='Arrow away! 🏹';
+}
+function academyAnimateArrow(now,r){
+ const shot=r.archeryFlight;if(!shot)return;
+ const elapsed=now-shot.start;
+ const t=academyArcheryClamp(elapsed/480,0,1),ease=t*(2-t);
+ const x=190+(shot.x-190)*ease,y=135+(shot.y-135)*ease;
+ const angle=Math.atan2(shot.y-135,shot.x-190)*180/Math.PI;
+ const arrow=$('academyArcheryArrow');
+ if(arrow)arrow.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+') rotate('+angle.toFixed(1)+')');
+ if(elapsed>=480){
+  const msg=$('academyArcheryStatus');
+  if(msg)msg.textContent=shot.score===100?'🎯 Bullseye! 100 points!':'🏹 Arrow scored '+shot.score+' / 100';
+  const label=$('academyRoundFeedback');if(label)label.textContent='Shot '+(r.step+1)+' of 6: '+shot.score+' points';
+ }
+ if(elapsed>=1180){
+  r.archeryFlight=null;
+  academyAdvance(shot.score);
+ }
+}
+function academyBindArcheryCourt(){
+ const court=$('academyArcheryCourt');if(!court)return;
+ court.addEventListener('pointerdown',academyArcheryPointerDown);
+ court.addEventListener('pointermove',academyArcheryMove);
+ court.addEventListener('pointerup',academyArcheryPointerUp);
+ court.addEventListener('pointercancel',academyArcheryPointerCancel);
+ court.addEventListener('lostpointercapture',e=>{
+  const r=academyRound;
+  if(r&&r.archeryDrag&&r.archeryDrag.pointerId===e.pointerId)academyArcheryPointerCancel(e);
+ });
+ court.addEventListener('keydown',event=>{
+  const r=academyRound;if(!r||r.kind!=='attack'||r.done)return;
+  if(event.key==='ArrowUp'||event.key==='ArrowDown'){
+   event.preventDefault();r.archeryAimY=academyArcheryClamp(r.archeryAimY+(event.key==='ArrowUp'?-9:9),48,212);
+   r.archeryPower=.88;
+   r.archeryDrag={pointerId:'keyboard',startX:0,startY:0};academyArcheryDrawPreview(r);return;
+  }
+  if(event.key===' '||event.key==='Enter'){
+   event.preventDefault();r.archeryPower=Math.max(.88,r.archeryPower);r.archeryDrag=null;academyArcheryFire(r);
+  }
+ });
+}
+
 function academyChoice(choice){
  if(!academyRound||!['lives','spawn'].includes(academyRound.kind))return;
  const r=academyRound,time=(performance.now()-r.started)/1000;
  const correct=choice===r.cue;
- const pts=correct?Math.max(50,Math.round(100-(r.kind==='spawn'?time*13:time*7))):0;
+ const pts=r.kind==='spawn'
+  ?(correct?Math.max(65,Math.min(100,Math.round(73+27*(1-Math.abs(Math.min(1,time/3.65)-.79)/.79)))):0)
+  :(correct?Math.max(50,Math.round(100-time*7)):0);
+ if(r.kind==='spawn'){
+  if(r.done)return;
+  r.done=true;
+  const cat=$('academyLaserCat');
+  if(cat)cat.classList.add(correct?['jump','duck','dodge'][choice]:'miss');
+  const notice=document.querySelector('.academy-laser-warning');
+  if(notice)notice.innerHTML=correct?'<strong>🐾 Claw-some! +'+pts+' points!</strong>':'<strong>🐈 Oops! Try the next toy!</strong>';
+  const panelDisabled=document.querySelectorAll('.academy-laser-actions button');
+  panelDisabled.forEach(btn=>btn.disabled=true);
+  setTimeout(()=>{if(academyRound===r){r.done=false;academyAdvance(pts);}},340);
+  return;
+ }
  academyAdvance(pts);
 }
 function academyAdvance(points){
@@ -1494,6 +1762,7 @@ function academyAdvance(points){
   academyFinishRound(Math.round(r.total/6));return;
  }
  r.started=performance.now();r.cue=Math.floor(Math.random()*3);
+ if(r.kind==='attack')academyResetArcheryShot(r);
  academyRenderRound();
 }
 function academyFinishRound(score){
