@@ -71,7 +71,8 @@
           </aside>
 
           <section class="world-stage-wrap">
-            <div class="zoom-toolbar" aria-label="World zoom controls">
+            <div class="zoom-toolbar" aria-label="World zoom and help controls">
+              <button id="help-button" class="zoom-button help-button" type="button" aria-label="How to play Revive Nature">❔ HELP</button>
               <button id="zoom-out-button" class="zoom-button" type="button">−</button>
               <span id="zoom-label">FIT</span>
               <button id="zoom-in-button" class="zoom-button" type="button">+</button>
@@ -107,7 +108,7 @@
               </div>
             </div>
             <div class="quick-care" aria-label="Crop care controls">
-              <strong>🌱 CROP CARE</strong>
+              <strong>🌱 CROP CARE <span class="care-direction">— TAP A PLOT</span></strong>
               <p id="care-hint">Tap any crop to inspect and care for it.</p>
               <div id="quick-actions" class="quick-actions"></div>
             </div>
@@ -124,7 +125,7 @@
               <p class="eyebrow">SELECTED PLOT</p>
               <h3 id="plant-name">Move to a plant</h3>
               <div id="plant-details">
-                <p>Drag your farmer onto a crop to inspect it.</p>
+                <p>Tap a crop to inspect it, then use the Crop Care buttons.</p>
               </div>
             </div>
 
