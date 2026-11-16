@@ -43,6 +43,11 @@
             <h2 id="current-biome-name">Pasture</h2>
             <p id="current-biome-description"></p>
 
+            <div class="restoration-mission" aria-live="polite">
+              <strong id="wildlife-status">🍂 Healing begins</strong>
+              <p id="mission-status">Restore your first 5 plots to earn a reward.</p>
+              <p id="region-status">Region revived: 0/100 plots</p>
+            </div>
             <div class="progress-block">
               <div class="progress-label">
                 <span>Biome revival</span>
@@ -59,9 +64,9 @@
 
             <div class="how-to">
               <h3>HOW TO PLAY</h3>
-              <p>Drag the farmer to supplies or a grid square.</p>
+              <p>Tap a crop, then use Water or Fertilize below the field. You can also drag the farmer.</p>
               <p>Damaged plants need both 💧 water and 🧪 fertilizer.</p>
-              <p>At 10 health, drag to the crop to harvest and sell it.</p>
+              <p>At 10 health, tap Harvest & Sell to restore the plot. Earn bonuses for every 5 restored plots!</p>
             </div>
           </aside>
 
@@ -100,6 +105,11 @@
                 <div class="player-sprite">🧑‍🌾</div>
                 <div id="carry-badge" class="carry-badge hidden"></div>
               </div>
+            </div>
+            <div class="quick-care" aria-label="Crop care controls">
+              <strong>🌱 CROP CARE</strong>
+              <p id="care-hint">Tap any crop to inspect and care for it.</p>
+              <div id="quick-actions" class="quick-actions"></div>
             </div>
           </section>
 
