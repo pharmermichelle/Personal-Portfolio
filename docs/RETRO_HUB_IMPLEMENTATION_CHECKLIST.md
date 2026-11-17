@@ -26,7 +26,8 @@ Updated: 2026-11-17. Owner-approved development. Feature branch: `feature/retro-
 - [x] IMPLEMENTED: isolated GitHub preview branch; no push/merge to `main`.
 - [x] VERIFIED: no new Supabase project, no account deletions, no cloud-save writes.
 - [ ] BLOCKED: GitHub Pages is built from `main`; branch needs an isolated preview deployment or local browser test environment before release.
-- [ ] BLOCKED: verify Supabase Auth Site URL/redirect allowlist, confirmations, auth mail templates, sender limits, SMTP/CAPTCHA, leaked-password protection via dashboard.
+- [x] VERIFIED (owner screenshot 2026-11-17): exact Hub redirect URL added successfully in Supabase Auth. Default Site URL remains `http://localhost:3000` and must be reviewed before launch; this is not proof that confirmation emails or recovery work.
+- [ ] BLOCKED: verify email confirmations, reset delivery, auth mail templates, sender limits, SMTP/CAPTCHA, leaked-password protection via dashboard.
 - [ ] PLANNED: age/privacy/terms/marketing policy and production data-retention decisions.
 
 ## Phase 1 — account and player profile
@@ -37,6 +38,7 @@ Updated: 2026-11-17. Owner-approved development. Feature branch: `feature/retro-
 - [x] IMPLEMENTED: Hub links to 17 entries, including four verified missing games. Original gallery filters, CSS background, ad unit, URLs and games unchanged.
 - [x] TESTED: JavaScript parse checks: platform and account files PASS; Hub inline scripts PASS.
 - [x] TESTED: static HTML/account control ID matching PASS; expected 17 game cards; all four new destination files verified in GitHub.
+- [x] TESTED: Github Actions run `44152078321` PASS (2026-11-17), includes deterministic auth-state mock tests covering signup pending verification, resend, login/profile, recovery, password reset, profile ownership and logout. These are simulation tests, not end-to-end real emails or devices.
 - [ ] BLOCKED: full sign-up, email delivery, password recovery, two-account RLS with real sessions, Android and desktop browser E2E. Do NOT mark launch-ready before testing.
 - [ ] PLANNED: profile settings for public visibility (keep private until leaderboard privacy model exists), account deletion verified request workflow, complete data export, shared auth navigation in each individual game, cloud-save adapter with explicit guest/import conflict UI.
 - [ ] PLANNED: terms/privacy agreement and age gate before opening general public registration.
