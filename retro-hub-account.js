@@ -51,6 +51,9 @@
       byId("auth-email-row").hidden = newPassword || verification;
       byId("auth-password-row").hidden = recovery || verification;
       byId("auth-confirm-row").hidden = !signup && !newPassword;
+      email.required = !newPassword && !verification;
+      password.required = !recovery && !verification;
+      confirmPassword.required = signup || newPassword;
       byId("auth-submit-btn").hidden = verification;
       byId("auth-submit-btn").textContent = signup ? "Create Account" :
         recovery ? "Send Reset Link" : newPassword ? "Save New Password" : "Log In";
@@ -112,7 +115,8 @@
         updateHeader(null);
         return;
       }
-      if (!currentUser || currentUser.id !== user.id || !profile) {
+      if (!currentUser || currentUser.id !== user.id) profile = null;
+      if (!profile) {
         updateHeader(user);
         loadProfile(user);
       } else updateHeader(user);
