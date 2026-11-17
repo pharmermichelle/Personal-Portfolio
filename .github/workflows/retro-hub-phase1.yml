@@ -7,6 +7,7 @@ on:
       - 'retro-hub-account.css'
       - 'retro-hub-platform.js'
       - 'tests/retro-hub-phase1.test.mjs'
+      - 'tests/retro-hub-account-behavior.test.mjs'
       - '.github/workflows/retro-hub-phase1.yml'
   workflow_dispatch:
 jobs:
