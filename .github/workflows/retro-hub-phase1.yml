@@ -1,0 +1,25 @@
+name: Retro Hub Phase 1 checks
+on:
+  pull_request:
+    paths:
+      - 'retro-game-hub.html'
+      - 'retro-hub-account.js'
+      - 'retro-hub-account.css'
+      - 'retro-hub-platform.js'
+      - 'tests/retro-hub-phase1.test.mjs'
+      - 'tests/retro-hub-account-behavior.test.mjs'
+      - '.github/workflows/retro-hub-phase1.yml'
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Phase 1 static and integration checks
+        run: node --test tests/retro-hub-phase1.test.mjs

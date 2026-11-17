@@ -7,7 +7,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <title>Retro Games Hub — (WIP)</title>
+    <title>Retro Games Hub — Play & Explore</title>
     <meta
       property="og:description"
       content="Explore Michelle's portfolio of creative, web-based projects and tools."
@@ -31,6 +31,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="retro-hub-account.css" />
   </head>
     <style>
       :root {
@@ -462,8 +463,9 @@ body {
 
 <div class="auth-area">
   <span id="auth-status">Not logged in</span>
- <button id="auth-open-btn" class="soon-btn">Login</button>
-  <button id="logout-btn" class="soon-btn" style="display: none;">Logout</button>
+ <button id="auth-open-btn" class="soon-btn" type="button">Log In / Sign Up</button>
+  <button id="profile-open-btn" class="soon-btn" type="button" hidden>My Profile</button>
+  <button id="logout-btn" class="soon-btn" type="button" hidden>Log Out</button>
 </div>
       </header>
 
@@ -556,36 +558,119 @@ body {
       </div>
     </div>
 
-        <div id="auth-modal" class="auth-modal" hidden>
-  <div class="auth-box">
-    <button id="auth-close-btn" class="auth-close">×</button>
-
-    <h2>Retro Games Hub Login</h2>
-
-    <input id="auth-email" type="email" placeholder="Email" />
-    <input id="auth-password" type="password" placeholder="Password" />
-
-    <div class="auth-actions">
-      <button id="login-btn" class="btn">Login</button>
-      <button id="signup-btn" class="btn">Sign up</button>
+    <div id="auth-modal" class="auth-modal" role="dialog" aria-modal="true"
+      aria-labelledby="auth-modal-title" aria-describedby="auth-modal-help" hidden>
+      <div class="auth-box">
+        <button id="auth-close-btn" class="auth-close" type="button" aria-label="Close account window">×</button>
+        <h2 id="auth-modal-title">Log In</h2>
+        <p id="auth-modal-help" class="auth-subtitle">Save your identity across Retro Games Hub. You can always play as a guest.</p>
+        <form id="auth-form">
+          <div id="auth-email-row">
+            <label for="auth-email">Email Address</label>
+            <input id="auth-email" type="email" name="email" autocomplete="email" required
+              inputmode="email" maxlength="254" />
+          </div>
+          <div id="auth-password-row">
+            <label for="auth-password">Password</label>
+            <div class="auth-inline">
+              <input id="auth-password" type="password" name="password" autocomplete="current-password" required />
+              <button id="auth-show-password" class="auth-secondary" type="button" aria-pressed="false">Show</button>
+            </div>
+          </div>
+          <div id="auth-confirm-row" hidden>
+            <label for="auth-confirm-password">Confirm Password</label>
+            <input id="auth-confirm-password" type="password" name="confirm_password" autocomplete="new-password" />
+            <p class="auth-help">Choose a unique password of at least 12 characters.</p>
+          </div>
+          <button id="auth-submit-btn" class="auth-primary" type="submit">Log In</button>
+        </form>
+        <div id="auth-resend-row" hidden>
+          <p>Your account isn't active until your email is verified.</p>
+          <button id="auth-resend-btn" class="auth-secondary" type="button">Resend Verification Email</button>
+        </div>
+        <div class="auth-actions">
+          <button id="auth-login-mode" type="button">Log In</button>
+          <button id="auth-signup-mode" type="button">Create Account</button>
+          <button id="auth-forgot-mode" type="button">Forgot Password?</button>
+        </div>
+        <p id="auth-message" role="status" aria-live="polite"></p>
+        <p class="auth-help">Account registration and email recovery are handled by Supabase. No marketing emails are sent by this interface.</p>
+      </div>
+    </div>
+    <div id="profile-modal" class="auth-modal" role="dialog" aria-modal="true"
+      aria-labelledby="profile-modal-title" hidden>
+      <div class="auth-box">
+        <button id="profile-close-btn" class="auth-close" type="button" aria-label="Close profile">×</button>
+        <h2 id="profile-modal-title">My Player Profile</h2>
+        <p class="auth-subtitle">One player identity across the Retro Games Hub.</p>
+        <p><strong>Account:</strong> <span id="profile-email"></span></p>
+        <p id="profile-visibility" class="auth-help">Your profile is private by default.</p>
+        <form id="profile-form">
+          <label for="profile-username">Player Username</label>
+          <input id="profile-username" type="text" minlength="3" maxlength="24"
+            pattern="[A-Za-z0-9_]{3,24}" autocomplete="nickname"
+            placeholder="3–24 letters, numbers or underscores" />
+          <label for="profile-avatar">Starter Avatar</label>
+          <select id="profile-avatar">
+            <option value="pixel-star">⭐ Star Player</option>
+            <option value="pixel-cat">🐱 Cat Adventurer</option>
+            <option value="pixel-rocket">🚀 Rocket Racer</option>
+            <option value="pixel-joystick">🕹️ Retro Gamer</option>
+          </select>
+          <div id="profile-avatar-preview" class="avatar-preview" aria-hidden="true">⭐</div>
+          <button id="profile-save-btn" class="auth-primary" type="submit">Save Profile</button>
+        </form>
+        <p id="profile-message" role="status" aria-live="polite"></p>
+        <button id="profile-export-btn" class="auth-secondary" type="button">Download My Player Records</button>
+        <p class="auth-help">A full cloud-save sync, badges, verified scores and account deletion workflow are in development. Your existing local game saves remain untouched.</p>
+      </div>
     </div>
 
-    <p id="auth-message"></p>
-  </div>
-</div>
-
+    <script src="retro-hub-platform.js"></script>
+    <script src="retro-hub-account.js"></script>
     <script>
   
-const SUPABASE_URL = "https://dxemotgroklcjsbunspg.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+// Shared authentication client is loaded by retro-hub-platform.js.
 
     // --- Data (pulled from projects.html) ---
       const GAMES = [
+        {
+          id: "claws-vs-paws",
+          title: "Claws vs. Paws: Castle Clash",
+          href: "minigame/claws-vs-paws/index.html",
+          img: "images/portfolio-icon.png",
+          desc: "Lead a cat army, train champions, and bring down the dog castle.",
+          genre: ["arcade", "sim"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "revive-nature",
+          title: "Revive Nature",
+          href: "minigame/Revive-nature/revive-index.html",
+          img: "images/portfolio-icon.png",
+          desc: "Restore damaged habitats through farming, resources and thoughtful growth.",
+          genre: ["sim"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "tide-tetris",
+          title: "Tide Tetris",
+          href: "minigame/Tide-Tetris/index.html",
+          img: "images/portfolio-icon.png",
+          desc: "Build beautiful coral rows in an ocean-themed falling-block puzzle.",
+          genre: ["puzzle", "arcade"],
+          platform: ["desktop", "mobile"],
+        },
+        {
+          id: "cut-the-cheese",
+          title: "Cut the Cheese",
+          href: "minigame/Cut-the-Cheese/index.html",
+          img: "images/portfolio-icon.png",
+          desc: "Bank cheese shots off the walls to connect and clear matching groups.",
+          genre: ["puzzle", "arcade"],
+          platform: ["desktop", "mobile"],
+        },
+
         {
           id: "rink-putt",
           title: "Rink Putt",
@@ -783,92 +868,12 @@ const supabaseClient = supabase.createClient(
         });
       }
 
-const authModal = document.getElementById("auth-modal");
-const authOpenBtn = document.getElementById("auth-open-btn");
-const authCloseBtn = document.getElementById("auth-close-btn");
-const loginBtn = document.getElementById("login-btn");
-const signupBtn = document.getElementById("signup-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const authStatus = document.getElementById("auth-status");
-const authMessage = document.getElementById("auth-message");
-const authEmail = document.getElementById("auth-email");
-const authPassword = document.getElementById("auth-password");
-
-function setAuthMessage(message) {
-  authMessage.textContent = message || "";
+if (window.RetroHubAccount && window.RetroHubPlatform && window.RetroHubPlatform.client) {
+  window.RetroHubAccount.init({ client: window.RetroHubPlatform.client });
+} else {
+  document.getElementById("auth-status").textContent = "Playing as guest (account service unavailable)";
+  document.getElementById("auth-open-btn").hidden = true;
 }
-
-function openAuthModal() {
-  authModal.hidden = false;
-  setAuthMessage("");
-}
-
-function closeAuthModal() {
-  authModal.hidden = true;
-}
-
-function updateAuthUI(user) {
-  if (user) {
-    authStatus.textContent = `Logged in as ${user.email}`;
-    authOpenBtn.style.display = "none";
-    logoutBtn.style.display = "inline-flex";
-  } else {
-    authStatus.textContent = "Not logged in";
-    authOpenBtn.textContent = "Login";
-    authOpenBtn.style.display = "inline-flex";
-    logoutBtn.style.display = "none";
-  }
-}
-
-authOpenBtn.addEventListener("click", openAuthModal);
-authCloseBtn.addEventListener("click", closeAuthModal);
-
-loginBtn.addEventListener("click", async () => {
-  setAuthMessage("Logging in...");
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: authEmail.value,
-    password: authPassword.value,
-  });
-
-  if (error) {
-    setAuthMessage(error.message);
-    return;
-  }
-
-  updateAuthUI(data.user);
-  closeAuthModal();
-});
-
-signupBtn.addEventListener("click", async () => {
-  setAuthMessage("Creating account...");
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email: authEmail.value,
-    password: authPassword.value,
-  });
-
-  if (error) {
-    setAuthMessage(error.message);
-    return;
-  }
-
-  setAuthMessage("Account created. Check your email if confirmation is required.");
-  updateAuthUI(data.user);
-});
-
-logoutBtn.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
-  updateAuthUI(null);
-});
-
-supabaseClient.auth.getSession().then(({ data }) => {
-  updateAuthUI(data.session?.user || null);
-});
-
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  updateAuthUI(session?.user || null);
-});
 
       renderNav();
       renderGallery();
