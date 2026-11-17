@@ -4,18 +4,9 @@ const BLOCK_SIZE = 32;
 const LEVEL_COUNT = 30;
 
 const COLORS = {
-  I: "#0b7285",
-  J: "#1f6f50",
-  L: "#c66b3d",
-  O: "#c8a454",
-  S: "#2b8a3e",
-  T: "#6f4773",
-  Z: "#c83245",
-
-  garbage1: "#344255",
-  garbage2: "#50627a",
-
-  empty: "#05070a"
+  I: "#18d0db", J: "#218ee8", L: "#f5a442", O: "#d9ee4f",
+  S: "#68ed57", T: "#b578f5", Z: "#ff5d77",
+  garbage1: "#173b39", garbage2: "#225349", empty: "#020c0c"
 };
 
 const TETROMINOES = {
@@ -41,6 +32,24 @@ const rightBtn = document.getElementById("rightBtn");
 const rotateBtn = document.getElementById("rotateBtn");
 const downBtn = document.getElementById("downBtn");
 const dropBtn = document.getElementById("dropBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const systemStatus = document.getElementById("systemStatus");
+let paused = false;
+let debris = [];
+let clearFlash = 0;
+const BIT_LINES = ["1010", "0101", "0xFF", "</>", "SYS", "0|1", "1100", "ERR"];
+function setStatus(message) { if (systemStatus) systemStatus.textContent = message; }
+function setPaused(value) {
+  if (gameOver) return;
+  paused = value;
+  if (pauseBtn) {
+    pauseBtn.textContent = paused ? "Resume" : "Pause";
+    pauseBtn.setAttribute("aria-pressed", String(paused));
+  }
+  setStatus(paused ? "SYSTEM HALTED // PRESS RESUME" : "GRID ONLINE // CLEAR THE CORRUPTED ROWS");
+  lastTime = performance.now();
+}
+
 
 let board;
 let currentPiece;
@@ -208,6 +217,19 @@ function clearLines() {
 
   for (let y = ROWS - 1; y >= 0;) {
     if (board[y].every(cell => cell && cell.solid)) {
+      // Spawn short-lived digital fragments before deleting the corrupted row.
+      for (let x = 0; x < COLS; x++) {
+        for (let n = 0; n < 3; n++) {
+          debris.push({
+            x: x * BLOCK_SIZE + 5 + Math.random() * 22,
+            y: y * BLOCK_SIZE + Math.random() * 32,
+            vx: (Math.random() - 0.5) * 6,
+            vy: -1 - Math.random() * 5,
+            life: 18 + Math.random() * 18,
+            size: 2 + Math.random() * 5
+          });
+        }
+      }
       board.splice(y, 1);
       board.unshift(Array(COLS).fill(null));
       cleared++;
@@ -217,6 +239,8 @@ function clearLines() {
   }
 
   if (cleared) {
+    clearFlash = 12;
+    setStatus("CORRUPTED SECTOR PURGED // +" + cleared + " LINE" + (cleared > 1 ? "S" : ""));
     linesCleared += cleared;
     score += cleared * 100 * level;
     dropInterval = Math.max(120, dropInterval - cleared * 10);
@@ -276,6 +300,24 @@ function drawCell(x, y, cell) {
     BLOCK_SIZE - 3
   );
 
+  // Fine circuit trace and dim terminal code etched inside the blocks.
+  ctx.strokeStyle = isGarbage ? "rgba(105,255,194,0.22)" : "rgba(230,255,248,0.36)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(px + 4, py + 4);
+  ctx.lineTo(px + BLOCK_SIZE - 4, py + 4);
+  ctx.moveTo(px + 4, py + 4);
+  ctx.lineTo(px + 4, py + BLOCK_SIZE - 4);
+  ctx.stroke();
+  ctx.save();
+  ctx.font = "7px monospace";
+  ctx.textAlign = "left";
+  ctx.fillStyle = isGarbage ? "rgba(103,249,191,0.35)" : "rgba(255,255,255,0.40)";
+  const code = BIT_LINES[(x * 7 + y * 3 + cell.type.length) % BIT_LINES.length];
+  ctx.fillText(code, px + 5, py + 15);
+  ctx.fillText(BIT_LINES[(x * 3 + y * 5 + 1) % BIT_LINES.length], px + 5, py + 24);
+  ctx.restore();
+
   /*
   Adds a small top highlight so blocked tiles look visibly raised.
   */
@@ -317,13 +359,31 @@ function draw() {
   drawBoard();
   if (currentPiece) drawPiece(currentPiece);
 
+  if (clearFlash > 0) {
+    ctx.fillStyle = "rgba(94,255,176," + (clearFlash / 65) + ")";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  for (const bit of debris) {
+    ctx.fillStyle = "rgba(95,255,183," + Math.min(1, bit.life / 24) + ")";
+    ctx.fillRect(bit.x, bit.y, bit.size, bit.size);
+  }
+
+  if (paused && !gameOver) {
+    ctx.fillStyle = "rgba(0,8,8,0.79)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#7dffcb";
+    ctx.textAlign = "center";
+    ctx.font = "bold 25px monospace";
+    ctx.fillText("SYSTEM PAUSED", canvas.width / 2, canvas.height / 2);
+  }
+
   if (gameOver) {
     ctx.fillStyle = "rgba(0,0,0,0.6)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#f5f5f5";
     ctx.textAlign = "center";
     ctx.font = "bold 28px system-ui";
-    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+    ctx.fillText("SYSTEM FAILURE", canvas.width / 2, canvas.height / 2);
   }
 }
 
@@ -334,6 +394,8 @@ function updateHud() {
 }
 
 function startLevel(levelIndex) {
+  debris = [];
+  setStatus("SECTOR " + levelIndex + " // RESTORE THE GRID");
   board = generateHalfFilledBoard(levelIndex);
   if (!isBoardSolvable(board)) {
     board = generateHalfFilledBoard(levelIndex);
@@ -352,6 +414,9 @@ function resetGame() {
 
   dropCounter = 0;
   lastTime = performance.now();
+  paused = false;
+  clearFlash = 0;
+  if (pauseBtn) { pauseBtn.textContent = "Pause"; pauseBtn.setAttribute("aria-pressed", "false"); }
 
   startLevel(1);
   updateHud();
@@ -360,6 +425,7 @@ function resetGame() {
 
 function endGame() {
   gameOver = true;
+  setStatus("CRITICAL FAILURE // RESTART TO RECONNECT");
 }
 
 function drop() {
@@ -432,7 +498,14 @@ function update(time = performance.now()) {
   const deltaTime = Math.min(time - lastTime, 100);
   lastTime = time;
 
-  if (!gameOver && currentPiece) {
+  if (clearFlash > 0) clearFlash--;
+  if (!paused) {
+    debris.forEach(bit => {
+      bit.x += bit.vx; bit.y += bit.vy; bit.vy += .26; bit.life--;
+    });
+    debris = debris.filter(bit => bit.life > 0);
+  }
+  if (!gameOver && !paused && currentPiece) {
     dropCounter += deltaTime;
 
     if (dropCounter >= dropInterval) {
@@ -445,7 +518,9 @@ function update(time = performance.now()) {
 }
 
 document.addEventListener("keydown", e => {
-  if (gameOver) return;
+  if (["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Space"].includes(e.code)) e.preventDefault();
+  if (e.code === "KeyP" || e.code === "Escape") { setPaused(!paused); return; }
+  if (gameOver || paused) return;
 
   if (e.code === "ArrowLeft") move(-1);
   else if (e.code === "ArrowRight") move(1);
@@ -455,7 +530,7 @@ document.addEventListener("keydown", e => {
 });
 
 function runIfPlaying(action) {
-  if (!gameOver && currentPiece) {
+  if (!gameOver && !paused && currentPiece) {
     action();
   }
 }
@@ -522,6 +597,8 @@ bindControl(downBtn, softDrop, {
 bindControl(rotateBtn, rotate);
 
 bindControl(dropBtn, hardDrop);
+
+if (pauseBtn) pauseBtn.addEventListener("click", () => setPaused(!paused));
 
 restartBtn.addEventListener("click", event => {
   event.preventDefault();
