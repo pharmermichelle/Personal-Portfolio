@@ -1,0 +1,63 @@
+/* Account overlays: mobile-first, keyboard accessible, intentionally isolated from games. */
+[hidden] { display: none !important; }
+.retro-dialog-open { overflow: hidden; }
+.auth-area { flex-wrap: wrap; justify-content: flex-end; }
+#auth-status { color: #e6f0ff; font-size: 0.98rem; }
+.auth-area button { min-height: 44px; }
+.auth-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px; background: rgba(1, 6, 18, .84);
+}
+.auth-box {
+  position: relative; width: min(100%, 520px); max-height: min(90dvh, 760px);
+  overflow: auto; padding: clamp(20px, 5vw, 30px);
+  border: 1px solid #426a9a; border-radius: 18px;
+  box-shadow: 0 18px 65px rgba(0,0,0,.6);
+  color: #eaf3ff; background: linear-gradient(165deg, #132742, #081528);
+}
+.auth-box h2 { font-size: clamp(1.3rem, 4.7vw, 1.75rem); margin: 0 44px 8px 0; line-height: 1.25; }
+.auth-box p { font-size: 1rem; line-height: 1.5; }
+.auth-subtitle { color: #d1e2fc; margin: 0 0 18px; }
+.auth-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 44px; height: 44px; font-size: 1.7rem; line-height: 1;
+  background: #203b5e; color: #fff; border: 1px solid #7bb2e7; border-radius: 12px;
+  cursor: pointer;
+}
+.auth-box label { display: block; font-size: 1rem; font-weight: 600; margin: 14px 0 7px; }
+.auth-box input, .auth-box select {
+  box-sizing: border-box; display: block; width: 100%; min-height: 48px; padding: 10px 12px;
+  border: 1px solid #8faed2; border-radius: 10px;
+  font: 1rem system-ui, sans-serif; color: #fff; background: #0a1a31;
+}
+.auth-box select option { background: #0a1a31; }
+.auth-box input:focus-visible, .auth-box select:focus-visible,
+.auth-box button:focus-visible, .auth-box a:focus-visible {
+  outline: 3px solid #92f9dd; outline-offset: 3px;
+}
+.auth-box button { font: 600 1rem system-ui, sans-serif; min-height: 44px; cursor: pointer; }
+.auth-box button:disabled { opacity: .65; cursor: wait; }
+.auth-box .auth-primary {
+  display: block; width: 100%; margin-top: 20px; padding: 12px 16px;
+  border: 1px solid #c5f1ff; border-radius: 10px; background: #65bceb; color: #06152a;
+}
+.auth-box .auth-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.auth-actions button, .auth-secondary {
+  padding: 10px 12px; border: 1px solid #668cb5; border-radius: 10px;
+  color: #eaf2ff; background: #142b4a;
+}
+.auth-box .auth-inline { display: flex; gap: 8px; align-items: flex-end; }
+.auth-inline input { flex: 1; }
+.auth-inline button { flex: 0 0 auto; }
+#auth-message, #profile-message { min-height: 1.5em; margin: 14px 0 0; color: #b4ffdf; }
+#auth-message[data-error=true], #profile-message[data-error=true] { color: #ffbaad; }
+.auth-box .auth-help { color: #bdd0ec; font-size: .92rem; }
+.auth-box a { color: #8ad5ff; text-decoration-thickness: 2px; }
+.avatar-preview { font-size: 2.4rem; text-align: center; margin: 12px 0 4px; }
+@media (max-width: 600px) {
+  .auth-modal { align-items: center; padding: 8px; }
+  .auth-box { max-height: 94dvh; border-radius: 14px; }
+  .auth-area { width: 100%; justify-content: flex-start; }
+  #auth-status { flex-basis: 100%; }
+}
