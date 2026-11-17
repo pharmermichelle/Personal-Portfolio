@@ -3,49 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Fallen Grid Prototype</title>
+  <meta name="theme-color" content="#04110f">
+  <meta name="description" content="Fallen Grid is a cyberpunk falling-block puzzle. Clear corrupted rows, survive the system failure, and climb 30 levels.">
+  <title>Fallen Grid | System Failure Protocol</title>
   <link rel="stylesheet" href="style.css">
-
-    <!-- AdSense: responsive display advertisement -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
-  </head>
+  <!-- Existing AdSense account and responsive banner slot retained. -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
+</head>
 <body>
-  <div class="game-shell">
+  <main class="game-shell" aria-label="Fallen Grid game">
     <header class="top-bar">
-      <h1>Fallen Grid</h1>
-      <button id="restartBtn">Restart</button>
+      <div class="brand">
+        <p class="eyebrow">SYSTEM FAILURE PROTOCOL</p>
+        <h1>FALLEN <span>GRID</span></h1>
+      </div>
+      <button id="restartBtn" type="button" aria-label="Restart game"><span aria-hidden="true">↻</span> Restart</button>
     </header>
 
-    <section class="hud">
-      <div>Level: <span id="level">1</span> / 30</div>
-      <div>Lines: <span id="lines">0</span></div>
-      <div>Score: <span id="score">0</span></div>
+    <section class="hud" aria-label="Game statistics">
+      <div>Level <strong><span id="level">1</span><small> / 30</small></strong></div>
+      <div>Lines <strong id="lines">0</strong></div>
+      <div>Score <strong id="score">0</strong></div>
     </section>
 
-    <canvas id="game" width="320" height="640"></canvas>
-
-    <section class="touch-controls" aria-label="Game controls">
-  <button type="button" id="leftBtn" aria-label="Move left">◀</button>
-  <button type="button" id="rotateBtn" aria-label="Rotate">⟳</button>
-  <button type="button" id="rightBtn" aria-label="Move right">▶</button>
-  <button type="button" id="downBtn" aria-label="Move down">▼</button>
-  <button type="button" id="dropBtn" class="wide">DROP</button>
-</section>
-
-    <section class="controls">
-      <h2>Controls</h2>
-      <p>Desktop: ← → move, ↑ rotate, ↓ soft drop, space hard drop.</p>
-      <p>Mobile: use the buttons under the board.</p>
+    <section class="game-stage" aria-label="Falling-block puzzle board">
+      <div class="board-frame">
+        <canvas id="game" width="320" height="640" aria-label="Ten-column, twenty-row falling-block game board">Your browser does not support canvas.</canvas>
+      </div>
+      <div class="scanline" aria-hidden="true"></div>
     </section>
-  </div>
 
+    <div class="system-line">
+      <span class="signal" aria-hidden="true"></span>
+      <p id="systemStatus" role="status" aria-live="polite">GRID ONLINE // CLEAR THE CORRUPTED ROWS</p>
+      <button type="button" id="pauseBtn" aria-label="Pause game" aria-pressed="false">Pause</button>
+    </div>
+
+    <section class="touch-controls" aria-label="Touch game controls">
+      <button type="button" id="leftBtn" aria-label="Move left"><span class="control-icon" aria-hidden="true">◀</span><span>Left</span></button>
+      <button type="button" id="rightBtn" aria-label="Move right"><span class="control-icon" aria-hidden="true">▶</span><span>Right</span></button>
+      <button type="button" id="rotateBtn" aria-label="Rotate clockwise"><span class="control-icon" aria-hidden="true">⟳</span><span>Rotate</span></button>
+      <button type="button" id="downBtn" aria-label="Soft drop"><span class="control-icon" aria-hidden="true">↓</span><span>Soft Drop</span></button>
+      <button type="button" id="dropBtn" class="hard-drop" aria-label="Hard drop"><span class="control-icon" aria-hidden="true">⇣</span><span>Hard Drop</span></button>
+    </section>
+  </main>
+
+  <section class="below-game" aria-label="Instructions and sponsorship">
+    <details class="instructions">
+      <summary>How to Play</summary>
+      <p>Move pieces left or right and rotate them to fill entire rows. Completed rows break apart and disappear. Clear 3 rows per level to reach the next corrupted sector.</p>
+      <p><strong>Keyboard:</strong> ← → to move, ↑ to rotate, ↓ to soft drop, Space to hard drop, P to pause. <strong>Mobile:</strong> use the five buttons immediately below the board.</p>
+    </details>
+
+    <!-- Ad placed AFTER the complete game and controls; never an overlay or sticky obstruction. -->
+    <aside class="ad-banner" aria-label="Advertisement">
+      <span class="ad-label">Advertisement</span>
+      <ins class="adsbygoogle"
+        style="display:block;width:100%"
+        data-ad-client="ca-pub-9258275639543826"
+        data-ad-slot="4366267404"
+        data-ad-format="horizontal"
+        data-full-width-responsive="true"></ins>
+    </aside>
+  </section>
   <script src="game.js"></script>
-
-    <!-- Responsive ad below gameplay; never overlays game controls. -->
-    <section aria-label="Advertisement" style="box-sizing:border-box;width:100%;max-width:980px;margin:32px auto 24px;padding:14px 12px 20px;text-align:center;clear:both;flex-shrink:0;min-height:110px;border-top:1px solid rgba(128,128,128,.35);">
-      <p style="font:12px/1.5 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin:0 0 12px;">Advertisement</p>
-      <ins class="adsbygoogle" style="display:block;width:100%;" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    </section>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <script>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
 </body>
 </html>
