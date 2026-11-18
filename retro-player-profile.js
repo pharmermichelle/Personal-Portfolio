@@ -1,0 +1,155 @@
+/* Original mascot characters and profile creator — Michelle's Retro Game Hub */
+(() => {
+  "use strict";
+  const PROJECT_URL = "https://dxemotgroklcjsbunspg.supabase.co";
+  const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo";
+  const GAMES = [
+    ["Fallen Grid", "fallen-grid"],
+    ["Revive Nature", "revive-nature"],
+    ["Acorn Ascent", "acorn-ascent"],
+    ["Claws vs. Paws", "claws-vs-paws"],
+    ["Rink Putt", "rink-putt"],
+    ["Hockey Gear Rush", "hockey-gear-rush"],
+    ["Bugged Out!", "bugged-out"],
+    ["Coastline Cruiser", "coastline-cruiser"],
+    ["Whack-a-Bug", "whack-a-bug"]
+  ];
+  const avatars = [
+    {key:"chrome-byte", name:"Chrome Byte", type:"Friendly robot", color:"#b6e5fa", dark:"#5583b2", eyes:"#101b46"},
+    {key:"zorp-scout", name:"Zorp Scout", type:"Three-eyed alien", color:"#89f6a5", dark:"#3b9f79", eyes:"#253454"},
+    {key:"neon-fin", name:"Neon Fin", type:"Shark adventurer", color:"#87cbea", dark:"#357ab7", eyes:"#152d48"},
+    {key:"mega-moss", name:"Mega Moss", type:"Mountain gorilla", color:"#aa80d0", dark:"#684990", eyes:"#1c1636"},
+    {key:"tape-ghost", name:"Tape Ghost", type:"Spectral tape creature", color:"#f4d0ff", dark:"#ad62cb", eyes:"#3a2455"},
+    {key:"disco-orbit", name:"Disco Orbit", type:"Cosmic cyclops", color:"#ff9bc8", dark:"#bd4d98", eyes:"#2a135c"},
+    {key:"circuit-newt", name:"Circuit Newt", type:"Neon salamander", color:"#ffb669", dark:"#de6b5b", eyes:"#46223b"},
+    {key:"astro-moth", name:"Astro Moth", type:"Starlight insect", color:"#c6c4ff", dark:"#7b76cb", eyes:"#27204a"},
+    {key:"jelly-jolt", name:"Jelly Jolt", type:"Electric jelly critter", color:"#7cf1ec", dark:"#2da7b7", eyes:"#233b57"}
+  ];
+  const byId = id => document.getElementById(id);
+  const escapeAttr = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  let selected = avatars[0], client=null, user=null;
+
+  const heads = {
+    "chrome-byte": a => '<rect x="43" y="30" width="94" height="77" rx="18" fill="'+a.color+'" stroke="#34235c" stroke-width="6"/><rect x="51" y="57" width="78" height="34" rx="7" fill="#193255"/><rect x="61" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><rect x="99" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><path d="M75 85h30" stroke="#fdb9e6" stroke-width="4"/><rect x="83" y="12" width="14" height="23" rx="5" fill="'+a.color+'"/><circle cx="90" cy="10" r="9" fill="#fff05f"/><rect x="34" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/><rect x="134" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/>',
+    "zorp-scout": a => '<path d="M42 78Q28 27 89 24Q155 24 139 82Q132 111 91 111Q53 110 42 78Z" fill="'+a.color+'" stroke="#34235c" stroke-width="6"/><path d="M64 30L51 12M114 30L125 12" stroke="'+a.dark+'" stroke-width="7"/><circle cx="50" cy="12" r="7" fill="#fff05f"/><circle cx="127" cy="12" r="7" fill="#fff05f"/><ellipse cx="65" cy="76" rx="13" ry="16" fill="#25234e"/><ellipse cx="112" cy="76" rx="13" ry="16" fill="#25234e"/><circle cx="90" cy="47" r="10" fill="#25234e"/><circle cx="61" cy="72" r="3" fill="#fff"/><circle cx="108" cy="72" r="3" fill="#fff"/><path d="M76 96q15 12 29 0" stroke="#2c3362" stroke-width="4" fill="none"/>',
+    "neon-fin": a => '<path d="M54 40L87 7L112 41Q139 44 143 76Q138 111 87 109Q38 111 38 75Q39 51 54 40Z" fill="'+a.color+'" stroke="#283e72" stroke-width="6"/><path d="M82 15L87 43L104 42" fill="'+a.dark+'"/><path d="M48 80Q92 105 132 78L127 103Q90 116 53 99Z" fill="#f7edf7"/><circle cx="63" cy="67" r="6" fill="#1b3453"/><circle cx="116" cy="67" r="6" fill="#1b3453"/><path d="M70 94l9 7 8-6 9 6 8-7" stroke="#345679" stroke-width="3" fill="none"/><path d="M40 67L19 57L34 91M143 69L160 56L151 92" fill="'+a.dark+'" stroke="#283e72" stroke-width="4"/>',
+    "mega-moss": a => '<path d="M47 35Q27 19 22 60Q20 88 45 92Q48 114 90 113Q134 114 138 92Q161 87 158 60Q154 20 133 35Q110 17 89 20Q65 17 47 35Z" fill="'+a.dark+'" stroke="#31204e" stroke-width="6"/><path d="M55 54Q85 37 125 54Q141 94 99 105H80Q43 103 55 54Z" fill="'+a.color+'"/><ellipse cx="72" cy="72" rx="7" ry="10" fill="#29193e"/><ellipse cx="108" cy="72" rx="7" ry="10" fill="#29193e"/><ellipse cx="89" cy="88" rx="14" ry="9" fill="#493260"/><path d="M80 100q10 5 19 0" stroke="#39234b" stroke-width="4"/><path d="M54 33q-22-17-27 13M124 33q22-17 27 13" stroke="'+a.color+'" stroke-width="9" fill="none"/>',
+    "tape-ghost": a => '<path d="M44 104V58Q48 20 89 20Q135 20 138 59L144 113L120 99L102 113L83 100L61 114Z" fill="'+a.color+'" stroke="#543077" stroke-width="6"/><rect x="51" y="42" width="77" height="49" rx="8" fill="#78419b" stroke="#4e2d80" stroke-width="4"/><rect x="59" y="49" width="61" height="20" rx="3" fill="#dfb8fd"/><circle cx="76" cy="59" r="7" fill="#2d255d"/><circle cx="103" cy="59" r="7" fill="#2d255d"/><path d="M76 82h28" stroke="#ffdf67" stroke-width="5"/><path d="M89 20V8" stroke="#fce584" stroke-width="5"/><circle cx="89" cy="7" r="5" fill="#fa6fc9"/>',
+    "disco-orbit": a => '<path d="M87 18Q138 19 140 72Q136 111 89 113Q38 111 37 71Q39 20 87 18Z" fill="'+a.color+'" stroke="#65316e" stroke-width="6"/><ellipse cx="89" cy="71" rx="28" ry="29" fill="#fff3fa" stroke="#9b3e8c" stroke-width="5"/><ellipse cx="89" cy="71" rx="12" ry="16" fill="#30205c"/><circle cx="85" cy="65" r="5" fill="white"/><path d="M41 45L26 30M135 43L153 30M87 19V1" stroke="#ffda65" stroke-width="7" stroke-linecap="round"/><circle cx="27" cy="27" r="6" fill="#fff05f"/><circle cx="150" cy="27" r="6" fill="#fff05f"/>',
+    "circuit-newt": a => '<path d="M46 46Q59 23 90 24Q127 23 139 50Q149 95 91 108Q31 100 46 46Z" fill="'+a.color+'" stroke="#7f3c62" stroke-width="6"/><path d="M44 45L24 24L27 54L15 71L41 70M139 46L157 24L154 55L167 71L142 70" fill="'+a.dark+'" stroke="#7f3c62" stroke-width="4"/><circle cx="64" cy="68" r="10" fill="#352445"/><circle cx="115" cy="68" r="10" fill="#352445"/><circle cx="61" cy="65" r="3" fill="#fff"/><circle cx="112" cy="65" r="3" fill="#fff"/><path d="M76 91q13 10 27 0" stroke="#ae3b64" stroke-width="5" fill="none"/><path d="M81 29L89 11L99 28" fill="#fbe37b"/>',
+    "astro-moth": a => '<path d="M58 47Q25 12 19 57Q19 88 60 95M123 47Q156 12 161 57Q161 88 120 95" fill="'+a.dark+'" stroke="#3e3b75" stroke-width="6"/><path d="M52 63Q45 22 89 24Q137 21 128 68Q132 106 88 111Q46 109 52 63Z" fill="'+a.color+'" stroke="#48417d" stroke-width="6"/><path d="M69 30L56 10M111 30L123 10" stroke="#eee9ff" stroke-width="6"/><circle cx="55" cy="11" r="7" fill="#fff05f"/><circle cx="124" cy="11" r="7" fill="#fff05f"/><ellipse cx="72" cy="71" rx="11" ry="13" fill="#3a2b77"/><ellipse cx="109" cy="71" rx="11" ry="13" fill="#3a2b77"/><path d="M79 94l11 7 11-7" stroke="#775ea9" stroke-width="5" fill="none"/>',
+    "jelly-jolt": a => '<path d="M34 97Q29 71 44 45Q55 21 91 20Q135 22 146 60Q152 83 143 103L130 95L116 109L100 97L87 110L68 98L50 110Z" fill="'+a.color+'" stroke="#2c6b83" stroke-width="6"/><ellipse cx="66" cy="73" rx="13" ry="17" fill="#1b5267"/><ellipse cx="113" cy="73" rx="13" ry="17" fill="#1b5267"/><circle cx="62" cy="68" r="4" fill="white"/><circle cx="108" cy="68" r="4" fill="white"/><path d="M81 91q10 8 18 0" stroke="#2b6683" stroke-width="4" fill="none"/><path d="M89 19L105 3L105 21L122 11" fill="none" stroke="#ffe65c" stroke-width="6"/>'
+  };
+
+  function avatarSVG(a, size) {
+    const small = size === "small";
+    const head = heads[a.key](a);
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 244" role="presentation" aria-hidden="true" focusable="false">'
+      + '<ellipse cx="90" cy="232" rx="59" ry="10" fill="#171034" opacity=".5"/>'
+      + '<path d="M48 118L28 156L43 168L66 143M131 118L152 158L135 168L115 140" fill="'+a.color+'" stroke="#251944" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '<path d="M57 112L42 142L61 158L77 136M122 112L137 142L119 158L104 136" fill="#ff62b6" stroke="#391a61" stroke-width="5" stroke-linejoin="round"/>'
+      + '<path d="M62 184L62 218L86 219L91 185M95 185L96 218L122 219L117 183" fill="'+a.color+'" stroke="#251944" stroke-width="6"/>'
+      + '<path d="M62 180L60 205L89 205L90 183M91 183L93 205L120 205L118 180" fill="#4bc8ef" stroke="#291b59" stroke-width="4"/>'
+      + '<path d="M58 216h31v15H49q-3-12 9-15ZM93 216h31q11 3 10 15H93Z" fill="#fff5e7" stroke="#302356" stroke-width="5"/>'
+      + '<path d="M64 108Q90 99 116 108L130 154L119 185H62L50 154Z" fill="#ffef69" stroke="#30235b" stroke-width="6"/>'
+      + '<path d="M63 167h55v19H63Z" fill="#d85d9d" stroke="#30235b" stroke-width="4"/>'
+      + '<rect x="85" y="143" width="12" height="12" rx="3" fill="#fb65b7"/>'
+      + '<g>'+head+'</g>'
+      + (!small?'<path d="M18 19l4-8 4 8 9 3-9 3-4 8-4-8-9-3ZM147 119l3-7 3 7 7 3-7 3-3 7-3-7-7-3Z" fill="#fff07b"/>':"")
+      + '</svg>';
+  }
+  function status(message, kind="") {
+    const el=byId("save-status");
+    el.textContent=message;
+    el.className="save-status "+kind;
+  }
+  function renderAvatar() {
+    byId("avatar-preview").innerHTML=avatarSVG(selected);
+    byId("mini-portrait").innerHTML=avatarSVG(selected, "small");
+    byId("avatar-preview").setAttribute("aria-label", selected.name+", full-body "+selected.type+" wearing a yellow starter shirt, pink shorts, and high-top sneakers");
+    byId("avatar-name").textContent=selected.name;
+    byId("avatar-type").textContent=selected.type+" / Level 1 look";
+    byId("picked-label").textContent=selected.name;
+    document.querySelectorAll(".avatar-option").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.avatar===selected.key)));
+  }
+  function setupOptions() {
+    const grid=byId("avatar-grid");
+    for(const a of avatars) {
+      const b=document.createElement("button");
+      b.type="button"; b.className="avatar-option"; b.dataset.avatar=a.key;
+      b.setAttribute("aria-label","Choose "+a.name+", "+a.type);
+      b.innerHTML=avatarSVG(a,"small")+"<span>"+escapeAttr(a.name)+"</span>";
+      b.addEventListener("click",()=>{ selected=a;renderAvatar(); });
+      grid.append(b);
+    }
+    renderAvatar();
+  }
+  function renderGames(){
+    const body=byId("game-records");
+    for(const [title] of GAMES){
+      const row=document.createElement("tr");
+      const first=document.createElement("td"); first.textContent=title; row.append(first);
+      for(let i=0;i<3;i++){
+        const c=document.createElement("td"); c.textContent="Not tracked";row.append(c);
+      }
+      body.append(row);
+    }
+  }
+  function updateAuthUI() {
+    byId("save-profile").disabled=!user;
+    byId("sign-in-link").style.display=user?"none":"inline-flex";
+    byId("account-status").textContent=user?"Signed in • Account settings":"Not signed in";
+    if(!user) {
+      byId("display-name").textContent="Guest Player";
+      status("This is a preview. Sign in on the Game Hub to save your username and character.");
+    }
+  }
+  async function loadProfile() {
+    if(!user)return;
+    const {data,error}=await client.from("profiles").select("username,avatar_key,is_public").eq("id",user.id).maybeSingle();
+    if(error){status("Couldn't load account profile: "+error.message,"error");return;}
+    if(data){
+      if(data.username){byId("username").value=data.username;byId("display-name").textContent=data.username;}
+      if(data.avatar_key){
+        const found=avatars.find(a=>a.key===data.avatar_key);
+        if(found){selected=found;renderAvatar();}
+      }
+      byId("profile-public").checked=data.is_public===true;
+      status("Your account is connected. Choose a character and save changes.");
+    }else status("Welcome! Choose your character and arcade name, then save to finish setting up.");
+  }
+  async function saveProfile(){
+    if(!client||!user){status("Sign in to save your profile.","error");return;}
+    const username=byId("username").value.trim();
+    if(!/^[A-Za-z0-9_]{3,24}$/.test(username)){status("Username must be 3–24 letters, numbers, or underscores.","error");byId("username").focus();return;}
+    const btn=byId("save-profile");btn.disabled=true;
+    status("Saving your arcade identity…");
+    try{
+      const {error}=await client.from("profiles").upsert({id:user.id,username,avatar_key:selected.key,is_public:byId("profile-public").checked},{onConflict:"id"});
+      if(error)throw error;
+      byId("display-name").textContent=username;
+      status("Saved! "+username+" is ready for the arcade. Your character choice will be here next time you sign in.","success");
+    }catch(e){status("Couldn't save profile: "+(e.message||"Please try again."),"error");}
+    finally{btn.disabled=!user;}
+  }
+  async function start(){
+    setupOptions();renderGames();
+    byId("save-profile").addEventListener("click",saveProfile);
+    if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
+    try{
+      client=window.supabase.createClient(PROJECT_URL,ANON_KEY);
+      const {data,error}=await client.auth.getUser();
+      if(error && !/session missing|auth session missing/i.test(error.message||""))status("Account connection issue: "+error.message,"error");
+      user=data?.user||null;
+      updateAuthUI();
+      if(user)await loadProfile();
+      client.auth.onAuthStateChange((_event,session)=>{
+        const next=session?.user||null;
+        if(next?.id===user?.id)return;
+        user=next;updateAuthUI();
+        if(user)void loadProfile();
+      });
+    }catch(e){status("Account service unavailable. You can still preview every avatar.","error");}
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start,{once:true}); else void start();
+})();
