@@ -208,6 +208,8 @@ function setupAcornRewards() {
        prize.hidden=false;
        prize.textContent="🏆 Oakward Bound badge earned! 👕 Squirrel Summit Tee unlocked — see My Profile.";
       }
+      const finalReward=$("final-rewards");
+      if(finalReward)finalReward.textContent="🏆 Oakward Bound badge earned! 👕 Squirrel Summit Tee unlocked. Visit your wardrobe to wear it.";
     }
    }
   },
