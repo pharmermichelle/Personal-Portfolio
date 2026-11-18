@@ -10,6 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css?v=20261105-1" />
+    <style>
+      #hint-ad-btn[hidden] { display:none !important; }
+      #hint-ad-btn:not(:disabled) { cursor:pointer; background:#567242; }
+      #hint-ad-btn:disabled { opacity:.75; cursor:not-allowed; }
+      #hint-ad-btn:focus-visible { outline:4px solid #ffe298; outline-offset:3px; }
+    </style>
+
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9D74M6L9M7"></script>
@@ -85,6 +92,7 @@
               <button id="hint-btn" type="button" title="One free hint per branch, then optional rewarded ads for extra hints"><span id="hint-action">✧ Free Hint</span> <span id="hint-count">1</span></button>
               <button id="cancel-btn" type="button" title="Unselect current piece">✕ Cancel</button>
             </div>
+            <button id="hint-ad-btn" type="button" hidden disabled style="width:100%;min-height:52px;margin:10px 0 12px;padding:10px 14px;border:2px solid #b8d69e;border-radius:12px;background:#345540;color:#fff5cf;font:800 17px/1.35 system-ui,sans-serif;">Extra Hints (Ads Coming Soon)</button>
             <p class="game-message" id="game-message" role="status" aria-live="polite">Choose a piece to begin.</p>
             <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">One free hint per branch. More hints can be unlocked with optional rewarded ads once enabled. No ad is required to finish.</p>
           </div>
@@ -128,6 +136,6 @@
     <script src="../../retro-rewarded-ads.js?v=20261118-1"></script>
     <script src="../../retro-save-service.js?v=20261118-1"></script>
     <script src="../../retro-rewards.js?v=20261118-1"></script>
-    <script src="main.js?v=20261118-3"></script>
+    <script src="main.js?v=20261118-4"></script>
   </body>
 </html>
