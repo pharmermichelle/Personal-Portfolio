@@ -935,6 +935,19 @@ const authHeading = document.getElementById("auth-heading");
 const authSummary = document.getElementById("auth-summary");
 const accountIntro = document.getElementById("account-intro");
 const returnPrompt = document.getElementById("return-account-prompt");
+const entryParams = new URLSearchParams(window.location.search);
+const requestedAccountMode = entryParams.get("auth");
+const requestedGameReturn = entryParams.get("return_to");
+// Never allow a redirect to an external URL or a path unrelated to the arcade.
+function validGameReturn() {
+  if (!requestedGameReturn || !requestedGameReturn.startsWith("/") || requestedGameReturn.startsWith("//") || requestedGameReturn.includes("\\\\")) return null;
+  try {
+    const dest = new URL(requestedGameReturn, window.location.origin);
+    if (dest.origin !== window.location.origin || dest.username || dest.password || dest.hash) return null;
+    return GAMES.some(game => new URL(game.href, window.location.href).pathname === dest.pathname) ? dest.pathname + dest.search : null;
+  } catch (_error) { return null; }
+}
+const returnGameAfterLogin = validGameReturn();
 const GAME_PENDING_KEY = "retroHubPendingGuestGame";
 const GAME_INVITE_SHOWN_KEY = "retroHubGuestInviteShown";
 let currentPlayer = null;
@@ -1077,6 +1090,10 @@ loginBtn.addEventListener("click", async () => {
     if (error) throw error;
     updateAuthUI(data.user);
     closeAuthModal();
+    if (returnGameAfterLogin) {
+      window.location.assign(returnGameAfterLogin);
+      return;
+    }
   } catch (error) {
     setAuthMessage(error.message || "Couldn't sign in. Please try again.");
   } finally { loginBtn.disabled = false; signupBtn.disabled = false; }
@@ -1114,7 +1131,13 @@ logoutBtn.addEventListener("click", async () => {
 supabaseClient.auth.getSession().then(({data,error}) => {
   updateAuthUI(data?.session?.user || null);
   if (error) console.warn("Session status could not be loaded.");
-  if (!data?.session?.user) inviteReturningGuest(true);
+  if (!data?.session?.user) {
+    if (requestedAccountMode === "login" || requestedAccountMode === "signup") {
+      openAuthModal(requestedAccountMode);
+    } else {
+      inviteReturningGuest(true);
+    }
+  }
 }).catch(() => {
   updateAuthUI(null);
   inviteReturningGuest(true);
