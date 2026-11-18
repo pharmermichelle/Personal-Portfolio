@@ -9,6 +9,8 @@ const SAVE_KEY = "acorn-ascent-progress-v2";
 let acornSaveService = null;
 let acornSaveInitializing = false;
 let acornSaveStarted = false;
+let acornRewards = null;
+let acornRewardsStarting = false;
 
 const PALETTE = ["#eeb476", "#8cbe91", "#90b8d8", "#da9da1", "#b0a4db", "#d6cc85", "#80bec1", "#db9d70", "#a9cc9a"];
 const CONFIG = [
@@ -186,6 +188,53 @@ function applyAcornSave(value) {
   resetLevel();
   if(completed) $("final-screen").hidden=false;
 }
+function updateRewardStatus(text) {
+ const status=$("reward-status");
+ if(status)status.textContent=text;
+}
+function setupAcornRewards() {
+ if(acornRewards||!window.RetroRewards)return;
+ acornRewards=window.RetroRewards.create({
+  gameId:"acorn-ascent",version:"v2",
+  onUpdate:info=>{
+   if(info.type==="ready")updateRewardStatus("Verified reward ready • Branch "+info.level+" earns "+(2*info.level)+" XP");
+   if(info.type==="award") {
+    const gain=Number(info.awarded_xp)||0;
+    updateRewardStatus(gain?"+"+gain+" XP earned! • "+info.game_xp_total+" Acorn Ascent XP total":
+      "Branch "+info.level+" already rewarded • no duplicate XP");
+    if(info.badge_earned||info.shirt_unlocked){
+      const prize=$("acorn-prize-notice");
+      if(prize){
+       prize.hidden=false;
+       prize.textContent="🏆 Oakward Bound badge earned! 👕 Squirrel Summit Tee unlocked — see My Profile.";
+      }
+    }
+   }
+  },
+  onError:text=>updateRewardStatus(text)
+ });
+ const client=window.retroArcadeSupabaseClient;
+ if(!client)return;
+ client.auth.onAuthStateChange((_event,session)=>{
+  const user=session&&session.user||null;
+  window.setTimeout(()=>{
+   if(!acornRewards)return;
+   acornRewards.setClient(client,user);
+   if(user&&!acornSaveInitializing&&!completed&&!levelLocked)void acornRewards.begin(currentLevel+1);
+   if(!user)updateRewardStatus("Guest progress only • sign in before playing to earn XP");
+  },0);
+ });
+ void client.auth.getSession().then(({data})=>{
+  const user=data&&data.session&&data.session.user||null;
+  acornRewards.setClient(client,user);
+  if(user&&!acornSaveInitializing&&!completed&&!levelLocked)void acornRewards.begin(currentLevel+1);
+  if(!user)updateRewardStatus("Guest progress only • sign in before playing to earn XP");
+ }).catch(()=>{updateRewardStatus("XP service temporarily unavailable");});
+}
+function beginAcornRewardLevel(){
+ if(acornRewards&&!acornSaveInitializing&&!completed)
+  void acornRewards.begin(currentLevel+1);
+}
 function saveProgress() {
   const progress=snapshotProgress();
   if(acornSaveService && !acornSaveInitializing) {
@@ -241,6 +290,8 @@ async function startAcornCloud() {
   } finally {
     acornSaveInitializing=false;
     board.style.pointerEvents="";
+    setupAcornRewards();
+    beginAcornRewardLevel();
   }
 }
 function makeProgressSteps() {
@@ -624,6 +675,10 @@ function checkWin() {
   updateUI();
   trackEvent("complete_level", { level: currentLevel + 1, acorns: acornCount });
   message(`Branch ${currentLevel + 1} complete! Chip found an acorn! 🌰`, "success");
+  if(acornRewards) {
+    const proof=placedPieces.map(p=>({id:p.shape.id,row:p.row,col:p.col,blocks:p.blocks.map(b=>[...b])}));
+    void acornRewards.completed(currentLevel+1,proof);
+  }
   if (currentLevel === levels.length - 1) {
     completed = true;
     saveProgress();
@@ -643,6 +698,7 @@ function resetLevel() {
   clearDragGhost();
   placedPieces = []; history = []; hintUsed = false; hintTarget = null;
   renderPieceTray(); updateUI(); draw();
+  beginAcornRewardLevel();
   message(currentLevel < 2 ? "Tap or drag the colored shapes onto the board." : "You can rotate your pieces on this branch. Press R or use Rotate.");
 }
 function restartLevel() {
@@ -662,6 +718,7 @@ function restartGame() {
   try { localStorage.removeItem(SAVE_KEY); } catch (_) { /* no storage */ }
   resetLevel();
   saveProgress();
+  beginAcornRewardLevel();
 }
 
 makeProgressSteps();
@@ -670,6 +727,9 @@ resetLevel();
 if (completed) $("final-screen").hidden=false;
 window.addEventListener("retro-arcade-auth-ready",()=>{void startAcornCloud();});
 if(window.retroArcadeSupabaseClient)void startAcornCloud();
+window.setTimeout(()=>{
+ if(!window.retroArcadeSupabaseClient)updateRewardStatus("Guest progress only • sign in before playing to earn XP");
+},3000);
 // If the account header could not load, legacy guest saving continues to work.
 window.setTimeout(()=>{
   if(!acornSaveStarted && !window.retroArcadeSupabaseClient) {
