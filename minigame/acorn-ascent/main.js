@@ -6,6 +6,10 @@ const ctx = canvas.getContext("2d");
 const dragPreview = document.getElementById("drag-preview");
 const BOARD_SIZE = canvas.width;
 const SAVE_KEY = "acorn-ascent-progress-v2";
+let acornSaveService = null;
+let acornSaveInitializing = false;
+let acornSaveStarted = false;
+
 const PALETTE = ["#eeb476", "#8cbe91", "#90b8d8", "#da9da1", "#b0a4db", "#d6cc85", "#80bec1", "#db9d70", "#a9cc9a"];
 const CONFIG = [
   { size: 3, pieces: 3, twists: 0, label: "The First Branch", difficulty: "GENTLE" },
@@ -160,19 +164,84 @@ function message(text, type = "") {
   el.textContent = text;
   el.className = `game-message ${type}`;
 }
+function snapshotProgress() {
+  return { level: currentLevel, acorns: acornCount, complete: completed };
+}
+function validateAcornSave(saved) {
+  if (!saved || typeof saved !== "object" || Array.isArray(saved) ||
+      !Number.isInteger(saved.level) || saved.level < 0 || saved.level >= levels.length ||
+      !Number.isInteger(saved.acorns) || saved.acorns < 0 || saved.acorns > 10 ||
+      typeof saved.complete !== "boolean") throw new Error("Invalid Acorn Ascent progress");
+  if (saved.complete && (saved.level !== levels.length - 1 || saved.acorns !== 10)) throw new Error("Inconsistent completion");
+  if (!saved.complete && (saved.acorns < saved.level || saved.acorns > saved.level + 1)) throw new Error("Inconsistent acorn count");
+  return {level:saved.level,acorns:saved.acorns,complete:saved.complete};
+}
+function applyAcornSave(value) {
+  const saved=validateAcornSave(value);
+  window.clearTimeout(transitionTimer);
+  currentLevel=saved.level;
+  acornCount=saved.acorns;
+  completed=saved.complete;
+  $("final-screen").hidden=!completed;
+  resetLevel();
+  if(completed) $("final-screen").hidden=false;
+}
 function saveProgress() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ level: currentLevel, acorns: acornCount, complete: completed })); }
+  const progress=snapshotProgress();
+  if(acornSaveService && !acornSaveInitializing) {
+    acornSaveService.save(progress);
+    // Keep the original guest save for compatibility. Never write an account save to it.
+    if(acornSaveService.mode!=="guest" && acornSaveService.mode!=="deferred" && acornSaveService.mode!=="guest-only")return;
+  }
+  try { localStorage.setItem(SAVE_KEY,JSON.stringify(progress)); }
   catch (_) { /* Browser storage may be disabled. */ }
 }
 function loadProgress() {
   try {
-    const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
-    if (saved && Number.isInteger(saved.level) && saved.level >= 0 && saved.level < levels.length) {
-      currentLevel = saved.level;
-      acornCount = Math.max(0, Math.min(10, Number(saved.acorns) || 0));
-      completed = !!saved.complete;
-    }
-  } catch (_) { /* Start fresh. */ }
+    const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
+    if(saved) applyAcornSave(validateAcornSave({
+      level:saved.level,acorns:saved.acorns,complete:!!saved.complete
+    }));
+  } catch (_) { /* Never delete an unrecognized old save. */ }
+}
+const acornCloudAdapter={
+  gameId:"acorn-ascent",
+  schemaVersion:1,
+  gameVersion:"v2",
+  emptyState:()=>({level:0,acorns:0,complete:false}),
+  captureState:snapshotProgress,
+  validateSave:validateAcornSave,
+  restoreState:applyAcornSave,
+  readLegacyLocal:()=>{
+    try {
+      const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
+      if(!raw)return null;
+      return validateAcornSave({level:raw.level,acorns:raw.acorns,complete:!!raw.complete});
+    } catch(_){return null;}
+  },
+  meaningful:state=>state.complete||state.level>0||state.acorns>0,
+  summarizeSave:state=>state.complete?"All 10 branches complete":("Branch "+(state.level+1)+", "+state.acorns+" acorns")
+};
+async function startAcornCloud() {
+  if(acornSaveStarted||!window.RetroSaveService||!window.retroArcadeSupabaseClient)return;
+  acornSaveStarted=true;
+  acornSaveInitializing=true;
+  const board=$("gameCanvas");
+  board.style.pointerEvents="none";
+  $("save-status").textContent="Loading account progress…";
+  try {
+    acornSaveService=window.RetroSaveService.create(acornCloudAdapter,{
+      statusId:"save-status",optionsId:"save-options"
+    });
+    const state=await acornSaveService.initialize();
+    if(state)applyAcornSave(state);
+  } catch(_) {
+    $("save-status").textContent="Cloud unavailable • original device save retained";
+    acornSaveService=null;
+  } finally {
+    acornSaveInitializing=false;
+    board.style.pointerEvents="";
+  }
 }
 function makeProgressSteps() {
   const wrapper = $("progress-steps");
@@ -598,4 +667,12 @@ function restartGame() {
 makeProgressSteps();
 loadProgress();
 resetLevel();
-if (completed) showFinal();
+if (completed) $("final-screen").hidden=false;
+window.addEventListener("retro-arcade-auth-ready",()=>{void startAcornCloud();});
+if(window.retroArcadeSupabaseClient)void startAcornCloud();
+// If the account header could not load, legacy guest saving continues to work.
+window.setTimeout(()=>{
+  if(!acornSaveStarted && !window.retroArcadeSupabaseClient) {
+    $("save-status").textContent="Guest • saved on this device";
+  }
+},8000);
