@@ -6,7 +6,7 @@
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826"
       crossorigin="anonymous"
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
     <title>Retro Games Hub — (WIP)</title>
     <meta
       property="og:description"
@@ -440,6 +440,82 @@ body {
     animation: none;
   }
 }
+
+/* Account invitation and return-from-game experience, 2026-11 */
+header { min-height:var(--header-h); height:auto; }
+header .brand { flex-wrap:wrap; }
+.auth-area { flex-wrap:wrap; justify-content:flex-end; }
+.auth-area .soon-btn { min-height:46px; font-size:15px; font-weight:850; }
+.auth-area .account-primary {
+  color:#20103c; background:linear-gradient(135deg,#fff17b,#ffcb64);
+  border:2px solid #ffe76d; box-shadow:0 3px 0 #ac7e31;
+}
+.auth-area .account-primary:hover {background:#fff7b0;box-shadow:0 0 0 3px #ffed6455;}
+.auth-area .account-secondary { border:2px solid #8dece9; background:#102b48; color:#f8ffff; }
+.auth-area .account-secondary:hover {background:#21486d;}
+.auth-area .profile-link {display:inline-flex;align-items:center;text-decoration:none;border:2px solid #69dce4;}
+.account-intro {
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  margin:18px 18px 0;padding:20px 23px;
+  background:linear-gradient(112deg,#1b1440,#24295c 66%,#104451);
+  border:2px solid #7e75d2;border-left:7px solid #ff64b8;
+  border-radius:13px;box-shadow:0 8px 22px #050d2d88;
+}
+.account-intro[hidden],.return-prompt[hidden] {display:none!important;}
+.account-eyebrow {color:#ffeb78;font-size:12px;font-weight:950;letter-spacing:1.5px;margin:0 0 5px;}
+.account-intro h1 {font-size:clamp(21px,2.5vw,30px);line-height:1.13;margin:0 0 9px;color:#fff;}
+.account-intro p {color:#e4e8ff;margin:0 0 6px;font-size:15px;max-width:760px;}
+.account-intro .account-details {font-size:12px;color:#aee8ee;margin-top:10px;}
+.account-intro-actions {display:grid;gap:10px;min-width:min(260px,100%);}
+.hub-action {cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center;min-height:48px;padding:11px 17px;border-radius:10px;border:2px solid transparent;font-size:15px;font-weight:950;}
+.hub-action.primary {color:#1e1746;background:#ffe770;border-color:#ffed9b;box-shadow:0 3px 0 #bd893d;}
+.hub-action.primary:hover {background:#fff4ae;}
+.hub-action.outline {background:#111d40;color:#fff;border-color:#77e5e4;}
+.hub-action.outline:hover {background:#20395c;}
+.hub-action:focus-visible,.auth-area button:focus-visible,.auth-area a:focus-visible,.auth-close:focus-visible {outline:3px solid #ffdf4f;outline-offset:3px;}
+.return-prompt {
+  position:fixed;right:16px;bottom:16px;z-index:80;
+  width:min(430px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow-y:auto;
+  background:linear-gradient(145deg,#302059,#161e46);border:3px solid #ffce6d;
+  border-radius:15px;padding:21px 19px 17px;
+  color:#fff;box-shadow:0 12px 42px #000b,0 0 0 4px #ff7ec044;
+}
+.return-prompt h2 {font-size:24px;line-height:1.1;margin:7px 27px 9px 0;color:#fff;}
+.return-prompt p {margin:0 0 12px;color:#e3eaff;font-size:14px;}
+.return-prompt .return-kicker {letter-spacing:1px;color:#fff27d;font-weight:950;font-size:12px;}
+.return-actions {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;}
+.return-actions .hub-action:first-child {grid-column:1 / -1;}
+.return-prompt .dismiss-return {position:absolute;right:11px;top:9px;color:#fff;background:transparent;border:0;font-size:24px;width:42px;height:42px;border-radius:8px;}
+.return-prompt .dismiss-return:hover {background:#ffffff25;}
+.return-secure-note {margin-top:10px!important;font-size:12px!important;color:#9ee5ed!important;}
+.auth-box {border:2px solid #9ae4ef;max-height:90dvh;overflow-y:auto;width:min(92vw,420px);}
+.auth-box h2 {font-size:24px;color:#fff;margin:0 35px 8px 0;}
+.auth-box label {display:block;margin-top:12px;font-size:13px;font-weight:750;color:#e9f7ff;}
+.auth-box input {min-height:45px;}
+.auth-box .auth-summary {color:#dae4fc;margin:0 0 10px;font-size:14px;}
+.auth-box .auth-protection {font-size:12px;line-height:1.5;color:#b6d8ef;margin:13px 0 0;}
+.auth-box .auth-protection a {color:#a7f5f3;}
+.auth-box .auth-actions .btn {flex:1;min-height:46px;cursor:pointer;}
+.auth-box .auth-actions .btn.is-primary {color:#17132f;background:#ffe87a;border-color:#f8d35b;}
+.auth-box .auth-actions .btn:not(.is-primary) {background:#162548;border-color:#84dad8;}
+.auth-box #auth-message {min-height:22px;}
+@media(max-width:900px) {
+ .account-intro {flex-direction:column;align-items:stretch;margin:12px 14px 0;padding:17px;}
+ .account-intro-actions {min-width:0;grid-template-columns:1fr 1fr;}
+ header .auth-area {width:100%;justify-content:space-between;}
+}
+@media(max-width:560px) {
+ .auth-area .soon-btn {font-size:14px;min-height:46px;padding:9px 10px;}
+ .auth-area {gap:6px;}
+ .auth-area #auth-status {width:100%;}
+ .auth-area #auth-status:empty {display:none;}
+ .account-intro-actions {grid-template-columns:1fr;}
+ .return-prompt h2 {font-size:21px;}
+ .return-actions {grid-template-columns:1fr;}
+ .return-actions .hub-action:first-child {grid-column:auto;}
+ .auth-actions {flex-wrap:wrap;}
+}
+
     </style>
   </head>
   <body>
@@ -447,10 +523,6 @@ body {
       <header>
         <div class="brand">
           <div class="crt">RETRO GAMES HUB</div>
-<div class="dev-note">
-  <strong>Dev Note:</strong> Player profile and avatar creator now available. Verified scores, XP and badge rewards are in development.
-</div>
-
 <a
   class="suggestion-link"
   href="mailto:michelle@michellew.io?subject=Retro%20Games%20Hub%20Suggestion&body=Game%20suggestion%3A%0A%0A"
@@ -460,13 +532,27 @@ body {
         </div>
         <div class="spacer">        </div>
 
-<div class="auth-area">
-  <span id="auth-status">Not logged in</span>
- <button id="auth-open-btn" class="soon-btn">Login</button>
-  <button id="logout-btn" class="soon-btn" style="display: none;">Logout</button>
-  <a href="retro-player-profile.html" class="soon-btn" style="display:inline-flex;text-decoration:none;align-items:center;font-weight:700;border-color:#69dce4">★ My Profile</a>
+<div class="auth-area" aria-label="Player account">
+  <span id="auth-status" aria-live="polite"></span>
+  <button id="auth-open-btn" class="soon-btn account-secondary" type="button">Log In</button>
+  <button id="auth-create-btn" class="soon-btn account-primary" type="button">★ Sign Up Free</button>
+  <button id="logout-btn" class="soon-btn" type="button" style="display:none">Log Out</button>
+  <a href="retro-player-profile.html" class="soon-btn profile-link">★ My Profile</a>
 </div>
       </header>
+
+      <section class="account-intro" id="account-intro" aria-labelledby="intro-title">
+        <div>
+          <p class="account-eyebrow">★ PLAYER ACCOUNTS ARE OPEN</p>
+          <h1 id="intro-title">Your arcade adventure deserves an identity.</h1>
+          <p>Play free as a guest, or create an account to pick a full-body retro avatar and start your player profile. Achievements, active-play XP, and leaderboard tracking are rolling out soon.</p>
+          <p class="account-details">🔒 Account sign-in uses Supabase Auth. Your profile data is protected by account-specific database access rules.</p>
+        </div>
+        <div class="account-intro-actions">
+          <button type="button" id="intro-signup-btn" class="hub-action primary">★ Create Free Account</button>
+          <button type="button" id="intro-login-btn" class="hub-action outline">Already a player? Log In</button>
+        </div>
+      </section>
 
       <div class="content">
         <!-- Left rail: filters + quick list -->
@@ -557,23 +643,36 @@ body {
       </div>
     </div>
 
-        <div id="auth-modal" class="auth-modal" hidden>
-  <div class="auth-box">
-    <button id="auth-close-btn" class="auth-close">×</button>
+      <aside class="return-prompt" id="return-account-prompt" hidden aria-labelledby="return-heading" aria-live="polite">
+        <button type="button" id="dismiss-return-prompt" class="dismiss-return" aria-label="Dismiss account invitation">×</button>
+        <div class="return-kicker">★ NICE RUN!</div>
+        <h2 id="return-heading">Like that game? Make an Arcade ID!</h2>
+        <p>Create a free account to pick a retro avatar and prepare for badges, outfit rewards, and personal rankings as game tracking arrives.</p>
+        <div class="return-actions">
+          <button type="button" id="return-create-account" class="hub-action primary">★ Create Free Account</button>
+          <button type="button" id="return-log-in" class="hub-action outline">Log In</button>
+          <button type="button" id="return-maybe-later" class="hub-action outline">Maybe Later</button>
+        </div>
+        <p class="return-secure-note">Powered by Supabase Auth • Free guest play stays available.</p>
+      </aside>
 
-    <h2>Retro Games Hub Login</h2>
-
-    <input id="auth-email" type="email" placeholder="Email" />
-    <input id="auth-password" type="password" placeholder="Password" />
-
-    <div class="auth-actions">
-      <button id="login-btn" class="btn">Login</button>
-      <button id="signup-btn" class="btn">Sign up</button>
-    </div>
-
-    <p id="auth-message"></p>
-  </div>
-</div>
+      <div id="auth-modal" class="auth-modal" hidden role="dialog" aria-modal="true" aria-labelledby="auth-heading" aria-describedby="auth-summary">
+        <div class="auth-box">
+          <button id="auth-close-btn" class="auth-close" type="button" aria-label="Close login window">×</button>
+          <h2 id="auth-heading">Log In to Your Arcade ID</h2>
+          <p class="auth-summary" id="auth-summary">Sign in to access your avatar and player profile.</p>
+          <label for="auth-email">Email address</label>
+          <input id="auth-email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="email" />
+          <label for="auth-password">Password</label>
+          <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
+          <div class="auth-actions">
+            <button id="login-btn" class="btn" type="button">Log In</button>
+            <button id="signup-btn" class="btn" type="button">Create Account</button>
+          </div>
+          <p id="auth-message" role="status" aria-live="polite"></p>
+          <p class="auth-protection">Account authentication is provided by <a href="https://supabase.com/docs/guides/auth" target="_blank" rel="noopener noreferrer">Supabase Auth</a>. Player profile records have user-specific access rules. We never claim that any website is risk-free.</p>
+        </div>
+      </div>
 
     <script>
   
@@ -784,8 +883,10 @@ const supabaseClient = supabase.createClient(
         });
       }
 
+// Account UI: prominent entry points, return-from-game invitation, and Supabase Auth.
 const authModal = document.getElementById("auth-modal");
 const authOpenBtn = document.getElementById("auth-open-btn");
+const authCreateBtn = document.getElementById("auth-create-btn");
 const authCloseBtn = document.getElementById("auth-close-btn");
 const loginBtn = document.getElementById("login-btn");
 const signupBtn = document.getElementById("signup-btn");
@@ -794,84 +895,194 @@ const authStatus = document.getElementById("auth-status");
 const authMessage = document.getElementById("auth-message");
 const authEmail = document.getElementById("auth-email");
 const authPassword = document.getElementById("auth-password");
+const authHeading = document.getElementById("auth-heading");
+const authSummary = document.getElementById("auth-summary");
+const accountIntro = document.getElementById("account-intro");
+const returnPrompt = document.getElementById("return-account-prompt");
+const GAME_PENDING_KEY = "retroHubPendingGuestGame";
+const GAME_INVITE_SHOWN_KEY = "retroHubGuestInviteShown";
+let currentPlayer = null;
+let authMode = "login";
+let lastAuthTrigger = null;
+let leftForGame = false;
 
 function setAuthMessage(message) {
   authMessage.textContent = message || "";
 }
-
-function openAuthModal() {
+function openAuthModal(mode = "login") {
+  const isSignup = mode === "signup";
+  authMode = isSignup ? "signup" : "login";
+  lastAuthTrigger = document.activeElement;
+  authHeading.textContent = isSignup ? "Create Your Free Arcade ID" : "Log In to Your Arcade ID";
+  authSummary.textContent = isSignup
+    ? "Pick an avatar and set up your player profile. Badges and XP will arrive as game tracking launches."
+    : "Welcome back! Sign in to your avatar and player profile.";
+  loginBtn.classList.toggle("is-primary", !isSignup);
+  signupBtn.classList.toggle("is-primary", isSignup);
+  authPassword.autocomplete = isSignup ? "new-password" : "current-password";
   authModal.hidden = false;
   setAuthMessage("");
+  authEmail.focus();
 }
-
 function closeAuthModal() {
   authModal.hidden = true;
-}
-
-function updateAuthUI(user) {
-  if (user) {
-    authStatus.textContent = `Logged in as ${user.email}`;
-    authOpenBtn.style.display = "none";
-    logoutBtn.style.display = "inline-flex";
-  } else {
-    authStatus.textContent = "Not logged in";
-    authOpenBtn.textContent = "Login";
-    authOpenBtn.style.display = "inline-flex";
-    logoutBtn.style.display = "none";
+  authPassword.value = "";
+  if (lastAuthTrigger && typeof lastAuthTrigger.focus === "function" && lastAuthTrigger.isConnected) {
+    lastAuthTrigger.focus();
   }
 }
 
-authOpenBtn.addEventListener("click", openAuthModal);
+function clearGuestPrompt() {
+  returnPrompt.hidden = true;
+  try { sessionStorage.removeItem(GAME_PENDING_KEY); } catch (_error) {}
+}
+function updateAuthUI(user) {
+  currentPlayer = user || null;
+  if (currentPlayer) {
+    authStatus.textContent = "Player signed in";
+    authOpenBtn.style.display = "none";
+    authCreateBtn.style.display = "none";
+    logoutBtn.style.display = "inline-flex";
+    accountIntro.hidden = true;
+    clearGuestPrompt();
+  } else {
+    authStatus.textContent = "";
+    authOpenBtn.style.display = "inline-flex";
+    authCreateBtn.style.display = "inline-flex";
+    logoutBtn.style.display = "none";
+    accountIntro.hidden = false;
+  }
+}
+
+function recordGameLaunch(event) {
+  if (currentPlayer) return;
+  const link = event.target.closest("a[href]");
+  if (!link || !link.closest("#gallery")) return;
+  const card = link.closest(".card");
+  if (!card) return;
+  const game = GAMES.find(g => g.id === card.id);
+  if (!game) return;
+  try {
+    sessionStorage.setItem(GAME_PENDING_KEY, JSON.stringify({gameId: game.id, startedAt: Date.now()}));
+  } catch (_error) { /* Storage-disabled browsers can still play for free. */ }
+  leftForGame = false;
+}
+
+function inviteReturningGuest(returnedViaPageLoad = false) {
+  if (currentPlayer || !returnPrompt.hidden || authModal.hidden === false) return;
+  try {
+    if (sessionStorage.getItem(GAME_INVITE_SHOWN_KEY) === "yes") return;
+    const pending = JSON.parse(sessionStorage.getItem(GAME_PENDING_KEY) || "null");
+    if (!pending || !Number.isFinite(pending.startedAt)) return;
+    const elapsed = Date.now() - pending.startedAt;
+    if (elapsed < 5000 || elapsed > 12 * 60 * 60 * 1000) return;
+    if (!leftForGame && !returnedViaPageLoad) return;
+    returnPrompt.hidden = false;
+    sessionStorage.setItem(GAME_INVITE_SHOWN_KEY, "yes"); // Never interrupt repeatedly in the same tab session.
+    sessionStorage.removeItem(GAME_PENDING_KEY);
+    leftForGame = false;
+  } catch (_error) { /* Keep navigation usable even if storage is blocked. */ }
+}
+function closeReturnPrompt() { returnPrompt.hidden = true; }
+document.getElementById("gallery").addEventListener("click", recordGameLaunch);
+document.getElementById("gallery").addEventListener("auxclick", recordGameLaunch);
+window.addEventListener("blur", () => { leftForGame = true; });
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) leftForGame = true;
+  else inviteReturningGuest();
+});
+window.addEventListener("focus", () => inviteReturningGuest());
+window.addEventListener("pageshow", event => inviteReturningGuest(event.persisted || !!sessionStorage.getItem(GAME_PENDING_KEY)));
+
+authOpenBtn.addEventListener("click", () => openAuthModal("login"));
+authCreateBtn.addEventListener("click", () => openAuthModal("signup"));
+document.getElementById("intro-signup-btn").addEventListener("click", () => openAuthModal("signup"));
+document.getElementById("intro-login-btn").addEventListener("click", () => openAuthModal("login"));
+document.getElementById("return-create-account").addEventListener("click", () => {
+  closeReturnPrompt();
+  openAuthModal("signup");
+});
+document.getElementById("return-log-in").addEventListener("click", () => {
+  closeReturnPrompt();
+  openAuthModal("login");
+});
+document.getElementById("return-maybe-later").addEventListener("click", closeReturnPrompt);
+document.getElementById("dismiss-return-prompt").addEventListener("click", closeReturnPrompt);
 authCloseBtn.addEventListener("click", closeAuthModal);
+authModal.addEventListener("click", event => { if (event.target === authModal) closeAuthModal(); });
+document.addEventListener("keydown", event => {
+  if (authModal.hidden) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeAuthModal();
+  }
+  if (event.key === "Enter" && (event.target === authEmail || event.target === authPassword)) {
+    event.preventDefault();
+    if (authMode === "signup") signupBtn.click(); else loginBtn.click();
+  }
+  if (event.key === "Tab") {
+    const focusable = [...authModal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled])')].filter(el => el.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+});
 
 loginBtn.addEventListener("click", async () => {
+  if (!authEmail.value.trim() || !authPassword.value) { setAuthMessage("Enter your email and password."); return; }
+  loginBtn.disabled = true; signupBtn.disabled = true;
   setAuthMessage("Logging in...");
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: authEmail.value,
-    password: authPassword.value,
-  });
-
-  if (error) {
-    setAuthMessage(error.message);
-    return;
-  }
-
-  updateAuthUI(data.user);
-  closeAuthModal();
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: authEmail.value.trim(),
+      password: authPassword.value
+    });
+    if (error) throw error;
+    updateAuthUI(data.user);
+    closeAuthModal();
+  } catch (error) {
+    setAuthMessage(error.message || "Couldn't sign in. Please try again.");
+  } finally { loginBtn.disabled = false; signupBtn.disabled = false; }
 });
-
 signupBtn.addEventListener("click", async () => {
+  if (!authEmail.value.trim() || !authPassword.value) { setAuthMessage("Enter your email and a password."); return; }
+  signupBtn.disabled = true; loginBtn.disabled = true;
   setAuthMessage("Creating account...");
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email: authEmail.value,
-    password: authPassword.value,
-  });
-
-  if (error) {
-    setAuthMessage(error.message);
-    return;
-  }
-
-  if (data.session?.user) {
-    updateAuthUI(data.session.user);
-    window.location.href = "retro-player-profile.html";
-    return;
-  }
-  setAuthMessage("Account created. Check your email for a verification link, then log in and open My Profile to choose your character.");
-  updateAuthUI(null);
+  try {
+    const {data,error} = await supabaseClient.auth.signUp({
+      email: authEmail.value.trim(),
+      password: authPassword.value
+    });
+    if (error) throw error;
+    if (data.session?.user) {
+      updateAuthUI(data.session.user);
+      window.location.href = "retro-player-profile.html";
+      return;
+    }
+    setAuthMessage("Check your email for a confirmation link. After confirming, log in and open My Profile to choose your character.");
+    updateAuthUI(null);
+  } catch (error) {
+    setAuthMessage(error.message || "Couldn't create the account. Please try again.");
+  } finally { signupBtn.disabled = false; loginBtn.disabled = false; }
 });
-
 logoutBtn.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
+  logoutBtn.disabled = true;
+  const {error} = await supabaseClient.auth.signOut();
+  if (error) { alert("Could not sign out. Please try again."); }
+  else updateAuthUI(null);
+  logoutBtn.disabled = false;
+});
+
+// Wait for the first session lookup before treating a returning player as a guest.
+supabaseClient.auth.getSession().then(({data,error}) => {
+  updateAuthUI(data?.session?.user || null);
+  if (error) console.warn("Session status could not be loaded.");
+  if (!data?.session?.user) inviteReturningGuest(true);
+}).catch(() => {
   updateAuthUI(null);
+  inviteReturningGuest(true);
 });
-
-supabaseClient.auth.getSession().then(({ data }) => {
-  updateAuthUI(data.session?.user || null);
-});
-
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   updateAuthUI(session?.user || null);
 });
