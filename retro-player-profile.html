@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#130e32">
+  <meta name="description" content="Create your original retro arcade avatar, customize your player profile, and see what's coming for game achievements and rewards.">
+  <title>My Arcade Profile | Michelle's Retro Game Hub</title>
+  <link rel="icon" href="images/portfolio-icon.png">
+  <link rel="stylesheet" href="retro-player-profile.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="retro-player-profile.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to profile</a>
+  <div class="top-stripe" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="retro-game-hub.html" aria-label="Michelle's Retro Game Hub home">
+      <span class="brand-script">Michelle's <span aria-hidden="true">✦</span></span>
+      <span class="brand-sub">RETRO GAME HUB</span>
+    </a>
+    <nav aria-label="Main navigation" class="header-links">
+      <a href="retro-game-hub.html">🎮 <span>Games</span></a>
+      <a href="#game-stats">🏆 <span>Scores</span></a>
+      <a href="#wardrobe">✦ <span>Wardrobe</span></a>
+      <a class="active" href="#main" aria-current="page">◉ <span>My Profile</span></a>
+    </nav>
+  </header>
+
+  <main id="main" class="shell">
+    <div class="stage-heading">
+      <div>
+        <div class="eyebrow">PLAYER ONE / YOUR ARCADE PASSPORT</div>
+        <h1>Make your mark <span>in the arcade.</span></h1>
+        <p>Build a one-of-a-kind character, earn new looks by playing, and bring your avatar into a future walkable arcade room.</p>
+      </div>
+      <div class="style-stamp" aria-hidden="true">80s<br>COLOR<br>CLUB ★</div>
+    </div>
+
+    <div class="announcement" role="status" id="feature-notice">
+      <span class="announcement-icon">✦</span>
+      <span><strong>Player Profile • First Release</strong> — Your avatar, username, and privacy setting can be saved now. Game-time XP, leaderboards, and unlockable clothing will connect in the next build phase.</span>
+    </div>
+
+    <div class="dashboard">
+      <section class="panel creator" aria-labelledby="creator-heading" id="character-creator">
+        <div class="panel-title magenta">
+          <span>01 / CHARACTER CREATOR</span>
+          <span class="title-detail">ORIGINAL CREATURE CREW</span>
+        </div>
+        <div class="creator-layout">
+          <div class="avatar-stage">
+            <div class="avatar-backdrop" aria-hidden="true"></div>
+            <div id="avatar-preview" class="avatar-preview" role="img" aria-label="Full-body avatar preview"></div>
+            <span class="avatar-footnote">FULL-BODY • SAME STARTER OUTFIT</span>
+            <span id="avatar-name" class="avatar-name">Chrome Byte</span>
+            <span id="avatar-type" class="avatar-type">Robot / Level 1 look</span>
+          </div>
+          <div class="creator-controls">
+            <div class="step-label">STEP 1 <span>Choose your character</span></div>
+            <p class="help-text">Every creature is an original design and wears the same starter tee, shorts, and sneakers. Outfits will layer onto these bodies as rewards become available.</p>
+            <div id="avatar-grid" class="avatar-grid" role="group" aria-label="Choose your avatar"></div>
+            <div class="selected-character"><span>YOUR PICK</span><strong id="picked-label">Chrome Byte</strong></div>
+            <div class="step-label second-step">STEP 2 <span>Your arcade name</span></div>
+            <label class="field-label" for="username">Username <span>(3–24 letters, numbers, or underscores)</span></label>
+            <input id="username" class="text-input" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="YourArcadeName" autocomplete="nickname" autocapitalize="none" spellcheck="false">
+            <label class="privacy-row" for="profile-public"><input type="checkbox" id="profile-public"><span><strong>Make my profile public</strong><small>Off by default. Public leaderboard opt-in will be a separate setting when rankings launch.</small></span></label>
+            <div class="creator-actions">
+              <button id="save-profile" class="button primary" type="button" disabled>Save My Character <span aria-hidden="true">➜</span></button>
+              <a id="sign-in-link" class="button secondary" href="retro-game-hub.html">Sign In to Save</a>
+            </div>
+            <p id="save-status" class="save-status" role="status" aria-live="polite">Choose a character to preview. Sign in to save your character to your account.</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="profile-sidebar" aria-label="Player progress">
+        <section class="panel level-panel">
+          <div class="panel-title yellow"><span>02 / PLAYER CARD</span><span>★</span></div>
+          <div class="player-card-head">
+            <div class="mini-portrait" id="mini-portrait" aria-hidden="true"></div>
+            <div>
+              <div class="player-label">ARCADE ID</div>
+              <strong id="display-name" class="player-name">Guest Player</strong>
+              <div class="player-sub" id="account-status">Not signed in</div>
+            </div>
+          </div>
+          <div class="level-number"><span>LEVEL</span><strong id="player-level">—</strong></div>
+          <div class="xp-line"><span>XP PROGRESS</span><strong id="xp-text">Not tracked yet</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="Player XP progress unavailable" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill"></div></div>
+          <p class="fine-print">XP will be awarded for verified <strong>active game time</strong>, not an idle open tab. Real progress will appear here once tracking launches.</p>
+        </section>
+        <section class="panel metrics">
+          <div class="panel-title cyan"><span>03 / ARCADE STATS</span><span>✦</span></div>
+          <div class="metric-grid">
+            <div><span>TOTAL GAME TIME</span><strong id="total-time">—</strong><small>Tracking upcoming</small></div>
+            <div><span>OVERALL XP RANK</span><strong id="overall-rank">—</strong><small>Board upcoming</small></div>
+            <div><span>BADGES EARNED</span><strong id="badge-count">—</strong><small id="badge-note">Collection upcoming</small></div>
+            <div><span>GAMES TRACKED</span><strong id="games-tracked">—</strong><small>Integration upcoming</small></div>
+          </div>
+        </section>
+        <section class="help-card">
+          <div class="help-title">HOW DO UNLOCKS WORK? <span>↗</span></div>
+          <p><b>Play</b> games to build active minutes and XP. <b>Level up</b> for arcade-wide styles. <b>Master individual games</b> for exclusive tees and bottoms.</p>
+          <p>Everything shown as locked below is a preview until the verified rewards system is connected.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section id="wardrobe" class="panel wardrobe-section" aria-labelledby="wardrobe-heading">
+      <div class="panel-title blue"><span id="wardrobe-heading">04 / THE WARDROBE</span><span>STARTER LOOK + FUTURE DROPS</span></div>
+      <div class="wardrobe-intro"><div><h2>Earn it. Wear it. Show it off.</h2><p>Every character begins in the same simple arcade outfit. When the rewards system arrives, you'll keep the clothes you unlock and dress your character for the future arcade room.</p></div><span class="ticket">CLOSET<br>PASS ✦</span></div>
+      <div class="outfit-section-label">YOUR STARTER LOOK</div>
+      <div class="closet-grid starter-grid">
+        <div class="outfit-card unlocked"><div class="item-symbol">👕</div><strong>Arcade Starter Tee</strong><span>Level 1 • Standard</span><b>STARTER</b></div>
+        <div class="outfit-card unlocked"><div class="item-symbol">🩳</div><strong>Arcade Starter Shorts</strong><span>Level 1 • Standard</span><b>STARTER</b></div>
+        <div class="outfit-card unlocked"><div class="item-symbol">👟</div><strong>High-Top Sneakers</strong><span>Level 1 • Standard</span><b>STARTER</b></div>
+      </div>
+      <div class="outfit-section-label future-label">UPCOMING LEVEL REWARDS <small>PREVIEW — NOT YET EARNABLE</small></div>
+      <div class="closet-grid">
+        <div class="outfit-card locked"><div class="item-symbol">🧥</div><strong>Color-Block Windbreaker</strong><span>Planned • Level 5</span><b>LOCKED</b></div>
+        <div class="outfit-card locked"><div class="item-symbol">👖</div><strong>Circuit Stripe Trousers</strong><span>Planned • Level 8</span><b>LOCKED</b></div>
+        <div class="outfit-card locked"><div class="item-symbol">✨</div><strong>Neon Varsity Jacket</strong><span>Planned • Level 12</span><b>LOCKED</b></div>
+      </div>
+      <div class="outfit-section-label future-label">UPCOMING GAME REWARDS <small>PREVIEW — CONDITIONS TO BE FINALIZED</small></div>
+      <div class="closet-grid">
+        <div class="outfit-card locked"><div class="item-symbol">▦</div><strong>Fallen Grid Glitch Tee</strong><span>Game-specific shirt</span><b>LOCKED</b></div>
+        <div class="outfit-card locked"><div class="item-symbol">🌿</div><strong>Revive Nature Bloom Shorts</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
+        <div class="outfit-card locked"><div class="item-symbol">🌰</div><strong>Acorn Ascent Trail Tee</strong><span>Game-specific shirt</span><b>LOCKED</b></div>
+        <div class="outfit-card locked"><div class="item-symbol">🐾</div><strong>Claws vs. Paws Rival Pants</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
+      </div>
+    </section>
+
+    <section id="game-stats" class="panel game-stats" aria-labelledby="game-stats-heading">
+      <div class="panel-title teal"><span id="game-stats-heading">05 / GAME-BY-GAME RECORD</span><span>PERSONAL BESTS</span></div>
+      <div class="stats-heading"><div><h2>Your games. Your glory.</h2><p>Active playtime, verified best score, and leaderboard position will appear for each integrated game. Untracked games never show invented scores.</p></div><a class="button secondary" href="retro-game-hub.html">Play a Game ↗</a></div>
+      <div class="table-scroll"><table><thead><tr><th scope="col">GAME</th><th scope="col">ACTIVE TIME</th><th scope="col">BEST VERIFIED SCORE</th><th scope="col">GAME RANK</th></tr></thead><tbody id="game-records"></tbody></table></div>
+    </section>
+
+    <section class="panel badges-panel" id="badges" aria-labelledby="badge-heading">
+      <div class="panel-title magenta"><span id="badge-heading">06 / BADGE CABINET</span><span>COLLECT YOUR STORY</span></div>
+      <div class="badge-body">
+        <div class="badge-art" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
+        <div><h2>Every arcade legend starts somewhere.</h2><p>Your earned badges will appear here once games begin sending verified achievement events. For now, pick an avatar and get ready to explore.</p><p class="badge-count-copy" id="badge-details">Badge catalog and award rules are being prepared.</p></div>
+      </div>
+    </section>
+
+    <div class="end-banner"><strong>READY, PLAYER YOU?</strong><span>Start a game, find a favorite, and make this arcade your own.</span><a href="retro-game-hub.html" class="button primary">Browse the Games ➜</a></div>
+  </main>
+  <footer class="site-footer"><span>© Michelle's Retro Game Hub • Original characters, original games.</span><a href="retro-game-hub.html">Back to Game Hub ↑</a></footer>
+</body>
+</html>
