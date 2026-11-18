@@ -340,10 +340,14 @@ function updateUI() {
   $("pieces-count").textContent = `${placedPieces.length} / ${level.shapes.length}`;
   $("pieces-remaining").textContent = `${level.shapes.length - placedPieces.length} left`;
   const adsConfigured=!!(window.RetroRewardedAds && window.RetroRewardedAds.isConfigured());
-  $("hint-count").textContent=hintUsed?"":"1";
-  $("hint-action").textContent=hintUsed?(adsConfigured?"▶ Watch Ad for Hint":"Extra Hints Soon"):"✧ Free Hint";
-  $("hint-btn").disabled=levelLocked||hintBusy||(hintUsed&&!adsConfigured);
-  $("hint-btn").title=hintUsed?(adsConfigured?"Watch an optional rewarded ad to reveal another piece.":"Rewarded ads have not been configured yet."):"Reveal one free placement hint per branch.";
+  $("hint-count").textContent=hintUsed?"0":"1";
+  $("hint-action").textContent="✧ Free Hint";
+  $("hint-btn").disabled=levelLocked||hintBusy||hintUsed;
+  $("hint-btn").title="Reveal your one free placement hint on this branch.";
+  const adBtn=$("hint-ad-btn");
+  adBtn.hidden=!hintUsed||levelLocked;
+  adBtn.disabled=hintBusy||!adsConfigured;
+  adBtn.textContent=hintBusy?"Checking ad reward…":adsConfigured?"▶ Watch Ad for Another Hint":"Extra Hints (Ads Coming Soon)";
   $("rotate-btn").disabled = !selection || levelLocked || currentLevel < 2;
   $("cancel-btn").disabled = !selection || levelLocked;
   $("undo-btn").disabled = !(history.length || (selection && selection.original)) || levelLocked;
@@ -702,6 +706,7 @@ window.addEventListener("keydown", e => {
 $("rotate-btn").addEventListener("click", rotateSelection);
 $("undo-btn").addEventListener("click", undoPlacement);
 $("hint-btn").addEventListener("click", showHint);
+$("hint-ad-btn").addEventListener("click", showHint);
 $("cancel-btn").addEventListener("click", () => cancelSelection());
 $("restart-button").addEventListener("click", restartLevel);
 $("play-again-btn").addEventListener("click", restartGame);
