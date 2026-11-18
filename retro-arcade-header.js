@@ -92,6 +92,8 @@
        "https://dxemotgroklcjsbunspg.supabase.co",
        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo"
      );
+     window.retroArcadeSupabaseClient=client;
+     window.dispatchEvent(new Event("retro-arcade-auth-ready"));
      client.auth.getUser().then(function(result){return showUser(result.data&&result.data.user);}).catch(function(){setAccount(null);});
      client.auth.onAuthStateChange(function(_event,session){void showUser(session&&session.user);});
    }catch(_error){setAccount(null);}
