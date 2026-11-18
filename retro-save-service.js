@@ -163,6 +163,7 @@
         this.adapter.restoreState(this.current);return this.current;
       }
       if(choice==="device") {
+        this.pending=null;del(this.key("pending"));
         this.revision=cloud?cloud.revision:null;this.current=device;
         put(this.key("guest-choice"),{guestSnapshot:JSON.stringify(this.guest())});
         this.modeTo("account");this.save(device,"imported-local");this.adapter.restoreState(device);return device;
