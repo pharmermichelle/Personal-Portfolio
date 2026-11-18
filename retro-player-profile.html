@@ -9,7 +9,7 @@
   <link rel="icon" href="images/portfolio-icon.png">
   <link rel="stylesheet" href="retro-player-profile.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-  <script defer src="retro-player-profile.js"></script>
+  <script defer src="retro-player-profile.js?v=20261118-3"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to profile</a>
@@ -39,7 +39,7 @@
 
     <div class="announcement" role="status" id="feature-notice">
       <span class="announcement-icon">✦</span>
-      <span><strong>Player Profile • First Release</strong> — Your avatar, username, and privacy setting can be saved now. Game-time XP, leaderboards, and unlockable clothing will connect in the next build phase.</span>
+      <span><strong>Player Profile • First Release</strong> — Your avatar, username, and privacy setting can be saved now. Acorn Ascent now earns verified branch XP, an Oakward Bound badge, and the Squirrel Summit Tee. Other games and leaderboards are still being integrated.</span>
     </div>
 
     <div class="dashboard">
@@ -86,30 +86,30 @@
             </div>
           </div>
           <div class="level-number"><span>LEVEL</span><strong id="player-level">—</strong></div>
-          <div class="xp-line"><span>XP PROGRESS</span><strong id="xp-text">Not tracked yet</strong></div>
-          <div class="progress-track" role="progressbar" aria-label="Player XP progress unavailable" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill"></div></div>
-          <p class="fine-print">XP will be awarded for verified <strong>active game time</strong>, not an idle open tab. Real progress will appear here once tracking launches.</p>
+          <div class="xp-line"><span>XP PROGRESS</span><strong id="xp-text">Sign in for XP</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="Player XP progress unavailable" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" id="xp-progress-fill"></div></div>
+          <p class="fine-print" id="xp-current-progress">Acorn Ascent • 110 XP available for completing all ten branches, once per branch. Overall player level uses earned XP.</p>
         </section>
         <section class="panel metrics">
           <div class="panel-title cyan"><span>03 / ARCADE STATS</span><span>✦</span></div>
           <div class="metric-grid">
             <div><span>TOTAL GAME TIME</span><strong id="total-time">—</strong><small>Tracking upcoming</small></div>
             <div><span>OVERALL XP RANK</span><strong id="overall-rank">—</strong><small>Board upcoming</small></div>
-            <div><span>BADGES EARNED</span><strong id="badge-count">—</strong><small id="badge-note">Collection upcoming</small></div>
+            <div><span>BADGES EARNED</span><strong id="badge-count">—</strong><small id="badge-note">Official badges</small></div>
             <div><span>GAMES TRACKED</span><strong id="games-tracked">—</strong><small>Integration upcoming</small></div>
           </div>
         </section>
         <section class="help-card">
           <div class="help-title">HOW DO UNLOCKS WORK? <span>↗</span></div>
           <p><b>Play</b> games to build active minutes and XP. <b>Level up</b> for arcade-wide styles. <b>Master individual games</b> for exclusive tees and bottoms.</p>
-          <p>Everything shown as locked below is a preview until the verified rewards system is connected.</p>
+          <p>Acorn Ascent rewards are now available. Future outfit previews remain locked until their games are integrated.</p>
         </section>
       </aside>
     </div>
 
     <section id="wardrobe" class="panel wardrobe-section" aria-labelledby="wardrobe-heading">
       <div class="panel-title blue"><span id="wardrobe-heading">04 / THE WARDROBE</span><span>STARTER LOOK + FUTURE DROPS</span></div>
-      <div class="wardrobe-intro"><div><h2>Earn it. Wear it. Show it off.</h2><p>Every character begins in the same simple arcade outfit. When the rewards system arrives, you'll keep the clothes you unlock and dress your character for the future arcade room.</p></div><span class="ticket">CLOSET<br>PASS ✦</span></div>
+      <div class="wardrobe-intro"><div><h2>Earn it. Wear it. Show it off.</h2><p>Every character begins in the same simple arcade outfit. Your earned Acorn Ascent T-shirt can be equipped now. You will keep unlocked outfits in your account collection.</p></div><span class="ticket">CLOSET<br>PASS ✦</span></div>
       <div class="outfit-section-label">YOUR STARTER LOOK</div>
       <div class="closet-grid starter-grid">
         <div class="outfit-card unlocked"><div class="item-symbol">👕</div><strong>Arcade Starter Tee</strong><span>Level 1 • Standard</span><b>STARTER</b></div>
@@ -126,7 +126,15 @@
       <div class="closet-grid">
         <div class="outfit-card locked"><div class="item-symbol">▦</div><strong>Fallen Grid Glitch Tee</strong><span>Game-specific shirt</span><b>LOCKED</b></div>
         <div class="outfit-card locked"><div class="item-symbol">🌿</div><strong>Revive Nature Bloom Shorts</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
-        <div class="outfit-card locked"><div class="item-symbol">🌰</div><strong>Acorn Ascent Trail Tee</strong><span>Game-specific shirt</span><b>LOCKED</b></div>
+        <div class="outfit-card locked" id="acorn-shirt-card">
+  <div style="width:100%;display:grid;place-items:center;background:#1b3227;border-radius:10px;padding:6px">
+    <img src="images/rewards/acorn-ascent-squirrel-tee.svg" alt="Olive green squirrel climbing a tree T-shirt" style="width:min(100%,180px);height:145px;object-fit:contain">
+  </div>
+  <strong>Squirrel Summit Tee</strong>
+  <span>Complete all 10 Acorn Ascent branches • olive woodland shirt</span>
+  <b id="acorn-shirt-state">LOCKED</b>
+  <button id="equip-acorn-shirt" type="button" class="button primary" hidden style="width:100%;min-height:44px;margin-top:10px">Wear This Shirt</button>
+</div>
         <div class="outfit-card locked"><div class="item-symbol">🐾</div><strong>Claws vs. Paws Rival Pants</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
       </div>
     </section>
@@ -141,7 +149,11 @@
       <div class="panel-title magenta"><span id="badge-heading">06 / BADGE CABINET</span><span>COLLECT YOUR STORY</span></div>
       <div class="badge-body">
         <div class="badge-art" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
-        <div><h2>Every arcade legend starts somewhere.</h2><p>Your earned badges will appear here once games begin sending verified achievement events. For now, pick an avatar and get ready to explore.</p><p class="badge-count-copy" id="badge-details">Badge catalog and award rules are being prepared.</p></div>
+        <div><h2>Every arcade legend starts somewhere.</h2><p>Your earned badges will appear here once games begin sending verified achievement events. For now, pick an avatar and get ready to explore.</p><p class="badge-count-copy" id="badge-details">Earn Oakward Bound by completing all ten Acorn Ascent branches.</p>
+  <div id="acorn-earned-badge" hidden style="margin-top:12px;padding:12px 14px;border:2px solid #b9db98;border-radius:12px;background:#23382b;color:#fff5d5;font-size:18px;font-weight:800">
+   🏆 Oakward Bound — Acorn Ascent Master
+  </div>
+  <p id="rewards-status" role="status" aria-live="polite">Sign in to view your rewards</p></div>
       </div>
     </section>
 
