@@ -82,10 +82,11 @@
             <div class="board-tools" aria-label="Puzzle controls">
               <button id="rotate-btn" type="button" title="Rotate selected piece clockwise (R)">↻ Rotate <span class="key-hint">R</span></button>
               <button id="undo-btn" type="button" title="Undo last placement">↶ Undo</button>
-              <button id="hint-btn" type="button" title="Reveal a possible location for an unplaced piece">✧ Hint <span id="hint-count">1</span></button>
+              <button id="hint-btn" type="button" title="One free hint per branch, then optional rewarded ads for extra hints"><span id="hint-action">✧ Free Hint</span> <span id="hint-count">1</span></button>
               <button id="cancel-btn" type="button" title="Unselect current piece">✕ Cancel</button>
             </div>
             <p class="game-message" id="game-message" role="status" aria-live="polite">Choose a piece to begin.</p>
+            <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">One free hint per branch. More hints can be unlocked with optional rewarded ads once enabled. No ad is required to finish.</p>
           </div>
 
           <aside id="sidebar" aria-label="Puzzle pieces">
@@ -121,8 +122,12 @@
     <script>
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+    <!-- Rewarded hint integration: configure a REAL Google Ad Manager rewarded web ad unit.
+         Example only (NOT a working ad unit): window.RETRO_REWARDED_AD_UNIT_PATH = "/YOUR_NETWORK_ID/YOUR_REWARDED_AD_UNIT";
+         Do not set this to an AdSense client ID, AdSense slot, or an invented unit. -->
+    <script src="../../retro-rewarded-ads.js?v=20261118-1"></script>
     <script src="../../retro-save-service.js?v=20261118-1"></script>
     <script src="../../retro-rewards.js?v=20261118-1"></script>
-    <script src="main.js?v=20261118-2"></script>
+    <script src="main.js?v=20261118-3"></script>
   </body>
 </html>
