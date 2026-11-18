@@ -6,6 +6,12 @@ const ctx = canvas.getContext("2d");
 const dragPreview = document.getElementById("drag-preview");
 const BOARD_SIZE = canvas.width;
 const SAVE_KEY = "acorn-ascent-progress-v2";
+const FREE_HINT_KEY = "acorn-ascent-first-hints-v1";
+function readFreeHintHistory() {
+  try { const saved=JSON.parse(localStorage.getItem(FREE_HINT_KEY)||"[]");return new Set(Array.isArray(saved)?saved.filter(n=>Number.isInteger(n)&&n>=0&&n<10):[]); }
+  catch (_) { return new Set(); }
+}
+const freeHintsUsed = readFreeHintHistory();
 let acornSaveService = null;
 let acornSaveInitializing = false;
 let acornSaveStarted = false;
@@ -150,7 +156,9 @@ let hoverPlacement = null;
 let pointerDrag = null;
 let history = [];
 let hintUsed = false;
+let hintBusy = false;
 let hintTarget = null;
+let hintedShapes = new Set();
 let completed = false;
 let levelLocked = false;
 let transitionTimer = null;
@@ -331,8 +339,11 @@ function updateUI() {
   $("difficulty").textContent = level.difficulty;
   $("pieces-count").textContent = `${placedPieces.length} / ${level.shapes.length}`;
   $("pieces-remaining").textContent = `${level.shapes.length - placedPieces.length} left`;
-  $("hint-count").textContent = hintUsed ? "0" : "1";
-  $("hint-btn").disabled = hintUsed || levelLocked;
+  const adsConfigured=!!(window.RetroRewardedAds && window.RetroRewardedAds.isConfigured());
+  $("hint-count").textContent=hintUsed?"":"1";
+  $("hint-action").textContent=hintUsed?(adsConfigured?"▶ Watch Ad for Hint":"Extra Hints Soon"):"✧ Free Hint";
+  $("hint-btn").disabled=levelLocked||hintBusy||(hintUsed&&!adsConfigured);
+  $("hint-btn").title=hintUsed?(adsConfigured?"Watch an optional rewarded ad to reveal another piece.":"Rewarded ads have not been configured yet."):"Reveal one free placement hint per branch.";
   $("rotate-btn").disabled = !selection || levelLocked || currentLevel < 2;
   $("cancel-btn").disabled = !selection || levelLocked;
   $("undo-btn").disabled = !(history.length || (selection && selection.original)) || levelLocked;
@@ -531,15 +542,43 @@ function undoPlacement() {
   placedPieces = last;
   renderPieceTray(); updateUI(); draw(); message("Last placement undone.");
 }
-function showHint() {
-  if (hintUsed || levelLocked) return;
-  const next = levelData().shapes.find(p => !placedPieces.some(placed => placed.shape.id === p.id));
-  if (!next) return;
-  hintUsed = true;
-  hintTarget = { shape: next };
-  updateUI(); draw();
-  message(`The golden outline shows where piece ${next.id + 1} belongs. You may need to rotate it.`);
-  window.setTimeout(() => { hintTarget = null; draw(); }, 4200);
+function revealHint() {
+  const remaining=levelData().shapes.filter(shape=>!placedPieces.some(p=>p.shape.id===shape.id));
+  const next=remaining.find(shape=>!hintedShapes.has(shape.id))||remaining[0];
+  if(!next){message("All pieces are already placed.");return false;}
+  hintedShapes.add(next.id);
+  const target={shape:next};
+  hintTarget=target;
+  updateUI();draw();
+  message(`The golden outline shows where piece ${next.id+1} belongs. You may need to rotate it.`);
+  window.setTimeout(()=>{if(hintTarget===target){hintTarget=null;draw();}},4200);
+  return true;
+}
+async function showHint() {
+  if(levelLocked||hintBusy)return;
+  if(!hintUsed){
+    hintUsed=true;
+    freeHintsUsed.add(currentLevel);
+    try{localStorage.setItem(FREE_HINT_KEY,JSON.stringify([...freeHintsUsed]));}catch(_){}
+    revealHint();
+    return;
+  }
+  if(!window.RetroRewardedAds||!window.RetroRewardedAds.isConfigured()){
+    message("Optional ad hints aren't available yet. Each branch still includes one free hint.","error");
+    return;
+  }
+  const levelAtStart=currentLevel;
+  hintBusy=true;updateUI();
+  message("Loading an optional rewarded ad. You only get another hint if the ad grants a reward.");
+  try{
+    const result=await window.RetroRewardedAds.watch({
+      onStatus:text=>{if(currentLevel===levelAtStart)message(text);}
+    });
+    if(levelAtStart!==currentLevel||levelLocked)return;
+    if(result.granted)revealHint();
+    else message(result.message||"Rewarded ad unavailable. You haven't spent a hint.","error");
+  }catch(_){message("Rewarded ads are temporarily unavailable.","error");}
+  finally{hintBusy=false;updateUI();}
 }
 
 function renderPieceTray() {
@@ -698,7 +737,10 @@ function resetLevel() {
   levelLocked = false;
   selection = null; hoverPlacement = null; pointerDrag = null;
   clearDragGhost();
-  placedPieces = []; history = []; hintUsed = false; hintTarget = null;
+  placedPieces=[];history=[];
+  hintUsed=freeHintsUsed.has(currentLevel);
+  hintedShapes=new Set();
+  hintTarget=null;
   renderPieceTray(); updateUI(); draw();
   beginAcornRewardLevel();
   message(currentLevel < 2 ? "Tap or drag the colored shapes onto the board." : "You can rotate your pieces on this branch. Press R or use Rotate.");
@@ -717,6 +759,8 @@ function restartGame() {
   window.clearTimeout(transitionTimer);
   $("final-screen").hidden = true;
   currentLevel = 0; acornCount = 0; completed = false;
+  freeHintsUsed.clear();
+  try{localStorage.removeItem(FREE_HINT_KEY);}catch(_){}
   try { localStorage.removeItem(SAVE_KEY); } catch (_) { /* no storage */ }
   resetLevel();
   saveProgress();
