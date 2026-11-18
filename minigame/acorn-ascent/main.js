@@ -191,7 +191,7 @@ function saveProgress() {
   if(acornSaveService && !acornSaveInitializing) {
     acornSaveService.save(progress);
     // Keep the original guest save for compatibility. Never write an account save to it.
-    if(acornSaveService.mode!=="guest" && acornSaveService.mode!=="deferred" && acornSaveService.mode!=="guest-only")return;
+    if(acornSaveService.mode!=="guest" && acornSaveService.mode!=="guest-only")return;
   }
   try { localStorage.setItem(SAVE_KEY,JSON.stringify(progress)); }
   catch (_) { /* Browser storage may be disabled. */ }
