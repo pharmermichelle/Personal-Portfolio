@@ -27,7 +27,7 @@
   ];
   const byId = id => document.getElementById(id);
   const escapeAttr = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  let selected = avatars[0], client=null, user=null;
+  let selected = avatars[0], client=null, user=null, equippedShirt=false, shirtOwned=false;
 
   const heads = {
     "chrome-byte": a => '<rect x="43" y="30" width="94" height="77" rx="18" fill="'+a.color+'" stroke="#34235c" stroke-width="6"/><rect x="51" y="57" width="78" height="34" rx="7" fill="#193255"/><rect x="61" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><rect x="99" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><path d="M75 85h30" stroke="#fdb9e6" stroke-width="4"/><rect x="83" y="12" width="14" height="23" rx="5" fill="'+a.color+'"/><circle cx="90" cy="10" r="9" fill="#fff05f"/><rect x="34" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/><rect x="134" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/>',
@@ -51,7 +51,8 @@
       + '<path d="M62 184L62 218L86 219L91 185M95 185L96 218L122 219L117 183" fill="'+a.color+'" stroke="#251944" stroke-width="6"/>'
       + '<path d="M62 180L60 205L89 205L90 183M91 183L93 205L120 205L118 180" fill="#4bc8ef" stroke="#291b59" stroke-width="4"/>'
       + '<path d="M58 216h31v15H49q-3-12 9-15ZM93 216h31q11 3 10 15H93Z" fill="#fff5e7" stroke="#302356" stroke-width="5"/>'
-      + '<path d="M64 108Q90 99 116 108L130 154L119 185H62L50 154Z" fill="#ffef69" stroke="#30235b" stroke-width="6"/>'
+      + '<path d="M64 108Q90 99 116 108L130 154L119 185H62L50 154Z" fill="'+(equippedShirt?'#647a3a':'#ffef69')+'" stroke="#30235b" stroke-width="6"/>'
+      + (equippedShirt?'<path d="M97 126Q105 137 92 159" fill="none" stroke="#65472e" stroke-width="5"/><path d="M80 150Q82 130 96 139Q102 146 92 151Q84 158 80 150Z" fill="#c98442" stroke="#7b4d2b" stroke-width="2"/><path d="M77 147Q65 138 73 134Q81 134 82 143" fill="none" stroke="#d7a05b" stroke-width="5"/><circle cx="92" cy="140" r="1.8" fill="#251944"/>':'')
       + '<path d="M63 167h55v19H63Z" fill="#d85d9d" stroke="#30235b" stroke-width="4"/>'
       + '<rect x="85" y="143" width="12" height="12" rx="3" fill="#fb65b7"/>'
       + '<g>'+head+'</g>'
@@ -104,6 +105,74 @@
       status("This is a preview. Sign in on the Game Hub to save your username and character.");
     }
   }
+  function setRewardStatus(text) {
+    const e=byId("rewards-status");if(e)e.textContent=text;
+  }
+  async function loadRewards() {
+    if(!client||!user)return;
+    const account=user.id;
+    try {
+      const [xp,badges,inventory,equipped]=await Promise.all([
+        client.from("xp_ledger").select("amount,game_id").eq("user_id",account),
+        client.from("earned_badges").select("badge_id,earned_at").eq("user_id",account),
+        client.from("player_inventory").select("cosmetic_id,awarded_at").eq("user_id",account),
+        client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account).eq("slot","shirt").maybeSingle()
+      ]);
+      for(const v of [xp,badges,inventory,equipped])if(v.error)throw v.error;
+      if(!user||user.id!==account)return;
+      const total=(xp.data||[]).reduce((n,item)=>n+Number(item.amount||0),0);
+      const acornXP=(xp.data||[]).filter(item=>item.game_id==="acorn-ascent")
+        .reduce((n,item)=>n+Number(item.amount||0),0);
+      const level=Math.floor(Math.sqrt(total/50))+1;
+      byId("player-level").textContent=String(level);
+      byId("xp-text").textContent=total+" XP total";
+      const progress=byId("xp-current-progress");
+      if(progress)progress.textContent=acornXP+" / 110 Acorn Ascent XP";
+      const bar=byId("xp-progress-fill");
+      if(bar)bar.style.width=Math.min(100,100*acornXP/110)+"%";
+      byId("badge-count").textContent=String((badges.data||[]).length);
+      byId("badge-note").textContent="Official account badges";
+      const earned=(badges.data||[]).some(x=>x.badge_id==="acorn-complete");
+      const hasShirt=(inventory.data||[]).some(x=>x.cosmetic_id==="shirt-acorn-ascent");
+      shirtOwned=hasShirt;
+      const shirt=byId("acorn-shirt-card");
+      if(shirt){
+       shirt.classList.toggle("locked",!hasShirt);
+       shirt.classList.toggle("unlocked",hasShirt);
+       byId("acorn-shirt-state").textContent=hasShirt?"OWNED":"LOCKED";
+       const button=byId("equip-acorn-shirt");
+       button.hidden=!hasShirt;
+       equippedShirt=hasShirt&&equipped.data?.cosmetic_id==="shirt-acorn-ascent";
+       button.textContent=equippedShirt?"Equipped ✓":"Wear This Shirt";
+       renderAvatar();
+      }
+      const badge=byId("acorn-earned-badge");
+      if(badge){
+       badge.hidden=!earned;
+       byId("badge-details").textContent=earned?
+        "Oakward Bound unlocked! All ten branches mastered.":"Earn Oakward Bound by completing all ten Acorn Ascent branches.";
+      }
+      setRewardStatus("Account rewards loaded • "+acornXP+" Acorn Ascent XP");
+    }catch(e){setRewardStatus("Rewards unavailable: "+(e.message||"Try again")); }
+  }
+  async function equipAcornShirt() {
+    if(!client||!user||!shirtOwned)return;
+    const id=user.id,button=byId("equip-acorn-shirt");
+    button.disabled=true;
+    try{
+      if(equippedShirt){
+        const {error}=await client.from("equipped_cosmetics").delete().eq("user_id",id).eq("slot","shirt");
+        if(error)throw error;
+      }else{
+        const {error}=await client.from("equipped_cosmetics").upsert({
+          user_id:id,slot:"shirt",cosmetic_id:"shirt-acorn-ascent"
+        },{onConflict:"user_id,slot"});
+        if(error)throw error;
+      }
+      await loadRewards();
+    }catch(e){setRewardStatus("Could not update outfit: "+e.message);}
+    finally{button.disabled=false;}
+  }
   async function loadProfile() {
     if(!user)return;
     const {data,error}=await client.from("profiles").select("username,avatar_key,is_public").eq("id",user.id).maybeSingle();
@@ -135,6 +204,7 @@
   async function start(){
     setupOptions();renderGames();
     byId("save-profile").addEventListener("click",saveProfile);
+    byId("equip-acorn-shirt").addEventListener("click",equipAcornShirt);
     if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
     try{
       client=window.supabase.createClient(PROJECT_URL,ANON_KEY);
@@ -142,12 +212,19 @@
       if(error && !/session missing|auth session missing/i.test(error.message||""))status("Account connection issue: "+error.message,"error");
       user=data?.user||null;
       updateAuthUI();
-      if(user)await loadProfile();
+      if(user){await loadProfile();await loadRewards();}
       client.auth.onAuthStateChange((_event,session)=>{
         const next=session?.user||null;
         if(next?.id===user?.id)return;
         user=next;updateAuthUI();
-        if(user)void loadProfile();
+        if(user)void loadProfile().then(loadRewards);
+        else{
+          equippedShirt=false;shirtOwned=false;renderAvatar();
+          byId("player-level").textContent="—";byId("xp-text").textContent="Sign in for XP";
+          byId("badge-count").textContent="—";setRewardStatus("Sign in to view your rewards");
+          byId("equip-acorn-shirt").hidden=true;
+          byId("acorn-earned-badge").hidden=true;
+        }
       });
     }catch(e){status("Account service unavailable. You can still preview every avatar.","error");}
   }
