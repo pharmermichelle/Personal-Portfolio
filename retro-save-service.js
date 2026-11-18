@@ -45,7 +45,7 @@
     }
     backup(name,value) {
       if(value==null)return;
-      const key="retro:backup:"+this.gameId+":"+name;
+      const key="retro:backup:"+(this.user?this.user.id:"guest")+":"+this.gameId+":"+name;
       const history=get(key)||[];
       history.push({at:new Date().toISOString(),value});
       put(key,history.slice(-6));
@@ -91,7 +91,7 @@
         const r=await this.client.auth.getSession();const actual=r.data&&r.data.session&&r.data.session.user||null;
         if((actual&&actual.id)!==(this.user&&this.user.id))state=await this.activate(actual);
       }catch(_){}
-      global.addEventListener("online",()=>{if(this.mode==="account")void this.flush();});
+      global.addEventListener("online",()=>{if(this.mode==="deferred")void this.activate(this.user).then(state=>this.adapter.restoreState(state||this.adapter.emptyState()));else if(this.mode==="account")void this.flush();});
       document.addEventListener("visibilitychange",()=>{if(!document.hidden&&this.mode==="account")void this.flush();});
       return state;
     }
@@ -117,7 +117,7 @@
         if(pending&&pending.envelope){
           try {
             const state=this.unwrap(pending.envelope);this.pending=pending;this.revision=pending.baseRevision;this.current=state;
-            this.modeTo("account");this.setStatus("Device backup • waiting for cloud");return state;
+            this.modeTo(pending.baseRevision==="unknown"?"deferred":"account");this.setStatus("Device backup • waiting for cloud");return state;
           }catch(_){}
         }
         this.modeTo("deferred");this.current=guest;
@@ -168,15 +168,20 @@
         put(this.key("guest-choice"),{guestSnapshot:JSON.stringify(this.guest())});
         this.modeTo("account");this.save(device,"imported-local");this.adapter.restoreState(device);return device;
       }
-      this.current=device;this.modeTo("deferred");this.setStatus("Device only • not synced to account");
+      this.current=device;this.modeTo("guest-only");this.setStatus("Device only • not synced to account");
       this.adapter.restoreState(device);return device;
     }
     save(value,origin) {
       let state;
       try{state=this.validate(value);}catch(_){this.setStatus("Save invalid • not synced");return;}
       this.current=state;
-      if(this.mode==="guest"||this.mode==="deferred"||!this.user) {
+      if(this.mode==="guest"||this.mode==="guest-only"||!this.user) {
         this.setStatus(put(this.guestKey,this.wrap(state,origin))?"Device save only":"Device storage unavailable");
+        return;
+      }
+      if(this.mode==="deferred") {
+        this.pending={envelope:this.wrap(state,origin),baseRevision:"unknown"};
+        this.setStatus(put(this.key("pending"),this.pending)?"Device backup • cloud unavailable":"Device storage unavailable");
         return;
       }
       if(this.mode==="loading")return;
@@ -229,7 +234,7 @@
       if(this.mode==="conflict") {
         const cloud=await this.fetchCloud(this.user).catch(()=>null);
         await this.resolve(this.current||this.adapter.emptyState(),cloud,"Resolve the device/account save difference.");
-      }else if(this.mode==="deferred"){
+      }else if(this.mode==="deferred"||this.mode==="guest-only"){
         const state=await this.activate(this.user);
         this.adapter.restoreState(state||this.adapter.emptyState());
       }else if(this.mode==="account"){
