@@ -464,6 +464,7 @@ body {
   <span id="auth-status">Not logged in</span>
  <button id="auth-open-btn" class="soon-btn">Login</button>
   <button id="logout-btn" class="soon-btn" style="display: none;">Logout</button>
+  <a href="retro-player-profile.html" class="soon-btn" style="display:inline-flex;text-decoration:none;align-items:center;font-weight:700;border-color:#69dce4">★ My Profile</a>
 </div>
       </header>
 
@@ -853,8 +854,13 @@ signupBtn.addEventListener("click", async () => {
     return;
   }
 
-  setAuthMessage("Account created. Check your email if confirmation is required.");
-  updateAuthUI(data.user);
+  if (data.session?.user) {
+    updateAuthUI(data.session.user);
+    window.location.href = "retro-player-profile.html";
+    return;
+  }
+  setAuthMessage("Account created. Check your email for a verification link, then log in and open My Profile to choose your character.");
+  updateAuthUI(null);
 });
 
 logoutBtn.addEventListener("click", async () => {
