@@ -1059,6 +1059,15 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 @keyframes laserObstacle{from{transform:translateY(0)}to{transform:translateY(-4px)}}
 @media(max-width:440px){.academy-laser-scene{height:190px}.academy-laser-cat{width:94px;height:80px}.academy-laser-obstacle{font-size:38px}.academy-laser-warning{font-size:15px}.academy-spar-stage{height:204px}.academy-spar-dog{top:28px;height:150px}.academy-spar-sword{top:20px;height:139px}}
 @media(prefers-reduced-motion:reduce){.academy-laser-cloud,.academy-laser-track,.academy-laser-dot,.academy-laser-beam,.academy-laser-obstacle span,.academy-laser-cat .cat-front-paw,.academy-laser-cat .cat-back-paw,.academy-laser-cat .cat-tail{animation:none}}
+/* Save status and optional battle reward, accessible on small screens. */
+.claws-save{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#e4f2e9;color:#203a38;border:2px solid #9ec5b1;border-radius:11px;padding:7px 10px;font:800 14px/1.3 system-ui,sans-serif}
+.claws-save button{min-height:40px;background:#254a64;border:1px solid #6699ae;border-radius:9px;padding:6px 11px;color:white;font-weight:900}
+.claws-drop{margin:12px 0;padding:12px;background:#e2f2d7;border:2px solid #91ad85;border-radius:13px;color:#1f3b31}
+.claws-drop h3{margin:0 0 4px;font-size:21px}.claws-drop p{margin:5px 0 10px;font-size:15px;line-height:1.35}
+.claws-drop button{display:block;width:100%;min-height:52px;background:#396c56;border:2px solid #28513f;border-radius:10px;color:#fff;font-size:17px;font-weight:900;padding:9px}
+.claws-drop button:disabled{opacity:.75;background:#566b5e}
+@media(max-width:600px){.claws-save{font-size:13px;padding:5px 8px}}
+ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important}
 </style>
 <!-- AdSense: load once, only on the game page -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
@@ -1095,11 +1104,15 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 @media(prefers-reduced-motion:reduce){.academy-runway .runner{transition:none}}
 </style>
   <!-- Shared Retro Games Hub navigation -->
-  <script src="../../retro-arcade-header.js" data-game-id="claws-vs-paws" data-layout="viewport" defer></script>
+  <script src="../../retro-arcade-header.js" data-game-id="claws-vs-paws" data-layout="scroll" defer></script>
+<script src="../../retro-monetization-config.js?v=20261118-2" data-game-id="claws-vs-paws"></script>
+<script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
+<script src="../../retro-save-service.js?v=20261118-2"></script>
 </head>
 <body>
 <main class="shell">
 <header class="masthead"><div><div class="brand-note">THE FELINE FRONTLINE</div><h1>Claws <span>vs.</span> Paws</h1><div class="subtitle">Cats march right. Dogs defend their castle.</div></div><div class="mast-actions"><div id="phaseTag" class="round-tag">🐈 READY</div><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute game audio" aria-pressed="true" title="Toggle game sound">🔊</button></div></header>
+<div class="claws-save" role="status" aria-live="polite"><span id="clawsSaveStatus">🐾 Guest • saved on this device</span><button id="clawsSyncOptions" type="button" hidden>Sync Options</button><span id="clawsWinStreak">🏆 Victory streak: 0</span></div>
 <div class="hud" role="group" aria-label="Battle stats">
 <div class="stat"><span class="lbl">🐟 Coins</span><span class="val" id="goldStat">24</span></div>
 <button class="stat map-hud-btn" id="mapBtn" type="button" aria-label="Open the Purr-suit Trail map"><span class="lbl">🐾 Trail</span><span class="val" id="levelStat">1</span></button>
@@ -1126,7 +1139,7 @@ html:fullscreen,html:-webkit-full-screen{overflow:auto}
 <div id="panelSquad" class="drawer-panel" hidden><p class="panel-intro">You can bring up to five cat types per level. Each one has its own spawn timer.</p><div id="squadDetails" class="squad-detail"></div><button class="btn primary drawer-action" data-open-panel="cats">+ Browse all cats</button></div>
 <div id="panelAcademy" class="drawer-panel" hidden><div id="academyContent"></div></div>
 <div id="panelTrain" class="drawer-panel" hidden><button id="backToCats" class="back-cats">‹ All Cats</button><div id="details"></div></div>
-<div id="panelBoost" class="drawer-panel" hidden><div class="boost-wallet"><div><b>🌿 Catnip: <span id="boostNip">0</span></b><div><span>Earned immediately from dog defeats</span></div></div></div><div id="boostRoster" class="boost-squad" aria-label="Choose a cat to boost"></div><div id="boostDetail"></div><p class="boost-explainer">All battle boosts disappear when you start a new level. Fish coins and permanent training stay saved. Opening this menu pauses combat.</p></div>
+<div id="panelBoost" class="drawer-panel" hidden><section class="claws-drop" aria-label="Optional rewarded supply drop"><h3>🌿 Catnip Supply Drop</h3><p id="clawsDropStatus" role="status" aria-live="polite">Optional supply drop: 18 temporary catnip after a confirmed rewarded ad. No ad needed to play.</p><button type="button" id="clawsWatchAd" disabled>Rewarded Ads Coming Soon</button></section><div class="boost-wallet"><div><b>🌿 Catnip: <span id="boostNip">0</span></b><div><span>Earned immediately from dog defeats</span></div></div></div><div id="boostRoster" class="boost-squad" aria-label="Choose a cat to boost"></div><div id="boostDetail"></div><p class="boost-explainer">All battle boosts disappear when you start a new level. Fish coins and permanent training stay saved. Opening this menu pauses combat.</p></div>
 <div id="panelHeroes" class="drawer-panel" hidden><p class="panel-intro">Available after clearing level 4. Buy a champion with fish coins, then tap its large summon button during battle. Champions share limited summons per level and do <strong>not</strong> fill a squad slot. One or two dog bosses allow one total hero summon; three bosses allow three total summons. Bonus battles allow no heroes.</p><div id="heroesList" class="heroes-list"></div></div>
 <div id="panelCastle" class="drawer-panel" hidden><p class="panel-intro">Your cat castle gets stronger each level. Equipped cats and permanent HP training add extra defenses. Tap the health card anytime to see how much.</p><div id="castleBreakdown" class="castle-breakdown"></div></div>
 <div id="panelDogs" class="drawer-panel" hidden><p class="dog-stats-legend">Current level <b id="dogPreviewLevel">1</b> · RANGE is attack reach in battlefield units. Dog stats rise each level. Longer sieges may strengthen incoming dogs. Tap the kennel to check its defenders anytime.</p><div id="dogRoster" class="enemy-roster"></div></div>
@@ -1346,6 +1359,30 @@ window.ClawsAudio = (() => {
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('battle'),ctx=canvas.getContext('2d'),W=960,H=500;
 const STORAGE='claws-vs-paws-castle-clash-v1';
+let clawsCloudSave=null,clawsCloudStarting=false,clawsCloudInitializing=false;
+let rewardedDropUsed=false,rewardedDropBusy=false,battleSerial=0;
+const freshSave=()=>({academyPending:null,level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null,bonusCleared:[],winStreak:0});
+function refreshSaveUi(){const s=$('clawsWinStreak');if(s)s.textContent='🏆 Victory streak: '+(save.winStreak||0);}
+function refreshRewardUi(){
+ const button=$('clawsWatchAd'),status=$('clawsDropStatus');if(!button||!status)return;
+ const configured=!!window.RetroRewardedAds?.isConfigured();
+ const eligible=phase==='battle'&&!rewardedDropUsed&&!rewardedDropBusy;
+ button.disabled=!configured||!eligible;
+ button.textContent=rewardedDropBusy?'Checking ad…':rewardedDropUsed?'✓ Supply Drop Claimed':configured?'▶ Watch Ad • +18 Catnip':'Rewarded Ads Coming Soon';
+ status.textContent=rewardedDropUsed?'Supply drop used this battle. Catnip resets at the next battle.':phase!=='battle'?'Start a battle to unlock the optional supply drop.':!configured?'Rewarded ads activate after this game receives its own approved Ad Manager unit.':'Optional: one ad-confirmed +18 catnip per battle. You can win without ads.';
+}
+async function claimRewardedDrop(){
+ if(phase!=='battle'||rewardedDropUsed||rewardedDropBusy||!window.RetroRewardedAds?.isConfigured())return;
+ const serial=battleSerial;
+ rewardedDropBusy=true;refreshRewardUi();
+ try{
+  const result=await window.RetroRewardedAds.watch({onStatus:t=>{if(serial===battleSerial&&$('clawsDropStatus'))$('clawsDropStatus').textContent=t;}});
+  if(serial!==battleSerial||phase!=='battle')return;
+  if(result.granted){rewardedDropUsed=true;catnip+=18;message('🌿 Supply drop delivered! +18 battle catnip.');updateUI(true);}
+  else message(result.message||'No ad available. Nothing spent.');
+ }catch(_){message('Rewarded ads unavailable. Keep playing.');}
+ finally{rewardedDropBusy=false;refreshRewardUi();}
+}
 const sound=window.ClawsAudio;
 const CATS=[
  {id:'tabby',name:'Tabby Squire',short:'Tabby',fur:'#f4b16d',belly:'#ffe4b3',mark:'stripes',weapon:'sword',desc:'Balanced sword fighter',cost:0,power:12,attack:1.05,spawn:5.6,range:32,speed:43},
@@ -1782,15 +1819,47 @@ function academyClaim(){
  updateUI(true);academyRender();sound.effect('purchase');
 }
 
-let save={academyPending:null,level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null,bonusCleared:[]};
-function normalize(data){if(!data || typeof data!=='object')return;save.level=clamp(Math.floor(Number(data.level)||1),1,999);save.coins=clamp(Math.floor(Number(data.coins)||0),0,999999);save.unlocked=Array.isArray(data.unlocked)?[...new Set(['tabby',...data.unlocked.filter(id=>CATMAP[id])])]:['tabby'];save.squad=Array.isArray(data.squad)?[...new Set(data.squad.filter(id=>save.unlocked.includes(id)))].slice(0,5):['tabby'];if(!save.squad.length)save.squad=['tabby'];save.heroUnlocked=Array.isArray(data.heroUnlocked)?[...new Set(data.heroUnlocked.filter(id=>HEROMAP[id]))]:[];save.heroSelected=save.heroUnlocked.includes(data.heroSelected)?data.heroSelected:(save.heroUnlocked[0]||null);save.bonusCleared=Array.isArray(data.bonusCleared)?[...new Set(data.bonusCleared.map(Number).filter(n=>Number.isInteger(n)&&n>=4&&n%4===0&&n<save.level))]:[];save.upgrades={};for(const c of CATS){const u=data.upgrades?.[c.id]||{};save.upgrades[c.id]={power:clamp(Math.floor(Number(u.power)||0),0,12),attack:clamp(Math.floor(Number(u.attack)||0),0,10),lives:clamp(Math.floor(Number(u.lives)||0),0,5),spawn:clamp(Math.floor(Number(u.spawn)||0),0,10)};}}
+let save=freshSave();
+function normalize(data){if(!data || typeof data!=='object')return;save.level=clamp(Math.floor(Number(data.level)||1),1,999);save.winStreak=clamp(Math.floor(Number(data.winStreak)||0),0,999);save.coins=clamp(Math.floor(Number(data.coins)||0),0,999999);save.unlocked=Array.isArray(data.unlocked)?[...new Set(['tabby',...data.unlocked.filter(id=>CATMAP[id])])]:['tabby'];save.squad=Array.isArray(data.squad)?[...new Set(data.squad.filter(id=>save.unlocked.includes(id)))].slice(0,5):['tabby'];if(!save.squad.length)save.squad=['tabby'];save.heroUnlocked=Array.isArray(data.heroUnlocked)?[...new Set(data.heroUnlocked.filter(id=>HEROMAP[id]))]:[];save.heroSelected=save.heroUnlocked.includes(data.heroSelected)?data.heroSelected:(save.heroUnlocked[0]||null);save.bonusCleared=Array.isArray(data.bonusCleared)?[...new Set(data.bonusCleared.map(Number).filter(n=>Number.isInteger(n)&&n>=4&&n%4===0&&n<save.level))]:[];save.upgrades={};for(const c of CATS){const u=data.upgrades?.[c.id]||{};save.upgrades[c.id]={power:clamp(Math.floor(Number(u.power)||0),0,12),attack:clamp(Math.floor(Number(u.attack)||0),0,10),lives:clamp(Math.floor(Number(u.lives)||0),0,5),spawn:clamp(Math.floor(Number(u.spawn)||0),0,10)};}}
 
 try{const s=localStorage.getItem(STORAGE);if(s){const data=JSON.parse(s);normalize(data);save.academyPending=academyCleanPending(data.academyPending);}}catch(e){console.warn('Could not load previous save',e)}
 for(const c of CATS)if(!save.upgrades[c.id])save.upgrades[c.id]={power:0,attack:0,lives:0,spawn:0};
  // If a player already completed an optional mission before disguises were added,
  // honor that victory automatically without asking them to replay or reset.
  for(const cleared of save.bonusCleared){const prize=bonusForMilestone(cleared).rewardCat;if(prize&&!save.unlocked.includes(prize))save.unlocked.push(prize);}
-function persist(){try{const snapshot=activeBonus&&bonusOriginalSquad?{...save,squad:bonusOriginalSquad}:save;localStorage.setItem(STORAGE,JSON.stringify(snapshot));}catch(e){}}
+function snapshotClaws(){return JSON.parse(JSON.stringify(activeBonus&&bonusOriginalSquad?{...save,squad:bonusOriginalSquad}:save));}
+function persist(){const snapshot=snapshotClaws();try{localStorage.setItem(STORAGE,JSON.stringify(snapshot));}catch(e){}if(clawsCloudSave&&!clawsCloudInitializing)clawsCloudSave.save(snapshot,'campaign-progress');refreshSaveUi();}
+function validatedClaws(input){
+ if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid campaign save');
+ const old=save;
+ try{save=freshSave();normalize(input);save.academyPending=academyCleanPending(input.academyPending);
+  for(const cleared of save.bonusCleared){const cat=bonusForMilestone(cleared).rewardCat;if(cat&&!save.unlocked.includes(cat))save.unlocked.push(cat);}
+  return JSON.parse(JSON.stringify(save));
+ }finally{save=old;}
+}
+function restoreClaws(input){
+ if(phase==='battle'){message('Finish this battle before switching saves.');return;}
+ save=validatedClaws(input);persist();phase='prepare';replayLevel=null;activeBonus=null;bonusOriginalSquad=null;trailCelebration=null;trailAdvance=null;
+ resetBattle();updateUI(true);refreshSaveUi();
+}
+const clawsSaveAdapter={gameId:'claws-vs-paws',displayName:'Claws vs. Paws',schemaVersion:1,gameVersion:'castle-clash-v1',
+ emptyState:freshSave,meaningful:s=>s.level>1||s.coins!==24||s.unlocked.length>1||s.heroUnlocked.length>0||s.bonusCleared.length>0||!!s.academyPending||s.winStreak>0||Object.values(s.upgrades).some(u=>Object.values(u).some(Number)),
+ captureState:snapshotClaws,validateSave:validatedClaws,restoreState:restoreClaws,
+ readLegacyLocal:()=>{try{const raw=localStorage.getItem(STORAGE);return raw?JSON.parse(raw):null;}catch(_){return null;}},
+ summarizeSave:s=>'Level '+s.level+', '+s.coins+' fish coins, '+s.unlocked.length+' cats'
+};
+async function beginClawsCloud(){
+ if(clawsCloudStarting||!window.RetroSaveService||!window.retroArcadeSupabaseClient)return;
+ clawsCloudStarting=true;clawsCloudInitializing=true;
+ try{
+  const service=window.RetroSaveService.create(clawsSaveAdapter,{statusId:'clawsSaveStatus',optionsId:'clawsSyncOptions'});
+  const state=await service.initialize();
+  clawsCloudSave=service;
+  if(state&&phase==='prepare')restoreClaws(state);
+  else if(state&&phase==='battle')message('Account save available after battle. Open Sync Options.');
+ }catch(_){$('clawsSaveStatus').textContent='Guest • device save available';}
+ finally{clawsCloudInitializing=false;refreshSaveUi();}
+}
 function stat(c){const u=save.upgrades[c.id];return {power:Math.round(c.power*(1+u.power*.20)),attack:Math.max(.33,c.attack*Math.pow(.91,u.attack)),spawn:clamp(c.spawn*Math.pow(.95,u.spawn),2.50,11),lives:1+u.lives,hp:22*(1+u.lives),range:c.range,speed:c.speed};}
 // The second currency and these bonuses exist only for the current battle.
 function emptyBattleUpgrades(){return Object.fromEntries(CATS.map(c=>[c.id,{power:0,attack:0,lives:0,spawn:0}]));}
@@ -1876,7 +1945,7 @@ function spawnDogTraffic(dt){
   groupDogTimer=groupInterval();
  }
 }
-function resetBattle(){cats=[];dogs=[];shots=[];particles=[];floaters=[];time=0;paused=false;spawnTimers={};soloDogTimer=3;groupDogTimer=activeBonus?16:battleLevel()===1?25:battleLevel()===2?20:14;groupDogGap=0;groupDogQueue=[];dogGroupsSent=0;pendingCoins=0;catnip=0;battleUpgrades=emptyBattleUpgrades();boostSelected=save.squad[0]||'tabby';heroCd=0;heroSummonsUsed=0;gateBossTriggered=false;secondBossTriggered=false;thirdBossTriggered=false;dogBossWarning=0;catBattleMax=catCastleMax();catHp=catBattleMax;dogHp=dogCastleMax();catDefenseCd=2.1;dogDefenseCd=2.1;dogCastleStrikeCd=0;catCastleStrikeCd=0;shake=0;updateUI(true);}
+function resetBattle(){battleSerial++;rewardedDropUsed=false;rewardedDropBusy=false;refreshRewardUi();cats=[];dogs=[];shots=[];particles=[];floaters=[];time=0;paused=false;spawnTimers={};soloDogTimer=3;groupDogTimer=activeBonus?16:battleLevel()===1?25:battleLevel()===2?20:14;groupDogGap=0;groupDogQueue=[];dogGroupsSent=0;pendingCoins=0;catnip=0;battleUpgrades=emptyBattleUpgrades();boostSelected=save.squad[0]||'tabby';heroCd=0;heroSummonsUsed=0;gateBossTriggered=false;secondBossTriggered=false;thirdBossTriggered=false;dogBossWarning=0;catBattleMax=catCastleMax();catHp=catBattleMax;dogHp=dogCastleMax();catDefenseCd=2.1;dogDefenseCd=2.1;dogCastleStrikeCd=0;catCastleStrikeCd=0;shake=0;updateUI(true);}
 function enterBattle(){if(phase!=='prepare')return;if(!save.squad.length){message('Equip at least one cat first!');return;}trailCelebration=null;trailAdvance=null;resetBattle();phase='battle';for(const id of save.squad){const delay=stat(CATMAP[id]).spawn;spawnTimers[id]=delay+save.squad.indexOf(id)*.2;}sound.unlock();message(activeBonus?'⭐ Bonus challenge!':replayLevel!==null?'🐾 Practice Level '+replayLevel+' — no coins.':'🐱 Siege started — clear dogs to damage the kennel!');updateUI(true);}
 
 function endBattle(won){
@@ -1912,14 +1981,14 @@ function endBattle(won){
  }
  if(won){
   const reward=victoryReward(save.level),finished=save.level,earned=reward+pendingCoins;
-  save.coins+=earned;save.level++;persist();
+  save.coins+=earned;save.level++;save.winStreak=clamp((save.winStreak||0)+1,0,999);persist();
   trailAdvance={from:finished,to:save.level};trailCelebration={level:finished,earned,bonus:false};
   phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
   message('🐾 Level '+finished+' conquered! Your cat is moving along the trail.');
   return;
  }
  const consolation=12+Math.min(11,Math.floor(pendingCoins*.25));
- save.coins+=consolation;persist();
+ save.coins+=consolation;save.winStreak=0;persist();
  modal('💔','The Cat Castle Fell!','The dogs won this siege. You earned 🐟 '+consolation+' consolation coins. Catnip resets when you retry.','Return to the Purr-suit Trail',()=>{
   phase='prepare';resetBattle();hideModal();closeDrawer();openDrawer('map');
  });
@@ -2364,7 +2433,7 @@ function updateHUD(){ syncCoinNotifications(); if(phase==='battle'&&!boostTipSho
  else if(phase==='prepare')$('battleLabel').textContent=activeBonus?'⭐ '+activeBonus.title+' · '+activeBonus.maxSlots+' cats max':replayLevel!==null?'🐾 Practice Level '+replayLevel+' · No coin rewards':'🐈 Select your cats → Start level';else $('battleLabel').textContent=phase==='win'?'🏆 Cats conquered the kennel!':'💔 Dogs breached the cat castle';
  const heroMenu=$('heroShopBtn');if(heroMenu)heroMenu.textContent=save.level<5?'⭐ Legendary cats · Level 5+':'⭐ Legendary cats · '+(save.heroSelected?'Selected: '+HEROMAP[save.heroSelected].short:'Choose your champion');}
 
-function updateUI(full=false){updateHUD();updateTimers();if(full){renderSquad();renderOwnedHeroBar();renderBarracks();renderDetails();renderHeroes();renderBattleBoost();if(drawerOpen&&!$('panelSquad').hidden)renderSquadDetails();if(drawerOpen&&!$('panelMap').hidden)renderCampaignMap();updateTimers();}}
+function updateUI(full=false){refreshRewardUi();refreshSaveUi();updateHUD();updateTimers();if(full){renderSquad();renderOwnedHeroBar();renderBarracks();renderDetails();renderHeroes();renderBattleBoost();if(drawerOpen&&!$('panelSquad').hidden)renderSquadDetails();if(drawerOpen&&!$('panelMap').hidden)renderCampaignMap();updateTimers();}}
 function spawnCat(id){const c=CATMAP[id],s=fieldStat(c);if(cats.length>=Math.min(16,10+Math.floor(battleLevel()/2)))return;cats.push({uid:++uid,team:'cat',id,type:c.id,x:155,y:yPath+Math.random()*30-15,hp:s.hp,maxHp:s.hp,power:s.power,attack:s.attack,range:s.range,speed:s.speed,cd:Math.random()*.28,anim:Math.random()*10,hit:0,weapon:c.weapon,scale:c.id==='maine'?1.35:c.id==='ginger'?1.18:1});puff(155,yPath,3,'#fbf4db');}
 function spawnDog(type){const base=DOGS[type],L=activeBonus?activeBonus.milestone+1:battleLevel();
  // Long sieges get tougher instead of trapping an underpowered squad in a stalemate.
@@ -2570,7 +2639,7 @@ $('fullscreenBtn').addEventListener('click',()=>{
 });
 function startOverFromZero(){
  try{localStorage.removeItem(STORAGE);}catch(e){}
- save={academyPending:null,level:1,coins:24,unlocked:['tabby'],squad:['tabby'],upgrades:{},heroUnlocked:[],heroSelected:null,bonusCleared:[]};
+ save=freshSave();
  for(const c of CATS)save.upgrades[c.id]={power:0,attack:0,lives:0,spawn:0};
  replayLevel=null;selected='tabby';speed=1;phase='prepare';activeBonus=null;bonusOriginalSquad=null;trailCelebration=null;trailAdvance=null;resetBattle();hideModal();closeDrawer();persist();updateUI(true);message('Fresh start! Level 1 · Tabby only.');
 }
@@ -2580,6 +2649,7 @@ $('startOverBtn').addEventListener('click',()=>{
  $('modalCancel').onclick=hideModal;
  $('modalCancel').focus();
 });
+$('clawsWatchAd').addEventListener('click',claimRewardedDrop);
 $('howBtn').addEventListener('click',()=>showTutorial(false));
 $('replayScreenTipsBtn').addEventListener('click',()=>{screenGuideSeen={};try{localStorage.removeItem(SCREEN_GUIDE_KEY);}catch(e){}maybeShowScreenGuide('help');});
 window.addEventListener('keydown',e=>{if(drawerOpen||!$('overlay').hidden)return;if(e.code==='Space'){e.preventDefault();if(phase==='prepare')heroAction();else if(phase==='battle')$('pauseBtn').click();}else if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){const id=save.squad[Number(e.code.slice(-1))-1];if(id)choose(id);}});
@@ -2588,6 +2658,8 @@ if(new URLSearchParams(location.search).get('test')==='1')window.__gameTest={bon
 
 if(new URLSearchParams(location.search).get('test')==='1')window.__academyTest={open:academyOpen,chooseCat:id=>{academyCat=id;academyRender();},chooseKind:kind=>{academyKind=kind;academyRender();},purchase:academyPurchase,start:academyStartRound,press:academyTimingTap,choose:academyChoice,advance:academyAdvance,claim:academyClaim,getPending:()=>save.academyPending&&{...save.academyPending},getSave:()=>JSON.parse(JSON.stringify(save)),dogHp:dogCastleMaxForLevel,dogPower:balanceDogPowerFactor,dogHealth:balanceDogHpFactor,spawn:id=>stat(CATMAP[id]).spawn};
 resetBattle();updateUI(true);requestAnimationFrame(frame);maybeShowFirstTutorial();openDrawer('map');
+window.addEventListener('retro-arcade-auth-ready',()=>{void beginClawsCloud();});
+if(window.retroArcadeSupabaseClient)void beginClawsCloud();
 })();
 </script>
 <script>
