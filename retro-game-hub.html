@@ -7,6 +7,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+    <script src="retro-hub-avatars.js"></script>
     <title>Retro Games Hub — (WIP)</title>
     <meta
       property="og:description"
@@ -516,11 +517,36 @@ header .brand { flex-wrap:wrap; }
  .auth-actions {flex-wrap:wrap;}
 }
 
+
+/* Player status header: arcade hub only */
+header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#0b1732);border-bottom:3px solid #24dce7;box-shadow:0 3px 0 #e44cdb55;padding:10px 16px;gap:14px;min-height:82px;flex-wrap:wrap}
+.hub-player-header .crt{font-weight:950;letter-spacing:1.1px;color:#fff;font-size:18px;text-shadow:2px 2px #a635d1}
+.hub-player-header .suggestion-link{flex-shrink:0}
+.hub-player-header .spacer{display:none}
+.player-header-card{display:flex;align-items:center;gap:11px;min-width:0;flex:1 1 330px}
+.player-header-card[hidden],.guest-header-copy[hidden]{display:none!important}
+.player-header-avatar{width:56px;height:56px;flex:none;border:2px solid #ec70fa;border-radius:50%;background:#292451;display:grid;place-items:center;overflow:hidden;font-size:27px}
+.player-header-avatar svg{width:100%;height:100%;object-fit:contain}
+.player-header-details{min-width:0;flex:1}
+.player-header-name{font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-header-level{color:#ffdf62;font-size:14px;font-weight:850}
+.player-header-xp{font-size:12px;color:#cce9ff;margin-top:2px}
+.player-header-track{height:12px;border:2px solid #9c4cf5;background:#101229;border-radius:30px;overflow:hidden;margin-top:4px}
+.player-header-fill{height:100%;width:0;background:linear-gradient(90deg,#05d5f0,#51ffcf);transition:width .3s}
+.guest-header-copy{flex:1 1 320px;color:#e6edff;font-size:14px;line-height:1.45}
+.guest-header-copy strong{color:#ffe47c}
+.hub-coffee{font-size:12px;color:#dceaff;text-decoration:none;white-space:nowrap;border-bottom:1px solid #50e5ed;padding:5px 2px}
+.hub-coffee:hover{color:#ffdf75}
+.hub-player-header .auth-area{margin-left:0;gap:8px}
+.hub-player-header .auth-area .soon-btn{min-height:42px;font-size:13px;padding:8px 11px}
+.hub-player-header #auth-status{display:none}
+@media(max-width:900px){header.hub-player-header{gap:10px;padding:12px}.hub-player-header .brand{flex:1 1 auto}.hub-player-header .auth-area{width:auto;flex:1 1 100%;justify-content:flex-start}.player-header-card,.guest-header-copy{order:2;flex-basis:100%}.hub-player-header .auth-area{order:3}.hub-coffee{order:4}}
+@media(max-width:520px){.hub-player-header .crt{font-size:15px}.player-header-avatar{width:48px;height:48px}.player-header-name{font-size:15px}.hub-player-header .auth-area .soon-btn{font-size:13px}}
     </style>
   </head>
   <body>
     <div class="page">
-      <header>
+      <header class="hub-player-header">
         <div class="brand">
           <div class="crt">RETRO GAMES HUB</div>
 <a
@@ -530,7 +556,10 @@ header .brand { flex-wrap:wrap; }
   Suggest a Game
 </a>
         </div>
-        <div class="spacer">        </div>
+        <div class="spacer"></div>
+<div class="player-header-card" id="player-header-card" hidden aria-live="polite"><div class="player-header-avatar" id="player-header-avatar">🎮</div><div class="player-header-details"><div class="player-header-name" id="player-header-name">Player</div><div class="player-header-level" id="player-header-level">★ Level 1</div><div class="player-header-xp" id="player-header-xp">Loading XP…</div><div class="player-header-track" id="player-header-track" role="progressbar" aria-label="XP toward next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="player-header-fill" id="player-header-fill"></div></div></div></div>
+<div class="guest-header-copy" id="guest-header-copy"><strong>Level up your arcade adventure!</strong> Create a free account to earn XP, unlock rewards, and upgrade your avatar.</div>
+<a class="hub-coffee" id="hub-coffee-link" href="mailto:michelle@michellew.io?subject=Support%20the%20Retro%20Games%20Hub" title="Ask how to support the developer">☕ Support the Dev ♡</a>
 
 <div class="auth-area" aria-label="Player account">
   <span id="auth-status" aria-live="polite"></span>
@@ -985,8 +1014,42 @@ function clearGuestPrompt() {
   returnPrompt.hidden = true;
   try { sessionStorage.removeItem(GAME_PENDING_KEY); } catch (_error) {}
 }
+
+let headerProfileRequest=0;
+async function refreshPlayerHeader(player){
+ const request=++headerProfileRequest;
+ const card=document.getElementById("player-header-card"),guest=document.getElementById("guest-header-copy");
+ card.hidden=!player;guest.hidden=!!player;
+ if(!player)return;
+ const name=document.getElementById("player-header-name"),avatar=document.getElementById("player-header-avatar");
+ name.textContent="Player";avatar.textContent="🎮";
+ document.getElementById("player-header-level").textContent="★ Level 1";
+ document.getElementById("player-header-xp").textContent="Loading XP…";
+ document.getElementById("player-header-fill").style.width="0%";
+ try{
+  const [profile,xp]=await Promise.all([
+   supabaseClient.from("profiles").select("username,avatar_key").eq("id",player.id).maybeSingle(),
+   supabaseClient.from("xp_ledger").select("amount").eq("user_id",player.id)
+  ]);
+  if(request!==headerProfileRequest)return;
+  if(profile.error||xp.error)throw profile.error||xp.error;
+  const p=profile.data||{};
+  name.textContent=p.username||player.email?.split("@")[0]||"Player";
+  if(p.avatar_key&&window.RetroHubAvatars){avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key);}
+  const total=(xp.data||[]).reduce((n,r)=>n+Number(r.amount||0),0);
+  const level=Math.floor(Math.sqrt(total/50))+1;
+  const start=50*(level-1)*(level-1),next=50*level*level;
+  const percent=Math.max(0,Math.min(100,100*(total-start)/(next-start)));
+  document.getElementById("player-header-level").textContent="★ Level "+level;
+  document.getElementById("player-header-xp").textContent=total.toLocaleString()+" total XP · "+(total-start)+" / "+(next-start)+" to next level";
+  document.getElementById("player-header-fill").style.width=percent+"%";
+  document.getElementById("player-header-track").setAttribute("aria-valuenow",String(Math.round(percent)));
+ }catch(error){if(request!==headerProfileRequest)return;document.getElementById("player-header-xp").textContent="XP temporarily unavailable";console.warn("Player header unavailable",error);}
+}
+
 function updateAuthUI(user) {
   currentPlayer = user || null;
+  refreshPlayerHeader(currentPlayer);
   if (currentPlayer) {
     authStatus.textContent = "Player signed in";
     authOpenBtn.style.display = "none";
