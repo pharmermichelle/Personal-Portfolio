@@ -542,6 +542,34 @@ header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#
 .hub-player-header #auth-status{display:none}
 @media(max-width:900px){header.hub-player-header{gap:10px;padding:12px}.hub-player-header .brand{flex:1 1 auto}.hub-player-header .auth-area{width:auto;flex:1 1 100%;justify-content:flex-start}.player-header-card,.guest-header-copy{order:2;flex-basis:100%}.hub-player-header .auth-area{order:3}.hub-coffee{order:4}}
 @media(max-width:520px){.hub-player-header .crt{font-size:15px}.player-header-avatar{width:48px;height:48px}.player-header-name{font-size:15px}.hub-player-header .auth-area .soon-btn{font-size:13px}}
+
+/* Compact mobile header: two deliberate rows */
+@media(max-width:900px){
+ header.hub-player-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px 12px;padding:12px 14px}
+ .hub-player-header .brand{grid-column:1;grid-row:1;min-width:0;display:flex;flex-wrap:nowrap;gap:8px}
+ .hub-player-header .crt{font-size:clamp(12px,3.4vw,17px);white-space:nowrap;padding:7px 8px}
+ .hub-player-header .suggestion-link{font-size:clamp(11px,3vw,14px);padding:8px 10px;white-space:nowrap}
+ .hub-player-header .player-header-card,.hub-player-header .guest-header-copy{grid-column:1;grid-row:2;order:initial;flex-basis:auto;min-width:0}
+ .hub-player-header .auth-area{grid-column:2;grid-row:2;order:initial;width:auto;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;min-width:96px}
+ .hub-player-header .auth-area .soon-btn{font-size:12px;min-height:36px;padding:7px 8px;text-align:center;justify-content:center;white-space:nowrap}
+ .hub-player-header .hub-coffee{grid-column:2;grid-row:1;order:initial;justify-self:end;font-size:11px;white-space:nowrap}
+ .hub-player-header .player-header-avatar{width:48px;height:48px}
+ .hub-player-header .player-header-card{gap:8px}
+ .hub-player-header .player-header-name{font-size:14px}
+ .hub-player-header .player-header-level{font-size:13px}
+ .hub-player-header .player-header-xp{font-size:11px}
+ .hub-player-header .player-header-track{height:10px}
+}
+@media(max-width:440px){
+ header.hub-player-header{grid-template-columns:minmax(0,1fr) 102px;gap:9px 8px}
+ .hub-player-header .brand{gap:5px}
+ .hub-player-header .crt{font-size:11px;letter-spacing:0;padding:8px 5px}
+ .hub-player-header .suggestion-link{font-size:11px;padding:8px 6px}
+ .hub-player-header .hub-coffee{font-size:10px;max-width:102px;text-align:center;white-space:normal}
+ .hub-player-header .player-header-avatar{width:40px;height:40px}
+ .hub-player-header .player-header-name{font-size:13px}
+ .hub-player-header .player-header-xp{font-size:10px}
+}
     </style>
   </head>
   <body>
@@ -1032,10 +1060,11 @@ async function refreshPlayerHeader(player){
    supabaseClient.from("xp_ledger").select("amount").eq("user_id",player.id)
   ]);
   if(request!==headerProfileRequest)return;
-  if(profile.error||xp.error)throw profile.error||xp.error;
-  const p=profile.data||{};
+  if(profile.error)console.warn("Player profile request:",profile.error.code,profile.error.message);
+  const p=profile.error?{}:(profile.data||{});
   name.textContent=p.username||player.email?.split("@")[0]||"Player";
   if(p.avatar_key&&window.RetroHubAvatars){avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key);}
+  if(xp.error)throw xp.error;
   const total=(xp.data||[]).reduce((n,r)=>n+Number(r.amount||0),0);
   const level=Math.floor(Math.sqrt(total/50))+1;
   const start=50*(level-1)*(level-1),next=50*level*level;
@@ -1044,7 +1073,7 @@ async function refreshPlayerHeader(player){
   document.getElementById("player-header-xp").textContent=total.toLocaleString()+" total XP · "+(total-start)+" / "+(next-start)+" to next level";
   document.getElementById("player-header-fill").style.width=percent+"%";
   document.getElementById("player-header-track").setAttribute("aria-valuenow",String(Math.round(percent)));
- }catch(error){if(request!==headerProfileRequest)return;document.getElementById("player-header-xp").textContent="XP temporarily unavailable";console.warn("Player header unavailable",error);}
+ }catch(error){if(request!==headerProfileRequest)return;document.getElementById("player-header-xp").textContent="XP temporarily unavailable";console.warn("Player XP request failed:",error?.code||"network",error?.message||error);}
 }
 
 function updateAuthUI(user) {
