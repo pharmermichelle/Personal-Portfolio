@@ -1838,9 +1838,13 @@ function validatedClaws(input){
  }finally{save=old;}
 }
 function restoreClaws(input){
- if(phase==='battle'){message('Finish this battle before switching saves.');return;}
- save=validatedClaws(input);persist();phase='prepare';replayLevel=null;activeBonus=null;bonusOriginalSquad=null;trailCelebration=null;trailAdvance=null;
- resetBattle();updateUI(true);refreshSaveUi();
+ // Account sign-in/out must never leave a previous player's army or campaign loaded.
+ // Cancel an active battle without awarding coins, then apply the validated save.
+ const wasBattling=phase==='battle';
+ save=validatedClaws(input);
+ phase='prepare';replayLevel=null;activeBonus=null;bonusOriginalSquad=null;trailCelebration=null;trailAdvance=null;
+ resetBattle();persist();updateUI(true);refreshSaveUi();
+ if(wasBattling)message('Account changed. Battle reset to protect saved progress.');
 }
 const clawsSaveAdapter={gameId:'claws-vs-paws',displayName:'Claws vs. Paws',schemaVersion:1,gameVersion:'castle-clash-v1',
  emptyState:freshSave,meaningful:s=>s.level>1||s.coins!==24||s.unlocked.length>1||s.heroUnlocked.length>0||s.bonusCleared.length>0||!!s.academyPending||s.winStreak>0||Object.values(s.upgrades).some(u=>Object.values(u).some(Number)),
