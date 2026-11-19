@@ -15,6 +15,10 @@
       #hint-ad-btn:not(:disabled) { cursor:pointer; background:#567242; }
       #hint-ad-btn:disabled { opacity:.75; cursor:not-allowed; }
       #hint-ad-btn:focus-visible { outline:4px solid #ffe298; outline-offset:3px; }
+      /* Google explicitly permits collapsing unfilled AdSense <ins> slots.
+         Leave filled ad slots untouched; this cannot fix missing ad demand. */
+      ins.adsbygoogle[data-ad-status="unfilled"] { display:none !important; }
+      .ad-section:has(> ins.adsbygoogle[data-ad-status="unfilled"]) { display:none; }
     </style>
 
 
@@ -94,7 +98,7 @@
             </div>
             <button id="hint-ad-btn" type="button" hidden disabled style="width:100%;min-height:52px;margin:10px 0 12px;padding:10px 14px;border:2px solid #b8d69e;border-radius:12px;background:#345540;color:#fff5cf;font:800 17px/1.35 system-ui,sans-serif;">Extra Hints (Ads Coming Soon)</button>
             <p class="game-message" id="game-message" role="status" aria-live="polite">Choose a piece to begin.</p>
-            <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">One free hint per branch. More hints can be unlocked with optional rewarded ads once enabled. No ad is required to finish.</p>
+            <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">One free hint per branch. Afterward, choose a rewarded ad for another hint if one is available. No ad is required to finish.</p>
           </div>
 
           <aside id="sidebar" aria-label="Puzzle pieces">
@@ -134,7 +138,7 @@
          Example only (NOT a working ad unit): window.RETRO_REWARDED_AD_UNIT_PATH = "/YOUR_NETWORK_ID/YOUR_REWARDED_AD_UNIT";
          Do not set this to an AdSense client ID, AdSense slot, or an invented unit. -->
     <script src="../../retro-monetization-config.js?v=20261118-1"></script>
-    <script src="../../retro-rewarded-ads.js?v=20261118-1"></script>
+    <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
     <script src="../../retro-save-service.js?v=20261118-1"></script>
     <script src="../../retro-rewards.js?v=20261118-1"></script>
     <script src="main.js?v=20261118-4"></script>
