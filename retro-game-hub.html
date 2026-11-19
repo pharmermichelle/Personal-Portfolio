@@ -1050,30 +1050,41 @@ async function refreshPlayerHeader(player){
  card.hidden=!player;guest.hidden=!!player;
  if(!player)return;
  const name=document.getElementById("player-header-name"),avatar=document.getElementById("player-header-avatar");
- name.textContent="Player";avatar.textContent="🎮";
- document.getElementById("player-header-level").textContent="★ Level 1";
- document.getElementById("player-header-xp").textContent="Loading XP…";
- document.getElementById("player-header-fill").style.width="0%";
+ const xpText=document.getElementById("player-header-xp"),fill=document.getElementById("player-header-fill"),track=document.getElementById("player-header-track");
+ name.textContent=player.email?.split("@")[0]||"Player";avatar.textContent="🎮";
+ document.getElementById("player-header-level").textContent="★ Level —";
+ xpText.textContent="Loading XP…";fill.style.width="0%";track.setAttribute("aria-valuenow","0");
+ const fetchPlayerData=()=>Promise.all([
+  supabaseClient.from("profiles").select("username,avatar_key").eq("id",player.id).maybeSingle(),
+  supabaseClient.from("xp_ledger").select("amount").eq("user_id",player.id)
+ ]);
  try{
-  const [profile,xp]=await Promise.all([
-   supabaseClient.from("profiles").select("username,avatar_key").eq("id",player.id).maybeSingle(),
-   supabaseClient.from("xp_ledger").select("amount").eq("user_id",player.id)
-  ]);
+  let [profile,xp]=await fetchPlayerData();
+  if(request!==headerProfileRequest)return;
+  // A cached or expired browser session can affect both table reads. Refresh once.
+  if(profile.error&&xp.error&&[401,403].includes(Number(profile.status||xp.status))){
+   const refreshed=await supabaseClient.auth.refreshSession();
+   if(!refreshed.error){[profile,xp]=await fetchPlayerData();}
+  }
   if(request!==headerProfileRequest)return;
   if(profile.error)console.warn("Player profile request:",profile.error.code,profile.error.message);
   const p=profile.error?{}:(profile.data||{});
   name.textContent=p.username||player.email?.split("@")[0]||"Player";
-  if(p.avatar_key&&window.RetroHubAvatars){avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key);}
+  if(p.avatar_key&&window.RetroHubAvatars)avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key);
   if(xp.error)throw xp.error;
-  const total=(xp.data||[]).reduce((n,r)=>n+Number(r.amount||0),0);
+  const total=(xp.data||[]).reduce((n,row)=>n+Number(row.amount||0),0);
   const level=Math.floor(Math.sqrt(total/50))+1;
   const start=50*(level-1)*(level-1),next=50*level*level;
   const percent=Math.max(0,Math.min(100,100*(total-start)/(next-start)));
   document.getElementById("player-header-level").textContent="★ Level "+level;
-  document.getElementById("player-header-xp").textContent=total.toLocaleString()+" total XP · "+(total-start)+" / "+(next-start)+" to next level";
-  document.getElementById("player-header-fill").style.width=percent+"%";
-  document.getElementById("player-header-track").setAttribute("aria-valuenow",String(Math.round(percent)));
- }catch(error){if(request!==headerProfileRequest)return;document.getElementById("player-header-xp").textContent="XP temporarily unavailable";console.warn("Player XP request failed:",error?.code||"network",error?.message||error);}
+  xpText.textContent=total.toLocaleString()+" total XP · "+(total-start)+" / "+(next-start)+" to next level";
+  fill.style.width=percent+"%";track.setAttribute("aria-valuenow",String(Math.round(percent)));
+ }catch(error){
+  if(request!==headerProfileRequest)return;
+  const code=String(error?.code||error?.status||"network").slice(0,24);
+  xpText.textContent="XP unavailable ("+code+")";
+  console.warn("Player XP request failed:",code,error?.message||error);
+ }
 }
 
 function updateAuthUI(user) {
