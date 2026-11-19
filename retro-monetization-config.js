@@ -4,6 +4,6 @@
  */
 (function (window) {
   "use strict";
-  const rewardedAdUnitPath = ""; // Example format: /12345678/acorn_rewarded (example only, not live).
+  const rewardedAdUnitPath = "/23396250060/acorn_rewarded_hints"; // Acorn Ascent rewarded web ad unit
   window.RETRO_REWARDED_AD_UNIT_PATH = rewardedAdUnitPath;
 })(window);
