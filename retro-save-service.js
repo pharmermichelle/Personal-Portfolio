@@ -148,7 +148,7 @@
       const epoch=this.epoch;
       this.backup("device",device);if(cloud)this.backup("account",cloud.envelope);
       this.modeTo("conflict");this.setStatus("Choose your save • not synced yet");
-      const choice=await this.prompt("Choose Acorn Ascent progress",description+" Device: "+this.adapter.summarizeSave(device)+". Account: "+(cloud?this.adapter.summarizeSave(cloud.state):"no progress yet")+".",[
+      const choice=await this.prompt("Choose "+(this.adapter.displayName||"game")+" progress",description+" Device: "+this.adapter.summarizeSave(device)+". Account: "+(cloud?this.adapter.summarizeSave(cloud.state):"no progress yet")+".",[
         {text:cloud?"Use account save":"Start fresh in account",value:"account"},
         {text:cloud?"Use device save (replace account)":"Import device save to account",value:"device"},
         {text:"Not now — device only",value:"later"}
