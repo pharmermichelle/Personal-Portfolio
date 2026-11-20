@@ -52,7 +52,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .game-header h1 em { color: #e6bc79; font-style: normal; }
 .tagline { position: relative; margin: 9px 0 14px; color: #c8d6c9; font-size: .95rem; }
 .header-deco { pointer-events: none; position: absolute; inset: 0; }
-#moon { position: absolute; top: 20px; right: 75px; width: 88px; max-width: 18%; opacity: .84; filter: drop-shadow(0 0 22px rgba(252, 233, 175, .18)); }
+#moon { position: absolute; top: 12px; right: 22px; width: 88px; max-width: 16%; opacity: .88; filter: drop-shadow(0 0 22px rgba(252, 233, 175, .18)); }
 .star { position: absolute; color: #c4db9e; opacity: .65; } .star-a { top: 27px; right: 178px; font-size: 1.45rem; } .star-b { top: 99px; right: 47px; font-size: .8rem; }
 .progress-steps { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; margin: 14px auto 0; }
 .progress-step { width: min(6.5vw, 39px); height: 7px; border-radius: 10px; background: rgba(216, 237, 212, .17); transition: background .3s; }
@@ -144,10 +144,18 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
   #pieces-panel { grid-template-columns: repeat(4,minmax(0,1fr)); }
   .piece-tile { min-height: 97px; }
 }
+/* The moon stays in the upper-right sky instead of obscuring the title. */
+@media (max-width: 620px) {
+  #moon { top: -6px; right: 4px; width: 46px; max-width: none; opacity: .75; }
+}
+/* Hide routine confirmations; alert players only when save recovery needs attention. */
+.acorn-save-status:not([hidden]) { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:10px 16px; margin:8px 0 14px; border:1px solid #b0d2bf; border-radius:12px; background:#173d32; color:#f5fff4; font:700 16px/1.5 system-ui,sans-serif; }
+.acorn-save-status #save-options { min-height:44px; min-width:110px; background:#f4d875; color:#1a2a30; border:1px solid #ffe9b5; border-radius:8px; padding:8px 13px; font:700 15px system-ui,sans-serif; }
+.acorn-save-status #save-options:focus-visible { outline:3px solid #ffe9b5; outline-offset:3px; }
 @media (max-width: 440px) {
   .game-header { padding: 25px 13px 19px; min-height: 170px; }
   .game-header h1 { font-size: 2.8rem; }
-  #moon { right: 6px; top: 6px; width: 56px; opacity: .48; }
+  #moon { right: 2px; top: -6px; width: 44px; max-width: none; opacity: .72; }
   .star-a { right: 73px; }.star-b { right: 30px; }
   .hud-card { flex-wrap: wrap; }
   .hud-stat { flex: 1 1 27%; padding: 9px 7px; }
