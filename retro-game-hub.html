@@ -570,6 +570,8 @@ header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#
  .hub-player-header .player-header-name{font-size:13px}
  .hub-player-header .player-header-xp{font-size:10px}
 }
+
+.auth-remember{display:flex;align-items:center;gap:9px;font-size:14px;margin:12px 0 5px;cursor:pointer}.auth-remember input{width:19px;height:19px;accent-color:#35d5df;flex:none}.auth-session-note,.auth-social-note{font-size:12px;line-height:1.5;color:#b8c9e6;margin:5px 0 12px}.auth-social-divider{text-align:center;color:#c5d3ed;font-size:13px;margin:14px 0 10px}.auth-social-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.auth-social-btn{min-height:44px;border:1px solid #6b8ca9!important;background:#172a4a!important;color:#fff!important;font-weight:700}.auth-social-btn:focus-visible{outline:3px solid #45e5f3;outline-offset:3px}
     </style>
   </head>
   <body>
@@ -722,10 +724,15 @@ header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#
           <input id="auth-email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="email" />
           <label for="auth-password">Password</label>
           <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
+          <label class="auth-remember"><input id="remember-email" type="checkbox" checked /> Remember my email on this device</label>
+          <p class="auth-session-note">✓ Stay signed in is enabled by default on this device. Use Log Out to end your session.</p>
           <div class="auth-actions">
             <button id="login-btn" class="btn" type="button">Log In</button>
             <button id="signup-btn" class="btn" type="button">Create Account</button>
           </div>
+          <div class="auth-social-divider">or continue with</div>
+          <div class="auth-social-actions"><button id="google-auth-btn" type="button" class="btn auth-social-btn">Google</button><button id="facebook-auth-btn" type="button" class="btn auth-social-btn">Facebook</button></div>
+          <p class="auth-social-note">Social sign-in requires provider setup. Existing players should link a provider to their account before using it to sign in.</p>
           <p id="auth-message" role="status" aria-live="polite"></p>
           <p class="auth-protection">Account authentication is provided by <a href="https://supabase.com/docs/guides/auth" target="_blank" rel="noopener noreferrer">Supabase Auth</a>. Player profile records have user-specific access rules. We never claim that any website is risk-free.</p>
         </div>
@@ -988,6 +995,11 @@ const authStatus = document.getElementById("auth-status");
 const authMessage = document.getElementById("auth-message");
 const authEmail = document.getElementById("auth-email");
 const authPassword = document.getElementById("auth-password");
+const rememberEmail = document.getElementById("remember-email");
+const REMEMBER_EMAIL_KEY = "retroHubRememberedEmail";
+try { const savedEmail=localStorage.getItem(REMEMBER_EMAIL_KEY); if(savedEmail)authEmail.value=savedEmail; rememberEmail.checked=!!savedEmail; } catch(_) { rememberEmail.checked=false; }
+function storeRememberedEmail(){try{if(rememberEmail.checked)localStorage.setItem(REMEMBER_EMAIL_KEY,authEmail.value.trim());else localStorage.removeItem(REMEMBER_EMAIL_KEY);}catch(_){}}
+rememberEmail.addEventListener("change",storeRememberedEmail);
 const authHeading = document.getElementById("auth-heading");
 const authSummary = document.getElementById("auth-summary");
 const accountIntro = document.getElementById("account-intro");
@@ -1194,6 +1206,7 @@ loginBtn.addEventListener("click", async () => {
       password: authPassword.value
     });
     if (error) throw error;
+    storeRememberedEmail();
     updateAuthUI(data.user);
     closeAuthModal();
     if (returnGameAfterLogin) {
@@ -1214,6 +1227,7 @@ signupBtn.addEventListener("click", async () => {
       password: authPassword.value
     });
     if (error) throw error;
+    storeRememberedEmail();
     if (data.session?.user) {
       updateAuthUI(data.session.user);
       window.location.href = "retro-player-profile.html";
@@ -1225,6 +1239,22 @@ signupBtn.addEventListener("click", async () => {
     setAuthMessage(error.message || "Couldn't create the account. Please try again.");
   } finally { signupBtn.disabled = false; loginBtn.disabled = false; }
 });
+async function startSocialLogin(provider){
+ const btn=document.getElementById(provider+"-auth-btn");btn.disabled=true;
+ setAuthMessage("Connecting to "+(provider==="google"?"Google":"Facebook")+"…");
+ try{
+  storeRememberedEmail();
+  const destination=new URL(window.location.href);
+  destination.searchParams.delete("auth");
+  const {error}=await supabaseClient.auth.signInWithOAuth({provider,options:{redirectTo:destination.toString()}});
+  if(error)throw error;
+ }catch(error){
+  setAuthMessage("Social sign-in isn't ready yet or was interrupted: "+(error.message||"Please try again.")+" You can still use email and password.");
+  btn.disabled=false;
+ }
+}
+document.getElementById("google-auth-btn").addEventListener("click",()=>startSocialLogin("google"));
+document.getElementById("facebook-auth-btn").addEventListener("click",()=>startSocialLogin("facebook"));
 logoutBtn.addEventListener("click", async () => {
   logoutBtn.disabled = true;
   const {error} = await supabaseClient.auth.signOut();
