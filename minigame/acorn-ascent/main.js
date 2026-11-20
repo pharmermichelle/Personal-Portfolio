@@ -376,8 +376,10 @@ function updateUI() {
   $("hint-btn").title="Reveal your one free placement hint on this branch.";
   const adBtn=$("hint-ad-btn");
   adBtn.hidden=!hintUsed||levelLocked;
-  adBtn.disabled=hintBusy||!adsConfigured;
-  adBtn.textContent=hintBusy?"Checking ad reward…":adsConfigured?"▶ Watch Ad for Another Hint":"Extra Hints (Ads Coming Soon)";
+  // A missing ad must never disable the fallback hint.
+  adBtn.disabled=hintBusy;
+  adBtn.textContent=hintBusy?"Checking hint availability…":adsConfigured?"▶ Watch Ad for Another Hint":"✧ Free Extra Hint (No Ad Available)";
+  adBtn.title=adsConfigured?"If an ad can't load, you'll get a free hint. Skipping an available ad gives no reward.":"No rewarded ad is configured, so this extra hint is free.";
   $("rotate-btn").disabled = !selection || levelLocked || currentLevel < 2;
   $("cancel-btn").disabled = !selection || levelLocked;
   $("undo-btn").disabled = !(history.length || (selection && selection.original)) || levelLocked;
@@ -576,7 +578,7 @@ function undoPlacement() {
   placedPieces = last;
   renderPieceTray(); updateUI(); draw(); message("Last placement undone.");
 }
-function revealHint() {
+function revealHint(sourceNote="") {
   const remaining=levelData().shapes.filter(shape=>!placedPieces.some(p=>p.shape.id===shape.id));
   const next=remaining.find(shape=>!hintedShapes.has(shape.id))||remaining[0];
   if(!next){message("All pieces are already placed.");return false;}
@@ -584,10 +586,13 @@ function revealHint() {
   const target={shape:next};
   hintTarget=target;
   updateUI();draw();
-  message(`The golden outline shows where piece ${next.id+1} belongs. You may need to rotate it.`);
+  message((sourceNote?sourceNote+" ":"")+`The golden outline shows where piece ${next.id+1} belongs. You may need to rotate it.`);
   window.setTimeout(()=>{if(hintTarget===target){hintTarget=null;draw();}},4200);
   return true;
 }
+// Only genuine ad unavailability grants the no-ad fallback. Explicit skips,
+// canceled ads, timeouts after an ad is shown, and concurrent requests do not.
+const AD_UNAVAILABLE_REASONS=new Set(["not_configured","no_fill","no_response","unsupported","unavailable","load_failed","error"]);
 async function showHint() {
   if(levelLocked||hintBusy)return;
   if(!hintUsed){
@@ -598,7 +603,7 @@ async function showHint() {
     return;
   }
   if(!window.RetroRewardedAds||!window.RetroRewardedAds.isConfigured()){
-    message("Optional ad hints aren't available yet. Each branch still includes one free hint.","error");
+    revealHint("No rewarded ad is available, so this extra hint is free.");
     return;
   }
   const levelAtStart=currentLevel;
@@ -609,9 +614,10 @@ async function showHint() {
       onStatus:text=>{if(currentLevel===levelAtStart)message(text);}
     });
     if(levelAtStart!==currentLevel||levelLocked)return;
-    if(result.granted)revealHint();
-    else message(result.message||"Rewarded ad unavailable. You haven't spent a hint.","error");
-  }catch(_){message("Rewarded ads are temporarily unavailable.","error");}
+    if(result.granted)revealHint("Ad reward confirmed!");
+    else if(AD_UNAVAILABLE_REASONS.has(result.reason))revealHint("No rewarded ad could be shown, so this extra hint is free.");
+    else message(result.message||"This ad did not grant a hint. Please try again.","error");
+  }catch(_){if(levelAtStart===currentLevel&&!levelLocked)revealHint("Rewarded ads are unavailable, so this extra hint is free.");}
   finally{hintBusy=false;updateUI();}
 }
 
