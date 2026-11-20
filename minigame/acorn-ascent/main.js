@@ -1,4 +1,24 @@
 "use strict";
+// Move the pieces directly below the puzzle board on phones, before the tools.
+// Restore the desktop sidebar when the viewport grows; no pieces are recreated.
+function arrangeMobilePuzzleLayout(){
+ const wrapper=document.getElementById("game-wrapper");
+ const board=document.querySelector(".board-column");
+ const sidebar=document.getElementById("sidebar");
+ const tools=board?.querySelector(".board-tools");
+ if(!wrapper||!board||!sidebar||!tools)return;
+ const mobile=window.matchMedia("(max-width: 750px)").matches;
+ if(mobile){
+   if(sidebar.parentElement!==board)board.insertBefore(sidebar,tools);
+   sidebar.classList.add("mobile-piece-tray");
+ }else{
+   if(sidebar.parentElement!==wrapper)wrapper.appendChild(sidebar);
+   sidebar.classList.remove("mobile-piece-tray");
+ }
+}
+arrangeMobilePuzzleLayout();
+window.addEventListener("resize",arrangeMobilePuzzleLayout);
+
 
 // Acorn Ascent v2 — solvable puzzles, pointer drag/drop, rotations, undo, hints.
 const canvas = document.getElementById("gameCanvas");
