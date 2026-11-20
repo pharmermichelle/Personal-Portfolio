@@ -21,3 +21,23 @@
 .profile-editor .editor-body>.privacy-row{margin-top:18px}
 .editor-footer{padding:5px 20px 18px}
 @media(max-width:680px){.creator-intro{padding:14px 12px 0}.profile-editor{margin:12px 10px}.profile-editor>summary{padding:12px;gap:10px;min-height:64px}.profile-editor>summary strong{font-size:14px;letter-spacing:.4px}.profile-editor>summary small{font-size:12px}.editor-icon{width:36px;height:36px;font-size:21px}.profile-editor .editor-body{padding:12px}.profile-editor .creator-layout{grid-template-columns:1fr}.editor-footer{padding:5px 12px 16px}}
+
+/* Account-backed game records: accessible card rows on narrow screens. */
+.game-stats-status{margin:0 20px 12px;color:#d9f6f1;font-size:14px;line-height:1.45}
+.game-stats table{min-width:740px}
+.game-stats td:first-child a{color:#8ef0ef;text-decoration:underline;text-underline-offset:3px}
+.game-stats td:first-child a:focus-visible{outline:3px solid #ffe77e;outline-offset:3px}
+.game-stats td:not(:first-child){color:#f4ebff}
+.game-stats td:nth-child(4){max-width:225px;line-height:1.4}
+@media(max-width:720px){
+  .game-stats .table-scroll{overflow:visible;padding:0 12px 20px}
+  .game-stats table,.game-stats tbody,.game-stats tr,.game-stats td{display:block;width:100%;min-width:0}
+  .game-stats thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .game-stats tr{margin:0 0 12px;border:2px solid #7056a5;border-radius:8px;background:#171135;padding:5px 12px}
+  .game-stats td{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid #493c73;padding:11px 0;font-size:15px;overflow-wrap:anywhere}
+  .game-stats td:last-child{border-bottom:0}
+  .game-stats td:first-child{font-size:18px}
+  .game-stats td:not(:first-child)::before{content:attr(data-label);color:#e6d88e;font-size:12px;letter-spacing:.3px;font-weight:800;flex:0 0 44%}
+  .game-stats td:nth-child(4){max-width:none}
+  .game-stats td:not(:first-child){text-align:right}
+}
