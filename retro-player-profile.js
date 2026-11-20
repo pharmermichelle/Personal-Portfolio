@@ -98,6 +98,7 @@
   }
   function updateAuthUI() {
     byId("save-profile").disabled=!user;
+    byId("save-name").disabled=!user;
     byId("sign-in-link").style.display=user?"none":"inline-flex";
     byId("account-status").textContent=user?"Signed in • Account settings":"Not signed in";
     if(!user) {
