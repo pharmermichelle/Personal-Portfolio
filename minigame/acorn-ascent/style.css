@@ -165,3 +165,33 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
   .site-footer { flex-direction: column; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto!important; transition-duration: .01ms!important; } }
+
+/* Mobile-first puzzle cockpit: the shapes sit immediately below the board,
+   ahead of controls, while desktop keeps the traditional side tray. */
+@media(max-width:750px){
+ #game-wrapper{gap:10px}
+ .board-column{padding:10px}
+ .board-heading{margin-bottom:8px}
+ .board-frame{padding:5px;border-radius:12px}
+ #sidebar.mobile-piece-tray{padding:10px 9px;margin:10px 0 0;border-radius:12px}
+ #sidebar.mobile-piece-tray .tray-top{align-items:center}
+ #sidebar.mobile-piece-tray .tray-top h2{font-size:1rem;margin:0}
+ #sidebar.mobile-piece-tray .tray-top .eyebrow{font-size:.6rem;margin:0 0 2px}
+ #sidebar.mobile-piece-tray .tray-hint,#sidebar.mobile-piece-tray .tray-foot{display:none}
+ #sidebar.mobile-piece-tray #pieces-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+ #sidebar.mobile-piece-tray .piece-tile{min-height:70px;padding:5px 2px 3px;gap:2px;border-radius:9px}
+ #sidebar.mobile-piece-tray .piece-tile canvas{width:64px;height:49px;object-fit:contain}
+ #sidebar.mobile-piece-tray .piece-tile small{font-size:.68rem}
+ .board-tools{margin-top:10px;gap:5px}
+ .board-tools button{min-height:44px;font-size:.75rem}
+ .game-message{margin-top:8px;min-height:22px}
+ .hint-reward-note{font-size:12px!important;line-height:1.35!important}
+ #hint-ad-btn{min-height:46px!important;margin:8px 0!important}
+}
+@media(min-width:500px) and (max-width:750px){
+ #sidebar.mobile-piece-tray #pieces-panel{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media(max-width:370px){
+ #sidebar.mobile-piece-tray .piece-tile canvas{width:56px;height:44px}
+ #sidebar.mobile-piece-tray .piece-tile{min-height:65px}
+}
