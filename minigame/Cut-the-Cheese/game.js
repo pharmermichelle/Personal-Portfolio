@@ -41,7 +41,9 @@
   const COLS = 10;
   const RADIUS = 38;
   const DIAM = RADIUS * 2;
-  const ROW_H = 66;
+  // Every cheese uses the same centered, staggered hexagonal lattice.
+  const GRID_STEP = 80;
+  const ROW_H = Math.sqrt(3) * GRID_STEP / 2;
   const BOARD_TOP = 36;
   const KNIFE_Y = H - 108;
   const DANGER_Y = KNIFE_Y - ROW_H * 4;
@@ -92,22 +94,26 @@
     return Array.from({ length: 5 }, randCheese);
   }
 
+  function columnsInRow(row) {
+    // Ten centered cheeses, then nine centered cheeses, repeating.
+    return row % 2 ? COLS - 1 : COLS;
+  }
+
+  function createRow(row) {
+    for (let col = 0; col < columnsInRow(row); col++) {
+      grid.push({
+        row,
+        col,
+        type: randCheese(),
+        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
+      });
+    }
+  }
+
   function initGrid() {
     grid = [];
-    // Level 1 starts with four rows. Placement and cheese types are randomized.
-    for (let row = 0; row < 4; row++) {
-      const count = COLS;
-      for (let col = 0; col < count; col++) {
-        if (Math.random() < 0.91) {
-          grid.push({
-            row,
-            col,
-            type: randCheese(),
-            id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
-          });
-        }
-      }
-    }
+    // Every position is snapped to the grid; only the cheese varieties are random.
+    for (let row = 0; row < 4; row++) createRow(row);
   }
 
   function resetGame() {
@@ -128,11 +134,9 @@
   }
 
   function cellCenter(row, col) {
-    const odd = row % 2;
-    const usable = W - 2 * RADIUS - (odd ? RADIUS : 0);
-    const step = usable / (COLS - 1);
+    const rowWidth = (columnsInRow(row) - 1) * GRID_STEP;
     return {
-      x: RADIUS + (odd ? RADIUS / 2 : 0) + col * step,
+      x: (W - rowWidth) / 2 + col * GRID_STEP,
       y: BOARD_TOP + RADIUS + row * ROW_H
     };
   }
@@ -141,7 +145,7 @@
     let row = Math.max(0, Math.round((y - BOARD_TOP - RADIUS) / ROW_H));
     let best = null;
     for (let rr = Math.max(0, row - 1); rr <= row + 1; rr++) {
-      for (let c = 0; c < COLS; c++) {
+      for (let c = 0; c < columnsInRow(rr); c++) {
         const p = cellCenter(rr, c);
         const d = Math.hypot(x - p.x, y - p.y);
         if (!best || d < best.d) best = { row: rr, col: c, d };
@@ -218,18 +222,7 @@
     // Push existing cheese downward.
     grid.forEach(c => c.row += count);
 
-    for (let row = 0; row < count; row++) {
-      for (let col = 0; col < COLS; col++) {
-        if (Math.random() < 0.87) {
-          grid.push({
-            row,
-            col,
-            type: randCheese(),
-            id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
-          });
-        }
-      }
-    }
+    for (let row = 0; row < count; row++) createRow(row);
   }
 
   function advanceLevelIfNeeded() {
@@ -239,18 +232,7 @@
       // later levels add denser starting patterns.
       const rows = Math.min(4 + Math.floor((level - 1) / 3), 7);
       grid = [];
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < COLS; col++) {
-          if (Math.random() < Math.min(.78 + level * .025, .96)) {
-            grid.push({
-              row,
-              col,
-              type: randCheese(),
-              id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
-            });
-          }
-        }
-      }
+      for (let row = 0; row < rows; row++) createRow(row);
       addRowEvery = Math.max(6, 10 - Math.floor(level / 3));
       nextRowShot = shots + addRowEvery;
       chirp(880, .1);
@@ -292,9 +274,8 @@ projectile = {
     
     shots++;
     if (shots >= nextRowShot) {
-      // Level 1 begins by adding 2 rows; later levels can add 2–3.
-      const rowsToAdd = level >= 4 && Math.random() < .45 ? 3 : 2;
-      addRows(rowsToAdd);
+      // Always add pairs so the existing staggered rows keep their x positions.
+      addRows(2);
       nextRowShot = shots + addRowEvery;
     }
 
@@ -337,21 +318,26 @@ projectile = {
       return;
     }
 
-    let target = closestCell(projectile.x, projectile.y);
-
-    // If nearest spot is occupied, choose nearest open neighbor around it.
-    if (getAt(target.row, target.col)) {
-      const candidates = [];
-      for (let rr = Math.max(0, target.row - 1); rr <= target.row + 1; rr++) {
-        for (let cc = 0; cc < COLS; cc++) {
-          if (!getAt(rr, cc)) {
-            const p = cellCenter(rr, cc);
-            candidates.push({ row: rr, col: cc, d: Math.hypot(projectile.x - p.x, projectile.y - p.y) });
-          }
-        }
+    // Snap each landed cheese to a legal, vacant hex cell connected to the stack.
+    // Occupied coordinates must never be re-used, even in a crowded row.
+    const occupied = new Set(grid.map(c => c.row + ":" + c.col));
+    const maxRow = Math.max(1, ...grid.map(c => c.row + 2));
+    const candidates = [];
+    for (let row = 0; row <= maxRow; row++) {
+      for (let col = 0; col < columnsInRow(row); col++) {
+        if (occupied.has(row + ":" + col)) continue;
+        const point = cellCenter(row, col);
+        if (row !== 0 && neighbors({ row, col }).length === 0) continue;
+        candidates.push({ row, col, d: Math.hypot(projectile.x - point.x, projectile.y - point.y) });
       }
-      candidates.sort((a,b) => a.d - b.d);
-      if (candidates[0]) target = candidates[0];
+    }
+    candidates.sort((a,b) => a.d - b.d);
+    const target = candidates[0] || closestCell(projectile.x, projectile.y);
+    if (occupied.has(target.row + ":" + target.col)) {
+      // No vacant slot remains: do not overlap two cheese sprites in one cell.
+      projectile = null;
+      endGame();
+      return;
     }
 
     const cell = {
