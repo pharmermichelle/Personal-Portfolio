@@ -997,6 +997,10 @@ const authEmail = document.getElementById("auth-email");
 const authPassword = document.getElementById("auth-password");
 const rememberEmail = document.getElementById("remember-email");
 const REMEMBER_EMAIL_KEY = "retroHubRememberedEmail";
+// Stable HTTPS callback URLs matching our live static pages.
+const AUTH_HUB_URL = "https://michellew.io/retro-game-hub.html";
+const AUTH_PROFILE_URL = "https://michellew.io/retro-player-profile.html";
+const OAUTH_GAME_RETURN_KEY = "retroHubOAuthReturnToGame";
 try { const savedEmail=localStorage.getItem(REMEMBER_EMAIL_KEY); if(savedEmail)authEmail.value=savedEmail; rememberEmail.checked=!!savedEmail; } catch(_) { rememberEmail.checked=false; }
 function storeRememberedEmail(){try{if(rememberEmail.checked)localStorage.setItem(REMEMBER_EMAIL_KEY,authEmail.value.trim());else localStorage.removeItem(REMEMBER_EMAIL_KEY);}catch(_){}}
 rememberEmail.addEventListener("change",storeRememberedEmail);
@@ -1017,6 +1021,24 @@ function validGameReturn() {
   } catch (_error) { return null; }
 }
 const returnGameAfterLogin = validGameReturn();
+// The provider round-trip uses an exact allowlisted URL; preserve a validated
+// game return separately, rather than embedding arbitrary query strings.
+function resumeAfterSocialLogin(signedInUser) {
+  if (!signedInUser) return;
+  let saved = null;
+  try {
+    saved = sessionStorage.getItem(OAUTH_GAME_RETURN_KEY);
+    sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY);
+  } catch (_error) { return; }
+  if (!saved || !saved.startsWith("/") || saved.startsWith("//") || saved.includes("\\")) return;
+  try {
+    const target = new URL(saved, window.location.origin);
+    if (target.origin !== window.location.origin || target.hash || target.username || target.password) return;
+    if (GAMES.some(game => new URL(game.href, window.location.href).pathname === target.pathname)) {
+      window.location.replace(target.pathname + target.search);
+    }
+  } catch (_error) { /* Never redirect offsite on sign-in. */ }
+}
 const GAME_PENDING_KEY = "retroHubPendingGuestGame";
 const GAME_INVITE_SHOWN_KEY = "retroHubGuestInviteShown";
 let currentPlayer = null;
@@ -1224,7 +1246,8 @@ signupBtn.addEventListener("click", async () => {
   try {
     const {data,error} = await supabaseClient.auth.signUp({
       email: authEmail.value.trim(),
-      password: authPassword.value
+      password: authPassword.value,
+      options: { emailRedirectTo: AUTH_PROFILE_URL }
     });
     if (error) throw error;
     storeRememberedEmail();
@@ -1244,12 +1267,18 @@ async function startSocialLogin(provider){
  setAuthMessage("Connecting to "+(provider==="google"?"Google":"Facebook")+"…");
  try{
   storeRememberedEmail();
-  const destination=new URL(window.location.href);
-  destination.searchParams.delete("auth");
-  const {error}=await supabaseClient.auth.signInWithOAuth({provider,options:{redirectTo:destination.toString()}});
+  try {
+    if (returnGameAfterLogin) sessionStorage.setItem(OAUTH_GAME_RETURN_KEY, returnGameAfterLogin);
+    else sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY);
+  } catch (_error) { /* OAuth itself does not depend on browser storage. */ }
+  const {error}=await supabaseClient.auth.signInWithOAuth({
+    provider,
+    options:{redirectTo: AUTH_HUB_URL}
+  });
   if(error)throw error;
  }catch(error){
-  setAuthMessage("Social sign-in isn't ready yet or was interrupted: "+(error.message||"Please try again.")+" You can still use email and password.");
+  try { sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY); } catch (_error) {}
+  setAuthMessage("Social sign-in could not start: "+(error.message||"Please try again.")+" You can still use email and password.");
   btn.disabled=false;
  }
 }
@@ -1266,6 +1295,7 @@ logoutBtn.addEventListener("click", async () => {
 // Wait for the first session lookup before treating a returning player as a guest.
 supabaseClient.auth.getSession().then(({data,error}) => {
   updateAuthUI(data?.session?.user || null);
+  if (data?.session?.user) resumeAfterSocialLogin(data.session.user);
   if (error) console.warn("Session status could not be loaded.");
   if (!data?.session?.user) {
     if (requestedAccountMode === "login" || requestedAccountMode === "signup") {
@@ -1280,6 +1310,7 @@ supabaseClient.auth.getSession().then(({data,error}) => {
 });
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   updateAuthUI(session?.user || null);
+  if (session?.user) resumeAfterSocialLogin(session.user);
 });
 
       renderNav();
