@@ -48,6 +48,43 @@
    document.head.append(style);
  }
  let client=null,player=null;
+ // Account-private visible-tab time estimates. Does NOT award XP, badges or leaderboard scores.
+ const trackableGames=new Set([
+   "claws-vs-paws","cut-the-cheese","fallen-grid","revive-nature","rink-putt",
+   "hockey-gear-rush","survive-2026","acorn-ascent","bugged-out",
+   "coastline-cruiser","lemon-pound-cake","wizards-mana","whack-a-bug",
+   "choose-adventure","ferret-life","inbox-hero","community-garden"
+ ]);
+ let trackingTimer=null,heartbeatBusy=false,heartbeatIdentity=null;
+ async function sendActivityHeartbeat(){
+   if(!trackableGames.has(gameId)||!player||!client||document.hidden||
+      (typeof document.hasFocus==="function"&&!document.hasFocus())||heartbeatBusy)return;
+   const id=player.id;
+   heartbeatBusy=true;
+   try{
+     // The database looks up auth.uid() itself and bounds accepted seconds by server clock.
+     if(player?.id===id)await client.rpc("record_game_heartbeat",{p_game_id:gameId});
+   }catch(_error){ /* Stats are best-effort; never interrupt gameplay. */ }
+   finally{heartbeatBusy=false;}
+ }
+ function syncActivityTracker(){
+   const identity=trackableGames.has(gameId)?player?.id:null;
+   if(!identity){
+     heartbeatIdentity=null;
+     if(trackingTimer!==null){clearInterval(trackingTimer);trackingTimer=null;}
+     return;
+   }
+   if(identity===heartbeatIdentity)return;
+   heartbeatIdentity=identity;
+   if(trackingTimer!==null)clearInterval(trackingTimer);
+   void sendActivityHeartbeat();
+   trackingTimer=setInterval(()=>{void sendActivityHeartbeat();},30000);
+ }
+ document.addEventListener("visibilitychange",()=>{
+   if(!document.hidden)void sendActivityHeartbeat();
+ });
+ window.addEventListener("focus",()=>{void sendActivityHeartbeat();});
+
  const txt=shadow.getElementById("player-text");
  const light=shadow.getElementById("status-light");
  const login=shadow.getElementById("login-link");
@@ -64,6 +101,7 @@
    txt.textContent=player?"Player: "+(name||"Signed In"):"Guest Player";
    light.classList.toggle("signed-in",!!player);
    login.hidden=!!player;signup.hidden=!!player;logout.hidden=!player;
+   syncActivityTracker();
  }
  async function refreshXp(user){
    if(!user||!client)return;
