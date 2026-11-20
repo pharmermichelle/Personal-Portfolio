@@ -220,6 +220,15 @@ function updateRewardStatus(text) {
  const status=$("reward-status");
  if(status)status.textContent=text;
 }
+// Routine save confirmations stay out of the HUD, while errors and conflicts
+// can still reveal Sync Options to resolve cloud/device save differences.
+(function monitorSaveWarnings() {
+ const status=$("save-status"), panel=status&&status.closest(".acorn-save-status");
+ if(!panel)return;
+ const reflect=()=>{panel.hidden=!/conflict|unavailable|pending|awaiting|waiting|backup|not synced|save invalid|storage unavailable|choose your save|could not be read/i.test(status.textContent||"");};
+ new MutationObserver(reflect).observe(status,{childList:true,characterData:true,subtree:true});
+ reflect();
+})();
 function setupAcornRewards() {
  if(acornRewards||!window.RetroRewards)return;
  acornRewards=window.RetroRewards.create({
@@ -228,6 +237,7 @@ function setupAcornRewards() {
    if(info.type==="ready")updateRewardStatus("Verified reward ready • Branch "+info.level+" earns "+(2*info.level)+" XP");
    if(info.type==="award") {
     const gain=Number(info.awarded_xp)||0;
+    if(gain>0)window.dispatchEvent(new Event("retro-arcade-xp-updated"));
     updateRewardStatus(gain?"+"+gain+" XP earned! • "+info.game_xp_total+" Acorn Ascent XP total":
       "Branch "+info.level+" already rewarded • no duplicate XP");
     if(info.badge_earned||info.shirt_unlocked){
