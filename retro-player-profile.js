@@ -4,15 +4,23 @@
   const PROJECT_URL = "https://dxemotgroklcjsbunspg.supabase.co";
   const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo";
   const GAMES = [
-    ["Fallen Grid", "fallen-grid"],
-    ["Revive Nature", "revive-nature"],
-    ["Acorn Ascent", "acorn-ascent"],
-    ["Claws vs. Paws", "claws-vs-paws"],
-    ["Rink Putt", "rink-putt"],
-    ["Hockey Gear Rush", "hockey-gear-rush"],
-    ["Bugged Out!", "bugged-out"],
-    ["Coastline Cruiser", "coastline-cruiser"],
-    ["Whack-a-Bug", "whack-a-bug"]
+    ["Claws vs. Paws", "claws-vs-paws", "minigame/claws-vs-paws/index.html"],
+    ["Cut the Cheese", "cut-the-cheese", "minigame/Cut-the-Cheese/index.html"],
+    ["Fallen Grid", "fallen-grid", "minigame/Tide-Tetris/index.html"],
+    ["Revive Nature", "revive-nature", "minigame/Revive-nature/revive-index.html"],
+    ["Rink Putt", "rink-putt", "minigame/hockey_shooter/index.html"],
+    ["Hockey Gear Rush", "hockey-gear-rush", "minigame/hockey-gear-rush/index.html"],
+    ["Survive 2026", "survive-2026", "minigame/survive-2026/index.html"],
+    ["Acorn Ascent", "acorn-ascent", "minigame/acorn-ascent/index.html"],
+    ["Bugged Out!", "bugged-out", "minigame/bugged-out/index.html"],
+    ["Coastline Cruiser", "coastline-cruiser", "minigame/coastline-cruiser/cruiser.html"],
+    ["Lemon Pound Cake", "lemon-pound-cake", "minigame/pound_cake/index.html"],
+    ["Wizard's Mana Forge", "wizards-mana", "minigame/clickgame.html"],
+    ["Whack-a-Bug", "whack-a-bug", "minigame/whackgame.html"],
+    ["Choose Your Adventure", "choose-adventure", "minigame/game.html"],
+    ["Ferret Life", "ferret-life", "minigame/ferret-life/index.html"],
+    ["Inbox Hero", "inbox-hero", "minigame/inbox-hero.html"],
+    ["Community Garden", "community-garden", "minigame/community-garden.html"]
   ];
   const avatars = [
     {key:"chrome-byte", name:"Chrome Byte", type:"Friendly robot", color:"#b6e5fa", dark:"#5583b2", eyes:"#101b46"},
@@ -85,16 +93,113 @@
     }
     renderAvatar();
   }
-  function renderGames(){
+  // Personal stats are read from account-scoped Supabase tables. An unverified save or
+  // client-reported activity NEVER counts as a verified score or grants XP.
+  let statsRequest=0;
+  const statLabels=["GAME","RECORDED TIME","XP","SAVED PROGRESS","VERIFIED BEST","RANK"];
+  const formatTime=seconds=>{
+    const mins=Math.floor(Math.max(0,Number(seconds)||0)/60);
+    if(!mins)return "—";
+    return mins>=60 ? Math.floor(mins/60)+"h "+(mins%60)+"m" : mins+"m";
+  };
+  function describeSave(gameId,record){
+    if(!record)return "No cloud save";
+    const data=record.save_data?.payload;
+    if(!data || typeof data!=="object")return "Cloud save available";
+    const level=Number(data.level);
+    let parts=[];
+    if(Number.isInteger(level) && level>=0)
+      parts.push((gameId==="acorn-ascent"?"Branch ":"Level ")+level);
+    if(gameId==="acorn-ascent" && Number.isFinite(Number(data.acorns)))
+      parts.push(Math.max(0,Number(data.acorns))+" acorns");
+    if(gameId==="acorn-ascent" && data.complete===true)parts.push("Completed");
+    return parts.join(" · ") || "Cloud save available";
+  }
+  function renderGames(stats={}){
     const body=byId("game-records");
-    for(const [title] of GAMES){
-      const row=document.createElement("tr");
-      const first=document.createElement("td"); first.textContent=title; row.append(first);
-      for(let i=0;i<3;i++){
-        const c=document.createElement("td"); c.textContent="Not tracked";row.append(c);
-      }
-      body.append(row);
+    body.replaceChildren();
+    const activity=stats.activity||new Map();
+    const saves=stats.saves||new Map();
+    const scores=stats.scores||new Map();
+    const xp=stats.xp||new Map();
+    for(const [title,id,href] of GAMES){
+      const a=activity.get(id);
+      const saved=saves.get(id);
+      const score=scores.get(id);
+      const gameXP=xp.get(id);
+      const tr=document.createElement("tr");
+      const values=[
+        title,
+        a&&Number(a.active_seconds)>0?formatTime(a.active_seconds):"—",
+        gameXP===undefined?"—":gameXP.toLocaleString()+" XP",
+        describeSave(id,saved),
+        score===undefined?"—":score.toLocaleString(),
+        "Not live"
+      ];
+      values.forEach((value,i)=>{
+        const td=document.createElement("td");
+        td.dataset.label=statLabels[i];
+        if(i===0){
+          const link=document.createElement("a");
+          link.href=href;link.textContent=value;
+          td.append(link);
+        }else td.textContent=value;
+        if(i===3 && saved)td.title="Latest cloud save, not a verified result";
+        if(i===4)td.title="Only server-verified leaderboard scores appear here";
+        tr.append(td);
+      });
+      body.append(tr);
     }
+  }
+  async function loadGameStats(account){
+    if(!client||!account)return;
+    const request=++statsRequest;
+    const marker=byId("game-stats-status");
+    if(marker)marker.textContent="Loading your recorded game progress…";
+    const queries=[
+      client.from("game_activity").select("game_id,active_seconds,visits").eq("user_id",account),
+      client.from("game_saves").select("game_id,save_data,updated_at").eq("user_id",account),
+      client.from("xp_ledger").select("game_id,amount").eq("user_id",account),
+      client.from("game_scores").select("game_id,score,is_verified").eq("user_id",account).eq("is_verified",true)
+    ];
+    const outcomes=await Promise.allSettled(queries);
+    if(request!==statsRequest||user?.id!==account)return;
+    const errors=[];
+    const values=outcomes.map((response,i)=>{
+      if(response.status==="rejected"){errors.push(["activity","saves","XP","scores"][i]);return [];}
+      if(response.value.error){errors.push(["activity","saves","XP","scores"][i]);return [];}
+      return response.value.data||[];
+    });
+    const [rawActivity,rawSaves,rawXP,rawScores]=values;
+    const activity=new Map(rawActivity.map(row=>[row.game_id,row]));
+    const saves=new Map(rawSaves.map(row=>[row.game_id,row]));
+    const xp=new Map();
+    for(const row of rawXP)xp.set(row.game_id,(xp.get(row.game_id)||0)+(Number(row.amount)||0));
+    const scores=new Map();
+    for(const row of rawScores){
+      const v=Number(row.score);
+      if(Number.isFinite(v))scores.set(row.game_id,Math.max(v,scores.get(row.game_id)??-Infinity));
+    }
+    renderGames({activity,saves,xp,scores});
+    const ids=new Set([...activity.keys(),...saves.keys(),...xp.keys(),...scores.keys()]);
+    const seconds=rawActivity.reduce((sum,row)=>sum+Math.max(0,Number(row.active_seconds)||0),0);
+    byId("games-tracked").textContent=String(ids.size);
+    byId("total-time").textContent=formatTime(seconds);
+    if(marker)marker.textContent=errors.length
+      ? "Some stats are unavailable ("+errors.join(", ")+"). Other available records are shown."
+      : "Showing saved progress, verified XP and scores. Recorded time starts after this update; earlier sessions cannot be recovered.";
+    const countNote=byId("games-tracked-note");
+    if(countNote)countNote.textContent="Games with an account record";
+    const timeNote=byId("total-time-note");
+    if(timeNote)timeNote.textContent="Estimated visible play, from now onward";
+  }
+  function clearGameStats(){
+    ++statsRequest;
+    renderGames();
+    byId("games-tracked").textContent="—";
+    byId("total-time").textContent="—";
+    const marker=byId("game-stats-status");
+    if(marker)marker.textContent="Sign in to view your recorded activity and saves.";
   }
   function updateAuthUI() {
     byId("save-profile").disabled=!user;
@@ -220,6 +325,8 @@
     byId("save-profile").addEventListener("click",()=>saveProfile("avatar"));
     byId("save-name").addEventListener("click",()=>saveProfile("name"));
     byId("equip-acorn-shirt").addEventListener("click",equipAcornShirt);
+    window.addEventListener("focus",()=>{if(user)void loadGameStats(user.id);});
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden&&user)void loadGameStats(user.id);});
     if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
     try{
       client=window.supabase.createClient(PROJECT_URL,ANON_KEY);
@@ -227,14 +334,14 @@
       if(error && !/session missing|auth session missing/i.test(error.message||""))status("Account connection issue: "+error.message,"error");
       user=data?.user||null;
       updateAuthUI();
-      if(user){await loadProfile();await loadRewards();}
+      if(user){await Promise.all([loadProfile(),loadRewards(),loadGameStats(user.id)]);}
       client.auth.onAuthStateChange((_event,session)=>{
         const next=session?.user||null;
         if(next?.id===user?.id)return;
         user=next;updateAuthUI();
-        if(user)void loadProfile().then(loadRewards);
+        if(user){void loadProfile().then(loadRewards);void loadGameStats(user.id);}
         else{
-          equippedShirt=false;shirtOwned=false;renderAvatar();
+          equippedShirt=false;shirtOwned=false;renderAvatar();clearGameStats();
           byId("player-level").textContent="—";byId("xp-text").textContent="Sign in for XP";
           byId("badge-count").textContent="—";setRewardStatus("Sign in to view your rewards");
           byId("equip-acorn-shirt").hidden=true;
