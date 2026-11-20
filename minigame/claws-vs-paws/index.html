@@ -1108,6 +1108,16 @@ ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important}
 <script src="../../retro-monetization-config.js?v=20261118-2" data-game-id="claws-vs-paws"></script>
 <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
 <script src="../../retro-save-service.js?v=20261118-2"></script>
+  <!-- Google-supported fixed-height ad slot; never crop or resize a filled ad. -->
+  <style id="retro-compact-ad-sizes">
+    ins.adsbygoogle.retro-compact-ad-unit {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      height: 50px;
+      margin-inline: auto;
+    }
+  </style>
 </head>
 <body>
 <main class="shell">
@@ -1130,7 +1140,7 @@ ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important}
 <nav class="bottom-nav" aria-label="Game menus"><button id="catsNavBtn" class="nav-btn" data-open-panel="cats"><span class="nav-icon">🐾</span>Cats</button><button class="nav-btn" data-open-panel="squad"><span class="nav-icon">🛡️</span>Squad</button><button id="trainNavBtn" class="nav-btn" data-open-panel="cats"><span class="nav-icon">⚒️</span><span id="trainNavText">Train</span></button><button class="nav-btn" data-open-panel="help"><span class="nav-icon">⚙️</span>More</button></nav>
 <aside class="game-ad-footer" aria-label="Advertisement">
   <span class="ad-label">Advertisement</span>
-  <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404"></ins>
+  <ins class="adsbygoogle retro-compact-ad-unit" style="display:block" data-ad-client="ca-pub-9258275639543826" data-ad-slot="4366267404"></ins>
 </aside>
 </main>
 <div id="drawerBackdrop" class="drawer-backdrop" hidden><section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1"><header class="drawer-header"><div><h2 id="drawerTitle">Your Cats</h2><p id="drawerSubtitle">Unlock fighters and build your army</p></div><button id="closeDrawer" class="close-drawer" aria-label="Close menu">×</button></header><div id="drawerBody" class="drawer-body">
