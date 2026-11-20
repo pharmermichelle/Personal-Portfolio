@@ -178,6 +178,7 @@
     const {data,error}=await client.from("profiles").select("username,avatar_key,is_public").eq("id",user.id).maybeSingle();
     if(error){status("Couldn't load account profile: "+error.message,"error");return;}
     if(data){
+      savedProfile={username:data.username||null,avatar_key:data.avatar_key||null,is_public:data.is_public===true};
       if(data.username){byId("username").value=data.username;byId("display-name").textContent=data.username;}
       if(data.avatar_key){
         const found=avatars.find(a=>a.key===data.avatar_key);
@@ -187,23 +188,36 @@
       status("Your account is connected. Choose a character and save changes.");
     }else status("Welcome! Choose your character and arcade name, then save to finish setting up.");
   }
-  async function saveProfile(){
+  let savedProfile={username:null,avatar_key:null,is_public:false};
+  async function saveProfile(part){
     if(!client||!user){status("Sign in to save your profile.","error");return;}
+    const isName=part==="name";
+    const btn=byId(isName?"save-name":"save-profile");
     const username=byId("username").value.trim();
-    if(!/^[A-Za-z0-9_]{3,24}$/.test(username)){status("Username must be 3–24 letters, numbers, or underscores.","error");byId("username").focus();return;}
-    const btn=byId("save-profile");btn.disabled=true;
-    status("Saving your arcade identity…");
+    if(isName&&!/^[A-Za-z0-9_]{3,24}$/.test(username)){status("Username must be 3–24 letters, numbers, or underscores.","error");byId("name-editor").open=true;byId("username").focus();return;}
+    btn.disabled=true;
+    status(isName?"Saving your arcade name…":"Saving your avatar…");
     try{
-      const {error}=await client.from("profiles").upsert({id:user.id,username,avatar_key:selected.key,is_public:byId("profile-public").checked},{onConflict:"id"});
+      const changes=isName?{username,is_public:byId("profile-public").checked}:{avatar_key:selected.key};
+      // Update only the chosen section; never overwrite unsaved changes in the other editor.
+      const {data,error}=await client.from("profiles").update(changes).eq("id",user.id).select("id");
       if(error)throw error;
-      byId("display-name").textContent=username;
-      status("Saved! "+username+" is ready for the arcade. Your character choice will be here next time you sign in.","success");
-    }catch(e){status("Couldn't save profile: "+(e.message||"Please try again."),"error");}
+      if(!data?.length){
+        const fallback={id:user.id,username:isName?username:(savedProfile.username||username),avatar_key:isName?(savedProfile.avatar_key||selected.key):selected.key,is_public:isName?byId("profile-public").checked:savedProfile.is_public};
+        if(!/^[A-Za-z0-9_]{3,24}$/.test(fallback.username)){throw new Error("Choose a valid arcade name first, then save your avatar.");}
+        const inserted=await client.from("profiles").upsert(fallback,{onConflict:"id"});
+        if(inserted.error)throw inserted.error;
+        Object.assign(savedProfile,fallback);
+      }else Object.assign(savedProfile,changes);
+      if(isName)byId("display-name").textContent=username;
+      status(isName?"Arcade name saved!":"Avatar saved! Your new character is ready for the arcade.","success");
+    }catch(e){status("Couldn't save: "+(e.message||"Please try again."),"error");}
     finally{btn.disabled=!user;}
   }
   async function start(){
     setupOptions();renderGames();
-    byId("save-profile").addEventListener("click",saveProfile);
+    byId("save-profile").addEventListener("click",()=>saveProfile("avatar"));
+    byId("save-name").addEventListener("click",()=>saveProfile("name"));
     byId("equip-acorn-shirt").addEventListener("click",equipAcornShirt);
     if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
     try{
