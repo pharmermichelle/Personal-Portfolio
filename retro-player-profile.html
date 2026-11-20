@@ -7,9 +7,9 @@
   <meta name="description" content="Create your original retro arcade avatar, customize your player profile, and see what's coming for game achievements and rewards.">
   <title>My Arcade Profile | Michelle's Retro Game Hub</title>
   <link rel="icon" href="images/portfolio-icon.png">
-  <link rel="stylesheet" href="retro-player-profile.css">
+  <link rel="stylesheet" href="retro-player-profile.css?v=20261119-1">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-  <script defer src="retro-player-profile.js?v=20261118-3"></script>
+  <script defer src="retro-player-profile.js?v=20261119-1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to profile</a>
@@ -48,30 +48,37 @@
           <span>01 / CHARACTER CREATOR</span>
           <span class="title-detail">ORIGINAL CREATURE CREW</span>
         </div>
-        <div class="creator-layout">
-          <div class="avatar-stage">
-            <div class="avatar-backdrop" aria-hidden="true"></div>
-            <div id="avatar-preview" class="avatar-preview" role="img" aria-label="Full-body avatar preview"></div>
-            <span class="avatar-footnote">FULL-BODY • SAME STARTER OUTFIT</span>
-            <span id="avatar-name" class="avatar-name">Chrome Byte</span>
-            <span id="avatar-type" class="avatar-type">Robot / Level 1 look</span>
-          </div>
-          <div class="creator-controls">
-            <div class="step-label">STEP 1 <span>Choose your character</span></div>
-            <p class="help-text">Every creature is an original design and wears the same starter tee, shorts, and sneakers. Outfits will layer onto these bodies as rewards become available.</p>
-            <div id="avatar-grid" class="avatar-grid" role="group" aria-label="Choose your avatar"></div>
-            <div class="selected-character"><span>YOUR PICK</span><strong id="picked-label">Chrome Byte</strong></div>
-            <div class="step-label second-step">STEP 2 <span>Your arcade name</span></div>
+        <p class="creator-intro">Your arcade identity, your way. Open only the station you want to edit.</p>
+        <details class="profile-editor" id="name-editor">
+          <summary><span class="editor-icon" aria-hidden="true">✎</span><span><strong>EDIT ARCADE NAME</strong><small>Username &amp; privacy</small></span><span class="editor-chevron" aria-hidden="true">⌄</span></summary>
+          <div class="editor-body">
             <label class="field-label" for="username">Username <span>(3–24 letters, numbers, or underscores)</span></label>
             <input id="username" class="text-input" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="YourArcadeName" autocomplete="nickname" autocapitalize="none" spellcheck="false">
-            <label class="privacy-row" for="profile-public"><input type="checkbox" id="profile-public"><span><strong>Make my profile public</strong><small>Off by default. Public leaderboard opt-in will be a separate setting when rankings launch.</small></span></label>
-            <div class="creator-actions">
-              <button id="save-profile" class="button primary" type="button" disabled>Save My Character <span aria-hidden="true">➜</span></button>
-              <a id="sign-in-link" class="button secondary" href="retro-game-hub.html">Sign In to Save</a>
-            </div>
-            <p id="save-status" class="save-status" role="status" aria-live="polite">Choose a character to preview. Sign in to save your character to your account.</p>
+            <label class="privacy-row" for="profile-public"><input type="checkbox" id="profile-public"><span><strong>Make my profile public</strong><small>Off by default. Public leaderboard opt-in will be separate when rankings launch.</small></span></label>
+            <div class="creator-actions"><button id="save-name" class="button primary" type="button" disabled>Save Arcade Name <span aria-hidden="true">➜</span></button></div>
           </div>
-        </div>
+        </details>
+        <details class="profile-editor" id="avatar-editor">
+          <summary><span class="editor-icon" aria-hidden="true">★</span><span><strong>CHANGE AVATAR</strong><small>Choose your character</small></span><span class="editor-chevron" aria-hidden="true">⌄</span></summary>
+          <div class="editor-body">
+            <div class="creator-layout">
+              <div class="avatar-stage">
+                <div class="avatar-backdrop" aria-hidden="true"></div>
+                <div id="avatar-preview" class="avatar-preview" role="img" aria-label="Full-body avatar preview"></div>
+                <span class="avatar-footnote">FULL-BODY • SAME STARTER OUTFIT</span>
+                <span id="avatar-name" class="avatar-name">Chrome Byte</span>
+                <span id="avatar-type" class="avatar-type">Robot / Level 1 look</span>
+              </div>
+              <div class="creator-controls">
+                <p class="help-text">Every creature is an original design. Outfits layer onto these characters as rewards become available.</p>
+                <div id="avatar-grid" class="avatar-grid" role="group" aria-label="Choose your avatar"></div>
+                <div class="selected-character"><span>YOUR PICK</span><strong id="picked-label">Chrome Byte</strong></div>
+                <div class="creator-actions"><button id="save-profile" class="button primary" type="button" disabled>Save Avatar <span aria-hidden="true">➜</span></button></div>
+              </div>
+            </div>
+          </div>
+        </details>
+        <div class="editor-footer"><a id="sign-in-link" class="button secondary" href="retro-game-hub.html">Sign In to Save</a><p id="save-status" class="save-status" role="status" aria-live="polite">Sign in to save your arcade identity.</p></div>
       </section>
 
       <aside class="profile-sidebar" aria-label="Player progress">
