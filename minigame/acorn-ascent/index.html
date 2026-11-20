@@ -97,12 +97,12 @@
             <div class="board-tools" aria-label="Puzzle controls">
               <button id="rotate-btn" type="button" title="Rotate selected piece clockwise (R)">↻ Rotate <span class="key-hint">R</span></button>
               <button id="undo-btn" type="button" title="Undo last placement">↶ Undo</button>
-              <button id="hint-btn" type="button" title="One free hint per branch, then optional rewarded ads for extra hints"><span id="hint-action">✧ Free Hint</span> <span id="hint-count">1</span></button>
+              <button id="hint-btn" type="button" title="One free hint per branch. Further hints come from optional rewarded ads, or are free when an ad is unavailable."><span id="hint-action">✧ Free Hint</span> <span id="hint-count">1</span></button>
               <button id="cancel-btn" type="button" title="Unselect current piece">✕ Cancel</button>
             </div>
-            <button id="hint-ad-btn" type="button" hidden disabled style="width:100%;min-height:52px;margin:10px 0 12px;padding:10px 14px;border:2px solid #b8d69e;border-radius:12px;background:#345540;color:#fff5cf;font:800 17px/1.35 system-ui,sans-serif;">Extra Hints (Ads Coming Soon)</button>
+            <button id="hint-ad-btn" type="button" hidden disabled style="width:100%;min-height:52px;margin:10px 0 12px;padding:10px 14px;border:2px solid #b8d69e;border-radius:12px;background:#345540;color:#fff5cf;font:800 17px/1.35 system-ui,sans-serif;">Free Extra Hint (No Ad Available)</button>
             <p class="game-message" id="game-message" role="status" aria-live="polite">Choose a piece to begin.</p>
-            <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">One free hint per branch. Afterward, choose a rewarded ad for another hint if one is available. No ad is required to finish.</p>
+            <p class="hint-reward-note" style="font:600 15px/1.45 system-ui,sans-serif;color:#b9dbc5;margin:6px 0 0;">Your first hint is free. For more hints, you can choose a rewarded ad when one is available; if no ad can be shown, the extra hint is free. Skipped ads don't grant hints.</p>
           </div>
 
           <aside id="sidebar" aria-label="Puzzle pieces">
@@ -145,6 +145,6 @@
     <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
     <script src="../../retro-save-service.js?v=20261118-1"></script>
     <script src="../../retro-rewards.js?v=20261118-1"></script>
-    <script src="main.js?v=20261119-5"></script>
+    <script src="main.js?v=20261119-hintfallback-1"></script>
   </body>
 </html>
