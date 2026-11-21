@@ -27,7 +27,7 @@
     "jelly-jolt": a => '<path d="M34 97Q29 71 44 45Q55 21 91 20Q135 22 146 60Q152 83 143 103L130 95L116 109L100 97L87 110L68 98L50 110Z" fill="'+a.color+'" stroke="#2c6b83" stroke-width="6"/><ellipse cx="66" cy="73" rx="13" ry="17" fill="#1b5267"/><ellipse cx="113" cy="73" rx="13" ry="17" fill="#1b5267"/><circle cx="62" cy="68" r="4" fill="white"/><circle cx="108" cy="68" r="4" fill="white"/><path d="M81 91q10 8 18 0" stroke="#2b6683" stroke-width="4" fill="none"/><path d="M89 19L105 3L105 21L122 11" fill="none" stroke="#ffe65c" stroke-width="6"/>'
   };
 
-  function avatarSVG(a, size, equippedShirt = false) {
+  function avatarSVG(a, size, equippedShirt = false, equippedHat = false) {
     const small = size === "small";
     const head = heads[a.key](a);
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 244" role="presentation" aria-hidden="true" focusable="false">'
@@ -42,6 +42,7 @@
       + '<path d="M63 167h55v19H63Z" fill="#d85d9d" stroke="#30235b" stroke-width="4"/>'
       + '<rect x="85" y="143" width="12" height="12" rx="3" fill="#fb65b7"/>'
       + '<g>'+head+'</g>'
+      + (equippedHat?'<g stroke-linejoin="round"><path d="M43 28L90 -16L137 28Q90 43 43 28Z" fill="#ffdf55" stroke="#6b3b22" stroke-width="5"/><path d="M43 28Q90 43 137 28L137 39Q90 54 43 39Z" fill="#e9a73f" stroke="#6b3b22" stroke-width="4"/><circle cx="90" cy="10" r="9" fill="#d8902f"/><circle cx="71" cy="24" r="6" fill="#d8902f"/><circle cx="110" cy="26" r="5" fill="#d8902f"/></g>':'')
       + (!small?'<path d="M18 19l4-8 4 8 9 3-9 3-4 8-4-8-9-3ZM147 119l3-7 3 7 7 3-7 3-3 7-3-7-7-3Z" fill="#fff07b"/>':"")
       + '</svg>';
   }
@@ -50,7 +51,7 @@
   window.RetroHubAvatars = Object.freeze({
     render(key, options = {}) {
       const avatar = known.get(key) || avatars[0];
-      return avatarSVG(avatar,"small",Boolean(options.equippedShirt));
+      return avatarSVG(avatar,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat));
     },
     name(key) { return (known.get(key) || avatars[0]).name; }
   });
