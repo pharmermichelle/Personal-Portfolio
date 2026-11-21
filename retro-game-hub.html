@@ -625,10 +625,36 @@ header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#
       </section>
 
       <div class="content">
-        <!-- Left rail: filters + quick list -->
-        <aside class="left">
-          <section class="panel">
-            <h2>Filter by platform</h2>
+        <section class="browse-search" aria-labelledby="browse-heading">
+          <div class="browse-heading-row">
+            <div>
+              <p class="browse-kicker">✦ THE GAME LIBRARY</p>
+              <h2 id="browse-heading">Find your next game</h2>
+            </div>
+            <span class="browse-results" id="game-result-count" role="status" aria-live="polite">17 games</span>
+          </div>
+          <div class="search-field">
+            <label for="game-search">SEARCH BY GAME NAME</label>
+            <div class="search-input-row">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input id="game-search" type="search" placeholder="Find a game, e.g. Fallen Grid" autocomplete="off" spellcheck="false" aria-controls="gallery">
+              <button class="search-clear" id="game-search-clear" type="button" hidden aria-label="Clear game search">Clear</button>
+            </div>
+          </div>
+        </section>
+        <!-- Mobile: collapsible filters; desktop: open filter rail. -->
+        <aside class="left" aria-label="Browse filters">
+          <details class="panel filter-disclosure" id="filter-disclosure">
+            <summary class="filter-toggle">
+              <span>☷ <strong>Filter games</strong></span>
+              <span class="filter-toggle-right"><span id="active-filter-count">All genres &amp; devices</span><span aria-hidden="true" class="filter-chevron">⌄</span></span>
+            </summary>
+            <div class="filter-contents">
+              <div class="filter-control-row">
+                <span>CHOOSE TAGS</span>
+                <button id="clear-tag-filters" type="button" class="reset-filters" hidden>Clear filters</button>
+              </div>
+            <h2>Device</h2>
             <div class="filters" id="f-platform">
               <button
                 class="chip"
@@ -698,17 +724,19 @@ header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#
                 <span class="dot"></span><span class="tag">Clicker</span>
               </button>
             </div>
-          </section>
-
-          <section class="panel" style="margin-top: 14px">
-            <h2>All games</h2>
-            <nav id="game-nav" class="navlist" aria-label="Game list"></nav>
-          </section>
+            </div>
+          </details>
         </aside>
 
-        <!-- Right column: gallery -->
-        <main class="right">
-          <div id="gallery" class="grid" aria-live="polite"></div>
+        <!-- Responsive gallery: search and tags filter the same cards. -->
+        <main class="right" id="game-results">
+          <div id="gallery" class="grid" aria-label="Browse games"></div>
+          <div id="game-empty-state" class="game-empty-state" hidden>
+            <span aria-hidden="true">🕹️</span>
+            <h3>No games match those filters</h3>
+            <p>Try a different game name, or clear your filters to browse the full arcade.</p>
+            <button id="reset-game-browse" type="button">Show all games</button>
+          </div>
         </main>
       </div>
     </div>
