@@ -1121,7 +1121,7 @@ const supabaseClient = supabase.createClient(
         };
         if (desktop.addEventListener) desktop.addEventListener("change",syncDrawer);
         else desktop.addListener(syncDrawer);
-        $(".chip").forEach(btn => {
+        $$(".chip").forEach(btn => {
           btn.addEventListener("click", () => {
             const key = btn.dataset.key, val = btn.dataset.val;
             const on = btn.getAttribute("aria-pressed") === "true";
@@ -1135,7 +1135,7 @@ const supabaseClient = supabase.createClient(
         const clearTags = () => {
           state.filters.platform.clear();
           state.filters.genre.clear();
-          $(".chip").forEach(btn => btn.setAttribute("aria-pressed","false"));
+          $$(".chip").forEach(btn => btn.setAttribute("aria-pressed","false"));
         };
         $("#clear-tag-filters").addEventListener("click",() => {clearTags();renderGallery();});
         const search = $("#game-search");
