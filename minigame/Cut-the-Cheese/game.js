@@ -110,6 +110,16 @@
   let timedOut = false, gameBusy = false, extraTimeUsed = false, activeTool = null;
   let levelBonusClaimed = false, previewBusy = false;
   const SAVE_KEY = "retro-cut-cheese-inventory-v1";
+  const PROGRESS_KEY = "retro-cut-cheese-highest-level-v1";
+  function loadLevel(){
+    try{
+      const n=Number(localStorage.getItem(PROGRESS_KEY));
+      return Number.isInteger(n)&&n>=1&&n<=200?n:1;
+    }catch(_){return 1;}
+  }
+  function saveLevel(){
+    try{localStorage.setItem(PROGRESS_KEY,String(level));}catch(_){}
+  }
   const POWER_LIMIT = 25;
   const allowedTools = ["knife", "board", "parm"];
   const safeNumber = value => Number.isInteger(value) && value >= 0 ? Math.min(POWER_LIMIT,value) : 0;
@@ -213,7 +223,7 @@
   }
 
   function resetGame() {
-    level=1;seconds=0;parms=inventory.parm;
+    level=loadLevel();seconds=0;parms=inventory.parm;
     resetLevelBoard();
   }
 
@@ -313,6 +323,7 @@
     if(grid.length)return;
     const finished=level;
     level++;
+    saveLevel();
     const earned=[];
     if(level===2 && grantTool("knife"))earned.push("🔪 Row Knife +1");
     if(level===3 && grantTool("board"))earned.push("🪵 Spin Board +1");
