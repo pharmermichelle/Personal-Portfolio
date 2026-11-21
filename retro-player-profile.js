@@ -230,13 +230,17 @@
       const total=(xp.data||[]).reduce((n,item)=>n+Number(item.amount||0),0);
       const acornXP=(xp.data||[]).filter(item=>item.game_id==="acorn-ascent")
         .reduce((n,item)=>n+Number(item.amount||0),0);
+      const cheeseXP=(xp.data||[]).filter(item=>item.game_id==="cut-the-cheese")
+        .reduce((n,item)=>n+Number(item.amount||0),0);
       const level=Math.floor(Math.sqrt(total/50))+1;
+      const levelStart=50*(level-1)*(level-1),levelEnd=50*level*level;
+      const earnedThisLevel=Math.max(0,total-levelStart),neededForNext=levelEnd-levelStart;
       byId("player-level").textContent=String(level);
       byId("xp-text").textContent=total+" XP total";
       const progress=byId("xp-current-progress");
-      if(progress)progress.textContent=acornXP+" / 110 Acorn Ascent XP";
+      if(progress)progress.textContent=earnedThisLevel+" / "+neededForNext+" XP to next player level · "+acornXP+" Acorn XP · "+cheeseXP+" Cheese XP";
       const bar=byId("xp-progress-fill");
-      if(bar)bar.style.width=Math.min(100,100*acornXP/110)+"%";
+      if(bar)bar.style.width=Math.min(100,100*earnedThisLevel/neededForNext)+"%";
       byId("badge-count").textContent=String((badges.data||[]).length);
       byId("badge-note").textContent="Official account badges";
       const earned=(badges.data||[]).some(x=>x.badge_id==="acorn-complete");
