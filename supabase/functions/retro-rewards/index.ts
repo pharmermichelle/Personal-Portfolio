@@ -125,6 +125,39 @@ Deno.serve(async req=>{
  let body:any;
  try{const raw=await req.text();if(raw.length>18000)throw Error("Too large");body=JSON.parse(raw);}catch(_){return response(400,{error:"Invalid request"},origin);}
  if(!body||typeof body!=="object")return response(400,{error:"Invalid reward request"},origin);
+ // Grass Snake: the server times each attempt and owns account best, XP milestones and idempotency.
+ if(body.game_id==="grass-snake"){
+   if(body.version!=="v1")return response(400,{error:"Unsupported Snake version"},origin);
+   if(body.action==="start"){
+     const cutoff=new Date(Date.now()-60000).toISOString();
+     const {count,error:rateError}=await admin.from("reward_attempts")
+       .select("id",{count:"exact",head:true}).eq("user_id",user.id)
+       .eq("game_id","grass-snake").gte("created_at",cutoff);
+     if(rateError)return response(503,{error:"Snake rewards temporarily unavailable"},origin);
+     if((count||0)>=12)return response(429,{error:"Too many Snake attempts started"},origin);
+     const {data:attempt,error:attemptError}=await admin.from("reward_attempts")
+       .insert({user_id:user.id,game_id:"grass-snake",level_number:1,game_version:"v1"})
+       .select("id,expires_at").single();
+     if(attemptError||!attempt)return response(503,{error:"Unable to start Snake challenge"},origin);
+     const {data:best,error:bestError}=await admin.from("snake_run_records")
+       .select("best_seconds,completed_runs").eq("user_id",user.id).maybeSingle();
+     if(bestError)return response(503,{error:"Unable to load Snake record"},origin);
+     return response(200,{attempt_id:attempt.id,expires_at:attempt.expires_at,
+       best_seconds:best?.best_seconds||0,completed_runs:best?.completed_runs||0},origin);
+   }
+   if(body.action==="complete"){
+     if(typeof body.attempt_id!=="string"||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.attempt_id)||
+        !Number.isInteger(body.seconds)||body.seconds<0||body.seconds>18000||
+        !Number.isInteger(body.bugs)||body.bugs<0||body.bugs>576)
+       return response(400,{error:"Invalid Snake run"},origin);
+     const {data,error}=await admin.rpc("claim_snake_run",{
+       p_user:user.id,p_attempt:body.attempt_id,p_seconds:body.seconds,p_bugs:body.bugs});
+     if(error)return response(409,{error:"Snake run not eligible for XP. Start a fresh signed-in run."},origin);
+     return response(200,{accepted:true,...data},origin);
+   }
+   return response(400,{error:"Unsupported Snake reward action"},origin);
+ }
  // Catalog-driven game integration. Server owns XP rules; clients only request
  // level start/complete. These claims are bounded and NOT replay-verified scores.
  if(["fallen-grid","rink-putt","hockey-gear-rush"].includes(body.game_id)){
