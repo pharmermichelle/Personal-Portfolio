@@ -182,6 +182,7 @@
     startBtn.textContent="▶ START LEVEL "+level;
     startOverlay.classList.add("visible");
     gameOverOverlay.classList.remove("visible");
+    bonusStatus.textContent="";
     renderBonusUI();
     updateInventoryUI();
     displayTimer();
@@ -898,7 +899,7 @@ function renderBonusUI(){
   extendTimeBtn.textContent=adReady?"▶ Watch Ad for +45 Seconds":"🎁 Free +45 Seconds (No Ad)";
   startBtn.disabled=previewBusy;
   restartBtn.disabled=previewBusy;
-  if(!previewBusy){
+  if(!previewBusy&&!/^(Free fallback|Ad reward) confirmed:/.test(bonusStatus.textContent)){
     bonusStatus.textContent=adReady
       ?"Optional rewarded ad: receive the selected bonus only after the ad grants its reward."
       :noFree?"Your free fallback bonus for this level was used today. More can be earned through play."
