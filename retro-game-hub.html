@@ -529,20 +529,20 @@ header .brand { flex-wrap:wrap; }
 
 
 /* Player status header: arcade hub only */
-header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#0b1732);border-bottom:3px solid #24dce7;box-shadow:0 3px 0 #e44cdb55;padding:10px 16px;gap:14px;min-height:82px;flex-wrap:wrap}
+header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#0b1a30);border-bottom:2px solid #46cdd0;box-shadow:0 3px 0 #e44cdb55;padding:10px 16px;gap:14px;min-height:82px;flex-wrap:wrap}
 .hub-player-header .crt{font-weight:950;letter-spacing:1.1px;color:#fff;font-size:18px;text-shadow:2px 2px #a635d1}
 .hub-player-header .suggestion-link{flex-shrink:0}
 .hub-player-header .spacer{display:none}
 .player-header-card{display:flex;align-items:center;gap:11px;min-width:0;flex:1 1 330px}
 .player-header-card[hidden],.guest-header-copy[hidden]{display:none!important}
-.player-header-avatar{width:56px;height:56px;flex:none;border:2px solid #ec70fa;border-radius:50%;background:#292451;display:grid;place-items:center;overflow:hidden;font-size:27px}
+.player-header-avatar{width:56px;height:56px;flex:none;border:2px solid #75dce5;border-radius:12px;background:#332854;display:grid;place-items:center;overflow:hidden;font-size:27px}
 .player-header-avatar svg{width:100%;height:100%;object-fit:contain}
 .player-header-details{min-width:0;flex:1}
 .player-header-name{font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player-header-level{color:#ffdf62;font-size:14px;font-weight:850}
 .player-header-xp{font-size:12px;color:#cce9ff;margin-top:2px}
-.player-header-track{height:12px;border:2px solid #9c4cf5;background:#101229;border-radius:30px;overflow:hidden;margin-top:4px}
-.player-header-fill{height:100%;width:0;background:linear-gradient(90deg,#05d5f0,#51ffcf);transition:width .3s}
+.player-header-track{height:12px;border:2px solid #75dce5;background:#101229;border-radius:30px;overflow:hidden;margin-top:4px}
+.player-header-fill{height:100%;width:0;background:linear-gradient(90deg,#7fdbf1,#f2cc69);transition:width .3s}
 .guest-header-copy{flex:1 1 320px;color:#e6edff;font-size:14px;line-height:1.45}
 .guest-header-copy strong{color:#ffe47c}
 .hub-coffee{font-size:12px;color:#dceaff;text-decoration:none;white-space:nowrap;border-bottom:1px solid #50e5ed;padding:5px 2px}
@@ -607,6 +607,7 @@ header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#
   <button id="auth-create-btn" class="soon-btn account-primary" type="button">★ Sign Up Free</button>
   <button id="logout-btn" class="soon-btn" type="button" style="display:none">Log Out</button>
   <a href="retro-player-profile.html" class="soon-btn profile-link">★ My Profile</a>
+  <a href="projects.html" class="soon-btn profile-link" aria-label="Return to professional projects">← Projects</a>
 </div>
       </header>
 
@@ -748,6 +749,7 @@ header.hub-player-header{background:linear-gradient(110deg,#10122d,#151f4c 55%,#
         </div>
       </div>
 
+    <script src="retro-player-avatar.js?v=20261121"></script>
     <script>
   
 const SUPABASE_URL = "https://dxemotgroklcjsbunspg.supabase.co";
