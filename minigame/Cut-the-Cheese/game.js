@@ -1058,6 +1058,95 @@ bonusBoardBtn.addEventListener("click",()=>{void requestBonus("board");});
 bonusTimeBtn.addEventListener("click",()=>{void requestBonus("time");});
 extendTimeBtn.addEventListener("click",()=>{void requestBonus("time",true);});
 
+
+const AIM_FREE_KEY="retro-cut-cheese-aim-free-v1";
+function aimFallbackUsed(){
+  try{
+    const d=JSON.parse(localStorage.getItem(AIM_FREE_KEY)||"{}");
+    return d[new Date().toLocaleDateString("en-CA")+":level-"+level]===true;
+  }catch(_){return false;}
+}
+function noteAimFallback(){
+  try{
+    const today=new Date().toLocaleDateString("en-CA")+":";
+    const old=JSON.parse(localStorage.getItem(AIM_FREE_KEY)||"{}");
+    const d=Object.fromEntries(Object.entries(old).filter(([k])=>k.startsWith(today)));
+    d[today+"level-"+level]=true;
+    localStorage.setItem(AIM_FREE_KEY,JSON.stringify(d));
+  }catch(_){}
+}
+function openPowerMenu(){
+  if(!running||menuOpen)return;
+  menuOpen=true;
+  powerMenu.classList.add("visible");
+  powerMenuBtn.setAttribute("aria-expanded","true");
+  renderKnifeShop();
+  powerMenuCloseBtn.focus?.();
+}
+function closePowerMenu(){
+  if(!menuOpen)return;
+  menuOpen=false;
+  powerMenu.classList.remove("visible");
+  powerMenuBtn.setAttribute("aria-expanded","false");
+  lastTime=performance.now();elapsedAccum=0;
+  renderKnifeShop();
+  powerMenuBtn.focus?.();
+}
+function holdOrSwap(){
+  if(!running||menuOpen||projectile||knifeData.equipped<2)return;
+  syncQueueToBoard();
+  if(heldCheese)[queue[0],heldCheese]=[heldCheese,queue[0]];
+  else{heldCheese=queue.shift();queue.push(randCheese());}
+  updateHud();
+  toolStatus.textContent="Reserve: "+heldCheese+". Tap Hold/Swap again to exchange cheeses.";
+}
+function discardLoadedCheese(){
+  if(!running||menuOpen||projectile||knifeData.equipped<3||discardsUsed>=2)return;
+  syncQueueToBoard();
+  queue.shift();queue.push(randCheese());discardsUsed++;
+  updateHud();
+  toolStatus.textContent="Cheese discarded; "+(2-discardsUsed)+" discards remain this level.";
+}
+async function requestExtendedGuide(){
+  if(!running||!menuOpen||aimAdBusy||aimBoostSeconds>0)return;
+  const currentLevel=level,adAvailable=Boolean(window.RetroRewardedAds?.isConfigured());
+  if(!adAvailable&&aimFallbackUsed()){
+    aimBoostStatus.textContent="Today's free guide for this level was already claimed.";
+    return;
+  }
+  aimAdBusy=true;renderKnifeShop();
+  aimBoostStatus.textContent=adAvailable?"Checking optional rewarded ad…":"No ad available. Granting free guide…";
+  try{
+    let granted=false,free=false;
+    if(!adAvailable){granted=true;free=true;}
+    else{
+      const result=await window.RetroRewardedAds.watch({
+        onStatus:message=>{if(level===currentLevel)aimBoostStatus.textContent=message;}
+      });
+      granted=Boolean(result?.granted);
+      if(!granted&&AD_UNAVAILABLE.has(result?.reason)&&!aimFallbackUsed()){granted=true;free=true;}
+      else if(!granted)aimBoostStatus.textContent=result?.message||"The ad did not grant a guide.";
+    }
+    if(granted&&currentLevel===level&&running){
+      if(free)noteAimFallback();
+      aimBoostSeconds=90;
+      aimBoostStatus.textContent=(free?"Free":"Ad-earned")+" extended guide unlocked for 90 seconds of active play.";
+      toolStatus.textContent="🎯 Extended aiming path activated!";
+    }
+  }catch(_){
+    if(currentLevel===level&&!aimFallbackUsed()){
+      noteAimFallback();aimBoostSeconds=90;
+      aimBoostStatus.textContent="Ad unavailable; free extended guide activated.";
+    }else aimBoostStatus.textContent="Ad unavailable; no guide granted.";
+  }finally{aimAdBusy=false;renderKnifeShop();}
+}
+powerMenuBtn.addEventListener("click",openPowerMenu);
+powerMenuCloseBtn.addEventListener("click",closePowerMenu);
+powerMenuDoneBtn.addEventListener("click",closePowerMenu);
+holdCheeseBtn.addEventListener("click",holdOrSwap);
+discardCheeseBtn.addEventListener("click",discardLoadedCheese);
+watchAimBtn.addEventListener("click",()=>{void requestExtendedGuide();});
+
 function formatTime(s) {
   const m = Math.floor(s / 60)
     .toString()
