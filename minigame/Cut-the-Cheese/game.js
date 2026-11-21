@@ -76,6 +76,10 @@
   const DANGER_Y = KNIFE_Y - ROW_H * 4;
   const SHOT_SPEED = 13.5;
 
+  // Three-of-a-kind makes early levels finish much faster.
+  const MATCH_SIZE = 3;
+  const BOMB_TYPE = "bomb";
+  const BOMB_RADIUS = 151;
   const CHEESES = [
     { id: "mozzarella", label: "Mozzarella", color: "#f7f2df" },
     { id: "cheddar",    label: "Cheddar",    color: "#ee8b22" },
@@ -258,8 +262,8 @@
   const activeCheeses = () => CHEESES.slice(0,cheeseCountForLevel(level));
   // Level 1 is a welcoming, two-row tutorial with easy-to-hit matching groups.
   const startingRows = n => n===1?2:n===2?3:n<=4?4:n<=7?5:Math.min(7,5+Math.floor((n-7)/3));
-  const shotsPerDrop = n => n===1?26:n===2?20:Math.max(7,15-Math.floor((n-1)*.85));
-  const levelSeconds = n => Math.max(145,240-Math.max(0,n-1)*12);
+  const shotsPerDrop = n => n===1?26:n===2?22:n===3?19:n===4?17:Math.max(10,17-Math.floor((n-4)*.65));
+  const levelSeconds = n => n<=2?240:Math.max(165,270-(n-3)*11);
   // Only the types actually left on the board may appear in the launcher.
   // An eliminated cheese cannot come back in the queue or in future falling rows.
   function boardCheeseTypes() {
@@ -309,7 +313,7 @@
     activeTool=null;usingParm=false;previewBusy=false;
     fireBtn.disabled=true;
     prepTitle.textContent="Level "+level+" • "+(level===1?"The Cheese Course":level<=3?"The Sharper Course":"The Cheese Challenge");
-    prepInfo.textContent=(message?message+" ":"")+"Match 4+ cheeses to clear the board. "+cheeseCountForLevel(level)+" varieties: "+activeCheeses().map(c=>c.label).join(", ")+". "+startingRows(level)+" starting rows.";
+    prepInfo.textContent=(message?message+" ":"")+"Match "+MATCH_SIZE+"+ touching cheeses. Hit the glowing bombs to clear nearby cheeses. "+cheeseCountForLevel(level)+" varieties: "+activeCheeses().map(c=>c.label).join(", ")+". "+startingRows(level)+" starting rows.";
     prepTime.textContent="⏱ "+formatTime(remainingSeconds)+" to finish this level";
     startBtn.textContent="▶ START LEVEL "+level;
     startOverlay.classList.add("visible");
@@ -325,7 +329,9 @@
     if(level===1)createOpeningBoard();
     else{
       const fullPool=activeCheeses().map(c=>c.id);
-      for(let row=0;row<startingRows(level);row++)createRow(row,fullPool);
+      // Early boards have intentional regions, not impossible random confetti.
+      for(let row=0;row<startingRows(level);row++)createRow(row,fullPool,level<=4);
+      spawnBombs(level===2?1:level>=3?2:0);
     }
     queue=makeQueue();
     shots=0;clearEvents=0;
@@ -344,14 +350,32 @@
     return row % 2 ? COLS - 1 : COLS;
   }
 
-  function createRow(row,pool=activeCheeses().map(c=>c.id)){
+  function createRow(row,pool=activeCheeses().map(c=>c.id),grouped=false){
     for(let col=0;col<columnsInRow(row);col++){
+      const type=grouped
+        ?pool[(Math.floor((col+(row%2))/3)+Math.floor(row/2))%pool.length]
+        :randCheese(pool);
       grid.push({
-        row,col,type:randCheese(pool),
+        row,col,type,
         id:crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`
       });
     }
   }
+  function spawnBombs(count=1,newRowsOnly=false){
+    const eligible=grid.filter(c=>c.type!==BOMB_TYPE&&
+      (newRowsOnly?c.row<=1:c.row>=Math.max(1,startingRows(level)-2))&&
+      c.col>0&&c.col<columnsInRow(c.row)-1);
+    for(let i=0;i<count&&eligible.length;i++){
+      const pick=Math.floor(Math.random()*eligible.length);
+      const tile=eligible.splice(pick,1)[0];
+      tile.type=BOMB_TYPE;
+      // Keep bomb positions distinct when two are introduced on one board.
+      for(let j=eligible.length-1;j>=0;j--)
+        if(Math.abs(eligible[j].col-tile.col)<=1 && eligible[j].row===tile.row)
+          eligible.splice(j,1);
+    }
+  }
+  const cheesePiecesRemaining=()=>grid.reduce((n,c)=>n+(c.type!==BOMB_TYPE?1:0),0);
   function createOpeningBoard(){
     // Deliberate matching regions so the first level can be finished in
     // a few good shots, rather than 29 completely randomized pieces.
@@ -470,6 +494,8 @@
     if(!pool.length)return;
     grid.forEach(c=>c.row+=count);
     for(let row=0;row<count;row++)createRow(row,pool);
+    // Fresh rows sometimes carry a helpful bomb, but it never enters the shooter.
+    if(level>=3&&Math.random()<0.4)spawnBombs(1,true);
   }
 
   function advanceLevelIfNeeded() {
@@ -560,6 +586,8 @@ projectile = {
   }
 
   function completeShot(){
+    // Do not trap players with a board containing only unmatchable bombs.
+    if(!cheesePiecesRemaining())grid=[];
     if(grid.length && shots>=nextRowShot){
       // Add pairs so the existing staggered hex rows do not shift sideways.
       addRows(2);
@@ -644,11 +672,11 @@ projectile = {
     fireBtn.disabled = !running;
 
     const cluster = clusterFrom(cell);
-    if (cluster.length >= 4) {
-      const initialCount=grid.length;
+    if (cluster.length >= MATCH_SIZE) {
+      const initialCount=cheesePiecesRemaining();
       removeCells(cluster);
       removeFloating();
-      collectCheese(initialCount-grid.length);
+      collectCheese(initialCount-cheesePiecesRemaining());
       registerClearEvent();
     }
 
