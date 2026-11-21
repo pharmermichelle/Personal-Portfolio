@@ -124,8 +124,37 @@ Deno.serve(async req=>{
  if(userResult.error||!user||user.is_anonymous)return response(401,{error:"Sign in for verified rewards"},origin);
  let body:any;
  try{const raw=await req.text();if(raw.length>18000)throw Error("Too large");body=JSON.parse(raw);}catch(_){return response(400,{error:"Invalid request"},origin);}
- if(!body||typeof body!=="object"||body.game_id!=="acorn-ascent"||body.version!=="v2"
-    ||!Number.isInteger(body.level)||body.level<1||body.level>10)return response(400,{error:"Unsupported game or level"},origin);
+ if(!body||typeof body!=="object")return response(400,{error:"Invalid reward request"},origin);
+ if(body.game_id==="cut-the-cheese"){
+   const level=body.level;
+   if(body.version!=="v1"||!Number.isInteger(level)||level<1||level>200)return response(400,{error:"Unsupported cheese level"},origin);
+   if(body.action==="start"){
+     const cutoff=new Date(Date.now()-60000).toISOString();
+     const {count,error:rateError}=await admin.from("reward_attempts").select("id",{count:"exact",head:true})
+       .eq("user_id",user.id).eq("game_id","cut-the-cheese").gte("created_at",cutoff);
+     if(rateError)return response(503,{error:"Could not check challenge limit"},origin);
+     if((count||0)>=15)return response(429,{error:"Too many challenge requests"},origin);
+     // Pre-existing local players may resume at higher levels; duplicate claims
+     // are blocked by the unique XP ledger key. Scores are NOT replay-verified.
+     const {data:attempt,error:attemptError}=await admin.from("reward_attempts")
+       .insert({user_id:user.id,game_id:"cut-the-cheese",level_number:level,game_version:"v1"})
+       .select("id,expires_at").single();
+     if(attemptError||!attempt)return response(503,{error:"Could not begin challenge"},origin);
+     return response(200,{attempt_id:attempt.id,expires_at:attempt.expires_at},origin);
+   }
+   if(body.action==="complete"){
+     if(typeof body.attempt_id!=="string"||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.attempt_id))
+       return response(400,{error:"Missing challenge"},origin);
+     // The client only supplies a completion report. It is time-gated and idempotent
+     // but not replay-verified; never interpret it as a verified leaderboard score.
+     const {data,error}=await admin.rpc("claim_cheese_level",{p_user:user.id,p_attempt:body.attempt_id,p_level:level});
+     if(error)return response(409,{error:"Level XP unavailable; complete a fresh signed-in challenge"},origin);
+     return response(200,{accepted:true,...data,verification:"server-timed-not-replay-verified"},origin);
+   }
+   return response(400,{error:"Unsupported cheese reward action"},origin);
+ }
+ if(body.game_id!=="acorn-ascent"||body.version!=="v2"||
+    !Number.isInteger(body.level)||body.level<1||body.level>10)return response(400,{error:"Unsupported game or level"},origin);
  const level=body.level as number;
  if(body.action==="start"){
    const cutoff=new Date(Date.now()-60000).toISOString();
