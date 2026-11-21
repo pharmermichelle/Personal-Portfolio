@@ -35,6 +35,25 @@
   const restartBtn = document.getElementById("restartBtn");
   const soundBtn = document.getElementById("soundBtn");
   const fireBtn = document.getElementById("fireBtn");
+  const knifePowerBtn = document.getElementById("knifePowerBtn");
+  const boardPowerBtn = document.getElementById("boardPowerBtn");
+  const knifeCountEl = document.getElementById("knifeCount");
+  const boardCountEl = document.getElementById("boardCount");
+  const cheeseRoster = document.getElementById("cheeseRoster");
+  const toolStatus = document.getElementById("toolStatus");
+  const prepTitle = document.getElementById("prepTitle");
+  const prepInfo = document.getElementById("prepInfo");
+  const prepTime = document.getElementById("prepTime");
+  const prepKnifeCount = document.getElementById("prepKnifeCount");
+  const prepBoardCount = document.getElementById("prepBoardCount");
+  const prepParmCount = document.getElementById("prepParmCount");
+  const bonusKnifeBtn = document.getElementById("bonusKnifeBtn");
+  const bonusBoardBtn = document.getElementById("bonusBoardBtn");
+  const bonusTimeBtn = document.getElementById("bonusTimeBtn");
+  const bonusStatus = document.getElementById("bonusStatus");
+  const extendTimeBtn = document.getElementById("extendTimeBtn");
+  const endBonusStatus = document.getElementById("endBonusStatus");
+  const gameOverTitle = document.getElementById("gameOverTitle");
 
   const W = canvas.width;
   const H = canvas.height;
@@ -84,15 +103,91 @@
   let elapsedAccum = 0;
   let soundOn = true;
   let usingParm = false;
-  let addRowEvery = 10;
+  let addRowEvery = 14;
   let nextRowShot = addRowEvery;
-
-  function randCheese() {
-    return CHEESES[(Math.random() * CHEESES.length) | 0].id;
+  // Separate the next-level countdown from the elapsed run time.
+  let remainingSeconds = 240;
+  let timedOut = false, gameBusy = false, extraTimeUsed = false, activeTool = null;
+  let levelBonusClaimed = false, previewBusy = false;
+  const SAVE_KEY = "retro-cut-cheese-inventory-v1";
+  const POWER_LIMIT = 25;
+  const allowedTools = ["knife", "board", "parm"];
+  const safeNumber = value => Number.isInteger(value) && value >= 0 ? Math.min(POWER_LIMIT,value) : 0;
+  function loadInventory(){
+    try {
+      const saved = JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
+      return {knife:safeNumber(saved.knife),board:safeNumber(saved.board),parm:safeNumber(saved.parm)};
+    }catch(_){return {knife:0,board:0,parm:0};}
   }
-
+  const inventory = loadInventory();
+  function saveInventory(){
+    try {localStorage.setItem(SAVE_KEY,JSON.stringify(inventory));}catch(_){}
+  }
+  function grantTool(type,count=1){
+    if(!allowedTools.includes(type))return false;
+    const initial=inventory[type];
+    inventory[type]=Math.min(POWER_LIMIT,inventory[type]+count);
+    saveInventory();
+    return inventory[type]>initial;
+  }
+  // Three opening varieties, then introduce one at levels 2, 3 and 4.
+  // The later levels get denser boards and shorter refill intervals.
+  const cheeseCountForLevel = n => Math.min(6,3+Math.max(0,n-1));
+  const activeCheeses = () => CHEESES.slice(0,cheeseCountForLevel(level));
+  const startingRows = n => n<=2?3:n<=4?4:n<=7?5:Math.min(7,5+Math.floor((n-7)/3));
+  const shotsPerDrop = n => Math.max(7,15-Math.floor((n-1)*.85));
+  const levelSeconds = n => Math.max(145,240-Math.max(0,n-1)*12);
+  function randCheese() {
+    const options=activeCheeses();
+    return options[(Math.random()*options.length)|0].id;
+  }
   function makeQueue() {
     return Array.from({ length: 5 }, randCheese);
+  }
+  function displayTimer(){
+    const t=Math.max(0,Math.ceil(remainingSeconds));
+    timeEl.textContent=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+    timeEl.closest(".hud-card")?.classList.toggle("warning",running&&t<=30);
+  }
+  function updateInventoryUI(message){
+    knifeCountEl.textContent=level<2?"LV 2":String(inventory.knife);
+    boardCountEl.textContent=level<3?"LV 3":String(inventory.board);
+    prepKnifeCount.textContent=inventory.knife;
+    prepBoardCount.textContent=inventory.board;
+    prepParmCount.textContent=inventory.parm;
+    knifePowerBtn.disabled=!running||!!projectile||level<2||inventory.knife<=0;
+    boardPowerBtn.disabled=!running||!!projectile||level<3||inventory.board<=0;
+    knifePowerBtn.setAttribute("aria-pressed",String(activeTool==="knife"));
+    boardPowerBtn.setAttribute("aria-pressed",String(activeTool==="board"));
+    cheeseRoster.textContent="Level "+level+" • "+cheeseCountForLevel(level)+" cheese varieties";
+    if(message)toolStatus.textContent=message;
+  }
+  function prepareLevel(message=""){
+    running=false;
+    activeTool=null;usingParm=false;previewBusy=false;
+    fireBtn.disabled=true;
+    prepTitle.textContent="Level "+level+" • "+(level===1?"The Cheese Course":level<=3?"The Sharper Course":"The Cheese Challenge");
+    prepInfo.textContent=(message?message+" ":"")+"Match 4+ cheeses to clear the board. This level has "+cheeseCountForLevel(level)+" varieties and "+startingRows(level)+" starting rows.";
+    prepTime.textContent="⏱ "+formatTime(remainingSeconds)+" to finish this level";
+    startBtn.textContent="▶ START LEVEL "+level;
+    startOverlay.classList.add("visible");
+    gameOverOverlay.classList.remove("visible");
+    renderBonusUI();
+    updateInventoryUI();
+    displayTimer();
+  }
+  function resetLevelBoard(){
+    grid=[];projectile=null;
+    for(let row=0;row<startingRows(level);row++)createRow(row);
+    queue=makeQueue();
+    shots=0;clearEvents=0;
+    addRowEvery=shotsPerDrop(level);
+    nextRowShot=addRowEvery;
+    remainingSeconds=levelSeconds(level);
+    extraTimeUsed=false;levelBonusClaimed=false;
+    activeTool=null;usingParm=false;aimAngle=-Math.PI/2;elapsedAccum=0;timedOut=false;
+    updateHud();
+    prepareLevel();
   }
 
   function columnsInRow(row) {
@@ -118,21 +213,8 @@
   }
 
   function resetGame() {
-    initGrid();
-    queue = makeQueue();
-    projectile = null;
-    fireBtn.disabled = true;
-    level = 1;
-    shots = 0;
-    seconds = 0;
-    clearEvents = 0;
-    parms = 0;
-    usingParm = false;
-    addRowEvery = 10;
-    nextRowShot = addRowEvery;
-    aimAngle = -Math.PI / 2;
-    elapsedAccum = 0;
-    updateHud();
+    level=1;seconds=0;parms=inventory.parm;
+    resetLevelBoard();
   }
 
   function cellCenter(row, col) {
@@ -212,7 +294,7 @@
   function registerClearEvent() {
     clearEvents++;
     if (clearEvents % 5 === 0) {
-      parms++;
+      if(grantTool("parm"))parms=inventory.parm;
       chirp(520, .07);
       setTimeout(() => chirp(760, .08), 80);
     } else {
@@ -228,17 +310,19 @@
   }
 
   function advanceLevelIfNeeded() {
-    if (!grid.length) {
-      level++;
-      // Each cleared board gets a fresh top stack. Early levels stay forgiving;
-      // later levels add denser starting patterns.
-      const rows = Math.min(4 + Math.floor((level - 1) / 3), 7);
-      grid = [];
-      for (let row = 0; row < rows; row++) createRow(row);
-      addRowEvery = Math.max(6, 10 - Math.floor(level / 3));
-      nextRowShot = shots + addRowEvery;
-      chirp(880, .1);
-    }
+    if(grid.length)return;
+    const finished=level;
+    level++;
+    const earned=[];
+    if(level===2 && grantTool("knife"))earned.push("🔪 Row Knife +1");
+    if(level===3 && grantTool("board"))earned.push("🪵 Spin Board +1");
+    if(level>3 && level%3===0 && grantTool("knife"))earned.push("🔪 Row Knife +1");
+    if(level>3 && level%4===0 && grantTool("board"))earned.push("🪵 Spin Board +1");
+    resetLevelBoard();
+    const unlock = cheeseCountForLevel(level)>cheeseCountForLevel(finished)
+      ? "New cheese variety unlocked! ":"";
+    prepareLevel("Level "+finished+" cleared! "+unlock+(earned.length?"Earned "+earned.join(", ")+".":""));
+    chirp(880,.12);
   }
 
   function dangerReached() {
