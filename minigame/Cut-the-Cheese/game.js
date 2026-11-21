@@ -765,78 +765,39 @@ projectile = {
   }
 
   function drawAimGuide() {
-  if (!running || projectile) return;
-
-  const startX = W / 2;
-  const startY = KNIFE_Y - 45;
-
-  let x = startX;
-  let y = startY;
-
-  let dx = Math.cos(aimAngle);
-  let dy = Math.sin(aimAngle);
-
-  const step = 18;
-  const maxDots = 32;
-
-  ctx.save();
-
-  ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
-  ctx.strokeStyle = "rgba(74, 39, 15, 0.35)";
-
-  for (let i = 0; i < maxDots; i++) {
-    x += dx * step;
-    y += dy * step;
-
-    // Predict side-wall bounce
-    if (x <= RADIUS) {
-      x = RADIUS;
-      dx *= -1;
-    }
-
-    if (x >= W - RADIUS) {
-      x = W - RADIUS;
-      dx *= -1;
-    }
-
-    // Stop guide if it reaches the top
-    if (y <= BOARD_TOP + RADIUS) break;
-
-    // Stop guide when it would hit existing cheese
-    let collision = false;
-
-    for (const c of grid) {
-      const p = cellCenter(c.row, c.col);
-
-      if (
-        Math.hypot(x - p.x, y - p.y) <
-        RADIUS * 1.75
-      ) {
-        collision = true;
+    if(!running||projectile||menuOpen)return;
+    // Aim from the true projectile tip; trace wall bounces and exact hit radius.
+    const radius=usingParm||activeTool?46:RADIUS;
+    const tipDistance=142;
+    let x=W/2+Math.cos(aimAngle)*tipDistance;
+    let y=KNIFE_Y+28+Math.sin(aimAngle)*tipDistance;
+    let dx=Math.cos(aimAngle),dy=Math.sin(aimAngle);
+    const extended=aimBoostSeconds>0;
+    const steps=extended?165:currentKnife().aim;
+    ctx.save();
+    ctx.fillStyle=extended?"rgba(124,255,234,.95)":"rgba(255,248,215,.85)";
+    ctx.strokeStyle=extended?"rgba(31,255,214,.98)":"rgba(255,240,178,.75)";
+    ctx.lineWidth=extended?5:3;
+    for(let i=0;i<steps;i++){
+      x+=dx*9;y+=dy*9;
+      if(x<radius){x=2*radius-x;dx=Math.abs(dx);}
+      if(x>W-radius){x=2*(W-radius)-x;dx=-Math.abs(dx);}
+      let hit=y-radius<=BOARD_TOP;
+      if(!hit)hit=grid.some(c=>{
+        const p=cellCenter(c.row,c.col);
+        return Math.hypot(x-p.x,y-p.y)<=radius+RADIUS-4;
+      });
+      if(hit){
+        ctx.beginPath();ctx.arc(x,y,extended?17:11,0,Math.PI*2);ctx.stroke();
+        if(extended){ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);ctx.fill();}
         break;
       }
+      if(i%3===0){ctx.beginPath();ctx.arc(x,y,extended?5:4,0,Math.PI*2);ctx.fill();}
     }
-
-    if (collision) {
-      ctx.beginPath();
-      ctx.arc(x, y, 12, 0, Math.PI * 2);
-      ctx.stroke();
-      break;
-    }
-
-    // Alternate dots for that retro shooter look
-    if (i % 2 === 0) {
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    ctx.restore();
   }
 
-  ctx.restore();
-  }
-
-  
-function drawKnife() {
+  function drawKnife() {
   const pivotX = W / 2;
   const pivotY = KNIFE_Y + 28;
 
