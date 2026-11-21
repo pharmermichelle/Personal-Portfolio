@@ -57,8 +57,14 @@
        if(info.type==="ready"){rewardStatus("XP challenge active • Level "+info.level);return;}
        if(info.type==="award"){
          const gained=Number(info.awarded_xp)||0;
-         rewardStatus(gained?"+"+gained+" arcade XP earned on Level "+info.level+"!":
-           "Level "+info.level+" already received its arcade XP reward.");
+         const cleared=Number(info.levels_earned)||0;
+         if(info.hat_unlocked){
+           rewardStatus("🧀 BIG CHEESE UNLOCKED! Your cheese wedge hat is waiting in My Profile → Wardrobe.");
+         }else{
+           rewardStatus((gained?"+"+gained+" arcade XP earned on Level "+info.level+"!":
+             "Level "+info.level+" already received its arcade XP reward.")+
+             " • "+Math.min(10,cleared)+"/10 levels for the Big Cheese hat.");
+         }
          if(gained)global.dispatchEvent(new Event("retro-arcade-xp-updated"));
        }
      },
