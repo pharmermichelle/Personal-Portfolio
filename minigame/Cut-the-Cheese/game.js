@@ -72,10 +72,10 @@
   const CHEESES = [
     { id: "mozzarella", label: "Mozzarella", color: "#f7f2df" },
     { id: "cheddar",    label: "Cheddar",    color: "#ee8b22" },
+    { id: "swiss",      label: "Swiss",      color: "#f4d65f" },
     { id: "american",   label: "American",   color: "#fff0b9" },
     { id: "muenster",   label: "Muenster",   color: "#f2e5c7" },
     { id: "colby",      label: "Colby",      color: "#efad35" },
-    { id: "swiss",      label: "Swiss",      color: "#f4d65f" },
   ];
 
   const IMAGE_PATHS = {
@@ -177,7 +177,7 @@
     activeTool=null;usingParm=false;previewBusy=false;
     fireBtn.disabled=true;
     prepTitle.textContent="Level "+level+" • "+(level===1?"The Cheese Course":level<=3?"The Sharper Course":"The Cheese Challenge");
-    prepInfo.textContent=(message?message+" ":"")+"Match 4+ cheeses to clear the board. This level has "+cheeseCountForLevel(level)+" varieties and "+startingRows(level)+" starting rows.";
+    prepInfo.textContent=(message?message+" ":"")+"Match 4+ cheeses to clear the board. "+cheeseCountForLevel(level)+" varieties: "+activeCheeses().map(c=>c.label).join(", ")+". "+startingRows(level)+" starting rows.";
     prepTime.textContent="⏱ "+formatTime(remainingSeconds)+" to finish this level";
     startBtn.textContent="▶ START LEVEL "+level;
     startOverlay.classList.add("visible");
