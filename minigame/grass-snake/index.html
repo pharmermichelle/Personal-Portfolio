@@ -99,7 +99,7 @@ const storeKey="retro:grass-snake:device:v1";
 let saved={bestSeconds:0,runs:0,bugs:0};
 try{const x=JSON.parse(localStorage.getItem(storeKey)||"null");if(x&&Number.isInteger(x.bestSeconds)&&x.bestSeconds>=0&&Number.isInteger(x.runs)&&x.runs>=0)saved=x;}catch(_){}
 let accountBest=null,accountRuns=null,activeAccount=null,attempt=null,runIndex=0,previousBest=0,previousRuns=0;
-let confirmedXp=0,checkpointedSecond=0,checkpointTask=null,claiming=false;
+let confirmedXp=0,checkpointedSecond=0,checkpointTask=null,claiming=false,checkpointRetryAt=0;
 let snake=[],heading={x:1,y:0},turn=null,food=null,eaten=0,elapsed=0,stepAccum=0,last=performance.now(),state="idle",muted=true,animTick=0;
 const grass=Array.from({length:N*N},(_,i)=>{let k=Math.imul(i+21,1103515245)>>>0;return {shade:k%5,tuft:(k>>>5)%9===0,stem:(k>>>9)%3};});
 function saveDevice(){try{localStorage.setItem(storeKey,JSON.stringify(saved));}catch(_){}}
@@ -201,7 +201,7 @@ async function begin(){
  if(state==="running"||state==="starting")return;
  state="starting";el("start").disabled=true;el("start").textContent="STARTING…";
  const currentRun=++runIndex;
- activeAccount=null;attempt=null;confirmedXp=0;checkpointedSecond=0;checkpointTask=null;claiming=false;
+ activeAccount=null;attempt=null;confirmedXp=0;checkpointedSecond=0;checkpointTask=null;claiming=false;checkpointRetryAt=0;
  previousBest=saved.bestSeconds;previousRuns=saved.runs;
  try {
   const {result,userId}=await serverAction("start",{});
@@ -222,7 +222,7 @@ async function sendCheckpoint(run,seconds,final=false){
  const challenge=attempt,account=activeAccount;
  // Serialize every checkpoint and the final claim so a late network reply
  // cannot overtake a newer milestone or a just-completed run.
- while(checkpointTask)await checkpointTask;
+ while(checkpointTask){try{await checkpointTask;}catch(_){/* Still finalize after a failed live sync. */}}
  if(run!==runIndex||activeAccount!==account||attempt!==challenge)return null;
  if(!final&&seconds<=checkpointedSecond)return null;
  const task=(async()=>{
@@ -230,6 +230,7 @@ async function sendCheckpoint(run,seconds,final=false){
   if(userId!==account)throw Error("Account changed");
   if(run!==runIndex||activeAccount!==account)return result;
   checkpointedSecond=Math.max(checkpointedSecond,seconds);
+  checkpointRetryAt=0;
   confirmedXp+=Math.max(0,Number(result.awarded_xp)||0);
   accountBest=Math.max(accountBest||0,Number(result.best_seconds)||0);
   accountRuns=Math.max(accountRuns||0,Number(result.completed_runs)||0);
@@ -244,13 +245,14 @@ async function sendCheckpoint(run,seconds,final=false){
  try{return await task;}finally{if(checkpointTask===task)checkpointTask=null;}
 }
 function maybeCheckpoint(){
- if(state!=="running"||claiming||!attempt||!activeAccount||checkpointTask)return;
+ if(state!=="running"||claiming||!attempt||!activeAccount||checkpointTask||Date.now()<checkpointRetryAt)return;
  const seconds=Math.floor(elapsed/1000);
  const next=(Math.floor(checkpointedSecond/10)+1)*10;
  const eligibility=previousRuns===0?10:Math.max(60,(Math.floor(previousBest/10)+1)*10);
  if(seconds<next||seconds<eligibility)return;
  // Checkpoint the full elapsed time. Server validates against its own clock.
  void sendCheckpoint(runIndex,seconds).catch(error=>{
+  checkpointRetryAt=Date.now()+5000;
   if(state==="running")status("XP sync pending: "+(error.message||"connection issue")+". Your run is still playable.");
  });
 }
