@@ -101,7 +101,10 @@
    presenceNeedsStart=true;
    if(trackingTimer!==null)clearInterval(trackingTimer);
    void sendActivityHeartbeat();
-   trackingTimer=setInterval(()=>{void sendActivityHeartbeat();},30000);
+   // Faster heartbeat for short, focused cheese rounds; server still caps
+  // elapsed time and refuses credit for inactive/background tabs.
+  trackingTimer=setInterval(()=>{void sendActivityHeartbeat();},
+    gameId==="cut-the-cheese"?15000:30000);
  }
  document.addEventListener("visibilitychange",()=>{
    if(document.hidden){presenceNeedsStart=true;return;}
