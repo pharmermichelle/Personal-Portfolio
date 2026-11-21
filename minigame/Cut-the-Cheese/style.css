@@ -29,7 +29,20 @@ button { font: inherit; }
 .game-shell {
   width: min(980px, 100%);
   margin: 0 auto;
+  /* Lock the interactive controls together even when Auto ads inserts a
+     separate in-page block between the game's DOM siblings. Auto ads are
+     not hidden or resized: extra grid items follow the playable surface. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "heading" "scoreboard" "next" "board" "credits";
+  grid-auto-rows: min-content;
+  align-content: start;
 }
+.game-shell > .title-wrap { grid-area: heading; }
+.game-shell > .hud { grid-area: scoreboard; }
+.game-shell > .next-strip { grid-area: next; }
+.game-shell > .board-wrap { grid-area: board; }
+.game-shell > footer { grid-area: credits; }
 
 .title-wrap {
   display: flex;
@@ -158,6 +171,7 @@ canvas {
 }
 
 .overlay {
+  z-index: 3;
   position: absolute;
   inset: 0;
   display: none;
@@ -201,4 +215,42 @@ code { color: #efd28d; }
   .next-strip { align-items: flex-start; }
   .legend { max-width: 46%; }
   footer { display: none; }
+}
+
+/* Clear two-step touch controls. The canvas aims; only FIRE shoots. */
+.fire-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  min-width: 112px;
+  min-height: 62px;
+  padding: 9px 18px;
+  background: linear-gradient(#ffe48e, #e99c3f);
+  border: 3px solid #482711;
+  border-radius: 13px;
+  box-shadow: 0 5px 0 #46220f, 0 6px 14px #0007;
+  color: #2d1b0e;
+  font: 900 1.2rem/1 "Courier New", monospace;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.fire-btn:focus-visible { outline: 3px solid #fff8da; outline-offset: 3px; }
+.fire-btn:disabled { opacity: .45; filter: grayscale(.7); cursor: default; }
+.fire-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #46220f; }
+.aim-help {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 8px 11px;
+  border: 2px solid #6c4324;
+  border-radius: 8px;
+  background: #332010;
+  color: #ffedbb;
+  font-size: .83rem;
+  text-align: center;
+  line-height: 1.3;
+}
+@media (max-width: 650px) {
+  .fire-btn { min-width: 104px; min-height: 56px; right: 12px; bottom: 12px; }
+  .aim-help { font-size: .77rem; }
 }
