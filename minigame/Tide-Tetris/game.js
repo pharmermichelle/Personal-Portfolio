@@ -405,6 +405,7 @@ function startLevel(levelIndex) {
   dropCounter = 0;
   gameOver = false;
   updateHud();
+  window.RetroLevelXP?.begin(levelIndex);
 }
 
 function resetGame() {
@@ -442,6 +443,7 @@ function drop() {
     }
 
     if (linesCleared >= level * 3 && level < LEVEL_COUNT) {
+      window.RetroLevelXP?.complete(level);
       level++;
       startLevel(level);
       return;
