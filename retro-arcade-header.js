@@ -58,7 +58,7 @@
    "claws-vs-paws","cut-the-cheese","fallen-grid","revive-nature","rink-putt",
    "hockey-gear-rush","survive-2026","acorn-ascent","bugged-out",
    "coastline-cruiser","lemon-pound-cake","wizards-mana","whack-a-bug",
-   "choose-adventure","ferret-life","inbox-hero","community-garden"
+   "choose-adventure","ferret-life","inbox-hero","community-garden","grass-snake"
  ]);
  // Personal estimated time only; never used for XP or public leaderboard scores.
  // A 'start' presence event resets the server cursor on initial load or resume
