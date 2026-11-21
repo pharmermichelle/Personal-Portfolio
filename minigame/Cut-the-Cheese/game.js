@@ -860,51 +860,51 @@ function formatTime(s) {
 }
 
 function loop(ts) {
-  const dt = Math.min(50, ts - lastTime || 16);
-  lastTime = ts;
-
-  if (running) {
-    elapsedAccum += dt;
-
-    if (elapsedAccum >= 1000) {
-      const whole = Math.floor(elapsedAccum / 1000);
-
-      seconds += whole;
-      elapsedAccum -= whole * 1000;
-
-      timeEl.textContent = formatTime(seconds);
+  const dt = Math.min(50,ts-lastTime||16);
+  lastTime=ts;
+  if(running){
+    elapsedAccum+=dt;
+    if(elapsedAccum>=1000){
+      const whole=Math.floor(elapsedAccum/1000);
+      seconds+=whole;
+      remainingSeconds=Math.max(0,remainingSeconds-whole);
+      elapsedAccum-=whole*1000;
+      displayTimer();
+      if(remainingSeconds<=0)endGame("time");
     }
-
-    updateProjectile();
+    if(running)updateProjectile();
   }
-
   drawBoard();
   requestAnimationFrame(loop);
 }
-
-function startGame() {
-  resetGame();
-
-  running = true;
-
+function startGame(){
+  if(previewBusy)return;
+  running=true;timedOut=false;
   startOverlay.classList.remove("visible");
   gameOverOverlay.classList.remove("visible");
-  fireBtn.disabled = false;
-
-  timeEl.textContent = "00:00";
+  fireBtn.disabled=!!projectile;
+  lastTime=performance.now();
+  elapsedAccum=0;
+  displayTimer();
+  updateHud();
 }
-
-function endGame() {
-  running = false;
-  projectile = null;
-  fireBtn.disabled = true;
-
-  gameOverStats.textContent =
-    `Level ${level} • ${formatTime(seconds)} • ${shots} cheese shots • ${clearEvents} cluster clears`;
-
+function endGame(reason="limit"){
+  if(!running)return;
+  running=false;
+  projectile=null;
+  activeTool=null;
+  fireBtn.disabled=true;
+  timedOut=reason==="time";
+  gameOverTitle.textContent=timedOut?"Time’s up!":"That cheese got too close.";
+  gameOverStats.textContent="Level "+level+" • "+formatTime(seconds)+" played • "+shots+" shots • "+clearEvents+" cluster clears";
+  endBonusStatus.textContent=timedOut?"Optional time extension or retry; earned tools stay in inventory.":"Retry this level. Your saved tools are safe.";
+  extendTimeBtn.hidden=!timedOut||extraTimeUsed;
+  extendTimeBtn.disabled=false;
+  extendTimeBtn.textContent="▶ Get +45 Seconds";
+  restartBtn.textContent="↻ RETRY LEVEL "+level;
   gameOverOverlay.classList.add("visible");
-
-  chirp(110, 0.18);
+  updateInventoryUI();
+  chirp(110,.18);
 }
 
 function setAimFromPoint(clientX, clientY) {
@@ -999,19 +999,27 @@ document.addEventListener("keydown", e => {
 });
 
 parmBtn.addEventListener("click", () => {
-  if (
-    !running ||
-    parms <= 0 ||
-    projectile
-  ) return;
-
-  usingParm = !usingParm;
+  if(!running||inventory.parm<=0||projectile)return;
+  usingParm=!usingParm;
+  activeTool=null;
   updateHud();
 });
+function selectTool(type){
+  if(!running||projectile||inventory[type]<=0||level<(type==="knife"?2:3))return;
+  activeTool=activeTool===type?null:type;
+  usingParm=false;
+  updateHud();
+  updateInventoryUI(activeTool?"Ready: "+(type==="knife"?"Row Knife":"Spin Board")+". Aim and press FIRE!":"Regular cheese shot selected.");
+}
+knifePowerBtn.addEventListener("click",()=>selectTool("knife"));
+boardPowerBtn.addEventListener("click",()=>selectTool("board"));
 
-startBtn.addEventListener("click", startGame);
-
-restartBtn.addEventListener("click", startGame);
+startBtn.addEventListener("click",startGame);
+restartBtn.addEventListener("click",()=>{
+  if(previewBusy)return;
+  // Retry the same level with a freshly generated board, not an involuntary full reset.
+  resetLevelBoard();
+});
 
 soundBtn.addEventListener("click", () => {
   soundOn = !soundOn;
