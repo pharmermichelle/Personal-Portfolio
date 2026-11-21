@@ -211,7 +211,18 @@
     byId("account-status").textContent=user?"Signed in • Account settings":"Not signed in";
     if(!user) {
       byId("display-name").textContent="Guest Player";
-      status("This is a preview. Sign in on the Game Hub to save your username and character.");
+      byId("player-level").textContent="—";
+      byId("xp-text").textContent="Sign in to see your saved XP";
+      const progress=byId("xp-current-progress");
+      if(progress)progress.textContent="Account not connected. Your existing XP is saved on your account, not lost.";
+      const bar=byId("xp-progress-fill");
+      if(bar)bar.style.width="0%";
+      for(const key of ["total-time","badge-count","games-tracked","overall-rank"]){
+        const element=byId(key);if(element)element.textContent="—";
+      }
+      const stats=byId("game-stats-status");
+      if(stats)stats.textContent="Sign in to load your saved game stats and XP.";
+      status("You are viewing the guest preview. Sign in to load your existing arcade XP and character.");
     }
   }
   function setRewardStatus(text) {
