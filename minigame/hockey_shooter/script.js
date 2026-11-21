@@ -855,6 +855,7 @@ function resetLevel(idx = levelIndex) {
   state.shotMode = "pass";
   state.puck.friction = SHOTS.pass.friction;
   updateShotButtons();
+  window.RetroLevelXP?.begin(idx+1);
 }
 resetLevel(0);
 // ---- Sounds ----
@@ -1358,6 +1359,7 @@ function onGoalScored() {
   state.puck.vx = state.puck.vy = 0;
 
   startGoalFX();
+  window.RetroLevelXP?.complete(levelIndex+1);
 
   // let the celebration run before advancing
   setTimeout(() => {
