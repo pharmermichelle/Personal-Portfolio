@@ -297,7 +297,7 @@
     remainingSeconds=levelSeconds(level);
     extraTimeUsed=false;levelBonusClaimed=false;
     activeTool=null;usingParm=false;aimAngle=-Math.PI/2;elapsedAccum=0;timedOut=false;
-    heldCheese=null;discardsUsed=0;
+    heldCheese=null;discardsUsed=0;aimBoostSeconds=0;
     updateHud();
     prepareLevel();
   }
@@ -920,6 +920,7 @@ projectile = {
   parmBtn.disabled = !running || parms <= 0 || !!projectile;
   parmBtn.textContent = usingParm ? "ARMED" : "USE";
   updateInventoryUI();
+  renderKnifeShop();
 
   nextQueueEl.replaceChildren();
 
@@ -1162,12 +1163,16 @@ function formatTime(s) {
 function loop(ts) {
   const dt = Math.min(50,ts-lastTime||16);
   lastTime=ts;
-  if(running){
+  if(running&&!menuOpen&&!document.hidden){
     elapsedAccum+=dt;
     if(elapsedAccum>=1000){
       const whole=Math.floor(elapsedAccum/1000);
       seconds+=whole;
       remainingSeconds=Math.max(0,remainingSeconds-whole);
+      if(aimBoostSeconds>0){
+        aimBoostSeconds=Math.max(0,aimBoostSeconds-whole);
+        if(!aimBoostSeconds)toolStatus.textContent="Extended guide expired; the equipped knife still has its regular guide.";
+      }
       elapsedAccum-=whole*1000;
       displayTimer();
       if(remainingSeconds<=0)endGame("time");
@@ -1193,6 +1198,7 @@ function endGame(reason="limit"){
   running=false;
   projectile=null;
   activeTool=null;
+  menuOpen=false;powerMenu.classList.remove("visible");
   fireBtn.disabled=true;
   timedOut=reason==="time";
   gameOverTitle.textContent=timedOut?"Time’s up!":"That cheese got too close.";
@@ -1238,7 +1244,7 @@ function setAimFromPoint(clientX, clientY) {
 // Mouse hover also adjusts the preview; only FIRE or Space launches cheese.
 let aimingPointerId = null;
 canvas.addEventListener("pointerdown", e => {
-  if (!running || projectile) return;
+  if (!running || projectile || menuOpen) return;
   if (e.pointerType === "mouse" && e.button !== 0) return;
   aimingPointerId = e.pointerId;
   try { canvas.setPointerCapture(e.pointerId); } catch (_error) {}
@@ -1246,7 +1252,7 @@ canvas.addEventListener("pointerdown", e => {
   e.preventDefault();
 });
 canvas.addEventListener("pointermove", e => {
-  if (!running || projectile) return;
+  if (!running || projectile || menuOpen) return;
   if (e.pointerType === "mouse" || e.pointerId === aimingPointerId) {
     setAimFromPoint(e.clientX, e.clientY);
   }
@@ -1263,7 +1269,8 @@ canvas.addEventListener("pointercancel", e => {
 fireBtn.addEventListener("click", shoot);
 
 document.addEventListener("keydown", e => {
-  if (!running) return;
+  if(e.key==="Escape"&&menuOpen){closePowerMenu();e.preventDefault();return;}
+  if (!running || menuOpen) return;
 
   if (e.key === "ArrowLeft") {
     aimAngle = Math.max(
@@ -1299,13 +1306,13 @@ document.addEventListener("keydown", e => {
 });
 
 parmBtn.addEventListener("click", () => {
-  if(!running||inventory.parm<=0||projectile)return;
+  if(!running||menuOpen||inventory.parm<=0||projectile)return;
   usingParm=!usingParm;
   activeTool=null;
   updateHud();
 });
 function selectTool(type){
-  if(!running||projectile||inventory[type]<=0||level<(type==="knife"?2:3))return;
+  if(!running||menuOpen||projectile||inventory[type]<=0||level<(type==="knife"?2:3))return;
   activeTool=activeTool===type?null:type;
   usingParm=false;
   updateHud();
