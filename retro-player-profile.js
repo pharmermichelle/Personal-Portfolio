@@ -64,7 +64,7 @@
       + '<path d="M63 167h55v19H63Z" fill="#d85d9d" stroke="#30235b" stroke-width="4"/>'
       + '<rect x="85" y="143" width="12" height="12" rx="3" fill="#fb65b7"/>'
       + '<g>'+head+'</g>'
-      + (equippedHat?'<g stroke-linejoin="round"><path d="M43 28L90 -16L137 28Q90 43 43 28Z" fill="#ffdf55" stroke="#6b3b22" stroke-width="5"/><path d="M43 28Q90 43 137 28L137 39Q90 54 43 39Z" fill="#e9a73f" stroke="#6b3b22" stroke-width="4"/><circle cx="90" cy="10" r="9" fill="#d8902f"/><circle cx="71" cy="24" r="6" fill="#d8902f"/><circle cx="110" cy="26" r="5" fill="#d8902f"/><path d="M65 24Q83 8 95 -6" stroke="#fff4ad" stroke-width="4" opacity=".8" fill="none"/></g>':'')
+      + (equippedHat?'<g stroke-linejoin="round"><path d="M43 38L90 1L137 38Q90 51 43 38Z" fill="#ffdf55" stroke="#6b3b22" stroke-width="5"/><path d="M43 38Q90 51 137 38L137 46Q90 60 43 46Z" fill="#e9a73f" stroke="#6b3b22" stroke-width="4"/><circle cx="90" cy="25" r="9" fill="#d8902f"/><circle cx="71" cy="38" r="6" fill="#d8902f"/><circle cx="110" cy="39" r="5" fill="#d8902f"/><path d="M65 38Q83 19 95 5" stroke="#fff4ad" stroke-width="4" opacity=".8" fill="none"/></g>':'')
       + (!small?'<path d="M18 19l4-8 4 8 9 3-9 3-4 8-4-8-9-3ZM147 119l3-7 3 7 7 3-7 3-3 7-3-7-7-3Z" fill="#fff07b"/>':"")
       + '</svg>';
   }
