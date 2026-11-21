@@ -442,8 +442,13 @@ function drop() {
       return;
     }
 
-    if (linesCleared >= level * 3 && level < LEVEL_COUNT) {
+    if (linesCleared >= level * 3) {
       window.RetroLevelXP?.complete(level);
+      if(level>=LEVEL_COUNT){
+        gameOver=true;
+        setStatus("SYSTEM RESTORED // ALL 30 SECTORS CLEARED");
+        return;
+      }
       level++;
       startLevel(level);
       return;
