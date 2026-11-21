@@ -49,7 +49,7 @@
  };
  let save=null,rewards=null,started=false;
  function rewardStatus(message){bridge.setRewardStatus(message);}
- function setupRewards(client){
+ async function setupRewards(client){
    if(!global.RetroRewards||!client)return;
    rewards=global.RetroRewards.create({
      gameId,version:"v1",
@@ -70,8 +70,12 @@
      else rewardStatus("Guest play • sign in to earn account XP.");
    };
    client.auth.onAuthStateChange((_event,session)=>setTimeout(()=>applyUser(session?.user||null),0));
-   void client.auth.getSession().then(({data})=>applyUser(data?.session?.user||null))
-      .catch(()=>rewardStatus("Account XP unavailable • gameplay still works."));
+   try {
+     const {data}=await client.auth.getSession();
+     applyUser(data?.session?.user||null);
+   } catch(_error) {
+     rewardStatus("Account XP unavailable • gameplay still works.");
+   }
    bridge.onStart=level=>{if(rewards)void rewards.begin(level);};
    bridge.onComplete=level=>{if(rewards)void rewards.completed(level,[]);};
  }
@@ -85,13 +89,13 @@
      bridge.connectSave(save);
      const state=await save.initialize();
      if(state)bridge.restore(validate(state));
-     setupRewards(global.retroArcadeSupabaseClient);
-     if(status&&save.mode==="account"&&(!status.textContent||status.textContent.includes("checking")))
+     await setupRewards(global.retroArcadeSupabaseClient);
+     if(status&&save.mode==="account"&&(!status.textContent||status.textContent.toLowerCase().includes("checking")))
         status.textContent="Account progress ready";
    }catch(error){
      if(status)status.textContent="Cloud unavailable • device progress retained";
      console.warn("Cut the Cheese cloud:",error?.message||error);
-     setupRewards(global.retroArcadeSupabaseClient);
+     await setupRewards(global.retroArcadeSupabaseClient);
    }finally{startBtn.disabled=false;}
  }
  global.addEventListener("retro-arcade-auth-ready",()=>{void initialize();});
@@ -99,6 +103,11 @@
  else {
    if(status)status.textContent="Waiting for player login…";
    // The shared arcade header normally sets up Supabase first.
-   setTimeout(()=>{if(!started)void initialize();},1800);
+   setTimeout(()=>{
+     if(!started){
+       if(global.retroArcadeSupabaseClient)void initialize();
+       else if(status)status.textContent="Device progress only • login unavailable";
+     }
+   },1800);
  }
 })(window);
