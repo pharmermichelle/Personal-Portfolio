@@ -14,7 +14,7 @@
     />
     <meta name="theme-color" content="#7f4f24" />
     <title>Cut the Cheese</title>
-    <link rel="stylesheet" href="style.css?v=20261121-knives-2" />
+    <link rel="stylesheet" href="style.css?v=20261121-cloudxp-1" />
   
   <!-- Shared Retro Games Hub navigation -->
   <script src="../../retro-arcade-header.js?v=20261121-player-2" data-game-id="cut-the-cheese" data-layout="normal" defer></script>
@@ -83,6 +83,11 @@
         </div>
         <p class="tool-status" id="toolStatus" role="status" aria-live="polite">Break cheeses to earn 5 points each. Open Power-Ups to upgrade your shooting knife.</p>
       </section>
+      <div class="cheese-account-status" aria-label="Game progress and experience">
+        <span id="cheeseCloudStatus" role="status" aria-live="polite">Checking player save…</span>
+        <button id="cheeseSyncOptions" type="button" hidden>Sync Options</button>
+        <span id="cheeseRewardStatus" role="status" aria-live="polite">Signed-in level clears can award Arcade XP.</span>
+      </div>
       <p class="aim-help">Tap/drag to aim • <strong>FIRE!</strong> to shoot • <strong>POWER-UPS</strong> for knives, cheese swaps and aiming boosts.</p>
 
       <section class="board-wrap">
@@ -119,7 +124,7 @@
             <p id="bonusStatus" class="bonus-status" role="status" aria-live="polite">Optional reward ads grant one bonus when completed. If no ad is available, one free fallback bonus is offered per level.</p>
             <button id="buyPowerBtn" type="button" class="buy-btn" disabled title="Payments are not set up">🛒 Buy Power-Ups — Coming Soon</button>
             <button id="startBtn" class="primary-btn prep-start" type="button">▶ START LEVEL 1</button>
-            <p class="tiny">Earn 5 Cheese Points per cheese broken and buy permanent knife upgrades with points earned here. This is local game progress, not arcade XP or paid currency.</p>
+            <p class="tiny">Earn 5 Cheese Points per cheese broken and buy permanent knife upgrades with points earned here. Cheese Points are separate from arcade XP. Sign in to cloud-save your equipment and earn arcade XP on new level clears.</p>
           </div>
         </div>
 
@@ -190,6 +195,9 @@
          Display AdSense units do not qualify as rewarded inventory. -->
     <script src="../../retro-monetization-config.js?v=20261121-survivor-2" data-game-id="cut-the-cheese"></script>
     <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
-    <script src="game.js?v=20261121-knives-2"></script>
+    <script src="../../retro-save-service.js?v=20261118-1"></script>
+    <script src="../../retro-rewards.js?v=20261118-1"></script>
+    <script src="game.js?v=20261121-cloudxp-1"></script>
+    <script src="cloud.js?v=20261121-cloudxp-1"></script>
   </body>
 </html>
