@@ -62,7 +62,7 @@ ins.adsbygoogle.retro-compact-ad-unit{display:block;width:100%;max-width:320px;h
   <div class="stat"><span>Survived</span><strong id="time">0:00</strong></div>
   <div class="stat"><span>Bugs eaten</span><strong id="bugs">0</strong></div>
   <div class="stat"><span>Personal best</span><strong id="best">0:00</strong></div>
-  <div class="stat xp"><span>Run XP</span><strong id="xp">+0</strong></div>
+  <div class="stat xp"><span>Banked XP</span><strong id="xp">—</strong></div>
  </div>
  <div class="board-frame" id="play-field">
   <canvas id="board" width="480" height="480" role="img" aria-label="Snake playfield. Use arrow keys, WASD, swipe or the direction buttons to turn."></canvas>
@@ -86,7 +86,7 @@ ins.adsbygoogle.retro-compact-ad-unit{display:block;width:100%;max-width:320px;h
   </div>
  </div>
  <p class="note">Swipe the grass, use the arrows, or press WASD. Edges wrap around. Only your own body ends the hunt.</p>
- <div class="reward" id="reward-status" role="status" aria-live="polite">First run: 1 XP every 10s. After that: reach 60s, then beat your previous best by 10s milestones. Sign in to bank XP.</div>
+ <div class="reward" id="reward-status" role="status" aria-live="polite">First signed-in run: 1 XP each 10 seconds. Later: survive 60 seconds and beat your account best in new 10-second milestones. XP banks while you play.</div>
  <div class="ad-area"><p class="ad-label">Advertisement</p><ins class="adsbygoogle retro-compact-ad-unit" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
 </main>
 <script>
@@ -99,6 +99,7 @@ const storeKey="retro:grass-snake:device:v1";
 let saved={bestSeconds:0,runs:0,bugs:0};
 try{const x=JSON.parse(localStorage.getItem(storeKey)||"null");if(x&&Number.isInteger(x.bestSeconds)&&x.bestSeconds>=0&&Number.isInteger(x.runs)&&x.runs>=0)saved=x;}catch(_){}
 let accountBest=null,accountRuns=null,activeAccount=null,attempt=null,runIndex=0,previousBest=0,previousRuns=0;
+let confirmedXp=0,checkpointedSecond=0,checkpointTask=null,claiming=false;
 let snake=[],heading={x:1,y:0},turn=null,food=null,eaten=0,elapsed=0,stepAccum=0,last=performance.now(),state="idle",muted=true,animTick=0;
 const grass=Array.from({length:N*N},(_,i)=>{let k=Math.imul(i+21,1103515245)>>>0;return {shade:k%5,tuft:(k>>>5)%9===0,stem:(k>>>9)%3};});
 function saveDevice(){try{localStorage.setItem(storeKey,JSON.stringify(saved));}catch(_){}}
@@ -157,10 +158,7 @@ function hud(){
  el("time").textContent=clock(Math.floor(elapsed/1000));
  el("bugs").textContent=String(eaten);
  el("best").textContent=clock(Math.max(saved.bestSeconds,accountBest||0));
- const seconds=Math.floor(elapsed/1000);
- const threshold=previousRuns===0?10:Math.max(60,(Math.floor(previousBest/10)+1)*10);
- const potential=seconds>=threshold?Math.floor((seconds-threshold)/10)+1:0;
- el("xp").textContent="+"+potential;
+ el("xp").textContent=activeAccount?"+"+confirmedXp:"—";
 }
 function status(msg){el("reward-status").textContent=msg;}
 function setOverlay(title,copy,label,icon){el("overlay").hidden=false;el("overlay-title").textContent=title;el("overlay-copy").textContent=copy;el("start").textContent=label;el("overlay-icon").textContent=icon;}
@@ -192,6 +190,7 @@ async function serverAction(action,data){
  const client=clientReady();if(!client)throw Error("Account connection not ready");
  const {data:sessionData}=await client.auth.getSession();
  const session=sessionData?.session;if(!session?.access_token||session.user?.is_anonymous)throw Error("Sign in for account XP");
+ if(activeAccount&&session.user.id!==activeAccount)throw Error("Account changed during the run");
  const r=await client.functions.invoke("retro-rewards",{body:{game_id:"grass-snake",version:"v1",action,...data}});
  if(r.error)throw Error(r.data?.error||r.error.message||"Reward service unavailable");
  if(r.data?.error)throw Error(r.data.error);
@@ -202,7 +201,7 @@ async function begin(){
  if(state==="running"||state==="starting")return;
  state="starting";el("start").disabled=true;el("start").textContent="STARTING…";
  const currentRun=++runIndex;
- activeAccount=null;attempt=null;
+ activeAccount=null;attempt=null;confirmedXp=0;checkpointedSecond=0;checkpointTask=null;claiming=false;
  previousBest=saved.bestSeconds;previousRuns=saved.runs;
  try {
   const {result,userId}=await serverAction("start",{});
@@ -211,45 +210,76 @@ async function begin(){
   accountBest=Math.max(0,Number(result.best_seconds)||0);
   accountRuns=Math.max(0,Number(result.completed_runs)||0);
   previousBest=accountBest;previousRuns=accountRuns;
-  status("Signed in • account XP will be credited after this run ends.");
- }catch(_){
-  status("Guest/device run • sign in before starting a run to earn account XP.");
+  status("Account connected. XP is automatically banked at each eligible 10-second milestone, even before your run ends.");
+ }catch(error){
+  status("DEVICE ONLY • "+(error.message||"Account XP unavailable")+". Sign in from the arcade header, then start a new run to bank XP.");
  }
  resetBoard();el("start").disabled=false;el("overlay").hidden=true;el("pause").disabled=false;el("pause").textContent="Ⅱ PAUSE";
  state="running";last=performance.now();
 }
+async function sendCheckpoint(run,seconds,final=false){
+ if(!activeAccount||!attempt)return null;
+ const challenge=attempt,account=activeAccount;
+ // Serialize every checkpoint and the final claim so a late network reply
+ // cannot overtake a newer milestone or a just-completed run.
+ while(checkpointTask)await checkpointTask;
+ if(run!==runIndex||activeAccount!==account||attempt!==challenge)return null;
+ if(!final&&seconds<=checkpointedSecond)return null;
+ const task=(async()=>{
+  const {result,userId}=await serverAction(final?"complete":"checkpoint",{attempt_id:challenge,seconds,bugs:eaten});
+  if(userId!==account)throw Error("Account changed");
+  if(run!==runIndex||activeAccount!==account)return result;
+  checkpointedSecond=Math.max(checkpointedSecond,seconds);
+  confirmedXp+=Math.max(0,Number(result.awarded_xp)||0);
+  accountBest=Math.max(accountBest||0,Number(result.best_seconds)||0);
+  accountRuns=Math.max(accountRuns||0,Number(result.completed_runs)||0);
+  hud();hudBest();
+  if(result.awarded_xp>0){
+   status("★ "+confirmedXp+" Snake XP banked! "+(final?"Run finished.":"Keep slithering for more."));
+   window.dispatchEvent(new Event("retro-arcade-xp-updated"));
+  }
+  return result;
+ })();
+ checkpointTask=task;
+ try{return await task;}finally{if(checkpointTask===task)checkpointTask=null;}
+}
+function maybeCheckpoint(){
+ if(state!=="running"||claiming||!attempt||!activeAccount||checkpointTask)return;
+ const seconds=Math.floor(elapsed/1000);
+ const next=(Math.floor(checkpointedSecond/10)+1)*10;
+ const eligibility=previousRuns===0?10:Math.max(60,(Math.floor(previousBest/10)+1)*10);
+ if(seconds<next||seconds<eligibility)return;
+ // Checkpoint the full elapsed time. Server validates against its own clock.
+ void sendCheckpoint(runIndex,seconds).catch(error=>{
+  if(state==="running")status("XP sync pending: "+(error.message||"connection issue")+". Your run is still playable.");
+ });
+}
 async function submitRun(run,seconds,bugs,challenge,account){
  if(!challenge||!account)return;
+ if(claiming)return;
+ claiming=true;
  try{
-  status("Checking your survival time and banking earned XP…");
-  const {result}=await serverAction("complete",{attempt_id:challenge,seconds,bugs});
+  status("Finalizing this run's XP…");
+  await sendCheckpoint(run,seconds,true);
   if(run!==runIndex)return;
-  const earned=Math.max(0,Number(result.awarded_xp)||0);
-  accountBest=Math.max(accountBest||0,Number(result.best_seconds)||0);
-  accountRuns=Number(result.completed_runs)||accountRuns;
-  el("xp").textContent="+"+earned;
-  hudBest();
-  const msg=earned?"★ +"+earned+" account XP earned!":"No new XP this run.";
-  status(msg+" Account best: "+clock(accountBest)+".");
+  const msg=confirmedXp?"★ "+confirmedXp+" XP banked this run!":"No new account XP on this run.";
+  status(msg+" Account best: "+clock(accountBest||0)+".");
   el("overlay-copy").textContent="Survived "+clock(seconds)+" • ate "+bugs+" bugs. "+msg;
-  window.dispatchEvent(new Event("retro-arcade-xp-updated"));
  }catch(error){
   if(run!==runIndex)return;
-  el("xp").textContent="+0";
-  status("Account XP could not be confirmed. "+(error.message||"Try a fresh run.")+" Device best is saved.");
-  el("overlay-copy").textContent="Survived "+clock(seconds)+" • ate "+bugs+" bugs. Account XP not confirmed.";
- }
+  status("Some XP may already be banked ("+confirmedXp+"). Final save failed: "+(error.message||"network issue")+".");
+  el("overlay-copy").textContent="Survived "+clock(seconds)+" • ate "+bugs+" bugs. "+confirmedXp+" XP confirmed; final save not confirmed.";
+ }finally{if(run===runIndex)claiming=false;}
 }
 function hudBest(){el("best").textContent=clock(Math.max(saved.bestSeconds,accountBest||0));}
 function end(cleared=false){
  if(state!=="running")return;
- state="over";const seconds=Math.floor(elapsed/1000),before=saved.bestSeconds;
+ state="over";const seconds=Math.floor(elapsed/1000);
  saved.bestSeconds=Math.max(saved.bestSeconds,seconds);saved.runs++;saved.bugs+=eaten;saveDevice();hudBest();
  el("pause").disabled=true;
- const potential=Number(el("xp").textContent.slice(1))||0;
  setOverlay(cleared?"FIELD MASTERED!":"TAIL TANGLE!", "You survived "+clock(seconds)+" and ate "+eaten+" bugs. "+(activeAccount?"Checking account XP…":"Sign in for official XP."),"↻ HUNT AGAIN",cleared?"🏆":"🐍");
  if(activeAccount&&attempt)void submitRun(runIndex,seconds,eaten,attempt,activeAccount);
- else{el("xp").textContent="+0";status("Device best saved: "+clock(saved.bestSeconds)+". Sign in for account XP; guest runs cannot be claimed later.");}
+ else{el("xp").textContent="—";status("Device best saved: "+clock(saved.bestSeconds)+". This was a guest run; sign in to earn XP on future runs.");}
  chime(210);
 }
 function frame(now){
@@ -259,6 +289,7 @@ function frame(now){
   const interval=Math.max(112,190-eaten*3);
   if(stepAccum>=interval){stepAccum-=interval;step();}
   if(animTick%8===0)hud();
+  maybeCheckpoint();
  }
  paint();
  requestAnimationFrame(frame);
