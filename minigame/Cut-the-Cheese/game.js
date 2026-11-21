@@ -144,15 +144,34 @@
   // fifth at Level 5, and sixth at Level 7 while boards get denser.
   const cheeseCountForLevel = n => Math.min(6,3+Math.floor((Math.max(1,n)-1)/2));
   const activeCheeses = () => CHEESES.slice(0,cheeseCountForLevel(level));
-  const startingRows = n => n<=2?3:n<=4?4:n<=7?5:Math.min(7,5+Math.floor((n-7)/3));
-  const shotsPerDrop = n => Math.max(7,15-Math.floor((n-1)*.85));
+  // Level 1 is a welcoming, two-row tutorial with easy-to-hit matching groups.
+  const startingRows = n => n===1?2:n===2?3:n<=4?4:n<=7?5:Math.min(7,5+Math.floor((n-7)/3));
+  const shotsPerDrop = n => n===1?26:n===2?20:Math.max(7,15-Math.floor((n-1)*.85));
   const levelSeconds = n => Math.max(145,240-Math.max(0,n-1)*12);
-  function randCheese() {
-    const options=activeCheeses();
-    return options[(Math.random()*options.length)|0].id;
+  // Only the types actually left on the board may appear in the launcher.
+  // An eliminated cheese cannot come back in the queue or in future falling rows.
+  function boardCheeseTypes() {
+    const present=new Set(grid.map(c=>c.type));
+    return activeCheeses().map(c=>c.id).filter(id=>present.has(id));
+  }
+  function randCheese(pool=boardCheeseTypes()) {
+    const options=pool.length?pool:activeCheeses().map(c=>c.id);
+    return options[Math.floor(Math.random()*options.length)];
   }
   function makeQueue() {
-    return Array.from({ length: 5 }, randCheese);
+    const pool=boardCheeseTypes();
+    return Array.from({ length: 5 },()=>randCheese(pool));
+  }
+  function syncQueueToBoard(){
+    if(!grid.length)return;
+    const pool=boardCheeseTypes();
+    const allowed=new Set(pool);
+    // Keep the same order for still-available cheeses; replace extinct
+    // ones immediately, including the loaded shot at the knife tip.
+    queue=Array.from({length:5},(_,i)=>{
+      const current=queue[i];
+      return allowed.has(current)?current:randCheese(pool);
+    });
   }
   function displayTimer(){
     const t=Math.max(0,Math.ceil(remainingSeconds));
@@ -189,7 +208,11 @@
   }
   function resetLevelBoard(){
     grid=[];projectile=null;
-    for(let row=0;row<startingRows(level);row++)createRow(row);
+    if(level===1)createOpeningBoard();
+    else{
+      const fullPool=activeCheeses().map(c=>c.id);
+      for(let row=0;row<startingRows(level);row++)createRow(row,fullPool);
+    }
     queue=makeQueue();
     shots=0;clearEvents=0;
     addRowEvery=shotsPerDrop(level);
@@ -206,14 +229,26 @@
     return row % 2 ? COLS - 1 : COLS;
   }
 
-  function createRow(row) {
-    for (let col = 0; col < columnsInRow(row); col++) {
+  function createRow(row,pool=activeCheeses().map(c=>c.id)){
+    for(let col=0;col<columnsInRow(row);col++){
       grid.push({
-        row,
-        col,
-        type: randCheese(),
-        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
+        row,col,type:randCheese(pool),
+        id:crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`
       });
+    }
+  }
+  function createOpeningBoard(){
+    // Deliberate matching regions so the first level can be finished in
+    // a few good shots, rather than 29 completely randomized pieces.
+    const types=["mozzarella","cheddar","swiss"];
+    for(let row=0;row<2;row++){
+      for(let col=0;col<columnsInRow(row);col++){
+        const type=types[col< (row?3:4)?0:col< (row?6:7)?1:2];
+        grid.push({
+          row,col,type,
+          id:crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`
+        });
+      }
     }
   }
 
@@ -313,11 +348,13 @@
     }
   }
 
-  function addRows(count) {
-    // Push existing cheese downward.
-    grid.forEach(c => c.row += count);
-
-    for (let row = 0; row < count; row++) createRow(row);
+  function addRows(count){
+    // Sample survivor types BEFORE shifting. Extinct types stay extinct
+    // even when the challenge adds new rows.
+    const pool=boardCheeseTypes();
+    if(!pool.length)return;
+    grid.forEach(c=>c.row+=count);
+    for(let row=0;row<count;row++)createRow(row,pool);
   }
 
   function advanceLevelIfNeeded() {
@@ -356,6 +393,8 @@
       usingParm=false;
     }
     fireBtn.disabled = true;
+    // A cheese wiped out by the previous hit can never be fired again.
+    syncQueueToBoard();
     const type = tool || (isParm?"parm":queue.shift());
     if (!tool && !isParm)queue.push(randCheese());
 
@@ -378,12 +417,8 @@ projectile = {
 };
     
     shots++;
-    if (shots >= nextRowShot) {
-      // Always add pairs so the existing staggered rows keep their x positions.
-      addRows(2);
-      nextRowShot = shots + addRowEvery;
-    }
-
+    // Add challenge rows AFTER resolving the hit. This lets the shot
+    // eliminate a cheese type before new rows are generated.
     chirp(isParm ? 180 : 290, .04);
     updateHud();
 
@@ -406,6 +441,17 @@ projectile = {
     return false;
   }
 
+  function completeShot(){
+    if(grid.length && shots>=nextRowShot){
+      // Add pairs so the existing staggered hex rows do not shift sideways.
+      addRows(2);
+      nextRowShot=shots+addRowEvery;
+    }
+    syncQueueToBoard();
+    advanceLevelIfNeeded();
+    updateHud();
+    if(running&&dangerReached())endGame("limit");
+  }
   function settleProjectile() {
     if (!projectile) return;
     if(projectile.tool){
@@ -426,9 +472,7 @@ projectile = {
       projectile=null;
       fireBtn.disabled=false;
       updateInventoryUI((fired.tool==="knife"?"Row Knife":"Spin Board")+" cleared "+cells.length+" cheeses!");
-      updateHud();
-      advanceLevelIfNeeded();
-      if(running&&dangerReached())endGame("limit");
+      completeShot();
       return;
     }
     if (projectile.parm) {
@@ -441,9 +485,7 @@ projectile = {
       removeFloating();
       projectile = null;
       fireBtn.disabled = !running;
-      updateHud();
-      advanceLevelIfNeeded();
-      if (dangerReached()) endGame();
+      completeShot();
       return;
     }
 
@@ -486,10 +528,7 @@ projectile = {
       registerClearEvent();
     }
 
-    advanceLevelIfNeeded();
-    updateHud();
-
-    if (dangerReached()) endGame();
+    completeShot();
   }
 
   function updateProjectile() {
