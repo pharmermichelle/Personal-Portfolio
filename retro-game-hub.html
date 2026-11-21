@@ -691,6 +691,106 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
  .filter-toggle-right{font-size:11px}
 }
 
+
+/* Icon-first game library: compact, touch-friendly tiles instead of screenshots. */
+.grid.compact-game-grid {
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+.card.game-tile {
+  min-width: 0;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.game-tile .game-tile-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 100%;
+  min-height: 213px;
+  padding: 13px 10px 11px;
+  color: #fff8ff;
+  text-align: center;
+  text-decoration: none;
+}
+.game-tile .game-tile-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border: 1px solid #8270b7;
+  border-radius: 17px;
+  background: radial-gradient(circle at 35% 20%, #493572, #1b143d 77%);
+  box-shadow: inset 0 1px 0 #ffffff22, 0 3px 0 #09061d;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 43px;
+  line-height: 1;
+}
+.game-tile h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5em;
+  max-width: 100%;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.game-tile .game-tile-category {
+  color: #aaf4f4;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.game-tile .game-tile-play {
+  display: grid;
+  place-items: center;
+  margin-top: auto;
+  width: 100%;
+  max-width: 130px;
+  min-height: 33px;
+  border-radius: 8px;
+  background: #ffed56;
+  color: #27133b;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .7px;
+  box-shadow: 2px 2px 0 #e7489e;
+}
+.card.game-tile:hover,
+.card.game-tile:focus-within {
+  border-color: #4eeaff;
+  box-shadow: 0 0 0 2px #4eeaff33, 4px 5px 0 #08051e77;
+}
+.card.game-tile:hover { transform: translateY(-2px); }
+.game-tile .game-tile-link:focus-visible {
+  outline: 3px solid #4eeaff;
+  outline-offset: -4px;
+  border-radius: 11px;
+}
+@media(max-width:900px) {
+  .grid.compact-game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+}
+@media(max-width:560px) {
+  .grid.compact-game-grid { gap: 9px; }
+  .game-tile .game-tile-link { min-height: 196px; gap: 6px; padding: 11px 7px 10px; }
+  .game-tile .game-tile-icon { width: 56px; height: 56px; border-radius: 14px; font-size: 38px; }
+  .game-tile h3 { font-size: 15px; }
+  .game-tile .game-tile-category { font-size: 10px; }
+  .game-tile .game-tile-play { min-height: 32px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .card.game-tile { transition: none; }
+  .card.game-tile:hover { transform: none; }
+}
+
     </style>
   </head>
   <body>
@@ -839,7 +939,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 
         <!-- Responsive gallery: search and tags filter the same cards. -->
         <main class="right" id="game-results">
-          <div id="gallery" class="grid" aria-label="Browse games"></div>
+          <div id="gallery" class="grid compact-game-grid" aria-label="Browse games"></div>
           <div id="game-empty-state" class="game-empty-state" hidden>
             <span aria-hidden="true">🕹️</span>
             <h3>No games match those filters</h3>
@@ -901,6 +1001,7 @@ const supabaseClient = supabase.createClient(
       const GAMES = [
         {
           id: "claws-vs-paws",
+          icon: "🐈",
           title: "Claws vs. Paws: Castle Clash",
           href: "minigame/claws-vs-paws/index.html",
           img: "images/retro-hub-claws-vs-paws.svg",
@@ -910,6 +1011,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "cut-the-cheese",
+          icon: "🧀",
           title: "Cut the Cheese",
           href: "minigame/Cut-the-Cheese/index.html",
           img: "images/retro-hub-cut-the-cheese.svg",
@@ -919,6 +1021,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "fallen-grid",
+          icon: "🧩",
           title: "Fallen Grid",
           href: "minigame/Tide-Tetris/index.html",
           img: "images/retro-hub-fallen-grid.svg",
@@ -928,6 +1031,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "revive-nature",
+          icon: "🌱",
           title: "Revive Nature",
           href: "minigame/Revive-nature/revive-index.html",
           img: "images/retro-hub-revive-nature.svg",
@@ -937,6 +1041,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "rink-putt",
+          icon: "🏒",
           title: "Rink Putt",
           href: "minigame/hockey_shooter/index.html",
           img: "images/hockey-thumb.png",
@@ -946,6 +1051,7 @@ const supabaseClient = supabase.createClient(
         },
 {
   id: "hockey-gear-rush",
+          icon: "🥅",
   title: "Hockey Gear Rush",
   href: "minigame/hockey-gear-rush/index.html",
   img: "images/1000017382.jpg",
@@ -955,6 +1061,7 @@ const supabaseClient = supabase.createClient(
 },
                 {
           id: "survive-2026",
+          icon: "🌪️",
           title: "Survive 2026",
           href: "minigame/survive-2026/index.html",
           img: "images/survive-thumb.png",
@@ -964,6 +1071,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "acorn-ascent",
+          icon: "🐿️",
           title: "Acorn Ascent",
           href: "minigame/acorn-ascent/index.html",
           img: "images/acorn-ascent-gameplay-thumb.webp",
@@ -973,6 +1081,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "bugged-out",
+          icon: "🐞",
           title: "Bugged Out!",
           href: "minigame/bugged-out/index.html",
           img: "images/bugged-thumb.png",
@@ -982,6 +1091,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "coastline-cruiser",
+          icon: "🚙",
           title: "Coastline Cruiser",
           href: "minigame/coastline-cruiser/cruiser.html",
           img: "images/cruiser-thumbnail.png",
@@ -991,6 +1101,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "lemon-pound-cake",
+          icon: "🍋",
           title: "Lemon Pound Cake Double Take",
           href: "minigame/pound_cake/index.html",
           img: "images/lemon-pound-cake-thumb.png",
@@ -1000,6 +1111,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "wizards-mana",
+          icon: "🧙",
           title: "Wizard's Mana Forge",
           href: "minigame/clickgame.html",
           img: "images/wizard-thumb.png",
@@ -1009,6 +1121,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "whack-a-bug",
+          icon: "🪲",
           title: "Whack‑a‑Bug",
           href: "minigame/whackgame.html",
           img: "images/whack-thumb.png",
@@ -1018,6 +1131,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "choose-adventure",
+          icon: "📜",
           title: "Choose Your Adventure",
           href: "minigame/game.html",
           img: "images/choose-thumb.png",
@@ -1027,6 +1141,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "ferret-life",
+          icon: "🐾",
           title: "Ferret Life (WIP)",
           href: "minigame/ferret-life/index.html",
           img: "images/ferret-thumb.png",
@@ -1036,6 +1151,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "inbox-hero",
+          icon: "📥",
           title: "Inbox Hero",
           href: "minigame/inbox-hero.html",
           img: "images/inbox-thumb.png",
@@ -1045,6 +1161,7 @@ const supabaseClient = supabase.createClient(
         },
         {
           id: "community-garden",
+          icon: "🌻",
           title: "Community Garden",
           href: "minigame/community-garden.html",
           img: "images/garden-thumb.png",
@@ -1083,28 +1200,16 @@ const supabaseClient = supabase.createClient(
         wrap.innerHTML = "";
         const visibleGames = GAMES.filter(passFilters);
         visibleGames.forEach((g) => {
-          const tagPlatform = g.platform
-            .map((p) => `<span class="pill">${p}</span>`)
-            .join("");
-          const tagGenre = g.genre
-            .map((p) => `<span class="pill">${p}</span>`)
-            .join("");
-          wrap.insertAdjacentHTML(
-            "beforeend",
-            `
-          <article class="card" id="${g.id}">
-            <a class="thumb" href="${g.href}" target="_blank" rel="noopener" style="background-image:url('${g.img}'), linear-gradient(180deg,#0f1b32,#0b1429)"></a>
-            <div class="body">
-              <h3>${g.title}</h3>
-              <div class="meta">${tagGenre} ${tagPlatform}</div>
-              <p style="margin:.5rem 0 0">${g.desc}</p>
-              <div class="actions">
-                <a class="btn" href="${g.href}" target="_blank" rel="noopener">Play</a>
-              </div>
-            </div>
-          </article>
-        `
-          );
+          wrap.insertAdjacentHTML("beforeend", `
+            <article class="card game-tile" id="${g.id}">
+              <a class="game-tile-link" href="${g.href}" target="_blank" rel="noopener noreferrer" aria-label="Play ${g.title}">
+                <span class="game-tile-icon" aria-hidden="true">${g.icon}</span>
+                <h3>${g.title}</h3>
+                <span class="game-tile-category">${g.genre[0]}</span>
+                <span class="game-tile-play" aria-hidden="true">PLAY ↗</span>
+              </a>
+            </article>
+          `);
         });
         updateBrowseControls(visibleGames.length);
       }
