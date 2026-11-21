@@ -23,7 +23,7 @@
  '.brand{grid-area:brand;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;color:#e9f7ff}.brand .star{color:#ffcf66;font-size:18px}.brand .wordmark{font-size:13px;font-weight:1000;letter-spacing:.75px;border:1px solid #5f89ac;padding:9px 10px;border-radius:8px;background:#11263f}' +
  '.player{grid-area:player;display:flex;gap:10px;align-items:center;min-width:0;color:inherit;text-decoration:none;border-radius:9px;padding:3px 5px}.player:hover{background:#273752}.avatar{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:12px;background:#332854;border:2px solid #75dce5;overflow:hidden;font-size:23px}.avatar svg{width:100%;height:100%;object-fit:contain}.identity{min-width:0;flex:1}.name{font-weight:950;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.details{display:flex;gap:10px;align-items:center;margin-top:3px;font-size:13px;color:#ffe7a9;font-weight:900;white-space:nowrap}.level{color:#a8eeff}.track{width:min(235px,100%);height:6px;background:#2d3a58;border-radius:20px;margin-top:6px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#7fdbf1,#f2cc69);transition:width .2s}' +
  '.links{grid-area:links;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px}.nav-link,.login,.logout,.coffee{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border:1px solid #63849f;border-radius:8px;background:#152b45;color:#f2f8ff;text-decoration:none;font-weight:900;font-size:12px;white-space:nowrap;cursor:pointer}.nav-link:hover,.login:hover,.logout:hover{background:#294660}.coffee{background:#4d314c;border-color:#ecafcf;color:#ffe6f7}.coffee:hover{background:#66405c}.logout{background:#192439}.login{border-color:#f1d27b;color:#ffeab7}.nav-link:focus-visible,.coffee:focus-visible,.player:focus-visible,.logout:focus-visible,.login:focus-visible{outline:3px solid #ffdd7f;outline-offset:2px}' +
- '@media(max-width:1050px){.bar{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand coffee" "player player" "links links";gap:6px 9px;padding:8px 10px}.brand .wordmark{padding:6px 8px;font-size:12px}.coffee{grid-area:coffee;justify-self:end;min-height:34px;padding:5px 9px}.player{padding:4px 3px}.avatar{width:45px;height:45px}.details{margin-top:2px}.track{margin-top:4px}.links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:5px}.nav-link{min-height:39px;white-space:normal;text-align:center;padding:6px 5px}.logout,.login{grid-column:3}.links .profile-link{grid-column:3}.links .home-link{grid-column:1}.links .projects-link{grid-column:2}.links .coffee{display:none}.links .logout,.links .login{font-size:11px}}' +
+ '@media(max-width:1050px){.bar{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand coffee" "player player" "links links";gap:6px 9px;padding:8px 10px}.brand .wordmark{padding:6px 8px;font-size:12px}.coffee{grid-area:coffee;justify-self:end;min-height:34px;padding:5px 9px}.player{padding:4px 3px}.avatar{width:45px;height:45px}.details{margin-top:2px}.track{margin-top:4px}.links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:5px}.nav-link{min-height:39px;white-space:normal;text-align:center;padding:6px 5px}.logout,.login{grid-column:4}.links .profile-link{grid-column:3}.links .home-link{grid-column:1}.links .projects-link{grid-column:2}.links .coffee{display:none}.links .logout,.links .login{font-size:11px}}' +
  '@media(max-width:400px){.name{font-size:14px}.details{font-size:12px}.nav-link{font-size:11px}.brand .wordmark{font-size:11px}.coffee{font-size:11px}.avatar{width:42px;height:42px}}' +
  '</style>';
  shadow.innerHTML = css +
@@ -34,6 +34,14 @@
  '<nav class="links" aria-label="Arcade navigation"><a class="nav-link home-link" id="arcade-link" href="'+arcade+'">← Arcade Hub</a><a class="nav-link projects-link" href="'+projects+'">← Projects</a><a class="nav-link profile-link" href="'+profile+'">★ My Profile</a><a class="login" id="login-link" href="'+accountURL("login")+'" hidden>Log In</a><button class="logout" id="logout-button" type="button" hidden>Log Out</button></nav>' +
  '</div>';
  document.body.prepend(host);
+ // Load the same original avatars as the player profile across every game.
+ if(!window.RetroHubAvatars){
+   const avatarScript=document.createElement("script");
+   avatarScript.src=url("retro-player-avatar.js?v=20261121");
+   avatarScript.async=true;
+   avatarScript.onload=()=>{if(player)void refreshPlayer(player);};
+   document.head.appendChild(avatarScript);
+ }
  if(script.dataset.layout==="viewport"){
    document.body.classList.add("retro-arcade-viewport");
    const style=document.createElement("style");
