@@ -643,11 +643,15 @@ projectile = {
   function settleProjectile() {
     if (!projectile) return;
     if(projectile.tool){
-      const initialCount=grid.length;
+      const initialCount=cheesePiecesRemaining();
       const fired=projectile;
       const nearest=closestCell(fired.x,fired.y);
       let cells=[];
-      if(fired.tool==="knife"){
+      if(fired.tool==="grater"){
+        // Remove the single piece directly struck, without adding a cheese.
+        const impact=nearestImpactCheese(fired.x,fired.y);
+        cells=impact.cell?[impact.cell]:[];
+      }else if(fired.tool==="knife"){
         // Cut a whole horizontal cheese row regardless of cheese type.
         cells=grid.filter(c=>c.row===nearest.row);
       }else if(fired.tool==="board"){
@@ -656,27 +660,40 @@ projectile = {
         const startCol=Math.max(0,Math.min(COLS-4,nearest.col-1));
         cells=grid.filter(c=>c.row>=startRow&&c.row<startRow+4&&c.col>=startCol&&c.col<startCol+4);
       }
-      removeCells(cells);
-      removeFloating();
-      collectCheese(initialCount-grid.length);
+      const result=removeAndExplode(cells);
+      collectCheese(initialCount-cheesePiecesRemaining());
       projectile=null;
       fireBtn.disabled=false;
-      updateInventoryUI((fired.tool==="knife"?"Row Knife":"Spin Board")+" cleared "+cells.length+" cheeses!");
+      const label=fired.tool==="grater"?"Cheese Grater":fired.tool==="knife"?"Row Knife":"Spin Board";
+      updateInventoryUI(label+" removed "+result.removed+" pieces"+(result.bombs?" • "+result.bombs+" bomb blast!":"")+"!");
       completeShot();
       return;
     }
     if (projectile.parm) {
-      const initialCount=grid.length;
+      const initialCount=cheesePiecesRemaining();
       const blastRadius = 155;
       const hit = grid.filter(c => {
         const p = cellCenter(c.row, c.col);
         return Math.hypot(projectile.x - p.x, projectile.y - p.y) <= blastRadius;
       });
-      removeCells(hit);
-      removeFloating();
-      collectCheese(initialCount-grid.length);
+      removeAndExplode(hit);
+      collectCheese(initialCount-cheesePiecesRemaining());
       projectile = null;
       fireBtn.disabled = !running;
+      completeShot();
+      return;
+    }
+
+    // A normal cheese fired into a bomb detonates it without adding a piece.
+    const impact=nearestImpactCheese(projectile.x,projectile.y);
+    if(impact.cell?.type===BOMB_TYPE&&impact.distance<=RADIUS*2+6){
+      const before=cheesePiecesRemaining();
+      const result=removeAndExplode([impact.cell]);
+      collectCheese(before-cheesePiecesRemaining());
+      projectile=null;
+      fireBtn.disabled=!running;
+      toolStatus.textContent="💥 Boom! "+result.removed+" pieces cleared.";
+      registerClearEvent();
       completeShot();
       return;
     }
@@ -716,8 +733,7 @@ projectile = {
     const cluster = clusterFrom(cell);
     if (cluster.length >= MATCH_SIZE) {
       const initialCount=cheesePiecesRemaining();
-      removeCells(cluster);
-      removeFloating();
+      removeAndExplode(cluster);
       collectCheese(initialCount-cheesePiecesRemaining());
       registerClearEvent();
     }
@@ -975,11 +991,20 @@ projectile = {
   function drawTool(type,x,y){
     ctx.save();
     ctx.translate(x,y);
-    ctx.rotate(type==="knife" ? -.4 : (performance.now()/320));
+    ctx.rotate(type==="knife" ? -.4 : type==="board"?(performance.now()/320):-.18);
     ctx.fillStyle=type==="knife"?"#d3ecf5":"#f1cf83";
     ctx.strokeStyle="#50301c";
     ctx.lineWidth=5;
-    if(type==="knife"){
+    if(type==="grater"){
+      ctx.fillStyle="#d6e8e9";
+      ctx.beginPath();ctx.roundRect(-24,-37,48,74,8);ctx.fill();ctx.stroke();
+      ctx.fillStyle="#52757b";
+      for(let cy=-22;cy<=23;cy+=15)
+        for(let cx=-12;cx<=12;cx+=12){
+          ctx.beginPath();ctx.ellipse(cx,cy,4,6,.2,0,Math.PI*2);ctx.fill();
+        }
+      ctx.fillStyle="#b77833";ctx.fillRect(-11,37,22,23);
+    }else if(type==="knife"){
       ctx.beginPath();ctx.roundRect(-45,-10,90,20,5);ctx.fill();ctx.stroke();
       ctx.fillStyle="#84552b";ctx.fillRect(-49,-11,30,22);
     }else{
@@ -989,12 +1014,24 @@ projectile = {
     }
     ctx.restore();
   }
+  function drawBomb(x,y){
+    ctx.save();ctx.translate(x,y);
+    ctx.shadowColor="#ffbb4e";ctx.shadowBlur=22;
+    ctx.fillStyle="#3b2824";ctx.strokeStyle="#ffcb62";ctx.lineWidth=5;
+    ctx.beginPath();ctx.arc(0,0,RADIUS*.68,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;ctx.fillStyle="#ffdd84";ctx.font="bold 37px system-ui";
+    ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("✹",0,3);
+    ctx.strokeStyle="#ffe8aa";ctx.lineWidth=6;
+    ctx.beginPath();ctx.moveTo(13,-24);ctx.lineTo(25,-44);ctx.stroke();
+    ctx.restore();
+  }
   function drawBoard() {
     drawWood();
 
     for (const c of grid) {
-      const p = cellCenter(c.row, c.col);
-      drawCheese(c.type, p.x, p.y);
+      const p = cellCenter(c.row,c.col);
+      if(c.type===BOMB_TYPE)drawBomb(p.x,p.y);
+      else drawCheese(c.type,p.x,p.y);
     }
 
     if (projectile) {
@@ -1436,14 +1473,16 @@ parmBtn.addEventListener("click", () => {
   updateHud();
 });
 function selectTool(type){
-  if(!running||menuOpen||projectile||inventory[type]<=0||level<(type==="knife"?2:3))return;
+  const count=type==="grater"?gratersRemaining:inventory[type];
+  if(!running||menuOpen||projectile||count<=0||level<(type==="knife"?2:3))return;
   activeTool=activeTool===type?null:type;
   usingParm=false;
   updateHud();
-  updateInventoryUI(activeTool?"Ready: "+(type==="knife"?"Row Knife":"Spin Board")+". Aim and press FIRE!":"Regular cheese shot selected.");
+  updateInventoryUI(activeTool?"Ready: "+(type==="knife"?"Row Knife":type==="grater"?"Cheese Grater":"Spin Board")+". Aim and press FIRE!":"Regular cheese shot selected.");
 }
 knifePowerBtn.addEventListener("click",()=>selectTool("knife"));
 boardPowerBtn.addEventListener("click",()=>selectTool("board"));
+graterPowerBtn.addEventListener("click",()=>selectTool("grater"));
 
 startBtn.addEventListener("click",startGame);
 restartBtn.addEventListener("click",()=>{
