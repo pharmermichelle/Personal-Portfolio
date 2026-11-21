@@ -35,7 +35,7 @@
   ];
   const byId = id => document.getElementById(id);
   const escapeAttr = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  let selected = avatars[0], client=null, user=null, equippedShirt=false, shirtOwned=false;
+  let selected = avatars[0], client=null, user=null, equippedShirt=false, shirtOwned=false, equippedHat=false, hatOwned=false;
 
   const heads = {
     "chrome-byte": a => '<rect x="43" y="30" width="94" height="77" rx="18" fill="'+a.color+'" stroke="#34235c" stroke-width="6"/><rect x="51" y="57" width="78" height="34" rx="7" fill="#193255"/><rect x="61" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><rect x="99" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><path d="M75 85h30" stroke="#fdb9e6" stroke-width="4"/><rect x="83" y="12" width="14" height="23" rx="5" fill="'+a.color+'"/><circle cx="90" cy="10" r="9" fill="#fff05f"/><rect x="34" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/><rect x="134" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/>',
@@ -64,6 +64,7 @@
       + '<path d="M63 167h55v19H63Z" fill="#d85d9d" stroke="#30235b" stroke-width="4"/>'
       + '<rect x="85" y="143" width="12" height="12" rx="3" fill="#fb65b7"/>'
       + '<g>'+head+'</g>'
+      + (equippedHat?'<g stroke-linejoin="round"><path d="M43 28L90 -16L137 28Q90 43 43 28Z" fill="#ffdf55" stroke="#6b3b22" stroke-width="5"/><path d="M43 28Q90 43 137 28L137 39Q90 54 43 39Z" fill="#e9a73f" stroke="#6b3b22" stroke-width="4"/><circle cx="90" cy="10" r="9" fill="#d8902f"/><circle cx="71" cy="24" r="6" fill="#d8902f"/><circle cx="110" cy="26" r="5" fill="#d8902f"/><path d="M65 24Q83 8 95 -6" stroke="#fff4ad" stroke-width="4" opacity=".8" fill="none"/></g>':'')
       + (!small?'<path d="M18 19l4-8 4 8 9 3-9 3-4 8-4-8-9-3ZM147 119l3-7 3 7 7 3-7 3-3 7-3-7-7-3Z" fill="#fff07b"/>':"")
       + '</svg>';
   }
@@ -75,7 +76,7 @@
   function renderAvatar() {
     byId("avatar-preview").innerHTML=avatarSVG(selected);
     byId("mini-portrait").innerHTML=avatarSVG(selected, "small");
-    byId("avatar-preview").setAttribute("aria-label", selected.name+", full-body "+selected.type+" wearing a yellow starter shirt, pink shorts, and high-top sneakers");
+    byId("avatar-preview").setAttribute("aria-label", selected.name+", full-body "+selected.type+(equippedHat?" wearing a cheese wedge hat":""));
     byId("avatar-name").textContent=selected.name;
     byId("avatar-type").textContent=selected.type+" / Level 1 look";
     byId("picked-label").textContent=selected.name;
@@ -223,7 +224,7 @@
         client.from("xp_ledger").select("amount,game_id").eq("user_id",account),
         client.from("earned_badges").select("badge_id,earned_at").eq("user_id",account),
         client.from("player_inventory").select("cosmetic_id,awarded_at").eq("user_id",account),
-        client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account).eq("slot","shirt").maybeSingle()
+        client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account)
       ]);
       for(const v of [xp,badges,inventory,equipped])if(v.error)throw v.error;
       if(!user||user.id!==account)return;
@@ -253,7 +254,7 @@
        byId("acorn-shirt-state").textContent=hasShirt?"OWNED":"LOCKED";
        const button=byId("equip-acorn-shirt");
        button.hidden=!hasShirt;
-       equippedShirt=hasShirt&&equipped.data?.cosmetic_id==="shirt-acorn-ascent";
+       equippedShirt=hasShirt&&(equipped.data||[]).some(x=>x.slot==="shirt"&&x.cosmetic_id==="shirt-acorn-ascent");
        button.textContent=equippedShirt?"Equipped ✓":"Wear This Shirt";
        renderAvatar();
       }
@@ -263,7 +264,26 @@
        byId("badge-details").textContent=earned?
         "Oakward Bound unlocked! All ten branches mastered.":"Earn Oakward Bound by completing all ten Acorn Ascent branches.";
       }
-      setRewardStatus("Account rewards loaded • "+acornXP+" Acorn Ascent XP");
+      const hasHat=(inventory.data||[]).some(x=>x.cosmetic_id==="hat-cheese-wedge");
+      hatOwned=hasHat;
+      equippedHat=hasHat&&(equipped.data||[]).some(x=>x.slot==="hat"&&x.cosmetic_id==="hat-cheese-wedge");
+      const hat=byId("cheese-hat-card");
+      if(hat){
+        hat.classList.toggle("locked",!hasHat);
+        hat.classList.toggle("unlocked",hasHat);
+        byId("cheese-hat-state").textContent=hasHat?"OWNED":"LOCKED";
+        const button=byId("equip-cheese-hat");
+        button.hidden=!hasHat;
+        button.textContent=equippedHat?"Remove Hat ✓":"Wear This Hat";
+        renderAvatar();
+      }
+      const cheeseBadge=(badges.data||[]).some(x=>x.badge_id==="cheese-ten-levels");
+      byId("cheese-earned-badge").hidden=!cheeseBadge;
+      const cheeseClears=(xp.data||[]).filter(item=>item.game_id==="cut-the-cheese").length;
+      byId("cheese-badge-details").textContent=cheeseBadge?
+        "Big Cheese earned! Your cheese wedge hat is now in the wardrobe.":
+        cheeseClears+" / 10 distinct signed-in level clears toward Big Cheese.";
+      setRewardStatus("Account rewards loaded • "+acornXP+" Acorn XP • "+cheeseXP+" Cheese XP");
     }catch(e){setRewardStatus("Rewards unavailable: "+(e.message||"Try again")); }
   }
   async function equipAcornShirt() {
@@ -282,6 +302,24 @@
       }
       await loadRewards();
     }catch(e){setRewardStatus("Could not update outfit: "+e.message);}
+    finally{button.disabled=false;}
+  }
+  async function equipCheeseHat() {
+    if(!client||!user||!hatOwned)return;
+    const id=user.id,button=byId("equip-cheese-hat");
+    button.disabled=true;
+    try{
+      if(equippedHat){
+        const {error}=await client.from("equipped_cosmetics").delete().eq("user_id",id).eq("slot","hat");
+        if(error)throw error;
+      }else{
+        const {error}=await client.from("equipped_cosmetics").upsert({
+          user_id:id,slot:"hat",cosmetic_id:"hat-cheese-wedge"
+        },{onConflict:"user_id,slot"});
+        if(error)throw error;
+      }
+      await loadRewards();
+    }catch(e){setRewardStatus("Could not update hat: "+e.message);}
     finally{button.disabled=false;}
   }
   async function loadProfile() {
@@ -330,6 +368,7 @@
     byId("save-profile").addEventListener("click",()=>saveProfile("avatar"));
     byId("save-name").addEventListener("click",()=>saveProfile("name"));
     byId("equip-acorn-shirt").addEventListener("click",equipAcornShirt);
+    byId("equip-cheese-hat").addEventListener("click",equipCheeseHat);
     window.addEventListener("focus",()=>{if(user)void loadGameStats(user.id);});
     document.addEventListener("visibilitychange",()=>{if(!document.hidden&&user)void loadGameStats(user.id);});
     if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
@@ -346,10 +385,12 @@
         user=next;updateAuthUI();
         if(user){void loadProfile().then(loadRewards);void loadGameStats(user.id);}
         else{
-          equippedShirt=false;shirtOwned=false;renderAvatar();clearGameStats();
+          equippedShirt=false;shirtOwned=false;equippedHat=false;hatOwned=false;renderAvatar();clearGameStats();
           byId("player-level").textContent="—";byId("xp-text").textContent="Sign in for XP";
           byId("badge-count").textContent="—";setRewardStatus("Sign in to view your rewards");
           byId("equip-acorn-shirt").hidden=true;
+          byId("equip-cheese-hat").hidden=true;
+          byId("cheese-earned-badge").hidden=true;
           byId("acorn-earned-badge").hidden=true;
         }
       });
