@@ -986,7 +986,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
         </div>
       </div>
 
-    <script src="retro-player-avatar.js?v=20261121"></script>
+    <script src="retro-player-avatar.js?v=20261121-cheesehat-1"></script>
     <script>
   
 const SUPABASE_URL = "https://dxemotgroklcjsbunspg.supabase.co";
@@ -1370,22 +1370,26 @@ async function refreshPlayerHeader(player){
  xpText.textContent="Loading XP…";fill.style.width="0%";track.setAttribute("aria-valuenow","0");
  const fetchPlayerData=()=>Promise.all([
   supabaseClient.from("profiles").select("username,avatar_key").eq("id",player.id).maybeSingle(),
-  supabaseClient.from("xp_ledger").select("amount,game_id").eq("user_id",player.id)
+  supabaseClient.from("xp_ledger").select("amount,game_id").eq("user_id",player.id),
+   supabaseClient.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",player.id)
  ]);
  try{
-  let [profile,xp]=await fetchPlayerData();
+  let [profile,xp,equipped]=await fetchPlayerData();
   if(request!==headerProfileRequest)return;
   // A cached or expired browser session can affect both table reads. Refresh once.
   if(profile.error&&xp.error&&[401,403].includes(Number(profile.status||xp.status))){
    const refreshed=await supabaseClient.auth.refreshSession();
-   if(!refreshed.error){[profile,xp]=await fetchPlayerData();}
+   if(!refreshed.error){[profile,xp,equipped]=await fetchPlayerData();}
   }
   if(request!==headerProfileRequest)return;
   if(profile.error)console.warn("Player profile request:",profile.error.code,profile.error.message);
   const p=profile.error?{}:(profile.data||{});
   name.textContent=p.username||player.email?.split("@")[0]||"Player";
   if(p.avatar_key&&window.RetroHubAvatars){
-   try{avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key);}
+   try{avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key,{
+      equippedShirt:!equipped.error&&(equipped.data||[]).some(x=>x.slot==="shirt"&&x.cosmetic_id==="shirt-acorn-ascent"),
+      equippedHat:!equipped.error&&(equipped.data||[]).some(x=>x.slot==="hat"&&x.cosmetic_id==="hat-cheese-wedge")
+    });}
    catch(avatarError){console.warn("Avatar display failed:",avatarError);avatar.textContent="🎮";}
   }
   if(xp.error)throw xp.error;
