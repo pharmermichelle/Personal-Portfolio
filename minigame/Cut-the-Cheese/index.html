@@ -14,7 +14,7 @@
     />
     <meta name="theme-color" content="#7f4f24" />
     <title>Cut the Cheese</title>
-    <link rel="stylesheet" href="style.css?v=20261121-cloudxp-1" />
+    <link rel="stylesheet" href="style.css?v=20261121-easier-bombs-1" />
   
   <!-- Shared Retro Games Hub navigation -->
   <script src="../../retro-arcade-header.js?v=20261121-player-2" data-game-id="cut-the-cheese" data-layout="normal" defer></script>
@@ -71,7 +71,7 @@
           ></div>
         </div>
         <div class="legend">
-          Match <b>4+</b> touching cheeses • Bank 5 clears for a Parm Wheel
+          Match <b>3+</b> touching cheeses • 💥 Hit bombs • Bank 5 clears for Parm
         </div>
       </section>
       <section class="tool-tray" aria-label="Stackable cheese power-ups">
@@ -80,6 +80,7 @@
         <div class="tool-buttons">
           <button id="knifePowerBtn" class="tool-btn" type="button" disabled aria-pressed="false" title="Unlocks at Level 2; cuts an entire row">🔪 ROW KNIFE <b id="knifeCount">LV 2</b></button>
           <button id="boardPowerBtn" class="tool-btn" type="button" disabled aria-pressed="false" title="Unlocks at Level 3; clears a 4×4 section">🪵 SPIN BOARD <b id="boardCount">LV 3</b></button>
+          <button id="graterPowerBtn" class="tool-btn grater-tool" type="button" disabled aria-pressed="false" title="Two free shots every attempt starting at Level 3; removes the single cheese it strikes">🧀 CHEESE GRATER <b id="graterCount">LV 3</b></button>
         </div>
         <p class="tool-status" id="toolStatus" role="status" aria-live="polite">Break cheeses to earn 5 points each. Open Power-Ups to upgrade your shooting knife.</p>
       </section>
@@ -88,7 +89,7 @@
         <button id="cheeseSyncOptions" type="button" hidden>Sync Options</button>
         <span id="cheeseRewardStatus" role="status" aria-live="polite">Signed-in level clears can award Arcade XP.</span>
       </div>
-      <p class="aim-help">Tap/drag to aim • <strong>FIRE!</strong> to shoot • <strong>POWER-UPS</strong> for knives, cheese swaps and aiming boosts.</p>
+      <p class="aim-help">Match 3 cheeses • Hit glowing bombs to blast an area • Level 3+ gets 2 free cheese-grater shots each try. Tap to aim, then <strong>FIRE!</strong>.</p>
 
       <section class="board-wrap">
         <canvas
@@ -108,11 +109,12 @@
           <div class="panel prep-panel">
             <p class="eyebrow">🧀 BEFORE THE NEXT CUT</p>
             <h2 id="prepTitle">Level 1 • The Cheese Course</h2>
-            <p id="prepInfo">Start with three cheese varieties. Match 4+ touching pieces to clear the board.</p>
+            <p id="prepInfo">Start with three varieties. Match 3+ touching cheeses; aim for bombs to blast nearby pieces.</p>
             <div class="prep-inventory" aria-label="Your stacked power-up inventory">
               <div>🔪 ROW KNIVES <strong id="prepKnifeCount">0</strong></div>
               <div>🪵 SPIN BOARDS <strong id="prepBoardCount">0</strong></div>
               <div>🧀 PARM WHEELS <strong id="prepParmCount">0</strong></div>
+              <div>🧀 GRATERS <strong id="prepGraterCount">LV 3</strong></div>
             </div>
             <p class="prep-callout" id="prepTime">⏱ 3:00 to finish this level</p>
             <p class="prep-label">Want a little extra help before you play?</p>
@@ -124,7 +126,7 @@
             <p id="bonusStatus" class="bonus-status" role="status" aria-live="polite">Optional reward ads grant one bonus when completed. If no ad is available, one free fallback bonus is offered per level.</p>
             <button id="buyPowerBtn" type="button" class="buy-btn" disabled title="Payments are not set up">🛒 Buy Power-Ups — Coming Soon</button>
             <button id="startBtn" class="primary-btn prep-start" type="button">▶ START LEVEL 1</button>
-            <p class="tiny">Earn 5 Cheese Points per cheese broken and buy permanent knife upgrades with points earned here. Cheese Points are separate from arcade XP. Sign in to cloud-save your equipment and earn arcade XP on new level clears.</p>
+            <p class="tiny">Clear 3+ to match. Bombs clear nearby cheeses. Each Level 3+ attempt gives two free grater shots to remove a troublesome piece. Earn 5 Cheese Points per broken cheese; account XP is separate.</p>
           </div>
         </div>
 
@@ -197,7 +199,7 @@
     <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
     <script src="../../retro-save-service.js?v=20261118-1"></script>
     <script src="../../retro-rewards.js?v=20261118-1"></script>
-    <script src="game.js?v=20261121-cloudxp-1"></script>
+    <script src="game.js?v=20261121-easier-bombs-1"></script>
     <script src="cloud.js?v=20261121-cloudxp-2"></script>
   </body>
 </html>
