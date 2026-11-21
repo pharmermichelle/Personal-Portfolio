@@ -55,34 +55,54 @@
    "coastline-cruiser","lemon-pound-cake","wizards-mana","whack-a-bug",
    "choose-adventure","ferret-life","inbox-hero","community-garden"
  ]);
- let trackingTimer=null,heartbeatBusy=false,heartbeatIdentity=null;
+ // Personal estimated time only; never used for XP or public leaderboard scores.
+ // A 'start' presence event resets the server cursor on initial load or resume
+ // instead of crediting time spent behind another tab or app.
+ let trackingTimer=null,heartbeatBusy=false,heartbeatIdentity=null,presenceNeedsStart=true;
  async function sendActivityHeartbeat(){
    if(!trackableGames.has(gameId)||!player||!client||document.hidden||
       (typeof document.hasFocus==="function"&&!document.hasFocus())||heartbeatBusy)return;
    const id=player.id;
+   const mode=presenceNeedsStart?"start":"heartbeat";
+   presenceNeedsStart=false;
    heartbeatBusy=true;
    try{
-     // The database looks up auth.uid() itself and bounds accepted seconds by server clock.
-     if(player?.id===id)await client.rpc("record_game_heartbeat",{p_game_id:gameId});
-   }catch(_error){ /* Stats are best-effort; never interrupt gameplay. */ }
-   finally{heartbeatBusy=false;}
+     // Authenticated server lookup: the browser never supplies a user ID,
+     // timestamp, number of minutes, XP, or leaderboard score.
+     if(player?.id===id){
+       const result=await client.rpc("record_game_presence",{p_game_id:gameId,p_mode:mode});
+       if(result.error)presenceNeedsStart=true;
+     }
+   }catch(_error){presenceNeedsStart=true;}
+   finally{
+     heartbeatBusy=false;
+     // A tab may have been hidden and resumed during an in-flight request.
+     if(mode!=="start" && presenceNeedsStart && player?.id===id &&
+        !document.hidden && (typeof document.hasFocus!=="function"||document.hasFocus())){
+       void sendActivityHeartbeat();
+     }
+   }
  }
  function syncActivityTracker(){
    const identity=trackableGames.has(gameId)?player?.id:null;
    if(!identity){
      heartbeatIdentity=null;
+     presenceNeedsStart=true;
      if(trackingTimer!==null){clearInterval(trackingTimer);trackingTimer=null;}
      return;
    }
    if(identity===heartbeatIdentity)return;
    heartbeatIdentity=identity;
+   presenceNeedsStart=true;
    if(trackingTimer!==null)clearInterval(trackingTimer);
    void sendActivityHeartbeat();
    trackingTimer=setInterval(()=>{void sendActivityHeartbeat();},30000);
  }
  document.addEventListener("visibilitychange",()=>{
-   if(!document.hidden)void sendActivityHeartbeat();
+   if(document.hidden){presenceNeedsStart=true;return;}
+   void sendActivityHeartbeat();
  });
+ window.addEventListener("blur",()=>{presenceNeedsStart=true;});
  window.addEventListener("focus",()=>{void sendActivityHeartbeat();});
 
  const txt=shadow.getElementById("player-text");
