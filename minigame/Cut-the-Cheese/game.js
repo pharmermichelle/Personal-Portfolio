@@ -331,16 +331,21 @@
 
   function shoot() {
     if (!running || projectile) return;
-    fireBtn.disabled = true;
-
-    const isParm = usingParm && parms > 0;
-    if (isParm) {
-      parms--;
-      usingParm = false;
+    const tool=activeTool && inventory[activeTool]>0 ? activeTool : null;
+    const isParm=!tool && usingParm && inventory.parm>0;
+    if(tool){
+      inventory[tool]--;
+      saveInventory();
+      activeTool=null;
+    }else if(isParm){
+      inventory.parm--;
+      saveInventory();
+      parms=inventory.parm;
+      usingParm=false;
     }
-
-    const type = isParm ? "parm" : queue.shift();
-    if (!isParm) queue.push(randCheese());
+    fireBtn.disabled = true;
+    const type = tool || (isParm?"parm":queue.shift());
+    if (!tool && !isParm)queue.push(randCheese());
 
 const tipDistance = 142;
 
@@ -356,7 +361,8 @@ projectile = {
   vx: Math.cos(aimAngle) * SHOT_SPEED,
   vy: Math.sin(aimAngle) * SHOT_SPEED,
   type,
-  parm: isParm
+  parm: isParm,
+  tool
 };
     
     shots++;
@@ -369,7 +375,8 @@ projectile = {
     chirp(isParm ? 180 : 290, .04);
     updateHud();
 
-    if (dangerReached()) endGame();
+    if (dangerReached()) endGame("limit");
+    updateInventoryUI(tool?"Power-up launched!":"");
   }
 
   function collideProjectile() {
@@ -379,7 +386,7 @@ projectile = {
 
     for (const c of grid) {
       const p = cellCenter(c.row, c.col);
-      const rr = projectile.parm ? 46 : RADIUS;
+      const rr = projectile.parm || projectile.tool ? 46 : RADIUS;
       if (Math.hypot(projectile.x - p.x, projectile.y - p.y) <= rr + RADIUS - 4) {
         return true;
       }
@@ -389,7 +396,29 @@ projectile = {
 
   function settleProjectile() {
     if (!projectile) return;
-
+    if(projectile.tool){
+      const fired=projectile;
+      const nearest=closestCell(fired.x,fired.y);
+      let cells=[];
+      if(fired.tool==="knife"){
+        // Cut a whole horizontal cheese row regardless of cheese type.
+        cells=grid.filter(c=>c.row===nearest.row);
+      }else if(fired.tool==="board"){
+        // Spinning cutting board clears a 4-row × 4-column block.
+        const startRow=Math.max(0,nearest.row-1);
+        const startCol=Math.max(0,Math.min(COLS-4,nearest.col-1));
+        cells=grid.filter(c=>c.row>=startRow&&c.row<startRow+4&&c.col>=startCol&&c.col<startCol+4);
+      }
+      removeCells(cells);
+      removeFloating();
+      projectile=null;
+      fireBtn.disabled=false;
+      updateInventoryUI((fired.tool==="knife"?"Row Knife":"Spin Board")+" cleared "+cells.length+" cheeses!");
+      updateHud();
+      advanceLevelIfNeeded();
+      if(running&&dangerReached())endGame("limit");
+      return;
+    }
     if (projectile.parm) {
       const blastRadius = 155;
       const hit = grid.filter(c => {
@@ -457,7 +486,7 @@ projectile = {
     projectile.x += projectile.vx;
     projectile.y += projectile.vy;
 
-    const rr = projectile.parm ? 46 : RADIUS;
+    const rr = projectile.parm || projectile.tool ? 46 : RADIUS;
     if (projectile.x - rr <= 0 && projectile.vx < 0) {
       projectile.x = rr;
       projectile.vx *= -1;
@@ -726,6 +755,23 @@ function drawKnife() {
   ctx.restore();
 }
   
+  function drawTool(type,x,y){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(type==="knife" ? -.4 : (performance.now()/320));
+    ctx.fillStyle=type==="knife"?"#d3ecf5":"#f1cf83";
+    ctx.strokeStyle="#50301c";
+    ctx.lineWidth=5;
+    if(type==="knife"){
+      ctx.beginPath();ctx.roundRect(-45,-10,90,20,5);ctx.fill();ctx.stroke();
+      ctx.fillStyle="#84552b";ctx.fillRect(-49,-11,30,22);
+    }else{
+      ctx.beginPath();ctx.roundRect(-38,-38,76,76,9);ctx.fill();ctx.stroke();
+      ctx.strokeStyle="#9b6c3a";ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(-23,-23);ctx.lineTo(23,23);ctx.moveTo(23,-23);ctx.lineTo(-23,23);ctx.stroke();
+    }
+    ctx.restore();
+  }
   function drawBoard() {
     drawWood();
 
@@ -735,8 +781,9 @@ function drawKnife() {
     }
 
     if (projectile) {
-      projectile.parm
-        ? drawParm(projectile.x, projectile.y, 1)
+      projectile.tool
+        ? drawTool(projectile.tool,projectile.x,projectile.y)
+        : projectile.parm ? drawParm(projectile.x, projectile.y, 1)
         : drawCheese(projectile.type, projectile.x, projectile.y);
     }
 
@@ -753,7 +800,8 @@ function drawKnife() {
       const cheeseY =
         KNIFE_Y + 28 + Math.sin(aimAngle) * tipDistance;
 
-      if (usingParm && parms > 0) {
+      if(activeTool)drawTool(activeTool,cheeseX,cheeseY);
+      else if (usingParm && inventory.parm > 0) {
         drawParm(cheeseX, cheeseY, 0.42);
       } else {
         drawCheese(
@@ -772,8 +820,10 @@ function drawKnife() {
   parmEl.textContent = parms;
   parmProgressEl.textContent = 5 - (clearEvents % 5);
 
-  parmBtn.disabled = parms <= 0 || !!projectile;
+  parms=inventory.parm;
+  parmBtn.disabled = !running || parms <= 0 || !!projectile;
   parmBtn.textContent = usingParm ? "ARMED" : "USE";
+  updateInventoryUI();
 
   nextQueueEl.innerHTML = "";
 
