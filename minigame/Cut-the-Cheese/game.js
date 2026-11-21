@@ -140,9 +140,9 @@
     saveInventory();
     return inventory[type]>initial;
   }
-  // Three opening varieties, then introduce one at levels 2, 3 and 4.
-  // The later levels get denser boards and shorter refill intervals.
-  const cheeseCountForLevel = n => Math.min(6,3+Math.max(0,n-1));
+  // Gentle first two levels: 3 cheeses. Introduce a fourth at Level 3,
+  // fifth at Level 5, and sixth at Level 7 while boards get denser.
+  const cheeseCountForLevel = n => Math.min(6,3+Math.floor((Math.max(1,n)-1)/2));
   const activeCheeses = () => CHEESES.slice(0,cheeseCountForLevel(level));
   const startingRows = n => n<=2?3:n<=4?4:n<=7?5:Math.min(7,5+Math.floor((n-7)/3));
   const shotsPerDrop = n => Math.max(7,15-Math.floor((n-1)*.85));
