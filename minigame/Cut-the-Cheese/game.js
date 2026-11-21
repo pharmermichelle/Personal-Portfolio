@@ -37,6 +37,9 @@
   const fireBtn = document.getElementById("fireBtn");
   const knifePowerBtn = document.getElementById("knifePowerBtn");
   const boardPowerBtn = document.getElementById("boardPowerBtn");
+  const graterPowerBtn = document.getElementById("graterPowerBtn");
+  const graterCountEl = document.getElementById("graterCount");
+  const prepGraterCount = document.getElementById("prepGraterCount");
   const knifeCountEl = document.getElementById("knifeCount");
   const boardCountEl = document.getElementById("boardCount");
   const cheeseRoster = document.getElementById("cheeseRoster");
@@ -120,6 +123,7 @@
   let remainingSeconds = 240;
   let timedOut = false, gameBusy = false, extraTimeUsed = false, activeTool = null;
   let levelBonusClaimed = false, previewBusy = false;
+  let gratersRemaining=0;
   let menuOpen=false,aimAdBusy=false,aimBoostSeconds=0,heldCheese=null,discardsUsed=0;
   const KNIFE_KEY="retro-cut-cheese-knives-v1";
   const KNIVES=[
@@ -301,6 +305,10 @@
     prepKnifeCount.textContent=inventory.knife;
     prepBoardCount.textContent=inventory.board;
     prepParmCount.textContent=inventory.parm;
+    prepGraterCount.textContent=level>=3?gratersRemaining:"LV 3";
+    graterCountEl.textContent=level>=3?String(gratersRemaining):"LV 3";
+    graterPowerBtn.disabled=!running||!!projectile||level<3||gratersRemaining<=0;
+    graterPowerBtn.setAttribute("aria-pressed",String(activeTool==="grater"));
     knifePowerBtn.disabled=!running||!!projectile||level<2||inventory.knife<=0;
     boardPowerBtn.disabled=!running||!!projectile||level<3||inventory.board<=0;
     knifePowerBtn.setAttribute("aria-pressed",String(activeTool==="knife"));
@@ -341,6 +349,7 @@
     extraTimeUsed=false;levelBonusClaimed=false;
     activeTool=null;usingParm=false;aimAngle=-Math.PI/2;elapsedAccum=0;timedOut=false;
     heldCheese=null;discardsUsed=0;aimBoostSeconds=0;
+    gratersRemaining=level>=3?2:0;
     updateHud();
     prepareLevel();
   }
@@ -459,6 +468,38 @@
     const ids = new Set(cells.map(c => c.id));
     grid = grid.filter(c => !ids.has(c.id));
   }
+  function removeAndExplode(cells){
+    const cleared=new Set(cells.map(c=>c.id));
+    const triggered=new Set();
+    const pending=cells.filter(c=>c.type===BOMB_TYPE);
+    while(pending.length){
+      const bomb=pending.pop();
+      if(triggered.has(bomb.id))continue;
+      triggered.add(bomb.id);
+      const pos=cellCenter(bomb.row,bomb.col);
+      grid.forEach(c=>{
+        const other=cellCenter(c.row,c.col);
+        if(Math.hypot(other.x-pos.x,other.y-pos.y)>BOMB_RADIUS)return;
+        if(!cleared.has(c.id)){
+          cleared.add(c.id);
+          if(c.type===BOMB_TYPE)pending.push(c);
+        }
+      });
+    }
+    const removed=grid.filter(c=>cleared.has(c.id));
+    removeCells(removed);
+    removeFloating();
+    return {removed:removed.length,bombs:triggered.size};
+  }
+  function nearestImpactCheese(x,y){
+    let best=null,dist=Infinity;
+    grid.forEach(c=>{
+      const pos=cellCenter(c.row,c.col);
+      const d=Math.hypot(pos.x-x,pos.y-y);
+      if(d<dist){best=c;dist=d;}
+    });
+    return {cell:best,distance:dist};
+  }
 
   function removeFloating() {
     const topCells = grid.filter(c => c.row === 0);
@@ -524,11 +565,12 @@
 
   function shoot() {
     if (!running || projectile || menuOpen) return;
-    const tool=activeTool && inventory[activeTool]>0 ? activeTool : null;
+    const tool=activeTool==="grater"&&gratersRemaining>0?"grater":
+      activeTool && inventory[activeTool]>0 ? activeTool : null;
     const isParm=!tool && usingParm && inventory.parm>0;
     if(tool){
-      inventory[tool]--;
-      saveInventory();
+      if(tool==="grater")gratersRemaining--;
+      else{inventory[tool]--;saveInventory();}
       activeTool=null;
     }else if(isParm){
       inventory.parm--;
