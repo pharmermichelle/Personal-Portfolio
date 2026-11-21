@@ -281,6 +281,7 @@
     bonusStatus.textContent="";
     renderBonusUI();
     updateInventoryUI();
+    renderKnifeShop();
     displayTimer();
   }
   function resetLevelBoard(){
@@ -848,6 +849,17 @@ projectile = {
     ctx.stroke();
   }
 
+  if(knifeData.equipped>0){
+    // The equipped blade gets its own visible rarity accent without
+    // covering the original knife illustration.
+    const accents=["","#8ef8dc","#84b4ff","#ffcf6b"];
+    ctx.fillStyle=accents[knifeData.equipped];
+    ctx.strokeStyle="#2f2530";
+    ctx.lineWidth=5;
+    ctx.beginPath();
+    ctx.arc(0,0,13+knifeData.equipped*3,0,Math.PI*2);
+    ctx.fill();ctx.stroke();
+  }
   ctx.restore();
 }
   
@@ -1192,6 +1204,7 @@ function startGame(force=false){
   elapsedAccum=0;
   displayTimer();
   updateHud();
+  renderKnifeShop();
 }
 function endGame(reason="limit"){
   if(!running)return;
@@ -1210,6 +1223,7 @@ function endGame(reason="limit"){
   restartBtn.textContent="↻ RETRY LEVEL "+level;
   gameOverOverlay.classList.add("visible");
   updateInventoryUI();
+  renderKnifeShop();
   chirp(110,.18);
 }
 
