@@ -14,7 +14,7 @@
     />
     <meta name="theme-color" content="#7f4f24" />
     <title>Cut the Cheese</title>
-    <link rel="stylesheet" href="style.css?v=20261121-aim-2" />
+    <link rel="stylesheet" href="style.css?v=20261121-progression-1" />
   
   <!-- Shared Retro Games Hub navigation -->
   <script src="../../retro-arcade-header.js?v=20261121-player-2" data-game-id="cut-the-cheese" data-layout="normal" defer></script>
@@ -46,7 +46,7 @@
           <span>LEVEL</span><strong id="levelValue">1</strong>
         </div>
         <div class="hud-card">
-          <span>TIME</span><strong id="timeValue">00:00</strong>
+          <span>TIME LEFT</span><strong id="timeValue">03:00</strong>
         </div>
         <div class="hud-card">
           <span>SHOTS</span><strong id="shotsValue">0</strong>
@@ -74,7 +74,15 @@
           Match <b>4+</b> touching cheeses • Bank 5 clears for a Parm Wheel
         </div>
       </section>
-      <p class="aim-help">Tap or drag the board to aim, then press <strong>FIRE!</strong> to shoot.</p>
+      <section class="tool-tray" aria-label="Stackable cheese power-ups">
+        <div class="tool-tray-title"><strong>🧀 CHEESE TOOLS</strong><span id="cheeseRoster">Level 1 • 3 varieties</span></div>
+        <div class="tool-buttons">
+          <button id="knifePowerBtn" class="tool-btn" type="button" disabled aria-pressed="false" title="Unlocks at Level 2; cuts an entire row">🔪 ROW KNIFE <b id="knifeCount">LV 2</b></button>
+          <button id="boardPowerBtn" class="tool-btn" type="button" disabled aria-pressed="false" title="Unlocks at Level 3; clears a 4×4 section">🪵 SPIN BOARD <b id="boardCount">LV 3</b></button>
+        </div>
+        <p class="tool-status" id="toolStatus" role="status" aria-live="polite">Clear cheese to unlock tools. Earned tools stack between matches on this device.</p>
+      </section>
+      <p class="aim-help">Tap or drag to aim, pick an available tool, then press <strong>FIRE!</strong>.</p>
 
       <section class="board-wrap">
         <canvas
@@ -85,28 +93,38 @@
         ></canvas>
         <button id="fireBtn" class="fire-btn" type="button" aria-label="Fire the aimed cheese" disabled>FIRE!</button>
 
-        <div id="startOverlay" class="overlay visible">
-          <div class="panel">
-            <p class="eyebrow">WOOD-FIRED MAYHEM</p>
-            <h2>Ready to cut it?</h2>
-            <p>
-              Aim the antique cheese knife. Bounce shots off the side walls.
-              Connect 4 or more matching cheeses to clear them.
-            </p>
-            <button id="startBtn" class="primary-btn">START GAME</button>
-            <p class="tiny">
-              Touch: tap or drag to aim, then FIRE! • Mouse: move to aim, click FIRE! •
-              Keyboard: ← → aim, Space shoot, P for Parm Wheel
-            </p>
+        <div id="startOverlay" class="overlay visible" role="dialog" aria-modal="true" aria-labelledby="prepTitle">
+          <div class="panel prep-panel">
+            <p class="eyebrow">🧀 BEFORE THE NEXT CUT</p>
+            <h2 id="prepTitle">Level 1 • The Cheese Course</h2>
+            <p id="prepInfo">Start with three cheese varieties. Match 4+ touching pieces to clear the board.</p>
+            <div class="prep-inventory" aria-label="Your stacked power-up inventory">
+              <div>🔪 ROW KNIVES <strong id="prepKnifeCount">0</strong></div>
+              <div>🪵 SPIN BOARDS <strong id="prepBoardCount">0</strong></div>
+              <div>🧀 PARM WHEELS <strong id="prepParmCount">0</strong></div>
+            </div>
+            <p class="prep-callout" id="prepTime">⏱ 3:00 to finish this level</p>
+            <p class="prep-label">Want a little extra help before you play?</p>
+            <div class="bonus-actions">
+              <button id="bonusKnifeBtn" type="button" class="bonus-btn">🔪 Extra Row Knife</button>
+              <button id="bonusBoardBtn" type="button" class="bonus-btn">🪵 Extra Spin Board</button>
+              <button id="bonusTimeBtn" type="button" class="bonus-btn">⏱ Extra 45 Seconds</button>
+            </div>
+            <p id="bonusStatus" class="bonus-status" role="status" aria-live="polite">Optional reward ads grant one bonus when completed. If no ad is available, one free fallback bonus is offered per level.</p>
+            <button id="buyPowerBtn" type="button" class="buy-btn" disabled title="Payments are not set up">🛒 Buy Power-Ups — Coming Soon</button>
+            <button id="startBtn" class="primary-btn prep-start" type="button">▶ START LEVEL 1</button>
+            <p class="tiny">Inventory stacks on this device; it is not yet a cloud purchase balance. Tap/drag the board to aim, FIRE to shoot.</p>
           </div>
         </div>
 
-        <div id="gameOverOverlay" class="overlay">
-          <div class="panel">
-            <p class="eyebrow">THE BOARD IS FULL</p>
-            <h2>That cheese got too close.</h2>
+        <div id="gameOverOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="gameOverTitle">
+          <div class="panel end-panel">
+            <p class="eyebrow">THE CHEESE CHALLENGE</p>
+            <h2 id="gameOverTitle">That cheese got too close.</h2>
             <p id="gameOverStats"></p>
-            <button id="restartBtn" class="primary-btn">PLAY AGAIN</button>
+            <button id="extendTimeBtn" type="button" class="bonus-btn" hidden>▶ Get +45 Seconds</button>
+            <p id="endBonusStatus" class="bonus-status" role="status" aria-live="polite"></p>
+            <button id="restartBtn" class="primary-btn" type="button">PLAY AGAIN</button>
           </div>
         </div>
       </section>
@@ -137,6 +155,10 @@
       </script>
     </section>
 
-    <script src="game.js?v=20261121-aim-2"></script>
+    <!-- A real Cut the Cheese Google Ad Manager rewarded unit is required to serve ads.
+         Display AdSense units do not qualify as rewarded inventory. -->
+    <script src="../../retro-monetization-config.js?v=20261121-progression-1" data-game-id="cut-the-cheese"></script>
+    <script src="../../retro-rewarded-ads.js?v=20261118-2"></script>
+    <script src="game.js?v=20261121-progression-1"></script>
   </body>
 </html>
