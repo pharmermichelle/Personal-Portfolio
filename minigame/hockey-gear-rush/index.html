@@ -785,6 +785,7 @@ function startGame() {
 }
 
 function beginLevelTimer() {
+  window.RetroLevelXP?.begin(level);
   document.getElementById("levelPopup").classList.add("hidden");
   document.getElementById("pileArea").classList.remove("paused");
 
@@ -817,6 +818,7 @@ function endGame(win) {
   if (win) {
     document.getElementById("message").textContent =
       "🏆 Great job! You beat the clock and made it to the game on time!";
+    if(level<=levels.length)window.RetroLevelXP?.complete(level);
 
     level++;
     setTimeout(startGame, 1300);
