@@ -9,7 +9,7 @@
   <link rel="icon" href="images/portfolio-icon.png">
   <link rel="stylesheet" href="retro-player-profile.css?v=20261120-stats-2">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-  <script defer src="retro-player-profile.js?v=20261121-overallxp-1"></script>
+  <script defer src="retro-player-profile.js?v=20261121-cheesehat-1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to profile</a>
@@ -109,14 +109,14 @@
         <section class="help-card">
           <div class="help-title">HOW DO UNLOCKS WORK? <span>↗</span></div>
           <p><b>Complete</b> Acorn Ascent branches to earn 2–20 XP each. <b>Master all ten</b> for the Oakward Bound badge and Squirrel Summit Tee. Other games are coming soon.</p>
-          <p>Acorn Ascent rewards are available. Cut the Cheese level XP is now being integrated; its knife and cheese-point economy is separate from arcade XP.</p>
+          <p>Acorn Ascent rewards are available. Cut the Cheese awards signed-in level XP and a cheese hat for ten distinct clears; its knife and cheese-point economy is separate from arcade XP.</p>
         </section>
       </aside>
     </div>
 
     <section id="wardrobe" class="panel wardrobe-section" aria-labelledby="wardrobe-heading">
       <div class="panel-title blue"><span id="wardrobe-heading">04 / THE WARDROBE</span><span>STARTER LOOK + FUTURE DROPS</span></div>
-      <div class="wardrobe-intro"><div><h2>Earn it. Wear it. Show it off.</h2><p>Every character begins in the same simple arcade outfit. Your earned Acorn Ascent T-shirt can be equipped now. You will keep unlocked outfits in your account collection.</p></div><span class="ticket">CLOSET<br>PASS ✦</span></div>
+      <div class="wardrobe-intro"><div><h2>Earn it. Wear it. Show it off.</h2><p>Every character begins in the same simple arcade outfit. Your earned Acorn Ascent T-shirt and Cut the Cheese wedge hat can be equipped here. You will keep unlocked outfits in your account collection.</p></div><span class="ticket">CLOSET<br>PASS ✦</span></div>
       <div class="outfit-section-label">YOUR STARTER LOOK</div>
       <div class="closet-grid starter-grid">
         <div class="outfit-card unlocked"><div class="item-symbol">👕</div><strong>Arcade Starter Tee</strong><span>Level 1 • Standard</span><b>STARTER</b></div>
@@ -129,7 +129,7 @@
         <div class="outfit-card locked"><div class="item-symbol">👖</div><strong>Circuit Stripe Trousers</strong><span>Planned • Level 8</span><b>LOCKED</b></div>
         <div class="outfit-card locked"><div class="item-symbol">✨</div><strong>Neon Varsity Jacket</strong><span>Planned • Level 12</span><b>LOCKED</b></div>
       </div>
-      <div class="outfit-section-label future-label">GAME REWARDS <small>ACORN ASCENT LIVE • OTHERS COMING SOON</small></div>
+      <div class="outfit-section-label future-label">GAME REWARDS <small>ACORN ASCENT + CUT THE CHEESE LIVE</small></div>
       <div class="closet-grid">
         <div class="outfit-card locked"><div class="item-symbol">▦</div><strong>Fallen Grid Glitch Tee</strong><span>Game-specific shirt</span><b>LOCKED</b></div>
         <div class="outfit-card locked"><div class="item-symbol">🌿</div><strong>Revive Nature Bloom Shorts</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
@@ -142,6 +142,13 @@
   <b id="acorn-shirt-state">LOCKED</b>
   <button id="equip-acorn-shirt" type="button" class="button primary" hidden style="width:100%;min-height:44px;margin-top:10px">Wear This Shirt</button>
 </div>
+        <div class="outfit-card locked" id="cheese-hat-card">
+          <div class="item-symbol" style="font-size:55px" aria-hidden="true">🧀</div>
+          <strong>Big Cheese Wedge Hat</strong>
+          <span>Clear 10 different Cut the Cheese levels while signed in • golden cheese-wedge headwear</span>
+          <b id="cheese-hat-state">LOCKED</b>
+          <button id="equip-cheese-hat" type="button" class="button primary" hidden style="width:100%;min-height:44px;margin-top:10px">Wear This Hat</button>
+        </div>
         <div class="outfit-card locked"><div class="item-symbol">🐾</div><strong>Claws vs. Paws Rival Pants</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
       </div>
     </section>
@@ -157,11 +164,13 @@
       <div class="panel-title magenta"><span id="badge-heading">06 / BADGE CABINET</span><span>COLLECT YOUR STORY</span></div>
       <div class="badge-body">
         <div class="badge-art" aria-hidden="true"><span>✦</span><span>★</span><span>✦</span></div>
-        <div><h2>Every arcade legend starts somewhere.</h2><p>Acorn Ascent now awards the Oakward Bound badge for completing all ten branches through your signed-in account. More game badges are coming soon.</p><p class="badge-count-copy" id="badge-details">Earn Oakward Bound by completing all ten Acorn Ascent branches.</p>
+        <div><h2>Every arcade legend starts somewhere.</h2><p>Acorn Ascent now awards the Oakward Bound badge for completing all ten branches through your signed-in account. Cut the Cheese also awards Big Cheese for ten different signed-in level clears. More game badges are coming soon.</p><p class="badge-count-copy" id="badge-details">Earn Oakward Bound by completing all ten Acorn Ascent branches.</p>
   <div id="acorn-earned-badge" hidden style="margin-top:12px;padding:12px 14px;border:2px solid #b9db98;border-radius:12px;background:#23382b;color:#fff5d5;font-size:18px;font-weight:800">
    🏆 Oakward Bound — Acorn Ascent Master
   </div>
-  <p id="rewards-status" role="status" aria-live="polite">Sign in to view your rewards</p></div>
+  <p id="cheese-badge-details">0 / 10 distinct signed-in level clears toward Big Cheese.</p>
+   <div id="cheese-earned-badge" hidden style="margin-top:12px;padding:12px 14px;border:2px solid #ffdf55;border-radius:12px;background:#50381b;color:#fff4c1;font-size:18px;font-weight:800">🧀 Big Cheese — Cut the Cheese Level Master</div>
+   <p id="rewards-status" role="status" aria-live="polite">Sign in to view your rewards</p></div>
       </div>
     </section>
 
