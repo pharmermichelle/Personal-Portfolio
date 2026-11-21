@@ -145,15 +145,16 @@ Deno.serve(async req=>{
      return response(200,{attempt_id:attempt.id,expires_at:attempt.expires_at,
        best_seconds:best?.best_seconds||0,completed_runs:best?.completed_runs||0},origin);
    }
-   if(body.action==="complete"){
+   if(body.action==="checkpoint"||body.action==="complete"){
      if(typeof body.attempt_id!=="string"||
         !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.attempt_id)||
         !Number.isInteger(body.seconds)||body.seconds<0||body.seconds>18000||
         !Number.isInteger(body.bugs)||body.bugs<0||body.bugs>576)
        return response(400,{error:"Invalid Snake run"},origin);
-     const {data,error}=await admin.rpc("claim_snake_run",{
-       p_user:user.id,p_attempt:body.attempt_id,p_seconds:body.seconds,p_bugs:body.bugs});
-     if(error)return response(409,{error:"Snake run not eligible for XP. Start a fresh signed-in run."},origin);
+     const {data,error}=await admin.rpc("claim_snake_checkpoint",{
+       p_user:user.id,p_attempt:body.attempt_id,p_seconds:body.seconds,p_bugs:body.bugs,
+       p_final:body.action==="complete"});
+     if(error)return response(409,{error:"Snake time check failed. Sign in and start a fresh run if the challenge expired."},origin);
      return response(200,{accepted:true,...data},origin);
    }
    return response(400,{error:"Unsupported Snake reward action"},origin);
