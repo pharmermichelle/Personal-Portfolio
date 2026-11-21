@@ -945,44 +945,35 @@ const supabaseClient = supabase.createClient(
         },
       ];
 
-      // --- State & helpers ---
-      const state = { filters: { platform: new Set(), genre: new Set() } };
+      // --- Modern library browse: live title search + combinable tag filters. ---
+      const state = { filters: { platform: new Set(), genre: new Set() }, query: "" };
       const $ = (q, el = document) => el.querySelector(q);
-      const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+      const $ = (q, el = document) => Array.from(el.querySelectorAll(q));
+      const normalizeSearch = text => String(text || "").normalize("NFKD").toLocaleLowerCase().trim();
 
       function passFilters(game) {
         const { platform, genre } = state.filters;
-        if (platform.size && !game.platform.some((p) => platform.has(p)))
-          return false;
-        if (genre.size && !game.genre.some((g) => genre.has(g))) return false;
+        if (state.query && !normalizeSearch(game.title).includes(state.query)) return false;
+        if (platform.size && !game.platform.some(p => platform.has(p))) return false;
+        if (genre.size && !game.genre.some(g => genre.has(g))) return false;
         return true;
       }
 
-      function renderNav() {
-        const nav = $("#game-nav");
-        nav.innerHTML = GAMES.map(
-          (g) =>
-            `<a href="#${g.id}" data-id="${g.id}">🎮 <span>${g.title}</span></a>`
-        ).join("");
-        nav.addEventListener(
-          "click",
-          (e) => {
-            const a = e.target.closest("a");
-            if (!a) return;
-            e.preventDefault();
-            const card = document.getElementById(a.dataset.id);
-            if (card) {
-              card.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-          },
-          { once: true }
-        );
+      function updateBrowseControls(count) {
+        const num = $("#game-result-count");
+        num.textContent = count + " of " + GAMES.length + " games";
+        const active = state.filters.platform.size + state.filters.genre.size;
+        $("#active-filter-count").textContent = active ? active + (active === 1 ? " tag selected" : " tags selected") : "All genres & devices";
+        $("#clear-tag-filters").hidden = active === 0;
+        $("#game-search-clear").hidden = !$("#game-search").value;
+        $("#game-empty-state").hidden = count !== 0;
       }
 
       function renderGallery() {
         const wrap = $("#gallery");
         wrap.innerHTML = "";
-        GAMES.filter(passFilters).forEach((g) => {
+        const visibleGames = GAMES.filter(passFilters);
+        visibleGames.forEach((g) => {
           const tagPlatform = g.platform
             .map((p) => `<span class="pill">${p}</span>`)
             .join("");
@@ -1006,20 +997,55 @@ const supabaseClient = supabase.createClient(
         `
           );
         });
+        updateBrowseControls(visibleGames.length);
       }
 
       function bindFilters() {
-        $$(".chip").forEach((btn) => {
+        const drawer = $("#filter-disclosure");
+        const desktop = window.matchMedia("(min-width: 901px)");
+        // Filter rail is always visible at desktop width; on phones it is
+        // collapsed to a single, accessible disclosure.
+        drawer.open = desktop.matches;
+        const syncDrawer = event => {
+          if (event.matches) drawer.open = true;
+          else drawer.open = false;
+        };
+        if (desktop.addEventListener) desktop.addEventListener("change",syncDrawer);
+        else desktop.addListener(syncDrawer);
+        $(".chip").forEach(btn => {
           btn.addEventListener("click", () => {
-            const key = btn.dataset.key;
-            const val = btn.dataset.val;
+            const key = btn.dataset.key, val = btn.dataset.val;
             const on = btn.getAttribute("aria-pressed") === "true";
-            btn.setAttribute("aria-pressed", on ? "false" : "true");
+            btn.setAttribute("aria-pressed", String(!on));
             const set = state.filters[key];
-            if (on) set.delete(val);
+            if(on) set.delete(val);
             else set.add(val);
             renderGallery();
           });
+        });
+        const clearTags = () => {
+          state.filters.platform.clear();
+          state.filters.genre.clear();
+          $(".chip").forEach(btn => btn.setAttribute("aria-pressed","false"));
+        };
+        $("#clear-tag-filters").addEventListener("click",() => {clearTags();renderGallery();});
+        const search = $("#game-search");
+        search.addEventListener("input",() => {
+          state.query = normalizeSearch(search.value);
+          renderGallery();
+        });
+        $("#game-search-clear").addEventListener("click",() => {
+          search.value = "";
+          state.query = "";
+          search.focus();
+          renderGallery();
+        });
+        $("#reset-game-browse").addEventListener("click",() => {
+          clearTags();
+          search.value = "";
+          state.query = "";
+          renderGallery();
+          search.focus();
         });
       }
 
@@ -1353,7 +1379,6 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   if (session?.user) resumeAfterSocialLogin(session.user);
 });
 
-      renderNav();
       renderGallery();
       bindFilters();
     </script>
