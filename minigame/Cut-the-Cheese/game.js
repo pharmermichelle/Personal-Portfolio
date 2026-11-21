@@ -847,6 +847,117 @@ function drawKnife() {
   });
 }
 
+
+const FALLBACK_KEY="retro-cheese-daily-bonuses-v1";
+const AD_UNAVAILABLE=new Set(["not_configured","no_fill","no_response","unsupported","unavailable","load_failed","error"]);
+function bonusStamp(){
+  const day=new Date().toLocaleDateString("en-CA");
+  return day+":level-"+level;
+}
+function fallbackAlreadyUsed(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(FALLBACK_KEY)||"{}");
+    return saved[bonusStamp()]===true;
+  }catch(_){return levelBonusClaimed;}
+}
+function rememberFallback(){
+  levelBonusClaimed=true;
+  try{
+    const saved=JSON.parse(localStorage.getItem(FALLBACK_KEY)||"{}");
+    const today=new Date().toLocaleDateString("en-CA")+":";
+    const trimmed=Object.fromEntries(Object.entries(saved).filter(([key])=>key.startsWith(today)));
+    trimmed[bonusStamp()]=true;
+    localStorage.setItem(FALLBACK_KEY,JSON.stringify(trimmed));
+  }catch(_){}
+}
+function renderBonusUI(){
+  const adReady=Boolean(window.RetroRewardedAds?.isConfigured());
+  const noFree=fallbackAlreadyUsed();
+  for(const [kind,button,minLevel] of [["knife",bonusKnifeBtn,2],["board",bonusBoardBtn,3],["time",bonusTimeBtn,1]]){
+    const locked=level<minLevel;
+    const capped=kind!=="time"&&inventory[kind]>=POWER_LIMIT;
+    const usedTime=kind==="time"&&extraTimeUsed;
+    button.disabled=previewBusy||locked||capped||usedTime||(!adReady&&noFree);
+    const noun=kind==="knife"?"Row Knife":kind==="board"?"Spin Board":"+45 Seconds";
+    button.textContent=(locked?"🔒 LEVEL "+minLevel+" • ":adReady?"▶ Watch Ad • ":"🎁 Free • ")+noun;
+    if(capped)button.textContent=noun+" • FULL";
+    if(usedTime)button.textContent="Time bonus used this level";
+  }
+  extendTimeBtn.disabled=previewBusy||extraTimeUsed||(!adReady&&noFree);
+  extendTimeBtn.textContent=adReady?"▶ Watch Ad for +45 Seconds":"🎁 Free +45 Seconds (No Ad)";
+  startBtn.disabled=previewBusy;
+  restartBtn.disabled=previewBusy;
+  if(!previewBusy){
+    bonusStatus.textContent=adReady
+      ?"Optional rewarded ad: receive the selected bonus only after the ad grants its reward."
+      :noFree?"Your free fallback bonus for this level was used today. More can be earned through play."
+      :"No rewarded ad is configured. Pick one free bonus for this level today, or start playing.";
+  }
+}
+function grantBonus(kind,fromTimeout,isFree){
+  if(kind==="time"){
+    if(extraTimeUsed)return false;
+    remainingSeconds+=45;
+    extraTimeUsed=true;
+  }else if(!grantTool(kind))return false;
+  if(isFree)rememberFallback();
+  updateHud();
+  displayTimer();
+  if(fromTimeout){
+    if(kind!=="time")return false;
+    startGame();
+  }
+  const label=kind==="time"?"+45 seconds":kind==="knife"?"+1 Row Knife":"+1 Spin Board";
+  const note=(isFree?"Free fallback":"Ad reward")+" confirmed: "+label+".";
+  bonusStatus.textContent=note;
+  endBonusStatus.textContent=note;
+  prepTime.textContent="⏱ "+formatTime(remainingSeconds)+" to finish this level";
+  updateInventoryUI(note);
+  return true;
+}
+async function requestBonus(kind,fromTimeout=false){
+  if(previewBusy||running||(fromTimeout&&(!timedOut||extraTimeUsed)))return;
+  if(!fromTimeout&&level<(kind==="knife"?2:kind==="board"?3:1))return;
+  if(kind==="time"&&extraTimeUsed)return;
+  if(kind!=="time"&&inventory[kind]>=POWER_LIMIT)return;
+  const adReady=Boolean(window.RetroRewardedAds?.isConfigured());
+  // A player can accept a genuinely unavailable-ad fallback only once per level per day.
+  if(!adReady&&fallbackAlreadyUsed()){
+    (fromTimeout?endBonusStatus:bonusStatus).textContent="Today's free bonus for this level was already claimed. Retry the level or return tomorrow.";
+    return;
+  }
+  previewBusy=true;
+  renderBonusUI();
+  const status=fromTimeout?endBonusStatus:bonusStatus;
+  status.textContent=adReady?"Checking optional rewarded ad…":"No ad is available; claiming your free fallback…";
+  try{
+    if(!adReady){
+      grantBonus(kind,fromTimeout,true);
+      return;
+    }
+    const result=await window.RetroRewardedAds.watch({
+      onStatus:msg=>{status.textContent=msg;}
+    });
+    if(result.granted){
+      grantBonus(kind,fromTimeout,false);
+    }else if(AD_UNAVAILABLE.has(result.reason)&&!fallbackAlreadyUsed()){
+      grantBonus(kind,fromTimeout,true);
+    }else{
+      status.textContent=result.message||"The ad did not grant a bonus; nothing was spent.";
+    }
+  }catch(_){
+    if(!fallbackAlreadyUsed())grantBonus(kind,fromTimeout,true);
+    else status.textContent="The ad could not load, and today's fallback is already used.";
+  }finally{
+    previewBusy=false;
+    renderBonusUI();
+  }
+}
+bonusKnifeBtn.addEventListener("click",()=>{void requestBonus("knife");});
+bonusBoardBtn.addEventListener("click",()=>{void requestBonus("board");});
+bonusTimeBtn.addEventListener("click",()=>{void requestBonus("time");});
+extendTimeBtn.addEventListener("click",()=>{void requestBonus("time",true);});
+
 function formatTime(s) {
   const m = Math.floor(s / 60)
     .toString()
@@ -1073,7 +1184,7 @@ function chirp(freq = 300, duration = 0.04) {
 
 resetGame();
 
-timeEl.textContent = "00:00";
+displayTimer();
 
 requestAnimationFrame(loop);
 
