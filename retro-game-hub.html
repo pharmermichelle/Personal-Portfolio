@@ -1057,7 +1057,7 @@ const supabaseClient = supabase.createClient(
       // --- Modern library browse: live title search + combinable tag filters. ---
       const state = { filters: { platform: new Set(), genre: new Set() }, query: "" };
       const $ = (q, el = document) => el.querySelector(q);
-      const $ = (q, el = document) => Array.from(el.querySelectorAll(q));
+      const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
       const normalizeSearch = text => String(text || "").normalize("NFKD").toLocaleLowerCase().trim();
 
       function passFilters(game) {
