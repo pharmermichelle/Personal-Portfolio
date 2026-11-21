@@ -34,6 +34,7 @@
   const startBtn = document.getElementById("startBtn");
   const restartBtn = document.getElementById("restartBtn");
   const soundBtn = document.getElementById("soundBtn");
+  const fireBtn = document.getElementById("fireBtn");
 
   const W = canvas.width;
   const H = canvas.height;
@@ -120,6 +121,7 @@
     initGrid();
     queue = makeQueue();
     projectile = null;
+    fireBtn.disabled = true;
     level = 1;
     shots = 0;
     seconds = 0;
@@ -245,6 +247,7 @@
 
   function shoot() {
     if (!running || projectile) return;
+    fireBtn.disabled = true;
 
     const isParm = usingParm && parms > 0;
     if (isParm) {
@@ -312,6 +315,7 @@ projectile = {
       removeCells(hit);
       removeFloating();
       projectile = null;
+      fireBtn.disabled = !running;
       updateHud();
       advanceLevelIfNeeded();
       if (dangerReached()) endGame();
@@ -348,6 +352,7 @@ projectile = {
     };
     grid.push(cell);
     projectile = null;
+    fireBtn.disabled = !running;
 
     const cluster = clusterFrom(cell);
     if (cluster.length >= 4) {
@@ -750,6 +755,7 @@ function startGame() {
 
   startOverlay.classList.remove("visible");
   gameOverOverlay.classList.remove("visible");
+  fireBtn.disabled = false;
 
   timeEl.textContent = "00:00";
 }
@@ -757,6 +763,7 @@ function startGame() {
 function endGame() {
   running = false;
   projectile = null;
+  fireBtn.disabled = true;
 
   gameOverStats.textContent =
     `Level ${level} • ${formatTime(seconds)} • ${shots} cheese shots • ${clearEvents} cluster clears`;
@@ -792,25 +799,34 @@ function setAimFromPoint(clientX, clientY) {
   aimAngle = a;
 }
 
+// Aim without shooting. On phones, a touch chooses the direction and
+// dragging adjusts it, even when the starting point is away from the knife.
+// Mouse hover also adjusts the preview; only FIRE or Space launches cheese.
+let aimingPointerId = null;
+canvas.addEventListener("pointerdown", e => {
+  if (!running || projectile) return;
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  aimingPointerId = e.pointerId;
+  try { canvas.setPointerCapture(e.pointerId); } catch (_error) {}
+  setAimFromPoint(e.clientX, e.clientY);
+  e.preventDefault();
+});
 canvas.addEventListener("pointermove", e => {
   if (!running || projectile) return;
-
-  setAimFromPoint(
-    e.clientX,
-    e.clientY
-  );
+  if (e.pointerType === "mouse" || e.pointerId === aimingPointerId) {
+    setAimFromPoint(e.clientX, e.clientY);
+  }
 });
-
-canvas.addEventListener("pointerdown", e => {
-  if (!running) return;
-
-  setAimFromPoint(
-    e.clientX,
-    e.clientY
-  );
-
-  shoot();
+function finishAim(e) {
+  if (aimingPointerId !== e.pointerId) return;
+  if (running && !projectile) setAimFromPoint(e.clientX, e.clientY);
+  aimingPointerId = null;
+}
+canvas.addEventListener("pointerup", finishAim);
+canvas.addEventListener("pointercancel", e => {
+  if (aimingPointerId === e.pointerId) aimingPointerId = null;
 });
+fireBtn.addEventListener("click", shoot);
 
 document.addEventListener("keydown", e => {
   if (!running) return;
