@@ -791,6 +791,47 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
   .card.game-tile:hover { transform: none; }
 }
 
+
+/* Mobile layout repair: remove the legacy grid's large empty vertical track.
+   Keep browse controls directly below the header, full-width and in reading order. */
+@media (max-width: 900px) {
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+  }
+  .page > header.hub-player-header { order: 0; flex: 0 0 auto; }
+  .page > .content {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 12px 12px 36px;
+    gap: 12px;
+  }
+  .page > .account-intro { order: 2; flex: 0 0 auto; }
+  .content > .browse-search,
+  .content > .left,
+  .content > .right {
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+  }
+  .content > .browse-search { order: 0; }
+  .content > .left { order: 1; }
+  .content > .right { order: 2; }
+}
+
     </style>
   </head>
   <body>
