@@ -7,7 +7,8 @@
   const gameId = document.currentScript?.dataset.gameId || "acorn-ascent";
   const rewardedUnits = Object.freeze({
     "acorn-ascent": "/23396250060/acorn_rewarded_hints",
-    "claws-vs-paws": "" // Add a real GAM out-of-page rewarded unit path here after setup.
+    "claws-vs-paws": "", // Requires a real Claws-specific rewarded unit.
+    "cut-the-cheese": "" // Requires its own real GAM out-of-page rewarded unit; not an AdSense banner.
   });
   window.RETRO_REWARDED_AD_UNIT_PATH = rewardedUnits[gameId] || "";
 })(window);
