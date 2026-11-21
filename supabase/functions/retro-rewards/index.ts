@@ -125,6 +125,42 @@ Deno.serve(async req=>{
  let body:any;
  try{const raw=await req.text();if(raw.length>18000)throw Error("Too large");body=JSON.parse(raw);}catch(_){return response(400,{error:"Invalid request"},origin);}
  if(!body||typeof body!=="object")return response(400,{error:"Invalid reward request"},origin);
+ // Catalog-driven game integration. Server owns XP rules; clients only request
+ // level start/complete. These claims are bounded and NOT replay-verified scores.
+ if(["fallen-grid","rink-putt","hockey-gear-rush"].includes(body.game_id)){
+   const game=body.game_id,level=body.level;
+   if(body.version!=="v1"||!Number.isInteger(level)||level<1||level>500)
+     return response(400,{error:"Unsupported game level"},origin);
+   const {data:rule,error:ruleError}=await admin.from("game_xp_rules")
+     .select("max_level,enabled,reward_type,verification_tier,min_seconds")
+     .eq("game_id",game).maybeSingle();
+   if(ruleError||!rule||!rule.enabled||rule.reward_type!=="level"||
+      rule.verification_tier!=="server_timed"||level>rule.max_level)
+     return response(403,{error:"Rewards are not enabled for this level"},origin);
+   if(body.action==="start"){
+     const since=new Date(Date.now()-60000).toISOString();
+     const {count,error:rateError}=await admin.from("reward_attempts")
+       .select("id",{count:"exact",head:true}).eq("user_id",user.id).eq("game_id",game).gte("created_at",since);
+     if(rateError)return response(503,{error:"Reward service temporarily unavailable"},origin);
+     if((count||0)>=12)return response(429,{error:"Challenge limit reached. Try again shortly."},origin);
+     const {data,error}=await admin.from("reward_attempts")
+       .insert({user_id:user.id,game_id:game,level_number:level,game_version:"v1"})
+       .select("id,expires_at").single();
+     if(error||!data)return response(503,{error:"Could not start reward challenge"},origin);
+     return response(200,{attempt_id:data.id,expires_at:data.expires_at},origin);
+   }
+   if(body.action==="complete"){
+     if(typeof body.attempt_id!=="string"||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.attempt_id))
+       return response(400,{error:"Missing challenge"},origin);
+     const {data,error}=await admin.rpc("claim_catalog_level",{
+       p_user:user.id,p_attempt:body.attempt_id,p_game:game,p_level:level
+     });
+     if(error)return response(409,{error:"Level reward could not be validated for this attempt"},origin);
+     return response(200,{accepted:true,...data},origin);
+   }
+   return response(400,{error:"Unsupported reward action"},origin);
+ }
  if(body.game_id==="cut-the-cheese"){
    const level=body.level;
    if(body.version!=="v1"||!Number.isInteger(level)||level<1||level>200)return response(400,{error:"Unsupported cheese level"},origin);
