@@ -356,3 +356,10 @@ code { color: #efd28d; }
 .cheese-account-status button{min-height:42px;border:2px solid #6fe6d4;background:#174754;color:white;border-radius:9px;font-weight:850;font-size:14px;cursor:pointer}
 .cheese-account-status button[hidden]{display:none}
 .cheese-account-status button:focus-visible{outline:3px solid #ffe786;outline-offset:2px}
+
+/* The grater is a free anti-stall precision tool starting at Level 3. */
+.tool-buttons .grater-tool{grid-column:1/-1;min-height:47px;border-color:#b2dfdb;background:#255d61;color:#fff5d6}
+.tool-buttons .grater-tool:not(:disabled)[aria-pressed="true"]{background:#34715c;border-color:#d5ffc7}
+.prep-inventory{grid-template-columns:repeat(2,minmax(0,1fr));}
+.prep-inventory > div:last-child{border-color:#6c9c9c;background:#d8eff0}
+@media(min-width:580px){.prep-inventory{grid-template-columns:repeat(4,minmax(0,1fr));}}
