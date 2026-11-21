@@ -876,25 +876,29 @@ function drawKnife() {
   parmBtn.textContent = usingParm ? "ARMED" : "USE";
   updateInventoryUI();
 
-  nextQueueEl.innerHTML = "";
+  nextQueueEl.replaceChildren();
 
-  queue.slice(0, 5).forEach(type => {
-    const d = document.createElement("div");
-    const ch = CHEESES.find(c => c.id === type);
-
-    d.className = "next-dot";
-    d.title = ch.label;
-    d.style.background = ch.color;
-
-    if (type === "swiss") {
-      d.style.borderRadius = "50% 12% 50% 18%";
-    } else if (type === "mozzarella") {
-      d.style.borderRadius = "48% 52% 43% 55%";
-    } else {
-      d.style.borderRadius = "6px";
-    }
-
-    nextQueueEl.appendChild(d);
+  // Use exactly the same PNG assets as the board, not approximate color chips.
+  // If artwork cannot load, show the game's cheese name rather than
+  // falsely suggesting a different-looking cheese.
+  queue.slice(0,5).forEach((type,index)=>{
+    const tile=document.createElement("div");
+    const art=document.createElement("img");
+    const cheese=CHEESES.find(c=>c.id===type);
+    tile.className="next-dot";
+    if(index===0)tile.classList.add("next-loaded");
+    tile.title=(index===0?"Loaded: ":"Next: ")+(cheese?.label||type);
+    art.src=IMAGE_PATHS[type];
+    art.alt=cheese?.label||type;
+    art.loading="eager";
+    art.decoding="async";
+    art.onerror=()=>{
+      tile.replaceChildren();
+      tile.textContent=(cheese?.label||type).slice(0,3).toUpperCase();
+      tile.classList.add("next-fallback");
+    };
+    tile.appendChild(art);
+    nextQueueEl.appendChild(tile);
   });
 }
 
