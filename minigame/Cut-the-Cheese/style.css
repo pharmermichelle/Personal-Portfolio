@@ -310,3 +310,43 @@ code { color: #efd28d; }
  .bonus-actions .bonus-btn{min-height:39px}
  .prep-panel .tiny{font-size:11px}
 }
+
+/* Knife collection and skills: low-vision friendly, mobile-first controls. */
+.cheese-wallet{color:#ffe7a0;font:900 14px/1.3 system-ui,sans-serif}
+.roster-label{margin:0 0 8px;color:#e6cfad;font:650 12px/1.35 system-ui,sans-serif}
+.power-menu-btn{position:absolute;left:12px;bottom:14px;z-index:2;min-width:133px;min-height:58px;padding:8px 11px;border:3px solid #2a4355;border-radius:12px;background:linear-gradient(#85d5ea,#3e849f);color:#132636;font:950 15px/1.1 system-ui,sans-serif;box-shadow:0 5px 0 #163444;cursor:pointer;touch-action:manipulation}
+.power-menu-btn:disabled{opacity:.48;cursor:not-allowed}
+.power-menu-btn:focus-visible,.quick-btn:focus-visible,.knife-shop button:focus-visible,.menu-close:focus-visible{outline:3px solid #fff38b;outline-offset:3px}
+.knife-quick-actions{position:absolute;left:12px;bottom:83px;z-index:2;display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+.knife-quick-actions[hidden]{display:none}
+.quick-btn{min-height:42px;padding:8px 12px;border:2px solid #174656;border-radius:9px;background:#124758;color:#fbf8e8;font:900 12px/1.15 system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 5px #0008}
+.quick-btn:disabled{opacity:.55;cursor:not-allowed}
+.power-menu-overlay{z-index:7!important;align-items:center;padding:8px}
+.power-panel{width:min(630px,99%);max-height:95%;overflow:auto;overscroll-behavior:contain;padding:clamp(12px,2vw,24px);text-align:left}
+.power-panel h2{margin:0;font:950 clamp(25px,4.6vw,34px)/1.15 system-ui,sans-serif}
+.power-panel h3{margin:13px 0 8px;font:950 16px/1.3 system-ui,sans-serif}
+.power-panel p{font:600 13px/1.4 system-ui,sans-serif;margin:8px 0}
+.power-menu-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.menu-close{width:44px;height:44px;flex:none;border:2px solid #5a361c;border-radius:9px;background:#ffebb8;color:#4e2512;font-size:22px;cursor:pointer}
+.power-balance{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0;padding:10px;border:2px solid #a66b2f;border-radius:10px;background:#fff0c8;color:#432719}
+.power-balance strong{font-size:18px}
+.power-balance span{font-size:12px;font-weight:850}
+.knife-shop{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.knife-card{padding:9px;border:2px solid #966638;border-radius:10px;background:#fff0ca;display:grid;gap:5px}
+.knife-card.is-equipped{border-color:#258b67;box-shadow:inset 0 0 0 2px #8bdcbd}
+.knife-card strong{font:950 15px/1.25 system-ui,sans-serif}
+.knife-card p{font-size:12px;margin:0}
+.knife-card .knife-price{font-size:12px;font-weight:900;color:#5b3a18}
+.knife-card button{min-height:43px;padding:7px;border:2px solid #224a59;border-radius:8px;background:#286479;color:white;font:850 12px/1.2 system-ui,sans-serif;cursor:pointer}
+.knife-card button:disabled{opacity:.62;cursor:default}
+.power-panel .aim-watch{width:100%;min-height:48px}
+.power-panel .boost-status{color:#513019;font-size:12px}
+.power-panel #powerMenuDoneBtn{display:block;width:100%;min-height:50px;margin-top:12px}
+@media(max-width:480px){
+ .knife-shop{grid-template-columns:1fr}
+ .power-panel{max-height:96%;padding:11px}
+ .power-menu-btn{min-width:115px;min-height:55px;left:9px;bottom:11px;font-size:13px}
+ .fire-btn{min-width:101px;min-height:55px;right:9px;bottom:11px}
+ .knife-quick-actions{left:9px;bottom:75px}
+ .power-balance strong{font-size:16px}
+}
