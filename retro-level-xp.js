@@ -9,7 +9,7 @@
  const gameId=script?.dataset?.gameId;
  if(!gameId||global.RetroLevelXP)return;
  let rewards=null,client=null,identity=null,active=null,requested=null;
- let beginTask=null,initializing=false;
+ let beginTask=null,finishTask=null,initializing=false;
  const listeners=[];
  function emit(type,detail){
    global.dispatchEvent(new CustomEvent("retro-level-xp",{
@@ -48,6 +48,10 @@
    if(!Number.isInteger(level)||level<1||level>500)return;
    requested=level;
    if(!rewards||!identity){init();return;}
+   // A quick win must finish its claim before the next reward attempt begins.
+   // RetroRewards supports only one active attempt per game/client.
+   if(finishTask)try{await finishTask;}catch(_error){}
+   if(!identity||requested!==level)return;
    if(active===level&&beginTask)return beginTask;
    active=level;
    beginTask=rewards.begin(level);
@@ -59,12 +63,19 @@
      emit("guest",{level});
      return;
    }
-   // A stale level or account switch must not claim the new player's XP.
    if(active!==level){emit("error",{message:"This level had no signed-in reward attempt."});return;}
-   if(beginTask)await beginTask;
-   const result=await rewards.completed(level,[]);
-   if(active===level){active=null;beginTask=null;}
-   return result;
+   const userAtClear=identity;
+   const pending=beginTask;
+   const claim=(async()=>{
+     if(pending)await pending;
+     if(!identity||identity!==userAtClear)return;
+     const result=await rewards.completed(level,[]);
+     if(active===level){active=null;beginTask=null;}
+     return result;
+   })();
+   finishTask=claim;
+   try{return await claim;}
+   finally{if(finishTask===claim)finishTask=null;}
  }
  global.RetroLevelXP={begin:start,complete,getGameId:()=>gameId};
  global.addEventListener("retro-arcade-auth-ready",init);
