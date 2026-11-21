@@ -9,7 +9,7 @@
   <link rel="icon" href="images/portfolio-icon.png">
   <link rel="stylesheet" href="retro-player-profile.css?v=20261120-stats-2">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-  <script defer src="retro-player-profile.js?v=20261121-stats-3"></script>
+  <script defer src="retro-player-profile.js?v=20261121-overallxp-1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to profile</a>
@@ -39,7 +39,7 @@
 
     <div class="announcement" role="status" id="feature-notice">
       <span class="announcement-icon">✦</span>
-      <span><strong>Player Profile • First Release</strong> — Your avatar, username, and privacy setting can be saved now. Acorn Ascent now earns verified branch XP, an Oakward Bound badge, and the Squirrel Summit Tee. Other games and leaderboards are still being integrated.</span>
+      <span><strong>Player Profile • First Release</strong> — Your avatar, username, and privacy setting can be saved now. Acorn Ascent earns verified branch XP; Cut the Cheese can now earn guarded level XP. Your account rewards and records appear below. Leaderboards are still being integrated.</span>
     </div>
 
     <div class="dashboard">
@@ -94,8 +94,8 @@
           </div>
           <div class="level-number"><span>LEVEL</span><strong id="player-level">—</strong></div>
           <div class="xp-line"><span>XP PROGRESS</span><strong id="xp-text">Sign in for XP</strong></div>
-          <div class="progress-track" role="progressbar" aria-label="Player XP progress unavailable" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" id="xp-progress-fill"></div></div>
-          <p class="fine-print" id="xp-current-progress">Acorn Ascent • 110 XP available for completing all ten branches, once per branch. Overall player level uses earned XP.</p>
+          <div class="progress-track" role="progressbar" aria-label="XP toward next overall player level" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" id="xp-progress-fill"></div></div>
+          <p class="fine-print" id="xp-current-progress">Loading overall XP progress…</p>
         </section>
         <section class="panel metrics">
           <div class="panel-title cyan"><span>03 / ARCADE STATS</span><span>✦</span></div>
@@ -109,7 +109,7 @@
         <section class="help-card">
           <div class="help-title">HOW DO UNLOCKS WORK? <span>↗</span></div>
           <p><b>Complete</b> Acorn Ascent branches to earn 2–20 XP each. <b>Master all ten</b> for the Oakward Bound badge and Squirrel Summit Tee. Other games are coming soon.</p>
-          <p>Acorn Ascent rewards are now available. Future outfit previews remain locked until their games are integrated.</p>
+          <p>Acorn Ascent rewards are available. Cut the Cheese level XP is now being integrated; its knife and cheese-point economy is separate from arcade XP.</p>
         </section>
       </aside>
     </div>
