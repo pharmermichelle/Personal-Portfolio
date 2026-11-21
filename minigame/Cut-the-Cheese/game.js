@@ -133,8 +133,42 @@
     }catch(_){return {points:0,tier:0,equipped:0};}
   }
   const knifeData=loadKnifeData();
+  let cheeseSaveService=null,cheeseRestoring=false;
   const currentKnife=()=>KNIVES[knifeData.equipped];
-  function saveKnifeData(){try{localStorage.setItem(KNIFE_KEY,JSON.stringify(knifeData));}catch(_){}}
+  function cheeseSnapshot(){
+    return {level:Math.max(1,Math.min(200,level||1)),
+      knife:{points:knifeData.points,tier:knifeData.tier,equipped:knifeData.equipped},
+      inventory:{knife:inventory.knife,board:inventory.board,parm:inventory.parm}};
+  }
+  function saveCheeseProgress(){
+    if(cheeseRestoring||!cheeseSaveService)return;
+    cheeseSaveService.save(cheeseSnapshot(),"progress");
+  }
+  const localMode=()=>!cheeseSaveService||["guest","guest-only"].includes(cheeseSaveService.mode);
+  function applyCheeseProgress(value){
+    cheeseRestoring=true;
+    try{
+      level=value.level;seconds=0;
+      for(const name of ["knife","board","parm"])inventory[name]=value.inventory[name];
+      for(const name of ["points","tier","equipped"])knifeData[name]=value.knife[name];
+      parms=inventory.parm;
+      resetLevelBoard();
+      toolStatus.textContent="Progress restored. Choose Start Level "+level+".";
+    }finally{cheeseRestoring=false;}
+  }
+  window.CutCheeseBridge={
+    snapshot:()=>cheeseSnapshot(),
+    restore:applyCheeseProgress,
+    connectSave:service=>{cheeseSaveService=service;},
+    level:()=>level,
+    onStart:()=>{},
+    onComplete:()=>{},
+    setRewardStatus:message=>{const el=document.getElementById("cheeseRewardStatus");if(el)el.textContent=message;}
+  };
+  function saveKnifeData(){
+    if(localMode())try{localStorage.setItem(KNIFE_KEY,JSON.stringify(knifeData));}catch(_){}
+    saveCheeseProgress();
+  }
   function collectCheese(count){
     if(count<=0)return;
     knifeData.points=Math.min(9999999,knifeData.points+5*count);
@@ -194,7 +228,8 @@
     }catch(_){return 1;}
   }
   function saveLevel(){
-    try{localStorage.setItem(PROGRESS_KEY,String(level));}catch(_){}
+    if(localMode())try{localStorage.setItem(PROGRESS_KEY,String(level));}catch(_){}
+    saveCheeseProgress();
   }
   const POWER_LIMIT = 25;
   const allowedTools = ["knife", "board", "parm"];
@@ -207,7 +242,8 @@
   }
   const inventory = loadInventory();
   function saveInventory(){
-    try {localStorage.setItem(SAVE_KEY,JSON.stringify(inventory));}catch(_){}
+    if(localMode())try{localStorage.setItem(SAVE_KEY,JSON.stringify(inventory));}catch(_){}
+    saveCheeseProgress();
   }
   function grantTool(type,count=1){
     if(!allowedTools.includes(type))return false;
@@ -439,6 +475,9 @@
   function advanceLevelIfNeeded() {
     if(grid.length)return;
     const finished=level;
+    // Notify the authenticated reward gateway about an actual completed board.
+    // Cloud save data never authorizes XP; it is a separate once-per-level claim.
+    window.CutCheeseBridge.onComplete(finished);
     level++;
     saveLevel();
     const earned=[];
@@ -1197,6 +1236,7 @@ function loop(ts) {
 function startGame(force=false){
   if(previewBusy&&!force)return;
   running=true;timedOut=false;
+  window.CutCheeseBridge.onStart(level);
   startOverlay.classList.remove("visible");
   gameOverOverlay.classList.remove("visible");
   fireBtn.disabled=!!projectile;
