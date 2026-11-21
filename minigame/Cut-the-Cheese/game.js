@@ -54,6 +54,13 @@
   const extendTimeBtn = document.getElementById("extendTimeBtn");
   const endBonusStatus = document.getElementById("endBonusStatus");
   const gameOverTitle = document.getElementById("gameOverTitle");
+  const $=id=>document.getElementById(id);
+  const cheeseWallet=$("cheeseWallet"),powerMenuBtn=$("powerMenuBtn"),powerMenu=$("powerMenu"),
+    powerMenuCloseBtn=$("powerMenuCloseBtn"),powerMenuDoneBtn=$("powerMenuDoneBtn"),
+    powerWallet=$("powerWallet"),equippedKnifeName=$("equippedKnifeName"),knifeShop=$("knifeShop"),
+    knifeSkillStatus=$("knifeSkillStatus"),watchAimBtn=$("watchAimBtn"),aimBoostStatus=$("aimBoostStatus"),
+    knifeQuickActions=$("knifeQuickActions"),holdCheeseBtn=$("holdCheeseBtn"),
+    discardCheeseBtn=$("discardCheeseBtn");
 
   const W = canvas.width;
   const H = canvas.height;
@@ -109,6 +116,75 @@
   let remainingSeconds = 240;
   let timedOut = false, gameBusy = false, extraTimeUsed = false, activeTool = null;
   let levelBonusClaimed = false, previewBusy = false;
+  let menuOpen=false,aimAdBusy=false,aimBoostSeconds=0,heldCheese=null,discardsUsed=0;
+  const KNIFE_KEY="retro-cut-cheese-knives-v1";
+  const KNIVES=[
+    {name:"Classic Cutter",cost:0,aim:32,desc:"Standard aiming guide."},
+    {name:"Precision Blade",cost:60,aim:68,desc:"Longer trajectory and clearer bounce preview."},
+    {name:"Double Cheddar",cost:175,aim:77,desc:"Hold one extra cheese and swap it with the loaded cheese."},
+    {name:"Cheese Reaper",cost:330,aim:88,desc:"Keep your reserve and discard up to two unwanted cheeses per level."}
+  ];
+  function loadKnifeData(){
+    try{
+      const data=JSON.parse(localStorage.getItem(KNIFE_KEY)||"{}");
+      const tier=Number.isInteger(data.tier)?Math.max(0,Math.min(3,data.tier)):0;
+      return {points:Number.isSafeInteger(data.points)&&data.points>=0?Math.min(9999999,data.points):0,
+        tier,equipped:Number.isInteger(data.equipped)?Math.max(0,Math.min(tier,data.equipped)):0};
+    }catch(_){return {points:0,tier:0,equipped:0};}
+  }
+  const knifeData=loadKnifeData();
+  const currentKnife=()=>KNIVES[knifeData.equipped];
+  function saveKnifeData(){try{localStorage.setItem(KNIFE_KEY,JSON.stringify(knifeData));}catch(_){}}
+  function collectCheese(count){
+    if(count<=0)return;
+    knifeData.points=Math.min(9999999,knifeData.points+5*count);
+    saveKnifeData();
+    knifeSkillStatus.textContent="+"+(5*count)+" Cheese Points for "+count+" broken cheeses!";
+    renderKnifeShop();
+  }
+  function chooseKnife(tier){
+    if(tier<0||tier>=KNIVES.length||tier>knifeData.tier+1)return;
+    if(tier>knifeData.tier){
+      if(knifeData.points<KNIVES[tier].cost){knifeSkillStatus.textContent="Earn more Cheese Points to unlock this knife.";return;}
+      knifeData.points-=KNIVES[tier].cost;
+      knifeData.tier=tier;
+    }
+    knifeData.equipped=tier;
+    if(tier<2)heldCheese=null;
+    saveKnifeData();
+    knifeSkillStatus.textContent=KNIVES[tier].name+" equipped!";
+    syncQueueToBoard();
+    updateHud();
+  }
+  function renderKnifeShop(){
+    cheeseWallet.textContent="🧀 "+knifeData.points.toLocaleString()+" pts";
+    powerWallet.textContent="🧀 "+knifeData.points.toLocaleString()+" Cheese Points";
+    equippedKnifeName.textContent=currentKnife().name+" equipped";
+    knifeShop.replaceChildren();
+    KNIVES.forEach((knife,i)=>{
+      const card=document.createElement("div"),title=document.createElement("strong"),
+        desc=document.createElement("p"),price=document.createElement("span"),btn=document.createElement("button");
+      card.className="knife-card";if(i===knifeData.equipped)card.classList.add("is-equipped");
+      title.textContent=["🔪 ","🎯 ","🔁 ","♻️ "][i]+knife.name;desc.textContent=knife.desc;
+      price.className="knife-price";price.textContent=i===0?"FREE":knife.cost+" Cheese Points · permanent";
+      btn.type="button";
+      btn.textContent=i===knifeData.equipped?"EQUIPPED":i<=knifeData.tier?"EQUIP":i===knifeData.tier+1?"BUY "+knife.cost+" 🧀":"LOCKED";
+      btn.disabled=i===knifeData.equipped||i>knifeData.tier+1||(i>knifeData.tier&&knifeData.points<knife.cost);
+      btn.addEventListener("click",()=>chooseKnife(i));
+      card.append(title,desc,price,btn);knifeShop.appendChild(card);
+    });
+    holdCheeseBtn.hidden=knifeData.equipped<2;
+    discardCheeseBtn.hidden=knifeData.equipped<3;
+    knifeQuickActions.hidden=knifeData.equipped<2||!running||menuOpen;
+    holdCheeseBtn.textContent=heldCheese?"↔ SWAP "+(CHEESES.find(c=>c.id===heldCheese)?.label||"HELD"):"↔ HOLD / SWAP";
+    holdCheeseBtn.disabled=!running||!!projectile||menuOpen;
+    discardCheeseBtn.textContent="✖ DISCARD "+Math.max(0,2-discardsUsed)+"/2";
+    discardCheeseBtn.disabled=!running||!!projectile||menuOpen||discardsUsed>=2;
+    powerMenuBtn.disabled=!running;
+    const boosted=aimBoostSeconds>0,ad=Boolean(window.RetroRewardedAds?.isConfigured());
+    watchAimBtn.disabled=aimAdBusy||boosted||(!ad&&aimFallbackUsed());
+    watchAimBtn.textContent=boosted?"🎯 Extended Guide Active ("+Math.ceil(aimBoostSeconds)+"s)":aimAdBusy?"Checking ad…":ad?"▶ Watch Ad for 90s Guide":"🎁 Free 90s Guide (No Ad Available)";
+  }
   const SAVE_KEY = "retro-cut-cheese-inventory-v1";
   const PROGRESS_KEY = "retro-cut-cheese-highest-level-v1";
   function loadLevel(){
@@ -172,6 +248,7 @@
       const current=queue[i];
       return allowed.has(current)?current:randCheese(pool);
     });
+    if(heldCheese&&!allowed.has(heldCheese))heldCheese=null;
   }
   function displayTimer(){
     const t=Math.max(0,Math.ceil(remainingSeconds));
@@ -220,6 +297,7 @@
     remainingSeconds=levelSeconds(level);
     extraTimeUsed=false;levelBonusClaimed=false;
     activeTool=null;usingParm=false;aimAngle=-Math.PI/2;elapsedAccum=0;timedOut=false;
+    heldCheese=null;discardsUsed=0;
     updateHud();
     prepareLevel();
   }
@@ -379,7 +457,7 @@
   }
 
   function shoot() {
-    if (!running || projectile) return;
+    if (!running || projectile || menuOpen) return;
     const tool=activeTool && inventory[activeTool]>0 ? activeTool : null;
     const isParm=!tool && usingParm && inventory.parm>0;
     if(tool){
@@ -455,6 +533,7 @@ projectile = {
   function settleProjectile() {
     if (!projectile) return;
     if(projectile.tool){
+      const initialCount=grid.length;
       const fired=projectile;
       const nearest=closestCell(fired.x,fired.y);
       let cells=[];
@@ -469,6 +548,7 @@ projectile = {
       }
       removeCells(cells);
       removeFloating();
+      collectCheese(initialCount-grid.length);
       projectile=null;
       fireBtn.disabled=false;
       updateInventoryUI((fired.tool==="knife"?"Row Knife":"Spin Board")+" cleared "+cells.length+" cheeses!");
@@ -476,6 +556,7 @@ projectile = {
       return;
     }
     if (projectile.parm) {
+      const initialCount=grid.length;
       const blastRadius = 155;
       const hit = grid.filter(c => {
         const p = cellCenter(c.row, c.col);
@@ -483,6 +564,7 @@ projectile = {
       });
       removeCells(hit);
       removeFloating();
+      collectCheese(initialCount-grid.length);
       projectile = null;
       fireBtn.disabled = !running;
       completeShot();
@@ -523,8 +605,10 @@ projectile = {
 
     const cluster = clusterFrom(cell);
     if (cluster.length >= 4) {
+      const initialCount=grid.length;
       removeCells(cluster);
       removeFloating();
+      collectCheese(initialCount-grid.length);
       registerClearEvent();
     }
 
