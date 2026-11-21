@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d231d">
+<meta name="description" content="Grass Snake: Bug Hunt — a pixel-art survival Snake game. Eat bugs, grow longer, and beat your best survival time.">
+<title>Grass Snake: Bug Hunt • Retro Games Hub</title>
+<style>
+:root{color-scheme:dark;--ink:#f2ffda;--soft:#bed4ba;--lime:#b8fa67;--gold:#ffe186;--bg:#0b1b1b;--panel:#142e27;--line:#3d6f52}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
+body{min-height:100dvh;margin:0;background:radial-gradient(ellipse at 50% 4%,#31553b 0,#0d241f 45%,#08171b 100%);font:500 16px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+button{font:800 16px system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:3px solid #ffe186;outline-offset:3px}
+[hidden]{display:none!important}
+.shell{width:min(100%,740px);margin:auto;padding:12px 14px 32px}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.kicker{font-size:11px;font-weight:900;letter-spacing:2px;color:var(--lime)}
+h1{margin:0;font-size:clamp(23px,4.5vw,34px);letter-spacing:-.6px;line-height:1.15;color:#fff9db;text-shadow:2px 3px 0 #1a4933}
+.sub{margin:4px 0 0;color:var(--soft);font-size:13px}
+.badge{font-size:28px;padding:8px 13px;background:#22412f;border:2px solid #6b9e55;border-radius:14px;box-shadow:3px 3px #081811}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 12px}
+.stat{border:1px solid #47745d;border-radius:11px;background:linear-gradient(#254632,#172d28);padding:8px 4px;text-align:center;min-width:0;box-shadow:0 3px 0 #06160e}
+.stat span{display:block;text-transform:uppercase;font-size:10px;font-weight:900;letter-spacing:.8px;color:#bfdaa8}
+.stat strong{display:block;font:900 clamp(17px,3vw,24px)/1.25 system-ui,sans-serif;color:#fff8c2;font-variant-numeric:tabular-nums}
+.stat.xp strong{color:#b8fa67}
+.board-frame{position:relative;width:min(100%,500px);margin:0 auto;border:6px solid #274a34;border-radius:12px;background:#2b5134;box-shadow:0 0 0 2px #8ea955,0 7px 0 #08180e,0 16px 38px #0009;overflow:hidden}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1;image-rendering:pixelated;touch-action:none}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#071e18df;padding:18px 26px;gap:12px}
+.overlay .pixel{font-size:48px;filter:drop-shadow(3px 4px #0008)}
+.overlay h2{font-size:clamp(24px,5vw,34px);line-height:1.1;margin:0;color:#f8ffcc}
+.overlay p{font-size:15px;max-width:320px;margin:0;color:#e9f6df}
+.primary{min-height:51px;border:2px solid #fff1a9;background:linear-gradient(#f7e06e,#d2ae43);color:#17331e;border-radius:11px;padding:11px 27px;font-size:17px;box-shadow:0 4px 0 #5c502a}
+.primary:disabled{opacity:.75;cursor:wait}
+.controls{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin:13px auto 7px}
+.dpad{display:grid;grid-template-columns:repeat(3,62px);grid-template-rows:repeat(2,52px);gap:6px;justify-content:center}
+.dpad button{border:2px solid #89ad75;background:linear-gradient(#335b42,#1d3a2e);color:#f5ffe0;border-radius:12px;font-size:27px;line-height:1;box-shadow:0 3px 0 #071711}
+.dpad button:active{background:#507d4a;transform:translateY(2px)}
+.dpad button[data-dir=up]{grid-column:2;grid-row:1}
+.dpad button[data-dir=left]{grid-column:1;grid-row:2}
+.dpad button[data-dir=down]{grid-column:2;grid-row:2}
+.dpad button[data-dir=right]{grid-column:3;grid-row:2}
+.side-actions{display:grid;gap:8px}
+.secondary{background:#142f29;border:2px solid #59896b;border-radius:10px;color:#e7fbd6;min-height:46px;padding:9px 13px;font-size:14px}
+.secondary:disabled{opacity:.6;cursor:not-allowed}
+.note{text-align:center;margin:8px auto 3px;color:#e4f4c9;max-width:560px;font-size:13px}
+.reward{display:flex;align-items:center;justify-content:center;text-align:center;min-height:37px;margin:6px auto 12px;padding:6px 11px;border:1px solid #486b4d;border-radius:10px;background:#172e25;max-width:570px;font-size:13px;font-weight:700;color:#cff2b5}
+.ad-area{max-width:340px;margin:12px auto 0;text-align:center}
+.ad-label{font-size:10px;letter-spacing:1px;color:#9ea99b;text-transform:uppercase;margin:0 0 5px}
+ins.adsbygoogle.retro-compact-ad-unit{display:block;width:100%;max-width:320px;height:50px;margin-inline:auto}
+@media(max-width:420px){.shell{padding:10px 11px 22px}.stats{gap:5px}.stat span{font-size:9px;letter-spacing:.2px}.stat{padding:7px 3px}.stat strong{font-size:18px}.board-frame{border-width:4px}.overlay{padding:11px 19px;gap:10px}.overlay .pixel{font-size:34px}.overlay p{font-size:14px}.controls{margin-top:10px}.dpad{grid-template-columns:repeat(3,57px);grid-template-rows:repeat(2,46px);gap:5px}.sub{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+<script src="../../retro-arcade-header.js?v=20261121-snake-1" data-game-id="grass-snake" data-layout="scroll" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
+</head>
+<body>
+<main class="shell">
+ <div class="mast"><div><div class="kicker">✦ RETRO FIELD NOTES // 001</div><h1>GRASS SNAKE <span style="color:#b8fa67">: BUG HUNT</span></h1><p class="sub">Eat bugs • Grow longer • Don't bite your tail</p></div><div class="badge" aria-hidden="true">🐍</div></div>
+ <div class="stats" aria-live="off">
+  <div class="stat"><span>Survived</span><strong id="time">0:00</strong></div>
+  <div class="stat"><span>Bugs eaten</span><strong id="bugs">0</strong></div>
+  <div class="stat"><span>Personal best</span><strong id="best">0:00</strong></div>
+  <div class="stat xp"><span>Run XP</span><strong id="xp">+0</strong></div>
+ </div>
+ <div class="board-frame" id="play-field">
+  <canvas id="board" width="480" height="480" role="img" aria-label="Snake playfield. Use arrow keys, WASD, swipe or the direction buttons to turn."></canvas>
+  <div id="overlay" class="overlay" role="status">
+   <div id="overlay-icon" class="pixel" aria-hidden="true">🐍</div>
+   <h2 id="overlay-title">READY TO SLITHER?</h2>
+   <p id="overlay-copy">Guide your grass snake through a bug-filled field. Wrap around edges, but never hit your own tail!</p>
+   <button id="start" class="primary" type="button">▶ START HUNT</button>
+  </div>
+ </div>
+ <div class="controls" aria-label="Game controls">
+  <div class="dpad" aria-label="Directions">
+   <button type="button" data-dir="up" aria-label="Turn up">▲</button>
+   <button type="button" data-dir="left" aria-label="Turn left">◀</button>
+   <button type="button" data-dir="down" aria-label="Turn down">▼</button>
+   <button type="button" data-dir="right" aria-label="Turn right">▶</button>
+  </div>
+  <div class="side-actions">
+    <button type="button" class="secondary" id="pause" disabled>Ⅱ PAUSE</button>
+    <button type="button" class="secondary" id="sound" aria-pressed="false">♫ SOUND OFF</button>
+  </div>
+ </div>
+ <p class="note">Swipe the grass, use the arrows, or press WASD. Edges wrap around. Only your own body ends the hunt.</p>
+ <div class="reward" id="reward-status" role="status" aria-live="polite">First run: 1 XP every 10s. After that: reach 60s, then beat your previous best by 10s milestones. Sign in to bank XP.</div>
+ <div class="ad-area"><p class="ad-label">Advertisement</p><ins class="adsbygoogle retro-compact-ad-unit" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
+</main>
+<script>
+(function(){
+"use strict";
+const N=24,T=20,canvas=document.getElementById("board"),ctx=canvas.getContext("2d",{alpha:false});
+const el=id=>document.getElementById(id);
+const clock=n=>Math.floor(n/60)+":"+String(n%60).padStart(2,"0");
+const storeKey="retro:grass-snake:device:v1";
+let saved={bestSeconds:0,runs:0,bugs:0};
+try{const x=JSON.parse(localStorage.getItem(storeKey)||"null");if(x&&Number.isInteger(x.bestSeconds)&&x.bestSeconds>=0&&Number.isInteger(x.runs)&&x.runs>=0)saved=x;}catch(_){}
+let accountBest=null,accountRuns=null,activeAccount=null,attempt=null,runIndex=0,previousBest=0,previousRuns=0;
+let snake=[],heading={x:1,y:0},turn=null,food=null,eaten=0,elapsed=0,stepAccum=0,last=performance.now(),state="idle",muted=true,animTick=0;
+const grass=Array.from({length:N*N},(_,i)=>{let k=Math.imul(i+21,1103515245)>>>0;return {shade:k%5,tuft:(k>>>5)%9===0,stem:(k>>>9)%3};});
+function saveDevice(){try{localStorage.setItem(storeKey,JSON.stringify(saved));}catch(_){}}
+function drawRect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
+function drawField(){
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const g=grass[y*N+x],px=x*T,py=y*T;
+  drawRect(px,py,T,T,["#386d3a","#3b713d","#3f7641","#366a3a","#38703d"][g.shade]);
+  if(g.tuft){drawRect(px+4,py+11,2,5,"#467f45");drawRect(px+7,py+9,2,6,"#4e8947");drawRect(px+10,py+13,2,3,"#538b4a");}
+  else if(g.stem===0){drawRect(px+14,py+5,2,2,"#477e42");}
+ }
+}
+function drawBug(){
+ if(!food)return;
+ const x=food.x*T,y=food.y*T,colors=["#eabe54","#ff9e7d","#b2a2fc","#66d6e0"],c=colors[food.kind];
+ drawRect(x+8,y+2,4,2,"#194536");drawRect(x+4,y+6,12,10,"#24552f");
+ if(food.kind===2){ // spider
+  drawRect(x+7,y+5,6,10,c);drawRect(x+4,y+7,3,2,c);drawRect(x+13,y+7,3,2,c);
+  for(let k=0;k<3;k++){drawRect(x+2,y+5+k*4,4,2,c);drawRect(x+14,y+5+k*4,4,2,c);}
+ }else{
+  drawRect(x+6,y+5,8,10,c);drawRect(x+8,y+3,4,4,c);
+  drawRect(x+3,y+8,3,2,c);drawRect(x+14,y+8,3,2,c);
+  drawRect(x+4,y+13,3,2,c);drawRect(x+13,y+13,3,2,c);
+  drawRect(x+9,y+6,2,8,"#ffffff55");
+ }
+ drawRect(x+8,y+5,2,2,"#16332b");drawRect(x+12,y+5,2,2,"#16332b");
+}
+function drawSnake(){
+ for(let i=snake.length-1;i>=0;i--){
+  const p=snake[i],x=p.x*T,y=p.y*T,head=i===0;
+  drawRect(x+2,y+2,16,16,head?"#c6f66b":(i%2?"#7dd75a":"#94e369"));
+  drawRect(x+2,y+14,16,3,head?"#90c454":"#559846");
+  drawRect(x+4,y+3,12,3,head?"#e7ff9c":"#b8ee77");
+  if(i>0&&i%3===0){drawRect(x+7,y+8,5,3,"#579f48");}
+  if(head){
+   const fx=heading.x,fy=heading.y;
+   if(fx!==0){const xx=fx>0?x+14:x+3;drawRect(xx,y+5,3,3,"#142925");drawRect(xx,y+12,3,3,"#142925");}
+   else{const yy=fy>0?y+14:y+3;drawRect(x+5,yy,3,3,"#142925");drawRect(x+12,yy,3,3,"#142925");}
+   if(animTick%30<9){if(fx)drawRect(fx>0?x+18:x,y+9,4,2,"#fa7481");else drawRect(x+9,fy>0?y+18:y,2,4,"#fa7481");}
+  }
+ }
+}
+function paint(){drawField();drawBug();drawSnake();}
+function spawnBug(){
+ const empty=[];const occupied=new Set(snake.map(p=>p.y*N+p.x));
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!occupied.has(y*N+x))empty.push({x,y});
+ if(!empty.length)return null;
+ return {...empty[Math.floor(Math.random()*empty.length)],kind:Math.floor(Math.random()*4)};
+}
+function chime(freq=480){
+ if(muted)return;
+ try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ac=new A(),o=ac.createOscillator(),g=ac.createGain();
+ o.type="square";o.frequency.value=freq;g.gain.setValueAtTime(.035,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.11);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.12);o.onended=()=>ac.close();}catch(_){}
+}
+function hud(){
+ el("time").textContent=clock(Math.floor(elapsed/1000));
+ el("bugs").textContent=String(eaten);
+ el("best").textContent=clock(Math.max(saved.bestSeconds,accountBest||0));
+ const seconds=Math.floor(elapsed/1000);
+ const threshold=previousRuns===0?10:Math.max(60,(Math.floor(previousBest/10)+1)*10);
+ const potential=seconds>=threshold?Math.floor((seconds-threshold)/10)+1:0;
+ el("xp").textContent="+"+potential;
+}
+function status(msg){el("reward-status").textContent=msg;}
+function setOverlay(title,copy,label,icon){el("overlay").hidden=false;el("overlay-title").textContent=title;el("overlay-copy").textContent=copy;el("start").textContent=label;el("overlay-icon").textContent=icon;}
+function turnTo(x,y){if(state!=="running")return;const base=turn||heading;if(x===-heading.x&&y===-heading.y)return;if(x===base.x&&y===base.y)return;turn={x,y};}
+function step(){
+ if(turn){heading=turn;turn=null;}
+ const head=snake[0],next={x:(head.x+heading.x+N)%N,y:(head.y+heading.y+N)%N};
+ const isFood=food&&next.x===food.x&&next.y===food.y;
+ const collision=snake.slice(0,isFood?undefined:-1).some(p=>p.x===next.x&&p.y===next.y);
+ if(collision){end();return;}
+ snake.unshift(next);
+ if(isFood){eaten++;food=spawnBug();chime(480+eaten%6*45);}
+ else snake.pop();
+ if(!food){end(true);}
+}
+function resetBoard(){
+ snake=[{x:11,y:12},{x:10,y:12},{x:9,y:12}];heading={x:1,y:0};turn=null;eaten=0;elapsed=0;stepAccum=0;food=spawnBug();animTick=0;hud();paint();
+}
+function pauseGame(fromHide=false){
+ if(state!=="running")return;
+ state="paused";el("pause").textContent="▶ RESUME";
+ setOverlay("PAUSED",fromHide?"You left the game. Your survival timer is stopped.":"Your snake is resting in the grass.","▶ RESUME","⏸️");
+}
+function resumeGame(){
+ if(state!=="paused")return;state="running";last=performance.now();el("overlay").hidden=true;el("pause").textContent="Ⅱ PAUSE";
+}
+const clientReady=()=>window.retroArcadeSupabaseClient||null;
+async function serverAction(action,data){
+ const client=clientReady();if(!client)throw Error("Account connection not ready");
+ const {data:sessionData}=await client.auth.getSession();
+ const session=sessionData?.session;if(!session?.access_token||session.user?.is_anonymous)throw Error("Sign in for account XP");
+ const r=await client.functions.invoke("retro-rewards",{body:{game_id:"grass-snake",version:"v1",action,...data}});
+ if(r.error)throw Error(r.data?.error||r.error.message||"Reward service unavailable");
+ if(r.data?.error)throw Error(r.data.error);
+ return {result:r.data,userId:session.user.id};
+}
+async function begin(){
+ if(state==="paused"){resumeGame();return;}
+ if(state==="running"||state==="starting")return;
+ state="starting";el("start").disabled=true;el("start").textContent="STARTING…";
+ const currentRun=++runIndex;
+ activeAccount=null;attempt=null;
+ previousBest=saved.bestSeconds;previousRuns=saved.runs;
+ try {
+  const {result,userId}=await serverAction("start",{});
+  if(currentRun!==runIndex)return;
+  activeAccount=userId;attempt=result.attempt_id;
+  accountBest=Math.max(0,Number(result.best_seconds)||0);
+  accountRuns=Math.max(0,Number(result.completed_runs)||0);
+  previousBest=accountBest;previousRuns=accountRuns;
+  status("Signed in • account XP will be credited after this run ends.");
+ }catch(_){
+  status("Guest/device run • sign in before starting a run to earn account XP.");
+ }
+ resetBoard();el("start").disabled=false;el("overlay").hidden=true;el("pause").disabled=false;el("pause").textContent="Ⅱ PAUSE";
+ state="running";last=performance.now();
+}
+async function submitRun(run,seconds,bugs,challenge,account){
+ if(!challenge||!account)return;
+ try{
+  status("Checking your survival time and banking earned XP…");
+  const {result}=await serverAction("complete",{attempt_id:challenge,seconds,bugs});
+  if(run!==runIndex)return;
+  const earned=Math.max(0,Number(result.awarded_xp)||0);
+  accountBest=Math.max(accountBest||0,Number(result.best_seconds)||0);
+  accountRuns=Number(result.completed_runs)||accountRuns;
+  el("xp").textContent="+"+earned;
+  hudBest();
+  const msg=earned?"★ +"+earned+" account XP earned!":"No new XP this run.";
+  status(msg+" Account best: "+clock(accountBest)+".");
+  el("overlay-copy").textContent="Survived "+clock(seconds)+" • ate "+bugs+" bugs. "+msg;
+  window.dispatchEvent(new Event("retro-arcade-xp-updated"));
+ }catch(error){
+  if(run!==runIndex)return;
+  el("xp").textContent="+0";
+  status("Account XP could not be confirmed. "+(error.message||"Try a fresh run.")+" Device best is saved.");
+  el("overlay-copy").textContent="Survived "+clock(seconds)+" • ate "+bugs+" bugs. Account XP not confirmed.";
+ }
+}
+function hudBest(){el("best").textContent=clock(Math.max(saved.bestSeconds,accountBest||0));}
+function end(cleared=false){
+ if(state!=="running")return;
+ state="over";const seconds=Math.floor(elapsed/1000),before=saved.bestSeconds;
+ saved.bestSeconds=Math.max(saved.bestSeconds,seconds);saved.runs++;saved.bugs+=eaten;saveDevice();hudBest();
+ el("pause").disabled=true;
+ const potential=Number(el("xp").textContent.slice(1))||0;
+ setOverlay(cleared?"FIELD MASTERED!":"TAIL TANGLE!", "You survived "+clock(seconds)+" and ate "+eaten+" bugs. "+(activeAccount?"Checking account XP…":"Sign in for official XP."),"↻ HUNT AGAIN",cleared?"🏆":"🐍");
+ if(activeAccount&&attempt)void submitRun(runIndex,seconds,eaten,attempt,activeAccount);
+ else{el("xp").textContent="+0";status("Device best saved: "+clock(saved.bestSeconds)+". Sign in for account XP; guest runs cannot be claimed later.");}
+ chime(210);
+}
+function frame(now){
+ let delta=Math.min(100,Math.max(0,now-last));last=now;animTick++;
+ if(state==="running"){
+  elapsed+=delta;stepAccum+=delta;
+  const interval=Math.max(112,190-eaten*3);
+  if(stepAccum>=interval){stepAccum-=interval;step();}
+  if(animTick%8===0)hud();
+ }
+ paint();
+ requestAnimationFrame(frame);
+}
+document.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("click",()=>{
+ const d=b.dataset.dir;turnTo(d==="right"?1:d==="left"?-1:0,d==="down"?1:d==="up"?-1:0);
+}));
+window.addEventListener("keydown",e=>{
+ const d={ArrowUp:[0,-1],KeyW:[0,-1],ArrowDown:[0,1],KeyS:[0,1],ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0]}[e.code];
+ if(d){if(state==="running")e.preventDefault();turnTo(...d);}else if(e.code==="Space"&&!e.repeat){if(state==="running"||state==="paused"){e.preventDefault();el("pause").click();}}
+});
+let origin=null;
+canvas.addEventListener("touchstart",e=>{const t=e.changedTouches[0];origin={x:t.clientX,y:t.clientY};},{passive:true});
+canvas.addEventListener("touchend",e=>{if(!origin)return;const t=e.changedTouches[0],dx=t.clientX-origin.x,dy=t.clientY-origin.y;origin=null;
+ if(Math.max(Math.abs(dx),Math.abs(dy))<16)return;
+ if(Math.abs(dx)>Math.abs(dy))turnTo(Math.sign(dx),0);else turnTo(0,Math.sign(dy));
+},{passive:true});
+el("start").addEventListener("click",()=>void begin());
+el("pause").addEventListener("click",()=>state==="running"?pauseGame():resumeGame());
+el("sound").addEventListener("click",()=>{muted=!muted;el("sound").setAttribute("aria-pressed",String(!muted));el("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";if(!muted)chime();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseGame(true);});
+window.addEventListener("blur",()=>{if(state==="running")pauseGame(true);});
+async function loadBest(){
+ try{const client=clientReady();if(!client)return;const {data}=await client.auth.getSession();const user=data?.session?.user;if(!user)return;
+ const r=await client.from("snake_run_records").select("best_seconds,completed_runs").eq("user_id",user.id).maybeSingle();
+ if(r.error)return;
+ accountBest=Number(r.data?.best_seconds)||0;accountRuns=Number(r.data?.completed_runs)||0;hudBest();
+ if(state==="idle")status("Signed-in account ready • first hunt gains XP every 10s; later hunts reward new personal-best milestones after 60s.");
+ }catch(_){}
+}
+window.addEventListener("retro-arcade-auth-ready",()=>{void loadBest();});
+window.addEventListener("load",()=>{void loadBest();});
+resetBoard();setOverlay("READY TO SLITHER?","Eat crawling bugs, grow longer, and avoid your own tail. Wrap around the field edges!","▶ START HUNT","🐍");requestAnimationFrame(frame);
+try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(_){}
+})();
+</script>
+</body>
+</html>
