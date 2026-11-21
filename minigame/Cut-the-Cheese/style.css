@@ -34,13 +34,14 @@ button { font: inherit; }
      not hidden or resized: extra grid items follow the playable surface. */
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "heading" "scoreboard" "next" "board" "credits";
+  grid-template-areas: "heading" "scoreboard" "next" "help" "board" "credits";
   grid-auto-rows: min-content;
   align-content: start;
 }
 .game-shell > .title-wrap { grid-area: heading; }
 .game-shell > .hud { grid-area: scoreboard; }
 .game-shell > .next-strip { grid-area: next; }
+.game-shell > .aim-help { grid-area: help; margin-bottom: 8px; }
 .game-shell > .board-wrap { grid-area: board; }
 .game-shell > footer { grid-area: credits; }
 
