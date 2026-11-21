@@ -905,7 +905,7 @@ function grantBonus(kind,fromTimeout,isFree){
   displayTimer();
   if(fromTimeout){
     if(kind!=="time")return false;
-    startGame();
+    startGame(true);
   }
   const label=kind==="time"?"+45 seconds":kind==="knife"?"+1 Row Knife":"+1 Spin Board";
   const note=(isFree?"Free fallback":"Ad reward")+" confirmed: "+label+".";
@@ -988,8 +988,8 @@ function loop(ts) {
   drawBoard();
   requestAnimationFrame(loop);
 }
-function startGame(){
-  if(previewBusy)return;
+function startGame(force=false){
+  if(previewBusy&&!force)return;
   running=true;timedOut=false;
   startOverlay.classList.remove("visible");
   gameOverOverlay.classList.remove("visible");
