@@ -96,10 +96,10 @@
   // Personal stats are read from account-scoped Supabase tables. An unverified save or
   // client-reported activity NEVER counts as a verified score or grants XP.
   let statsRequest=0;
-  const statLabels=["GAME","RECORDED TIME","XP","SAVED PROGRESS","VERIFIED BEST","RANK"];
+  const statLabels=["GAME","VISITS","RECORDED TIME","XP","SAVED PROGRESS","VERIFIED BEST","RANK"];
   const formatTime=seconds=>{
     const mins=Math.floor(Math.max(0,Number(seconds)||0)/60);
-    if(!mins)return "—";
+    if(!mins)return seconds>0?"Under 1m":"—";
     return mins>=60 ? Math.floor(mins/60)+"h "+(mins%60)+"m" : mins+"m";
   };
   function describeSave(gameId,record){
@@ -130,6 +130,7 @@
       const tr=document.createElement("tr");
       const values=[
         title,
+        a?String(Math.max(1,Number(a.visits)||1)):"—",
         a&&Number(a.active_seconds)>0?formatTime(a.active_seconds):"—",
         gameXP===undefined?"—":gameXP.toLocaleString()+" XP",
         describeSave(id,saved),
@@ -144,8 +145,8 @@
           link.href=href;link.textContent=value;
           td.append(link);
         }else td.textContent=value;
-        if(i===3 && saved)td.title="Latest cloud save, not a verified result";
-        if(i===4)td.title="Only server-verified leaderboard scores appear here";
+        if(i===4 && saved)td.title="Latest cloud save, not a verified result";
+        if(i===5)td.title="Only server-verified leaderboard scores appear here";
         tr.append(td);
       });
       body.append(tr);
@@ -157,7 +158,7 @@
     const marker=byId("game-stats-status");
     if(marker)marker.textContent="Loading your recorded game progress…";
     const queries=[
-      client.from("game_activity").select("game_id,active_seconds,visits").eq("user_id",account),
+      client.from("game_activity").select("game_id,active_seconds,visits,last_seen_at").eq("user_id",account),
       client.from("game_saves").select("game_id,save_data,updated_at").eq("user_id",account),
       client.from("xp_ledger").select("game_id,amount").eq("user_id",account),
       client.from("game_scores").select("game_id,score,is_verified").eq("user_id",account).eq("is_verified",true)
@@ -187,11 +188,11 @@
     byId("total-time").textContent=formatTime(seconds);
     if(marker)marker.textContent=errors.length
       ? "Some stats are unavailable ("+errors.join(", ")+"). Other available records are shown."
-      : "Showing saved progress, verified XP and scores. Recorded time starts after this update; earlier sessions cannot be recovered.";
+      : "Visits and estimated visible game time begin with the new tracker. Existing saves and XP are preserved; earlier playtime cannot be recovered.";
     const countNote=byId("games-tracked-note");
     if(countNote)countNote.textContent="Games with an account record";
     const timeNote=byId("total-time-note");
-    if(timeNote)timeNote.textContent="Estimated visible play, from now onward";
+    if(timeNote)timeNote.textContent="Estimated focused game-page time; no XP awarded";
   }
   function clearGameStats(){
     ++statsRequest;
