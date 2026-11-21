@@ -14,7 +14,7 @@
     />
     <meta name="theme-color" content="#7f4f24" />
     <title>Cut the Cheese</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20261121-aim-2" />
   
   <!-- Shared Retro Games Hub navigation -->
   <script src="../../retro-arcade-header.js" data-game-id="cut-the-cheese" data-layout="normal" defer></script>
@@ -73,6 +73,7 @@
         <div class="legend">
           Match <b>4+</b> touching cheeses • Bank 5 clears for a Parm Wheel
         </div>
+        <p class="aim-help">Tap or drag the board to aim, then press <strong>FIRE!</strong> to shoot.</p>
       </section>
 
       <section class="board-wrap">
@@ -80,8 +81,9 @@
           id="gameCanvas"
           width="900"
           height="1200"
-          aria-label="Cut the Cheese game board"
+          aria-label="Aimable Cut the Cheese board. Tap or drag to rotate the knife, then press Fire to shoot."
         ></canvas>
+        <button id="fireBtn" class="fire-btn" type="button" aria-label="Fire the aimed cheese" disabled>FIRE!</button>
 
         <div id="startOverlay" class="overlay visible">
           <div class="panel">
@@ -93,8 +95,8 @@
             </p>
             <button id="startBtn" class="primary-btn">START GAME</button>
             <p class="tiny">
-              Mouse/touch: aim + tap • Keyboard: ← → to aim, Space to shoot, P
-              for Parm Wheel
+              Touch: tap or drag to aim, then FIRE! • Mouse: move to aim, click FIRE! •
+              Keyboard: ← → aim, Space shoot, P for Parm Wheel
             </p>
           </div>
         </div>
@@ -135,6 +137,6 @@
       </script>
     </section>
 
-    <script src="game.js"></script>
+    <script src="game.js?v=20261121-aim-2"></script>
   </body>
 </html>
