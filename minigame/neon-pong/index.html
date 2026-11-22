@@ -14,7 +14,7 @@ button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-a
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px}.eyebrow{letter-spacing:2px;color:var(--pink);font-size:12px;font-weight:900}.top h1{font-size:clamp(28px,6vw,42px);line-height:1.08;margin:2px 0;color:var(--cyan);text-shadow:0 0 17px #54b9f86b}.top p{color:#c9cbed;margin:3px 0 10px;font-size:14px}.mark{font-size:35px;background:#252246;border:2px solid #605aaf;border-radius:14px;padding:9px}
 .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:4px 0 12px}.score{border:1px solid #606493;border-radius:12px;background:#161b3a;padding:8px;display:flex;gap:9px;align-items:center;justify-content:center;min-width:0}.score span{font-size:12px;color:#dbd8f9;text-transform:uppercase;font-weight:900}.score strong{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}.you strong{color:var(--cyan)}.cpu strong{color:var(--pink)}.scoreboard .middle{text-align:center;font-size:12px;color:var(--yellow);font-weight:900;max-width:100px}
 .field{position:relative;width:100%;max-width:720px;margin:auto;border:3px solid #7e82c5;border-radius:13px;overflow:hidden;box-shadow:0 0 0 2px #1a2350,0 0 26px #2ebeed36;background:#080e26}canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none}
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:#090b22e8;padding:18px}.overlay h2{font-size:clamp(27px,6vw,44px);color:var(--yellow);margin:0;text-shadow:0 0 15px #e8ba4b55}.overlay p{font-size:15px;max-width:350px;margin:0;color:#e3ecfd}.primary{background:var(--yellow);color:#18142b;border:2px solid #fff4ae;border-radius:10px;padding:10px 22px;box-shadow:0 4px 0 #83653b}.actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px auto 8px}.secondary{border:1px solid #737bb9;border-radius:9px;padding:9px 15px;background:#222447;color:#f3ecff}.secondary[disabled]{opacity:.55}.hint{font-size:14px;color:#d4daf0;text-align:center;line-height:1.5;max-width:650px;margin:11px auto}.statline{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.pill{border:1px solid #5866a0;border-radius:30px;padding:5px 11px;font-size:12px;background:#1b2244;color:#e7eaff}.status{text-align:center;font-size:13px;min-height:22px;color:#bffadf;font-weight:800}.adarea{text-align:center;max-width:320px;margin:15px auto 0;min-height:65px}.adarea small{display:block;color:#a6adc8;text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:4px}.adarea ins{display:block;width:100%;height:50px}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:#090b22e8;padding:18px}.overlay h2{font-size:clamp(27px,6vw,44px);color:var(--yellow);margin:0;text-shadow:0 0 15px #e8ba4b55}.overlay p{font-size:15px;max-width:350px;margin:0;color:#e3ecfd}.primary{background:var(--yellow);color:#18142b;border:2px solid #fff4ae;border-radius:10px;padding:10px 22px;box-shadow:0 4px 0 #83653b}.actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px auto 8px}.secondary{border:1px solid #737bb9;border-radius:9px;padding:9px 15px;background:#222447;color:#f3ecff}.secondary[disabled]{opacity:.55}.hint{font-size:14px;color:#d4daf0;text-align:center;line-height:1.5;max-width:650px;margin:11px auto}.statline{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.pill{border:1px solid #5866a0;border-radius:30px;padding:5px 11px;font-size:12px;background:#1b2244;color:#e7eaff}.status{text-align:center;font-size:14px;min-height:25px;color:#bffadf;font-weight:800}.xp-guide{margin:12px auto 8px;max-width:650px;border:1px solid #6075ac;background:#151e3d;border-radius:12px;padding:11px 14px;color:#f0f5ff}.xp-guide summary{cursor:pointer;font-size:15px;font-weight:900;color:#ffe883;min-height:24px}.xp-guide p{font-size:13px;line-height:1.5;margin:8px 0 0;color:#d5e7ff}.xp-guide strong{color:#88fbff}.xp-guide .xp-table{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:9px 0;font-size:14px}.xp-guide .xp-table b{color:#a1ffb8}.adarea{text-align:center;max-width:320px;margin:15px auto 0;min-height:65px}.adarea small{display:block;color:#a6adc8;text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:4px}.adarea ins{display:block;width:100%;height:50px}
 @media(max-width:420px){.shell{padding:10px 9px 22px}.scoreboard{gap:5px}.score{padding:6px 3px;gap:5px}.score span{font-size:10px}.score strong{font-size:25px}.scoreboard .middle{font-size:10px}.overlay{gap:9px;padding:10px}.overlay p{font-size:13px}.primary{min-height:48px}.hint{font-size:13px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -26,10 +26,10 @@ button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-a
 <div class="scoreboard" aria-live="polite"><div class="score you"><span>YOU</span><strong id="score-you">0</strong></div><div class="middle">FIRST TO 7</div><div class="score cpu"><span>CPU</span><strong id="score-cpu">0</strong></div></div>
 <div class="field" id="field"><canvas id="court" width="720" height="450" role="img" aria-label="Neon Pong court. Move your paddle with touch, mouse, arrow keys, or W and S."></canvas>
 <div class="overlay" id="overlay"><h2 id="overlay-title">READY TO RALLY?</h2><p id="overlay-copy">Drag your finger anywhere on the court to move the blue paddle. Bounce past the pink CPU to score.</p><button type="button" class="primary" id="start">▶ PLAY PONG</button></div></div>
-<div class="actions"><button type="button" id="pause" class="secondary" disabled>Ⅱ PAUSE</button><button type="button" id="difficulty" class="secondary" aria-label="Change CPU skill level">CPU: NORMAL</button><button type="button" id="sound" class="secondary" aria-pressed="false">♫ SOUND OFF</button></div>
+<div class="actions"><button type="button" id="pause" class="secondary" disabled>Ⅱ PAUSE</button><button type="button" id="difficulty" class="secondary" aria-label="Change CPU skill level">CPU: ROOKIE</button><button type="button" id="sound" class="secondary" aria-pressed="false">♫ SOUND OFF</button></div>
 <div class="statline"><span class="pill">🏆 Wins: <b id="wins">0</b></span><span class="pill">🔥 Best Rally: <b id="record">0</b></span><span class="pill">✨ Match Rally: <b id="rally">0</b></span></div>
 <p class="hint">📱 Touch and drag up or down on the court. 🖥️ Move the mouse, or use ↑ / ↓ or W / S. Space pauses. The ball speeds up with longer rallies.</p>
-<div id="status" class="status" role="status" aria-live="polite">Your wins and longest rally save on this device. Account XP coming with the verified match reward system.</div>
+<details class="xp-guide" open><summary>★ HOW TO EARN PONG XP</summary><div class="xp-table"><span>Score 3 points in a match</span><b>+1 XP</b><span>Score 5 points in a match</span><b>+1 XP</b><span>Win the match (first to 7)</span><b>+3 XP</b><span>Beat your account-best rally</span><b>+1 XP</b></div><p><strong>Up to 6 XP per completed match.</strong> Sign in before starting to earn account XP. Scoring rewards are credited when the match ends, even if you lose. New rally records earn a bonus once per match. Guest wins and rally records save on this device.</p></details><div id="status" class="status" role="status" aria-live="polite">Sign in for account XP. Rookie CPU is selected to make your first matches easier.</div>
 <div class="adarea"><small>Advertisement</small><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
 </main>
 <script>
@@ -38,8 +38,8 @@ button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-a
 const W=720,H=450, canvas=document.getElementById("court"),ctx=canvas.getContext("2d"),el=id=>document.getElementById(id),PADDLE=86,PW=12,LEFT=24,RIGHT=W-36,R=8;
 const saveKey="retro:neon-pong:stats:v1";
 let stats={wins:0,bestRally:0,matches:0};try{const v=JSON.parse(localStorage.getItem(saveKey)||"null");if(v&&Number.isInteger(v.wins)&&Number.isInteger(v.bestRally))stats={...stats,...v};}catch(_){}
-let state="idle",you=H/2,cpu=H/2,yourScore=0,cpuScore=0,rally=0,dir=1,mode=1,last=performance.now(),accum=0,keys=new Set(),pointerY=null,muted=true,sound=null,ball={x:W/2,y:H/2,vx:0,vy:0},trails=[],serveWait=0,match=0;
-const modes=[{name:"EASY",speed:195,error:38},{name:"NORMAL",speed:290,error:22},{name:"HARD",speed:390,error:8}];
+let state="idle",you=H/2,cpu=H/2,yourScore=0,cpuScore=0,rally=0,matchBest=0,mode=0,last=performance.now(),accum=0,keys=new Set(),pointerY=null,muted=true,sound=null,ball={x:W/2,y:H/2,vx:0,vy:0},trails=[],serveWait=0,match=0,rewardAttempt=null,rewardAccount=null,rewardPending=false;
+const modes=[{name:"ROOKIE",speed:105,error:100,lag:.5},{name:"EASY",speed:160,error:66,lag:.34},{name:"NORMAL",speed:245,error:28,lag:.2},{name:"HARD",speed:360,error:10,lag:.08}];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const save=()=>{try{localStorage.setItem(saveKey,JSON.stringify(stats));}catch(_){}};
 function updateHud(){el("score-you").textContent=yourScore;el("score-cpu").textContent=cpuScore;el("rally").textContent=rally;el("wins").textContent=stats.wins;el("record").textContent=stats.bestRally;}
@@ -48,14 +48,55 @@ function tone(freq=380){if(muted)return;try{const A=window.AudioContext||window.
 function show(title,copy,label){el("overlay").hidden=false;el("overlay-title").textContent=title;el("overlay-copy").textContent=copy;el("start").textContent=label;}
 function hide(){el("overlay").hidden=true;}
 function serve(direction){ball={x:W/2,y:H/2,vx:direction*260,vy:(Math.random()*.95-.475)*230};if(Math.abs(ball.vy)<55)ball.vy=ball.vy<0?-70:70;serveWait=.8;trails=[];}
-function restart(){yourScore=0;cpuScore=0;rally=0;you=H/2;cpu=H/2;match++;serve(Math.random()<.5?1:-1);state="running";el("pause").disabled=false;el("pause").textContent="Ⅱ PAUSE";el("difficulty").disabled=true;hide();say("Match underway • first to 7");updateHud();last=performance.now();}
-function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=false;stats.matches++;if(won){stats.wins++;say("★ Victory! "+yourScore+"–"+cpuScore+". Wins saved to this device.");tone(740);}else{say("The CPU won this match. Try a rematch!");tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");}
+const clientReady=()=>window.retroArcadeSupabaseClient||null;
+async function pongReward(action,data){
+ const client=clientReady();
+ if(!client)throw Error("Account connection unavailable");
+ const {data:sessionData,error:sessionError}=await client.auth.getSession();
+ if(sessionError)throw sessionError;
+ const user=sessionData?.session?.user;
+ if(!user||user.is_anonymous)throw Error("Sign in for XP");
+ if(rewardAccount&&rewardAccount!==user.id)throw Error("Player account changed");
+ const res=await client.functions.invoke("retro-rewards",{body:{game_id:"neon-pong",version:"v1",level:mode+1,action,...data}});
+ if(res.error||res.data?.error)throw Error(res.data?.error||res.error?.message||"XP service unavailable");
+ return {data:res.data,userId:user.id};
+}
+async function restart(){
+ if(state==="running"||state==="paused"||state==="starting"||rewardPending)return;
+ state="starting";el("start").disabled=true;el("start").textContent="STARTING…";
+ rewardAttempt=null;rewardAccount=null;
+ try{
+   const r=await pongReward("start",{});
+   rewardAttempt=r.data.attempt_id;rewardAccount=r.userId;
+   say("Account connected • XP will be credited after this match.");
+ }catch(error){say("DEVICE ONLY • "+(error.message||"No account XP")+". Sign in before a new match to earn XP.");}
+ yourScore=0;cpuScore=0;rally=0;matchBest=0;you=H/2;cpu=H/2;match++;
+ serve(Math.random()<.5?1:-1);state="running";el("start").disabled=false;el("pause").disabled=false;el("pause").textContent="Ⅱ PAUSE";el("difficulty").disabled=true;hide();updateHud();last=performance.now();
+}
+async function finalizeReward(result){
+ if(!rewardAttempt||!rewardAccount)return;
+ rewardPending=true;el("start").disabled=true;el("start").textContent="SAVING XP…";
+ try {
+   const r=await pongReward("complete",{attempt_id:rewardAttempt,you:result.you,cpu:result.cpu,rally:result.rally});
+   const xp=Math.max(0,Number(r.data.awarded_xp)||0);
+   say(xp?"★ "+xp+" XP added to your arcade account!":"Match saved. No new XP earned this match.");
+   el("overlay-copy").textContent=result.you+" – "+result.cpu+" • "+xp+" XP banked • Best rally "+stats.bestRally+". Play again?";
+   if(xp)window.dispatchEvent(new Event("retro-arcade-xp-updated"));
+ }catch(error){
+   say("XP not confirmed: "+(error.message||"connection error")+". Local match saved.");
+   el("overlay-copy").textContent=result.you+" – "+result.cpu+" • Account XP could not be confirmed. Local record saved.";
+ }finally{
+   rewardPending=false;rewardAttempt=null;rewardAccount=null;
+   el("start").disabled=false;el("start").textContent="↻ REMATCH";
+ }
+}
+function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=false;stats.matches++;if(won){stats.wins++;tone(740);}else{tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");if(rewardAttempt&&rewardAccount){say("Match finished • banking account XP…");void finalizeReward({you:yourScore,cpu:cpuScore,rally:matchBest});}else{say("Guest match saved on this device. Sign in before your next match for XP.");}}
 function scorePoint(player){if(player)yourScore++;else cpuScore++;rally=0;updateHud();tone(player?580:225);if(yourScore>=7||cpuScore>=7){finish(yourScore>=7);return;}serve(player?-1:1);}
 function pause(){if(state==="running"){state="paused";el("pause").textContent="▶ RESUME";show("PAUSED","Your rally is safely paused.","▶ RESUME");}else if(state==="paused"){state="running";el("pause").textContent="Ⅱ PAUSE";hide();last=performance.now();}}
 function movement(dt){
 if(pointerY!==null)you=clamp(pointerY,PADDLE/2+5,H-PADDLE/2-5);
 else{const up=keys.has("ArrowUp")||keys.has("KeyW"),down=keys.has("ArrowDown")||keys.has("KeyS");you=clamp(you+((down?1:0)-(up?1:0))*460*dt,PADDLE/2+5,H-PADDLE/2-5);}
-const m=modes[mode],want=clamp(ball.y+Math.sin(performance.now()/720)*m.error,PADDLE/2+4,H-PADDLE/2-4);
+const m=modes[mode],prediction=ball.vx>0?ball.y: H/2,drift=Math.sin(performance.now()/900+match)*m.error,want=clamp(prediction+drift,PADDLE/2+4,H-PADDLE/2-4);
 cpu+=clamp(want-cpu,-m.speed*dt,m.speed*dt);cpu=clamp(cpu,PADDLE/2+5,H-PADDLE/2-5);
 }
 function update(dt){
@@ -74,7 +115,7 @@ if(ball.x<-R)scorePoint(false);
 if(ball.x>W+R)scorePoint(true);
 if(state==="running"&&serveWait<=0){trails.push({x:ball.x,y:ball.y});if(trails.length>9)trails.shift();}
 }
-function record(){if(rally>stats.bestRally){stats.bestRally=rally;save();}updateHud();}
+function record(){matchBest=Math.max(matchBest,rally);if(rally>stats.bestRally){stats.bestRally=rally;save();}updateHud();}
 function rect(x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);}
 function draw(){
 ctx.fillStyle="#080f29";ctx.fillRect(0,0,W,H);
@@ -95,7 +136,7 @@ canvas.addEventListener("pointercancel",()=>{pointerY=null;});
 canvas.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")pointerY=null;});
 window.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","KeyW","KeyS"].includes(e.code)){if(state==="running")e.preventDefault();keys.add(e.code);pointerY=null;}if(e.code==="Space"&&!e.repeat&&["running","paused"].includes(state)){e.preventDefault();pause();}});
 window.addEventListener("keyup",e=>keys.delete(e.code));
-el("start").addEventListener("click",()=>state==="paused"?pause():restart());
+el("start").addEventListener("click",()=>{if(state==="paused")pause();else void restart();});
 el("pause").addEventListener("click",pause);
 el("difficulty").addEventListener("click",()=>{if(state==="running"||state==="paused")return;mode=(mode+1)%modes.length;el("difficulty").textContent="CPU: "+modes[mode].name;});
 el("sound").addEventListener("click",()=>{muted=!muted;el("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";el("sound").setAttribute("aria-pressed",String(!muted));tone();});
