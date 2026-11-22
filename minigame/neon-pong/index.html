@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1024">
+<title>Neon Pong • Retro Games Hub</title>
+<meta name="description" content="Neon Pong: a touch-friendly retro paddle duel. First to seven wins!">
+<style>
+:root{color-scheme:dark;--cyan:#71f9ff;--pink:#ff73d5;--yellow:#ffe883;--bg:#0b1024}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100dvh;color:#eefaff;font:600 16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 48% 2%,#27305d 0,#101831 40%,#080b19 95%)}
+button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-action:manipulation}button:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}[hidden]{display:none!important}
+.shell{max-width:780px;margin:auto;padding:13px 13px 28px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.eyebrow{letter-spacing:2px;color:var(--pink);font-size:12px;font-weight:900}.top h1{font-size:clamp(28px,6vw,42px);line-height:1.08;margin:2px 0;color:var(--cyan);text-shadow:0 0 17px #54b9f86b}.top p{color:#c9cbed;margin:3px 0 10px;font-size:14px}.mark{font-size:35px;background:#252246;border:2px solid #605aaf;border-radius:14px;padding:9px}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:4px 0 12px}.score{border:1px solid #606493;border-radius:12px;background:#161b3a;padding:8px;display:flex;gap:9px;align-items:center;justify-content:center;min-width:0}.score span{font-size:12px;color:#dbd8f9;text-transform:uppercase;font-weight:900}.score strong{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}.you strong{color:var(--cyan)}.cpu strong{color:var(--pink)}.scoreboard .middle{text-align:center;font-size:12px;color:var(--yellow);font-weight:900;max-width:100px}
+.field{position:relative;width:100%;max-width:720px;margin:auto;border:3px solid #7e82c5;border-radius:13px;overflow:hidden;box-shadow:0 0 0 2px #1a2350,0 0 26px #2ebeed36;background:#080e26}canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:#090b22e8;padding:18px}.overlay h2{font-size:clamp(27px,6vw,44px);color:var(--yellow);margin:0;text-shadow:0 0 15px #e8ba4b55}.overlay p{font-size:15px;max-width:350px;margin:0;color:#e3ecfd}.primary{background:var(--yellow);color:#18142b;border:2px solid #fff4ae;border-radius:10px;padding:10px 22px;box-shadow:0 4px 0 #83653b}.actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px auto 8px}.secondary{border:1px solid #737bb9;border-radius:9px;padding:9px 15px;background:#222447;color:#f3ecff}.secondary[disabled]{opacity:.55}.hint{font-size:14px;color:#d4daf0;text-align:center;line-height:1.5;max-width:650px;margin:11px auto}.statline{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.pill{border:1px solid #5866a0;border-radius:30px;padding:5px 11px;font-size:12px;background:#1b2244;color:#e7eaff}.status{text-align:center;font-size:13px;min-height:22px;color:#bffadf;font-weight:800}.adarea{text-align:center;max-width:320px;margin:15px auto 0;min-height:65px}.adarea small{display:block;color:#a6adc8;text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:4px}.adarea ins{display:block;width:100%;height:50px}
+@media(max-width:420px){.shell{padding:10px 9px 22px}.scoreboard{gap:5px}.score{padding:6px 3px;gap:5px}.score span{font-size:10px}.score strong{font-size:25px}.scoreboard .middle{font-size:10px}.overlay{gap:9px;padding:10px}.overlay p{font-size:13px}.primary{min-height:48px}.hint{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script src="../../retro-arcade-header.js?v=20261122-pong" data-game-id="neon-pong" data-layout="scroll" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
+</head><body>
+<main class="shell">
+<div class="top"><div><div class="eyebrow">★ RETRO ARCADE // PADDLE DUEL</div><h1>NEON PONG</h1><p>Old-school rules. New-school glow. First to 7 wins.</p></div><div class="mark" aria-hidden="true">🏓</div></div>
+<div class="scoreboard" aria-live="polite"><div class="score you"><span>YOU</span><strong id="score-you">0</strong></div><div class="middle">FIRST TO 7</div><div class="score cpu"><span>CPU</span><strong id="score-cpu">0</strong></div></div>
+<div class="field" id="field"><canvas id="court" width="720" height="450" role="img" aria-label="Neon Pong court. Move your paddle with touch, mouse, arrow keys, or W and S."></canvas>
+<div class="overlay" id="overlay"><h2 id="overlay-title">READY TO RALLY?</h2><p id="overlay-copy">Drag your finger anywhere on the court to move the blue paddle. Bounce past the pink CPU to score.</p><button type="button" class="primary" id="start">▶ PLAY PONG</button></div></div>
+<div class="actions"><button type="button" id="pause" class="secondary" disabled>Ⅱ PAUSE</button><button type="button" id="difficulty" class="secondary" aria-label="Change CPU skill level">CPU: NORMAL</button><button type="button" id="sound" class="secondary" aria-pressed="false">♫ SOUND OFF</button></div>
+<div class="statline"><span class="pill">🏆 Wins: <b id="wins">0</b></span><span class="pill">🔥 Best Rally: <b id="record">0</b></span><span class="pill">✨ Match Rally: <b id="rally">0</b></span></div>
+<p class="hint">📱 Touch and drag up or down on the court. 🖥️ Move the mouse, or use ↑ / ↓ or W / S. Space pauses. The ball speeds up with longer rallies.</p>
+<div id="status" class="status" role="status" aria-live="polite">Your wins and longest rally save on this device. Account XP coming with the verified match reward system.</div>
+<div class="adarea"><small>Advertisement</small><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
+</main>
+<script>
+(()=>{
+"use strict";
+const W=720,H=450, canvas=document.getElementById("court"),ctx=canvas.getContext("2d"),el=id=>document.getElementById(id),PADDLE=86,PW=12,LEFT=24,RIGHT=W-36,R=8;
+const saveKey="retro:neon-pong:stats:v1";
+let stats={wins:0,bestRally:0,matches:0};try{const v=JSON.parse(localStorage.getItem(saveKey)||"null");if(v&&Number.isInteger(v.wins)&&Number.isInteger(v.bestRally))stats={...stats,...v};}catch(_){}
+let state="idle",you=H/2,cpu=H/2,yourScore=0,cpuScore=0,rally=0,dir=1,mode=1,last=performance.now(),accum=0,keys=new Set(),pointerY=null,muted=true,sound=null,ball={x:W/2,y:H/2,vx:0,vy:0},trails=[],serveWait=0,match=0;
+const modes=[{name:"EASY",speed:195,error:38},{name:"NORMAL",speed:290,error:22},{name:"HARD",speed:390,error:8}];
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const save=()=>{try{localStorage.setItem(saveKey,JSON.stringify(stats));}catch(_){}};
+function updateHud(){el("score-you").textContent=yourScore;el("score-cpu").textContent=cpuScore;el("rally").textContent=rally;el("wins").textContent=stats.wins;el("record").textContent=stats.bestRally;}
+function say(s){el("status").textContent=s;}
+function tone(freq=380){if(muted)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;if(!sound)sound=new A();const o=sound.createOscillator(),g=sound.createGain();o.type="square";o.frequency.value=freq;g.gain.setValueAtTime(.035,sound.currentTime);g.gain.exponentialRampToValueAtTime(.001,sound.currentTime+.095);o.connect(g);g.connect(sound.destination);o.start();o.stop(sound.currentTime+.1);}catch(_){}}
+function show(title,copy,label){el("overlay").hidden=false;el("overlay-title").textContent=title;el("overlay-copy").textContent=copy;el("start").textContent=label;}
+function hide(){el("overlay").hidden=true;}
+function serve(direction){ball={x:W/2,y:H/2,vx:direction*260,vy:(Math.random()*.95-.475)*230};if(Math.abs(ball.vy)<55)ball.vy=ball.vy<0?-70:70;serveWait=.8;trails=[];}
+function restart(){yourScore=0;cpuScore=0;rally=0;you=H/2;cpu=H/2;match++;serve(Math.random()<.5?1:-1);state="running";el("pause").disabled=false;el("pause").textContent="Ⅱ PAUSE";el("difficulty").disabled=true;hide();say("Match underway • first to 7");updateHud();last=performance.now();}
+function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=false;stats.matches++;if(won){stats.wins++;say("★ Victory! "+yourScore+"–"+cpuScore+". Wins saved to this device.");tone(740);}else{say("The CPU won this match. Try a rematch!");tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");}
+function scorePoint(player){if(player)yourScore++;else cpuScore++;rally=0;updateHud();tone(player?580:225);if(yourScore>=7||cpuScore>=7){finish(yourScore>=7);return;}serve(player?-1:1);}
+function pause(){if(state==="running"){state="paused";el("pause").textContent="▶ RESUME";show("PAUSED","Your rally is safely paused.","▶ RESUME");}else if(state==="paused"){state="running";el("pause").textContent="Ⅱ PAUSE";hide();last=performance.now();}}
+function movement(dt){
+if(pointerY!==null)you=clamp(pointerY,PADDLE/2+5,H-PADDLE/2-5);
+else{const up=keys.has("ArrowUp")||keys.has("KeyW"),down=keys.has("ArrowDown")||keys.has("KeyS");you=clamp(you+((down?1:0)-(up?1:0))*460*dt,PADDLE/2+5,H-PADDLE/2-5);}
+const m=modes[mode],want=clamp(ball.y+Math.sin(performance.now()/720)*m.error,PADDLE/2+4,H-PADDLE/2-4);
+cpu+=clamp(want-cpu,-m.speed*dt,m.speed*dt);cpu=clamp(cpu,PADDLE/2+5,H-PADDLE/2-5);
+}
+function update(dt){
+movement(dt);
+if(serveWait>0){serveWait-=dt;return;}
+ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+if(ball.y<R){ball.y=R;ball.vy=Math.abs(ball.vy);tone(300);}
+if(ball.y>H-R){ball.y=H-R;ball.vy=-Math.abs(ball.vy);tone(300);}
+if(ball.vx<0 && ball.x-R<=LEFT+PW && ball.x>LEFT && Math.abs(ball.y-you)<PADDLE/2+R){
+ball.x=LEFT+PW+R;ball.vx=Math.min(760,Math.abs(ball.vx)*1.065);ball.vy=clamp(ball.vy+(ball.y-you)/(PADDLE/2)*155,-500,500);rally++;tone(430);record();
+}
+if(ball.vx>0 && ball.x+R>=RIGHT && ball.x<RIGHT+PW && Math.abs(ball.y-cpu)<PADDLE/2+R){
+ball.x=RIGHT-R;ball.vx=-Math.min(760,Math.abs(ball.vx)*1.06);ball.vy=clamp(ball.vy+(ball.y-cpu)/(PADDLE/2)*130,-500,500);rally++;tone(510);record();
+}
+if(ball.x<-R)scorePoint(false);
+if(ball.x>W+R)scorePoint(true);
+if(state==="running"&&serveWait<=0){trails.push({x:ball.x,y:ball.y});if(trails.length>9)trails.shift();}
+}
+function record(){if(rally>stats.bestRally){stats.bestRally=rally;save();}updateHud();}
+function rect(x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);}
+function draw(){
+ctx.fillStyle="#080f29";ctx.fillRect(0,0,W,H);
+for(let x=0;x<W;x+=45){rect(x,0,1,H,"#1b2a4b55");}for(let y=0;y<H;y+=45){rect(0,y,W,1,"#1b2a4b55");}
+ctx.strokeStyle="#7185af66";ctx.lineWidth=3;ctx.beginPath();ctx.arc(W/2,H/2,70,0,Math.PI*2);ctx.stroke();
+for(let y=8;y<H;y+=28)rect(W/2-2,y,4,14,"#7186a799");
+ctx.shadowBlur=22;ctx.shadowColor="#71f9ff";rect(LEFT,you-PADDLE/2,PW,PADDLE,"#71f9ff");ctx.shadowColor="#ff73d5";rect(RIGHT,cpu-PADDLE/2,PW,PADDLE,"#ff73d5");
+if(serveWait<=0||state==="paused"){for(let i=0;i<trails.length;i++){const p=trails[i],size=R*(.35+.65*(i+1)/trails.length);ctx.shadowColor="#ffe883";ctx.globalAlpha=.12+i/trails.length*.28;rect(p.x-size/2,p.y-size/2,size,size,"#ffe883");}ctx.globalAlpha=1;ctx.shadowBlur=19;ctx.shadowColor="#ffe883";rect(ball.x-R,ball.y-R,R*2,R*2,"#ffe883");}
+ctx.shadowBlur=0;
+if(serveWait>0&&state==="running"){ctx.fillStyle="#ffe883";ctx.textAlign="center";ctx.font="900 19px system-ui";ctx.fillText("SERVE",W/2,H/2-31);}
+}
+function frame(now){const dt=Math.min(.04,(now-last)/1000||0);last=now;if(state==="running"){accum+=dt;while(accum>=1/120&&state==="running"){update(1/120);accum-=1/120;}}else accum=0;draw();requestAnimationFrame(frame);}
+function point(e){const b=canvas.getBoundingClientRect();return clamp((e.clientY-b.top)/b.height*H,PADDLE/2+5,H-PADDLE/2-5);}
+canvas.addEventListener("pointerdown",e=>{if(state!=="running")return;pointerY=point(e);try{canvas.setPointerCapture(e.pointerId);}catch(_){}});
+canvas.addEventListener("pointermove",e=>{if(state==="running" && (e.pointerType==="mouse"||e.buttons||e.pointerType==="touch"))pointerY=point(e);});
+canvas.addEventListener("pointerup",e=>{if(e.pointerType!=="mouse")pointerY=null;});
+canvas.addEventListener("pointercancel",()=>{pointerY=null;});
+canvas.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")pointerY=null;});
+window.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","KeyW","KeyS"].includes(e.code)){if(state==="running")e.preventDefault();keys.add(e.code);pointerY=null;}if(e.code==="Space"&&!e.repeat&&["running","paused"].includes(state)){e.preventDefault();pause();}});
+window.addEventListener("keyup",e=>keys.delete(e.code));
+el("start").addEventListener("click",()=>state==="paused"?pause():restart());
+el("pause").addEventListener("click",pause);
+el("difficulty").addEventListener("click",()=>{if(state==="running"||state==="paused")return;mode=(mode+1)%modes.length;el("difficulty").textContent="CPU: "+modes[mode].name;});
+el("sound").addEventListener("click",()=>{muted=!muted;el("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";el("sound").setAttribute("aria-pressed",String(!muted));tone();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="running")pause();});
+window.addEventListener("blur",()=>{if(state==="running")pause();});
+updateHud();serve(1);draw();requestAnimationFrame(frame);
+try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(_){}
+})();
+</script></body></html>
