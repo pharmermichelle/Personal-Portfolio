@@ -87,10 +87,10 @@ async function finalizeReward(result){
    el("overlay-copy").textContent=result.you+" – "+result.cpu+" • Account XP could not be confirmed. Local record saved.";
  }finally{
    rewardPending=false;rewardAttempt=null;rewardAccount=null;
-   el("start").disabled=false;el("start").textContent="↻ REMATCH";
+   el("start").disabled=false;el("difficulty").disabled=false;el("start").textContent="↻ REMATCH";
  }
 }
-function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=false;stats.matches++;if(won){stats.wins++;tone(740);}else{tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");if(rewardAttempt&&rewardAccount){say("Match finished • banking account XP…");void finalizeReward({you:yourScore,cpu:cpuScore,rally:matchBest});}else{say("Guest match saved on this device. Sign in before your next match for XP.");}}
+function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=!!rewardAttempt;stats.matches++;if(won){stats.wins++;tone(740);}else{tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");if(rewardAttempt&&rewardAccount){say("Match finished • banking account XP…");void finalizeReward({you:yourScore,cpu:cpuScore,rally:matchBest});}else{say("Guest match saved on this device. Sign in before your next match for XP.");}}
 function scorePoint(player){if(player)yourScore++;else cpuScore++;rally=0;updateHud();tone(player?580:225);if(yourScore>=7||cpuScore>=7){finish(yourScore>=7);return;}serve(player?-1:1);}
 function pause(){if(state==="running"){state="paused";el("pause").textContent="▶ RESUME";show("PAUSED","Your rally is safely paused.","▶ RESUME");}else if(state==="paused"){state="running";el("pause").textContent="Ⅱ PAUSE";hide();last=performance.now();}}
 function movement(dt){
