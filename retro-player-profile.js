@@ -7,6 +7,7 @@
     ["Claws vs. Paws", "claws-vs-paws", "minigame/claws-vs-paws/index.html"],
     ["Cut the Cheese", "cut-the-cheese", "minigame/Cut-the-Cheese/index.html"],
     ["Grass Snake: Bug Hunt", "grass-snake", "minigame/grass-snake/index.html"],
+    ["Neon Pong", "neon-pong", "minigame/neon-pong/index.html"],
     ["Fallen Grid", "fallen-grid", "minigame/Tide-Tetris/index.html"],
     ["Revive Nature", "revive-nature", "minigame/Revive-nature/revive-index.html"],
     ["Rink Putt", "rink-putt", "minigame/hockey_shooter/index.html"],
