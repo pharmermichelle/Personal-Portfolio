@@ -125,6 +125,40 @@ Deno.serve(async req=>{
  let body:any;
  try{const raw=await req.text();if(raw.length>18000)throw Error("Too large");body=JSON.parse(raw);}catch(_){return response(400,{error:"Invalid request"},origin);}
  if(!body||typeof body!=="object")return response(400,{error:"Invalid reward request"},origin);
+ // Neon Pong awards at completed matches only. Score/rally are client-reported;
+ // server enforces valid results, elapsed time, rate caps, and one-time attempts.
+ if(body.game_id==="neon-pong"){
+   const level=body.level;
+   if(body.version!=="v1"||!Number.isInteger(level)||level<1||level>4)
+     return response(400,{error:"Unsupported Pong difficulty"},origin);
+   if(body.action==="start"){
+     const since=new Date(Date.now()-60000).toISOString();
+     const {count,error:rateError}=await admin.from("reward_attempts")
+       .select("id",{count:"exact",head:true}).eq("user_id",user.id)
+       .eq("game_id","neon-pong").gte("created_at",since);
+     if(rateError)return response(503,{error:"Pong rewards temporarily unavailable"},origin);
+     if((count||0)>=6)return response(429,{error:"Pong match start limit reached"},origin);
+     const {data:attempt,error:attemptError}=await admin.from("reward_attempts")
+       .insert({user_id:user.id,game_id:"neon-pong",level_number:level,game_version:"v1"})
+       .select("id,expires_at").single();
+     if(attemptError||!attempt)return response(503,{error:"Could not start Pong match reward"},origin);
+     return response(200,{attempt_id:attempt.id,expires_at:attempt.expires_at},origin);
+   }
+   if(body.action==="complete"){
+     if(typeof body.attempt_id!=="string"||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.attempt_id)||
+        !Number.isInteger(body.you)||!Number.isInteger(body.cpu)||
+        !Number.isInteger(body.rally))
+       return response(400,{error:"Invalid Pong match result"},origin);
+     const {data,error}=await admin.rpc("claim_pong_match",{
+       p_user:user.id,p_attempt:body.attempt_id,p_you:body.you,
+       p_cpu:body.cpu,p_rally:body.rally,p_level:level
+     });
+     if(error)return response(409,{error:"Pong XP unavailable for this attempt; finish a fresh signed-in match"},origin);
+     return response(200,{accepted:true,...data},origin);
+   }
+   return response(400,{error:"Unsupported Pong reward action"},origin);
+ }
  // Grass Snake: the server times each attempt and owns account best, XP milestones and idempotency.
  if(body.game_id==="grass-snake"){
    if(body.version!=="v1")return response(400,{error:"Unsupported Snake version"},origin);
