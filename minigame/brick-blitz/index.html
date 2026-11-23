@@ -42,7 +42,7 @@ button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-a
 <script>
 (()=>{
 "use strict";
-const c=document.getElementById("field"),g=c.getContext("2d"),$=id=>document.getElementById(id),W=700,H=500,PY=455,PR=57,BALL=8,MAX=12;
+const c=document.getElementById("field"),g=c.getContext("2d"),$=id=>document.getElementById(id),W=700,H=500,PY=455,PR=57,BALL=8,MAX=12,PADDLE_TOP=PY-11,PADDLE_HEIGHT=16,PADDLE_GRACE=2;
 const localKey="retro:brick-blitz:progress:v1";
 let progress={unlocked:1,score:0};
 try{const data=JSON.parse(localStorage.getItem(localKey)||"null");if(data&&Number.isInteger(data.unlocked)&&Number.isFinite(data.score))progress={unlocked:Math.max(1,Math.min(MAX,data.unlocked)),score:Math.max(0,data.score)};}catch(_){}
@@ -96,7 +96,29 @@ function advance(){
  if(state==="clearing"){level=level===MAX?1:level+1;state="idle";overlay("LEVEL "+level,"Ready for the next challenge?","▶ START LEVEL "+level);updateHUD();return;}
  start();
 }
+function paddleContact(prevX,prevY,nextX,nextY,oldPaddleX,newPaddleX){
+ // Sweep the entire circle against the entire drawn paddle (top, ends and corners).
+ // Comparing positions only when the ball crosses the top lets glancing edge
+ // contacts slip through on later frames; relative motion handles moving paddles.
+ if(nextY<=prevY || prevY-BALL>PADDLE_TOP+PADDLE_HEIGHT)return null;
+ const dx=(nextX-prevX)-(newPaddleX-oldPaddleX),dy=nextY-prevY;
+ const limits=[
+   [prevX-oldPaddleX,dx,-PR-BALL-PADDLE_GRACE,PR+BALL+PADDLE_GRACE],
+   [prevY,dy,PADDLE_TOP-BALL-PADDLE_GRACE,PADDLE_TOP+PADDLE_HEIGHT+BALL]
+ ];
+ let enter=0,exit=1;
+ for(const [position,delta,min,max] of limits){
+   if(Math.abs(delta)<1e-9){if(position<min||position>max)return null;continue;}
+   const a=(min-position)/delta,b=(max-position)/delta;
+   enter=Math.max(enter,Math.min(a,b));
+   exit=Math.min(exit,Math.max(a,b));
+   if(enter>exit)return null;
+ }
+ if(enter<0||enter>1)return null;
+ return {time:enter,paddleCenter:oldPaddleX+(newPaddleX-oldPaddleX)*enter};
+}
 function sim(dt){
+ const oldPaddleX=paddleX;
  if(touchX!==null)paddleX=touchX;
  else paddleX+=(((keyR||pressR)?1:0)-((keyL||pressL)?1:0))*520*dt;
  paddleX=clamp(paddleX,PR+13,W-PR-13);
@@ -106,10 +128,15 @@ function sim(dt){
  if(ball.x<BALL){ball.x=BALL;ball.vx=Math.abs(ball.vx);chime(250);}
  if(ball.x>W-BALL){ball.x=W-BALL;ball.vx=-Math.abs(ball.vx);chime(250);}
  if(ball.y<BALL){ball.y=BALL;ball.vy=Math.abs(ball.vy);chime(250);}
- if(ball.vy>0&&prevY+BALL<=PY-11&&ball.y+BALL>=PY-11&&Math.abs(ball.x-paddleX)<=PR+BALL){
-   ball.y=PY-11-BALL;const speed=Math.min(590,Math.hypot(ball.vx,ball.vy)*1.012);
-   ball.vx=clamp((ball.x-paddleX)/PR,-.88,.88)*speed;
-   ball.vy=-Math.sqrt(Math.max(1,speed*speed-ball.vx*ball.vx));chime(420);
+ const hit=paddleContact(prevX,prevY,ball.x,ball.y,oldPaddleX,paddleX);
+ if(hit){
+   const landingX=prevX+(ball.x-prevX)*hit.time;
+   ball.x=clamp(landingX,BALL,W-BALL);
+   ball.y=PADDLE_TOP-BALL-PADDLE_GRACE;
+   const speed=Math.min(590,Math.hypot(ball.vx,ball.vy)*1.012);
+   ball.vx=clamp((landingX-hit.paddleCenter)/PR,-.88,.88)*speed;
+   ball.vy=-Math.sqrt(Math.max(1,speed*speed-ball.vx*ball.vx));
+   chime(420);
  }
  for(const b of bricks){
    if(b.hp<=0||ball.x+BALL<b.x||ball.x-BALL>b.x+b.w||ball.y+BALL<b.y||ball.y-BALL>b.y+b.h)continue;
@@ -132,7 +159,7 @@ function draw(){
  rect(b.x+4,b.y+3,b.w-8,3,"#ffffff65");
  if(b.hp===2){g.fillStyle="#fff";g.font="900 14px system-ui";g.fillText("◆",b.x+b.w/2-5,b.y+17);}
  }
- g.shadowColor="#71f8ff";g.shadowBlur=20;rect(paddleX-PR,PY-11,PR*2,16,"#74f3fc");rect(paddleX-PR+6,PY-9,PR*2-12,3,"#edffff");g.shadowBlur=14;g.shadowColor="#ffe9a5";g.beginPath();g.arc(ball.x,ball.y,BALL,0,Math.PI*2);g.fillStyle="#ffe9a5";g.fill();g.shadowBlur=0;
+ g.shadowColor="#71f8ff";g.shadowBlur=20;rect(paddleX-PR,PADDLE_TOP,PR*2,PADDLE_HEIGHT,"#74f3fc");rect(paddleX-PR+6,PADDLE_TOP+2,PR*2-12,3,"#edffff");g.shadowBlur=14;g.shadowColor="#ffe9a5";g.beginPath();g.arc(ball.x,ball.y,BALL,0,Math.PI*2);g.fillStyle="#ffe9a5";g.fill();g.shadowBlur=0;
  if(serveDelay>0&&state==="running"){g.fillStyle="#e9efff";g.textAlign="center";g.font="900 20px system-ui";g.fillText("READY!",W/2,340);}
 }
 function frame(now){let dt=clamp((now-last)/1000,0,.05);last=now;if(state==="running"){stepCache+=dt;while(stepCache>=1/120&&state==="running"){sim(1/120);stepCache-=1/120;}}else stepCache=0;draw();requestAnimationFrame(frame);}
