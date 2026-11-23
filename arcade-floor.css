@@ -90,3 +90,27 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
 .floor-heading h1{font-size:26px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Floor 2: touch navigation, shaded furnishings and future ad inventory. */
+.room-world{background:radial-gradient(ellipse at 50% 100%,#9d54a044,transparent 58%),repeating-linear-gradient(0deg,#37264f 0px,#37264f 77px,#5c4274 78px,#5c4274 80px),repeating-linear-gradient(90deg,transparent 0px,transparent 77px,#8b659b 78px,#8b659b 80px)}
+.room-window{cursor:crosshair}
+.floor-player-art{transform-origin:50% 100%}
+.floor-player.is-moving:not(.is-seated) .floor-player-art{animation:arcade-hop .32s ease-in-out infinite alternate}
+.floor-player[data-facing="left"] .floor-player-art{scale:-1 1}
+.floor-player.is-seated .floor-player-art{transform:translateY(13px) scaleY(.82);filter:drop-shadow(0 3px 2px #000a)}
+@keyframes arcade-hop{0%{translate:0 0;rotate:-3deg}100%{translate:0 -12px;rotate:3deg}}
+.floor-tap-indicator{position:absolute;width:20px;height:12px;border:3px solid #fff9b4;border-radius:50%;pointer-events:none;opacity:0;z-index:24;transform:translate(-50%,-50%)}
+.floor-tap-indicator.is-active{animation:floor-ping .7s ease-out}
+@keyframes floor-ping{0%{opacity:1;scale:.5}100%{opacity:0;scale:2}}
+.lounge-label{position:absolute;left:475px;top:1088px;font-size:17px;font-weight:950;color:#fff0b8;text-shadow:0 3px 5px #000}
+.lounge-tables{position:absolute;inset:0;pointer-events:none}
+.lounge-table{position:absolute;width:136px;height:70px;z-index:12;pointer-events:none}
+.lounge-tabletop{position:absolute;inset:2px 13px;border:8px solid #533057;border-radius:50%;background:radial-gradient(ellipse at 35% 25%,#e6b8a5,#985b7b 68%,#432d53);box-shadow:0 13px 0 #3a234a,0 18px 18px #0009;display:grid;place-items:center;font-size:27px}
+.lounge-seat{position:absolute;z-index:15;width:49px;height:49px;border-radius:13px;border:2px solid #ffcf84;background:linear-gradient(#654672,#30243d);font-size:25px;box-shadow:0 6px 8px #0008;pointer-events:auto;cursor:pointer}
+.lounge-seat:hover,.lounge-seat:focus-visible,.lounge-seat.is-occupied{background:#b66f95;outline:3px solid #fff3bc}
+.ad-wall{position:absolute;top:103px;width:158px;height:72px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;border:6px solid #473b66;border-radius:9px;background:linear-gradient(135deg,#3b235c,#241a48);box-shadow:0 8px 0 #1c1339,0 0 15px #bc91ff55;color:#f6e9ff;transform:perspective(180px) rotateY(15deg);pointer-events:none}
+.ad-wall--left{left:34px}.ad-wall--right{right:34px;transform:perspective(180px) rotateY(-15deg)}
+.ad-wall small{font-size:10px;letter-spacing:.1em;color:#ffe6a9}.ad-wall strong{font-size:15px}
+.floor-ad-slot{max-width:820px;min-height:100px;margin:18px auto 0;padding:10px;border:1px dashed #8e7aa8;border-radius:12px;display:grid;place-items:center;text-align:center;color:#cdbdde;background:#1a152d}
+.floor-ad-slot span{font-size:11px;font-weight:900;letter-spacing:.14em}.floor-ad-slot div{font-size:14px}
+@media(prefers-reduced-motion:reduce){.floor-player.is-moving .floor-player-art{animation:none}.floor-tap-indicator.is-active{animation:none}}
