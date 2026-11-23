@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 320" fill="none" aria-hidden="true">
+  <!-- Original outline artwork: repeated netting and two crossed hockey sticks. -->
+  <g stroke="#ffdfe6" stroke-width="2" opacity=".12">
+    <path d="M18 22h172v135H18zM18 22l172 135m0-135L18 157"/>
+    <path d="M42 22v135M66 22v135M90 22v135M114 22v135M138 22v135M162 22v135"/>
+    <path d="M18 49h172M18 76h172M18 103h172M18 130h172"/>
+  </g>
+  <g stroke="#fff2f3" stroke-linecap="round" stroke-linejoin="round" opacity=".22">
+    <path d="M265 40l155 188q9 10 2 17l-38 27q-9 6-16-3l-12-16" stroke-width="13"/>
+    <path d="M453 26L308 218q-9 12-2 20l43 30q9 6 17-3l11-14" stroke-width="13"/>
+    <path d="M264 40l155 188M453 26L308 218" stroke="#fff" stroke-width="3"/>
+    <circle cx="365" cy="277" r="16" fill="#fff1f2" fill-opacity=".28" stroke-width="3"/>
+  </g>
+  <path d="M0 300h520" stroke="#fff" stroke-opacity=".09" stroke-width="4"/>
+</svg>
