@@ -1,6 +1,6 @@
 /* Gear Rush — Locker Room Edition.
  * Personal game progress is device-local. Account XP is a separate, guarded service:
- * timed, unassisted first clears of levels 1–5 only. Personal stars are never ranked.
+ * timed, unassisted first clears of levels 1–15 only; gear cosmetics at 5/10/15. Personal stars are never ranked.
  */
 (() => {
   "use strict";
@@ -147,7 +147,7 @@
         (chosenMode === "rush" ? "Aim for " + cfg.parTime + " seconds or less to earn your stars." : "Take your time; every piece counts."),
         "▶ Start Round");
     }
-    status(chosenMode === "rush" ? "Tap Start to begin. Every room can unlock a hockey wearable with an eligible signed-in first clear." :
+    status(chosenMode === "rush" ? "Tap Start to begin. Earn XP on eligible signed-in first clears. Hockey wearables unlock at Rooms 5, 10 and 15." :
       "Your progress is saved on this device. No account XP in this mode.");
     $("start-button").textContent = chosenMode === "cleanup" ? "🧹 Start Cleanup" : "▶ Start Round";
   }
@@ -394,7 +394,7 @@
        chosenMode === "relaxed" ? "Relaxed mode has no account XP." :
        assisted ? "Spotlight-assisted runs have no account XP." :
        chosenMode === "rush" && elapsed < 6 ? "The server requires at least six seconds for account XP; stars are saved." :
-       "Each room has a first-clear hockey wearable when claimed on your account."));
+       "Signed-in Rush first clears grant XP; gear milestone looks unlock at Rooms 5, 10 and 15."));
   }
 
   function collect(item, piece) {
