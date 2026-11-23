@@ -467,6 +467,87 @@
       status("Room progress saved locally. Account XP: " + (event.detail.message || "unavailable"));
   });
 
+  // Short first-visit guide. This does not launch a timed round or claim XP.
+  const TUTORIAL_KEY = "retro:gear-rush:tutorial:v1";
+  const tutorialModal = $("tutorial");
+  const tutorialCard = tutorialModal.querySelector('[role="dialog"]');
+  const tutorialSteps = [...tutorialModal.querySelectorAll("[data-tutorial-step]")];
+  const tutorialDots = [...tutorialModal.querySelectorAll(".tutorial-dots span")];
+  let tutorialIndex = 0;
+  let tutorialReturnFocus = null;
+  let tutorialSource = "replay";
+
+  function showTutorialStep(index) {
+    tutorialIndex = clamp(index, 0, tutorialSteps.length - 1);
+    tutorialSteps.forEach((step, i) => { step.hidden = i !== tutorialIndex; });
+    tutorialDots.forEach((dot, i) => dot.classList.toggle("is-active", i === tutorialIndex));
+    $("tutorial-count").textContent = (tutorialIndex + 1) + " of " + tutorialSteps.length;
+    $("tutorial-back").hidden = tutorialIndex === 0;
+    $("tutorial-next").textContent = tutorialIndex === tutorialSteps.length - 1
+      ? "✓ Got it — Play!" : "Next →";
+    tutorialCard.scrollTop = 0;
+  }
+
+  function openTutorial(source = "replay") {
+    if (!tutorialModal.hidden) return;
+    if (state === "running") pause();
+    tutorialSource = source;
+    tutorialReturnFocus = document.activeElement;
+    showTutorialStep(0);
+    tutorialModal.hidden = false;
+    // Prevent keyboard and touch interactions with the underlying game.
+    $("game-root").inert = true;
+    $("tutorial-next").focus({ preventScroll: true });
+  }
+
+  function closeTutorial(startWhenFinished = false) {
+    if (tutorialModal.hidden) return;
+    tutorialModal.hidden = true;
+    $("game-root").inert = false;
+    try { localStorage.setItem(TUTORIAL_KEY, "seen"); } catch (_) {}
+    if (startWhenFinished && tutorialSource === "first" && state === "ready") {
+      begin();
+    } else if (tutorialSource === "first" && state === "ready") {
+      $("overlay-primary").focus({ preventScroll: true });
+    } else if (tutorialReturnFocus && tutorialReturnFocus.isConnected) {
+      tutorialReturnFocus.focus({ preventScroll: true });
+    } else {
+      $("overlay-primary").focus({ preventScroll: true });
+    }
+    tutorialReturnFocus = null;
+  }
+
+  $("tutorial-open").addEventListener("click", () => openTutorial());
+  $("tutorial-next").addEventListener("click", () => {
+    if (tutorialIndex + 1 < tutorialSteps.length) showTutorialStep(tutorialIndex + 1);
+    else closeTutorial(true);
+  });
+  $("tutorial-back").addEventListener("click", () => showTutorialStep(tutorialIndex - 1));
+  $("tutorial-skip").addEventListener("click", () => closeTutorial(false));
+
+  tutorialModal.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeTutorial(false);
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = [...tutorialModal.querySelectorAll("button:not([hidden]):not(:disabled)")];
+    const visible = focusable.filter(element => element.offsetParent !== null);
+    if (!visible.length) return;
+    const first = visible[0], last = visible[visible.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); first.focus();
+    }
+  });
+
+  // First-visit instructions are local to the browser, not tied to account XP.
+  let hasSeenTutorial = false;
+  try { hasSeenTutorial = localStorage.getItem(TUTORIAL_KEY) === "seen"; } catch (_) {}
+  if (!hasSeenTutorial) openTutorial("first");
+
   setMode("rush");
   $("pause-button").disabled = true;
   $("restart-button").disabled = true;
