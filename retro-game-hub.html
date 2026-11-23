@@ -531,6 +531,12 @@ header .brand { flex-wrap:wrap; }
 }
 
 
+.walkable-arcade-promo{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:12px auto 17px;padding:16px;border:2px solid #69e9ee;border-radius:16px;background:linear-gradient(115deg,#20234c,#3e2055 65%,#2a1b4e);box-shadow:0 5px 0 #11102a;max-width:1100px}
+.walkable-arcade-promo h2{margin:4px 0 7px;color:#fff3b3;font-size:clamp(20px,3.7vw,29px)}
+.walkable-arcade-promo p{color:#f0e8fc;margin:0;max-width:720px;line-height:1.45;font-size:15px}
+.arcade-promo-kicker{color:#8cf7f1;font-size:12px;font-weight:950;letter-spacing:.08em}
+.walkable-arcade-promo .hub-action{flex:0 0 auto;white-space:normal;min-height:52px;font-size:15px}
+@media(max-width:700px){.walkable-arcade-promo{display:grid;margin:10px 10px 13px;padding:13px;gap:12px}.walkable-arcade-promo .hub-action{width:100%}}
 /* Player status header: arcade hub only */
 header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#0b1a30);border-bottom:2px solid #46cdd0;box-shadow:0 3px 0 #e44cdb55;padding:10px 16px;gap:14px;min-height:82px;flex-wrap:wrap}
 .hub-player-header .crt{font-weight:950;letter-spacing:1.1px;color:#fff;font-size:18px;text-shadow:2px 2px #a635d1}
@@ -890,6 +896,14 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
         </div>
       </section>
 
+      <section class="walkable-arcade-promo" aria-label="Walkable arcade room">
+        <div>
+          <span class="arcade-promo-kicker">✦ NEW: EXPLORE THE ARCADE FLOOR</span>
+          <h2>Step into the arcade.</h2>
+          <p>Walk between twenty retro CRT cabinets, meet your own avatar and choose a game by stepping up to its screen. Keyboard and touchscreen supported. This is a solo playable preview; social multiplayer comes later.</p>
+        </div>
+        <a href="arcade-floor.html" class="hub-action primary">🎮 Enter the Arcade Floor</a>
+      </section>
       <div class="content">
         <section class="browse-search" aria-labelledby="browse-heading">
           <div class="browse-heading-row">
