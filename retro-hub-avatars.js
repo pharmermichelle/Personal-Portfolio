@@ -44,5 +44,5 @@ window.RetroHubAvatars = (() => {
       + '</svg>';
   }
 
-return {render(key,options={}){const a=avatars.find(v=>v.key===key);return a?avatarSVG(a,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat)):"🎮";}};
+return {render(key,options={}){const a=avatars.find(v=>v.key===key);return a?(window.RetroGearWearables ? window.RetroGearWearables.inject(avatarSVG(a,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat)),options.gearWearables||{}) : avatarSVG(a,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat))):"🎮";}};
 })();
