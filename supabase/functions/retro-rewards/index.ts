@@ -195,7 +195,7 @@ Deno.serve(async req=>{
  }
  // Catalog-driven game integration. Server owns XP rules; clients only request
  // level start/complete. These claims are bounded and NOT replay-verified scores.
- if(["fallen-grid","rink-putt","hockey-gear-rush"].includes(body.game_id)){
+ if(["fallen-grid","rink-putt","hockey-gear-rush","brick-blitz"].includes(body.game_id)){
    const game=body.game_id,level=body.level;
    if(body.version!=="v1"||!Number.isInteger(level)||level<1||level>500)
      return response(400,{error:"Unsupported game level"},origin);
