@@ -51,7 +51,10 @@
   window.RetroHubAvatars = Object.freeze({
     render(key, options = {}) {
       const avatar = known.get(key) || avatars[0];
-      return avatarSVG(avatar,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat));
+      const svg=avatarSVG(avatar,"small",Boolean(options.equippedShirt),Boolean(options.equippedHat));
+      return window.RetroGearWearables
+        ? window.RetroGearWearables.inject(svg,options.gearWearables||{})
+        : svg;
     },
     name(key) { return (known.get(key) || avatars[0]).name; }
   });
