@@ -85,10 +85,13 @@ function clear(){
  overlay(cleared===MAX?"ALL BRICKS CLEARED!":"LEVEL "+cleared+" CLEAR!","Score "+score.toLocaleString()+" • "+(cleared===MAX?"You finished all 12 levels!":"Level "+(cleared+1)+" unlocked.")+" Checking XP…",cleared===MAX?"↻ PLAY AGAIN":"▶ NEXT LEVEL");
  say("Cleared! Checking your account XP…");
  const run=levelRun;
- Promise.resolve(window.RetroLevelXP?.complete(cleared)).then(()=>{
+ Promise.resolve(window.RetroLevelXP?.complete(cleared)).then(result=>{
    if(run!==levelRun)return;
-   const next=cleared===MAX?"All twelve levels cleared. Replay anytime!":"Level "+(cleared+1)+" is ready!";
-   say(next+" Account XP for first-time clears appears in the arcade header.");
+   // The reward adapter emits accepted server awards separately. Never imply
+   // an XP award when a guest/no-attempt/network completion was not accepted.
+   if(result?.type==="guest")say("Level saved locally. Sign in before starting to earn account XP.");
+   else if(result?.type==="unverified"||result?.type==="pending"||!result?.accepted)
+     say("Level saved locally. Account XP not confirmed; check your status before retrying.");
  }).catch(()=>{if(run===levelRun)say("Level saved locally. Account XP could not be confirmed.");});
 }
 function advance(){
