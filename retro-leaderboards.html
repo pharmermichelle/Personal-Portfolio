@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#131b34">
+<meta name="description" content="Opt-in Retro Game Hub arcade leaderboards for XP, estimated game time and server-timed game milestones.">
+<title>Arcade Leaderboards | Retro Games Hub</title>
+<link rel="canonical" href="https://michellew.io/retro-leaderboards.html">
+<link rel="stylesheet" href="retro-leaderboards.css?v=20261123-a">
+<script defer src="retro-arcade-header.js?v=20261123-leaderboards" data-game-id="arcade-leaderboards" data-layout="scroll"></script>
+<script defer src="retro-leaderboards.js?v=20261123-a"></script>
+</head><body>
+<main class="board-shell">
+<header class="board-hero"><p>✦ RETRO GAMES HUB</p><h1>Arcade Leaderboards</h1>
+<span>Compare progress, celebrate milestones and find your next challenge.</span></header>
+<section class="board-panel privacy-panel" aria-labelledby="privacy-title">
+<div><h2 id="privacy-title">Your Ranking Privacy</h2>
+<p>Participation is optional. Your username and recorded stats appear only when you opt in. Guests and opted-out accounts remain private.</p></div>
+<label class="opt-toggle"><input id="leaderboard-optin" type="checkbox" disabled><span>Show my username on public rankings</span></label>
+<p id="opt-status" class="status" role="status" aria-live="polite">Checking account…</p>
+</section>
+<section class="board-panel rankings" aria-label="Leaderboards">
+<div class="board-controls">
+<label>Rank by
+<select id="leaderboard-metric">
+<option value="xp">Total XP</option>
+<option value="playtime">Recorded Game Time</option>
+<option value="level">Highest Account Level Clear</option>
+<option value="snake_survival">Longest Snake Survival</option>
+</select></label>
+<label>Game
+<select id="leaderboard-game"><option value="">All Games</option></select></label>
+</div>
+<div id="rank-proof" class="rank-proof">These rankings use the server XP ledger, not verified competition.</div>
+<p id="rank-status" class="status" role="status" aria-live="polite">Loading leaderboard…</p>
+<div class="rank-scroll"><table aria-label="Arcade leaderboard"><thead><tr><th scope="col">RANK</th><th scope="col">PLAYER</th><th scope="col">RECORD</th></tr></thead><tbody id="rank-rows"></tbody></table></div>
+<div class="rank-note"><strong>Fair-play notice:</strong> XP and level claims are server-recorded, but gameplay itself is not replay-verified. Recorded time is a bounded estimate of visible game sessions. Speedruns, unverified scores and client-supplied bests are intentionally not part of public competitive rankings yet.</div>
+</section>
+<nav class="board-links" aria-label="Continue playing">
+<a href="retro-game-hub.html">🎮 Browse Games</a>
+<a href="arcade-floor.html">🕹 Explore Arcade Floor</a>
+<a href="retro-player-profile.html">👕 My Wardrobe</a>
+</nav>
+</main></body></html>
