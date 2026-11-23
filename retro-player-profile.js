@@ -110,6 +110,18 @@
     if(!record)return "No cloud save";
     const data=record.save_data?.payload;
     if(!data || typeof data!=="object")return "Cloud save available";
+    // Cloud saves are player-editable personal progress, not verified scores.
+    if(gameId==="brick-blitz"){
+      const unlocked=Number(data.unlocked);
+      return Number.isInteger(unlocked)&&unlocked>=1&&unlocked<=12
+        ? "Level "+unlocked+" unlocked (personal)" : "Cloud progress saved";
+    }
+    if(gameId==="neon-pong"){
+      const wins=Number(data.wins),matches=Number(data.matches),rally=Number(data.bestRally);
+      if([wins,matches,rally].every(Number.isInteger)&&wins>=0&&wins<=matches&&matches<=1000000&&rally>=0)
+        return wins+" wins / "+matches+" matches · best rally "+rally+" (personal)";
+      return "Cloud progress saved";
+    }
     const level=Number(data.level);
     let parts=[];
     if(Number.isInteger(level) && level>=0)
