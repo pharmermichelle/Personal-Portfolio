@@ -147,7 +147,7 @@
     }
     status(chosenMode === "rush" ? "Tap Start to begin. First five timed levels can earn signed-in account XP on eligible first clears." :
       "Your progress is saved on this device. No account XP in this mode.");
-    $("start-button").textContent = "▶ Start Round";
+    $("start-button").textContent = chosenMode === "cleanup" ? "🧹 Start Cleanup" : "▶ Start Round";
   }
 
   function makeCells(boardWidth, boardHeight, size) {
