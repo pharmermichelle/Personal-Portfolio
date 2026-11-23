@@ -12,11 +12,11 @@
  <meta property="og:description" content="Walk the arcade and choose a game from the retro cabinets.">
  <meta property="og:url" content="https://michellew.io/arcade-floor.html">
  <meta property="og:image" content="https://michellew.io/images/portfolio-icon.png">
- <link rel="stylesheet" href="arcade-floor.css?v=20261123-floor1">
+ <link rel="stylesheet" href="arcade-floor.css?v=20261123-floor2">
  <script defer src="retro-gear-wearables.js?v=20261123-collection2"></script>
  <script defer src="retro-player-avatar.js?v=20261123-gear15"></script>
- <script defer src="retro-arcade-header.js?v=20261123-floor1" data-game-id="arcade-lobby" data-layout="scroll"></script>
- <script defer src="arcade-floor.js?v=20261123-floor1"></script>
+ <script defer src="retro-arcade-header.js?v=20261123-floor2" data-game-id="arcade-lobby" data-layout="scroll"></script>
+ <script defer src="arcade-floor.js?v=20261123-floor2"></script>
 </head>
 <body>
  <main class="floor-shell">
@@ -24,21 +24,26 @@
    <div>
     <p class="floor-eyebrow">✦ RETRO GAME HUB / FLOOR ONE</p>
     <h1>Welcome to the Arcade</h1>
-    <p>Walk between glowing cabinets. Step up to a screen to play.</p>
+    <p>Tap anywhere to roam, play a cabinet, or relax in the lounge.</p>
    </div>
-   <span class="floor-badge">SOLO PREVIEW • MULTIPLAYER PLANNED</span>
+   <span class="floor-badge">SOCIAL LOUNGE PREVIEW • SOLO FOR NOW</span>
   </section>
   <section class="room-shell" aria-label="Interactive retro arcade floor">
    <div class="room-topline">
     <div><strong>THE MAIN ARCADE</strong><span>20 playable cabinets</span></div>
     <span id="floor-location" aria-live="polite">Entrance</span>
    </div>
-   <div class="room-window" id="room-window" role="region" aria-label="Move around the arcade using arrow keys, WASD, or the directional buttons">
+   <div class="room-window" id="room-window" role="region" aria-label="Tap the floor to walk or hop to that spot. Arrow keys, WASD and the directional buttons also work.">
     <div class="room-world" id="room-world">
      <div class="rear-sign" aria-hidden="true">✦ INSERT FUN • PRESS PLAY ✦</div>
      <div class="floor-decor floor-decor--left" aria-hidden="true">★ PLAYER 1</div>
      <div class="floor-decor floor-decor--right" aria-hidden="true">HIGH SCORES AHEAD ★</div>
      <div class="cabinet-grid" id="cabinet-grid"></div>
+     <div class="ad-wall ad-wall--left" aria-label="Future advertising location"><small>ADVERTISEMENT</small><strong>YOUR AD HERE</strong></div>
+     <div class="ad-wall ad-wall--right" aria-label="Future advertising location"><small>ADVERTISEMENT</small><strong>YOUR AD HERE</strong></div>
+     <div class="lounge-label" aria-hidden="true">☕ THE HANGOUT · TABLES</div>
+     <div id="lounge-tables" class="lounge-tables" aria-label="Coffee table seating"></div>
+     <div id="floor-tap-indicator" class="floor-tap-indicator" aria-hidden="true"></div>
      <div id="floor-player" class="floor-player" aria-label="Your arcade avatar">
       <div id="floor-player-art" class="floor-player-art" aria-hidden="true">🎮</div>
       <span id="floor-player-name">PLAYER 1</span>
@@ -54,7 +59,7 @@
      <button data-direction="right" type="button" aria-label="Walk right">▶</button>
     </div>
     <div class="room-action-details">
-      <p id="floor-status" role="status" aria-live="polite">Use arrows, WASD, or tap a cabinet to approach it.</p>
+      <p id="floor-status" role="status" aria-live="polite">Tap the floor to move, a cabinet to play, or a chair to sit.</p>
       <div class="floor-actions">
        <button id="approach-button" type="button">Walk to Cabinet</button>
        <button id="play-button" class="play-button" type="button" disabled>PLAY GAME ↗</button>
@@ -65,16 +70,17 @@
   <section class="floor-guide">
     <div>
       <h2>How to explore</h2>
-      <p><strong>Mobile:</strong> Use the four arrows below the room, or tap a cabinet to walk toward it. Press Play when you reach it.</p>
+      <p><strong>Mobile:</strong> Tap any open space to walk there, a chair to sit, or a cabinet to approach it. The arrows are optional.</p>
       <p><strong>Desktop:</strong> Move with arrow keys or WASD. Press E or Enter near a cabinet to open it.</p>
     </div>
     <div class="floor-legend">
       <strong>Your Arcade Identity</strong>
-      <p>Signed-in players appear as their saved avatar, with equipped hockey wearables where available. Guest players get a starter character. Your game XP is awarded inside the games, not by walking around.</p>
+      <p>Signed-in players use their saved avatar and compatible equipped wearables. Guest players get a starter character. Your game XP is awarded inside the games, not by walking around.</p>
       <a href="retro-player-profile.html">Edit Avatar &amp; Outfits ↗</a>
     </div>
   </section>
-  <p class="floor-roadmap">This is a playable solo arcade-floor preview. Friend presence, parties, chat, and public multiplayer are not enabled yet; those features require account privacy, age-appropriate safeguards, blocking, reporting and moderation.</p>
+  <section class="floor-ad-slot" aria-label="Advertising space"><span>ADVERTISEMENT</span><div>Arcade banner placement — awaiting approved ad unit</div></section>
+  <p class="floor-roadmap">This is a playable solo arcade-floor preview. The lounge tables are playable solo today; friend presence, parties, chat, and public multiplayer are not enabled yet; those features require account privacy, age-appropriate safeguards, blocking, reporting and moderation.</p>
  </main>
 </body>
 </html>
