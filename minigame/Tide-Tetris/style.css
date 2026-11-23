@@ -109,3 +109,36 @@ h1 span{color:var(--neon)}
   .touch-controls .control-icon{font-size:1.2rem}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Larger, readable blocks on phones. Permit modest vertical scrolling instead
+   of shrinking the board to fit beneath the shared navigation. */
+@media (max-width: 640px) {
+  .game-shell {
+    height: auto;
+    min-height: calc(100dvh + 105px);
+    overflow: visible;
+    padding-inline: 5px;
+    gap: 6px;
+  }
+  .game-stage {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 0;
+    overflow: visible;
+    padding: 4px 0;
+  }
+  .board-frame {
+    width: min(calc(100% - 4px), 330px);
+    height: auto;
+    max-height: none;
+    aspect-ratio: 1 / 2;
+    padding: 2px;
+    margin: 0 auto;
+  }
+  #game { aspect-ratio: 1 / 2; height: auto; }
+  .touch-controls { width: 100%; }
+  .below-game { padding-top: 12px; }
+}
+@media (max-width: 370px) {
+  .board-frame { width: min(calc(100% - 4px), 306px); }
+}
