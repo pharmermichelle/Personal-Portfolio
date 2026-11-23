@@ -338,8 +338,13 @@
     if (eligible) {
       // The server checks first-clear dedupe and attempt timing. This is NOT
       // proof of independent gameplay and must not become a ranked score.
-      Promise.resolve(window.RetroLevelXP?.complete(level)).catch(() =>
-        status("Room cleared locally. Account XP could not be confirmed."));
+      Promise.resolve(window.RetroLevelXP?.complete(level)).then(result => {
+        // The award event displays confirmed server XP; only handle unconfirmed outcomes here.
+        if (!result) status("Room cleared on this device. Account XP is not yet confirmed.");
+        else if (result.type === "guest") status("Room saved locally. Sign in before starting to earn account XP.");
+        else if (result.type === "pending" || result.type === "unverified")
+          status("Room saved locally. Account XP not confirmed; try a fresh signed-in round.");
+      }).catch(() => status("Room cleared locally. Account XP could not be confirmed."));
     }
     const achievement = "★".repeat(stars) + "☆".repeat(3 - stars);
     const bonus = resultWasLate ? " Finished after the target time — optional cleanup is available." : "";
