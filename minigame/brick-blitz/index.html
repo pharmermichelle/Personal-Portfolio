@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1025">
+<title>Brick Blitz • Retro Games Hub</title>
+<meta name="description" content="Brick Blitz: bounce, break and clear twelve bright retro brick-breaker levels.">
+<style>
+:root{color-scheme:dark;--bg:#0c1026;--panel:#172244;--line:#5e76af;--cyan:#7df6fc;--pink:#ff85d9;--gold:#ffdf7b}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#28345b,#0d132b 58%,#090c1a);font:600 16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;color:#eff7ff}
+button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}[hidden]{display:none!important}
+.shell{max-width:780px;margin:0 auto;padding:12px 12px 28px}.mast{display:flex;justify-content:space-between;align-items:center;gap:12px}.kicker{font-size:12px;letter-spacing:1.8px;color:var(--pink);font-weight:950}.mast h1{font-size:clamp(26px,5vw,40px);margin:0;line-height:1.12;color:var(--cyan);text-shadow:0 0 15px #39d8eb70}.mast p{margin:4px 0 7px;color:#cdddfb;font-size:14px}.emblem{font-size:35px;background:#28264d;padding:7px 11px;border:2px solid #7572b5;border-radius:14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:8px 0 12px}.stat{min-width:0;background:linear-gradient(#1b2a50,#141d3b);border:1px solid var(--line);border-radius:10px;text-align:center;padding:6px 2px}.stat span{font-size:10px;display:block;color:#c0d3f2;letter-spacing:.5px;text-transform:uppercase}.stat b{display:block;font-size:clamp(17px,4vw,25px);font-weight:950;color:#ffeb9c;font-variant-numeric:tabular-nums}.stat.xp b{color:#a7ffcb}
+.stage{position:relative;width:100%;max-width:700px;margin:0 auto;border:3px solid #5c81ad;border-radius:12px;overflow:hidden;background:#090f27;box-shadow:0 0 21px #37daef2a}canvas{width:100%;height:auto;aspect-ratio:7/5;display:block;touch-action:none}.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:16px;background:#071126e5}.overlay h2{margin:0;color:var(--gold);font-size:clamp(27px,6vw,39px)}.overlay p{margin:0;max-width:350px;color:#e6efff;font-size:15px}
+.primary{background:var(--gold);color:#1b2146;border:2px solid #fff0ba;border-radius:10px;padding:10px 20px;box-shadow:0 3px #83692e}.primary:disabled{opacity:.6}
+.actions{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto 5px}.secondary{background:#1e2c4d;color:#f1f7ff;border:1px solid #7793bf;border-radius:9px;padding:8px 13px}.secondary:disabled{opacity:.5}
+.help{max-width:610px;margin:9px auto;font-size:14px;text-align:center;color:#d7e6ff}.xp-guide{max-width:640px;margin:12px auto 8px;background:#172342;border:1px solid #566f9b;border-radius:11px;padding:10px 12px}.xp-guide summary{font-size:15px;font-weight:900;cursor:pointer;color:var(--gold)}.xp-guide p{margin:7px 0 0;font-size:13px;color:#dbe8ff}.status{margin:9px auto;min-height:22px;text-align:center;font-size:14px;font-weight:750;color:#aff6d0}
+.ad{max-width:320px;margin:16px auto 0;text-align:center;min-height:67px}.ad span{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a9b6c7}.ad ins{display:block;width:100%;height:50px}
+@media(max-width:420px){.shell{padding:9px 8px 22px}.mast p,.help{font-size:12px}.stat span{font-size:9px}.stat b{font-size:19px}.stats{gap:5px}.overlay p{font-size:13px}.overlay{gap:8px;padding:12px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script src="../../retro-arcade-header.js?v=20261122-brick1" data-game-id="brick-blitz" data-layout="scroll" defer></script>
+<script src="../../retro-rewards.js?v=20261122-brick1"></script>
+<script src="../../retro-level-xp.js?v=20261122-brick1" data-game-id="brick-blitz"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
+</head>
+<body>
+<main class="shell">
+<div class="mast"><div><div class="kicker">✦ RETRO ARCADE // 12 LEVELS</div><h1>BRICK BLITZ</h1><p>Keep the ball flying. Break every brick!</p></div><div class="emblem" aria-hidden="true">🧱</div></div>
+<div class="stats" aria-live="off">
+<div class="stat"><span>Level</span><b id="level">1 / 12</b></div><div class="stat"><span>Lives</span><b id="lives">♥ ♥ ♥</b></div><div class="stat"><span>Score</span><b id="score">0</b></div><div class="stat xp"><span>Level XP</span><b id="levelxp">+3</b></div></div>
+<div class="stage" id="game-stage"><canvas id="field" width="700" height="500" aria-label="Brick Blitz playfield. Drag horizontally to move the paddle. Use arrow keys or A and D on a keyboard." role="img"></canvas>
+<div id="overlay" class="overlay"><h2 id="overlay-title">READY TO BLITZ?</h2><p id="overlay-copy">Clear all the bricks! Drag your paddle to bounce the ball. Three lives per level.</p><button type="button" id="main-button" class="primary">▶ START LEVEL 1</button></div></div>
+<div class="actions"><button id="pause" class="secondary" type="button" disabled>Ⅱ PAUSE</button><button id="sound" class="secondary" type="button" aria-pressed="false">♫ SOUND OFF</button><button id="reset" class="secondary" type="button">↺ RESTART LEVEL</button></div>
+<p class="help">📱 Drag anywhere on the playfield to steer. 🖥️ Use mouse or ← → / A D. Press Space to pause. Catch the ball before it falls!</p>
+<details class="xp-guide" open><summary>★ HOW TO EARN XP</summary><p>Sign in before starting a level. The <strong>first clear of each level</strong> earns <strong>3 XP on Level 1, increasing by 1 XP per level</strong>, up to 12 XP. Replays don't give duplicate XP. Only successful clears earn XP. Play as a guest to save your level progress on this device.</p></details>
+<div class="status" id="status" role="status" aria-live="polite">Clear Level 1 to unlock Level 2. Sign in to collect arcade XP.</div>
+<div class="ad"><span>Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
+</main>
+<script>
+(()=>{
+"use strict";
+const c=document.getElementById("field"),g=c.getContext("2d"),$=id=>document.getElementById(id),W=700,H=500,PY=455,PR=57,BALL=8,MAX=12;
+const localKey="retro:brick-blitz:progress:v1";
+let progress={unlocked:1,score:0};
+try{const data=JSON.parse(localStorage.getItem(localKey)||"null");if(data&&Number.isInteger(data.unlocked)&&Number.isFinite(data.score))progress={unlocked:Math.max(1,Math.min(MAX,data.unlocked)),score:Math.max(0,data.score)};}catch(_){}
+let level=progress.unlocked,state="idle",lives=3,score=0,bricks=[],ball={x:350,y:PY-24,vx:0,vy:0},paddleX=350,keyL=false,keyR=false,touchX=null,last=performance.now(),stepCache=0,muted=true,audio=null,serveDelay=0,levelRun=0;
+const colors=["#ff829d","#fdbf72","#ffe27a","#99f0c0","#78d5fb","#c7a5fc"];
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const save=()=>{try{localStorage.setItem(localKey,JSON.stringify(progress));}catch(_){}};
+const say=m=>{$("status").textContent=m};
+function chime(freq=420){if(muted)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;if(!audio)audio=new A();const o=audio.createOscillator(),gain=audio.createGain();o.type="square";o.frequency.value=freq;gain.gain.setValueAtTime(.025,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.095);o.connect(gain);gain.connect(audio.destination);o.start();o.stop(audio.currentTime+.1)}catch(_){}}
+function overlay(title,message,button){$("overlay").hidden=false;$("overlay-title").textContent=title;$("overlay-copy").textContent=message;$("main-button").textContent=button;}
+function hideOverlay(){$("overlay").hidden=true}
+function updateHUD(){$("level").textContent=level+" / "+MAX;$("lives").textContent="♥ ".repeat(lives).trim()||"0";$("score").textContent=score.toLocaleString();$("levelxp").textContent="+"+Math.min(12,level+2);}
+function setupBricks(){
+ bricks=[];const rows=Math.min(7,3+Math.ceil(level/2)),cols=9,wide=64,gap=8,left=(W-cols*(wide+gap)+gap)/2;
+ for(let r=0;r<rows;r++)for(let col=0;col<cols;col++){
+   if(level>3 && (r+col+level)%11===0)continue;
+   const hp=(level>=6&&(r+col*3+level)%7===0)?2:1;
+   bricks.push({x:left+col*(wide+gap),y:65+r*31,w:wide,h:23,hp,maxHp:hp,color:colors[(r+level-1)%colors.length]});
+ }
+}
+function resetBall(){paddleX=350;ball={x:paddleX,y:PY-26,vx:0,vy:0};serveDelay=0;}
+function serve(){const speed=Math.min(420,270+level*10),theta=(-.35+Math.random()*.7);ball.vx=speed*Math.sin(theta);if(Math.abs(ball.vx)<70)ball.vx=Math.sign(theta||1)*70;ball.vy=-Math.sqrt(speed*speed-ball.vx*ball.vx);serveDelay=.6;}
+function prepare(){lives=3;score=0;setupBricks();resetBall();updateHUD();}
+function start(){
+ if(state==="running"||state==="starting"||state==="clearing")return;
+ if(state==="paused"){resume();return;}
+ state="running";levelRun++;prepare();serve();hideOverlay();$("pause").disabled=false;$("pause").textContent="Ⅱ PAUSE";last=performance.now();say("Level "+level+" underway — clear every brick!");
+ window.RetroLevelXP?.begin(level);
+}
+function pause(){if(state!=="running")return;state="paused";$("pause").textContent="▶ RESUME";overlay("PAUSED","Your ball is frozen until you resume.","▶ RESUME");}
+function resume(){if(state!=="paused")return;state="running";last=performance.now();hideOverlay();$("pause").textContent="Ⅱ PAUSE";}
+function loseBall(){
+ lives--;chime(175);updateHUD();
+ if(lives<=0){state="over";$("pause").disabled=true;overlay("TRY AGAIN","No lives left. You can replay Level "+level+" without losing your unlocked levels.","↻ TRY AGAIN");say("Level not cleared. Your unlocked stages are saved.");return;}
+ resetBall();serve();say("Ball lost. "+lives+" "+(lives===1?"life":"lives")+" left.");
+}
+function clear(){
+ state="clearing";$("pause").disabled=true;progress.unlocked=Math.max(progress.unlocked,Math.min(MAX,level+1));progress.score+=score;save();chime(740);
+ const cleared=level;
+ overlay(cleared===MAX?"ALL BRICKS CLEARED!":"LEVEL "+cleared+" CLEAR!","Score "+score.toLocaleString()+" • "+(cleared===MAX?"You finished all 12 levels!":"Level "+(cleared+1)+" unlocked.")+" Checking XP…",cleared===MAX?"↻ PLAY AGAIN":"▶ NEXT LEVEL");
+ say("Cleared! Checking your account XP…");
+ const run=levelRun;
+ Promise.resolve(window.RetroLevelXP?.complete(cleared)).then(()=>{
+   if(run!==levelRun)return;
+   const next=cleared===MAX?"All twelve levels cleared. Replay anytime!":"Level "+(cleared+1)+" is ready!";
+   say(next+" Account XP for first-time clears appears in the arcade header.");
+ }).catch(()=>{if(run===levelRun)say("Level saved locally. Account XP could not be confirmed.");});
+}
+function advance(){
+ if(state==="paused"){resume();return;}
+ if(state==="clearing"){level=level===MAX?1:level+1;state="idle";overlay("LEVEL "+level,"Ready for the next challenge?","▶ START LEVEL "+level);updateHUD();return;}
+ start();
+}
+function sim(dt){
+ if(touchX!==null)paddleX=touchX;
+ else paddleX+=((keyR?1:0)-(keyL?1:0))*520*dt;
+ paddleX=clamp(paddleX,PR+13,W-PR-13);
+ if(serveDelay>0){serveDelay-=dt;return;}
+ const prevX=ball.x,prevY=ball.y;
+ ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+ if(ball.x<BALL){ball.x=BALL;ball.vx=Math.abs(ball.vx);chime(250);}
+ if(ball.x>W-BALL){ball.x=W-BALL;ball.vx=-Math.abs(ball.vx);chime(250);}
+ if(ball.y<BALL){ball.y=BALL;ball.vy=Math.abs(ball.vy);chime(250);}
+ if(ball.vy>0&&prevY+BALL<=PY-11&&ball.y+BALL>=PY-11&&Math.abs(ball.x-paddleX)<=PR+BALL){
+   ball.y=PY-11-BALL;const speed=Math.min(590,Math.hypot(ball.vx,ball.vy)*1.012);
+   ball.vx=clamp((ball.x-paddleX)/PR,-.88,.88)*speed;
+   ball.vy=-Math.sqrt(Math.max(1,speed*speed-ball.vx*ball.vx));chime(420);
+ }
+ for(const b of bricks){
+   if(b.hp<=0||ball.x+BALL<b.x||ball.x-BALL>b.x+b.w||ball.y+BALL<b.y||ball.y-BALL>b.y+b.h)continue;
+   b.hp--;score+=b.hp===0?10:5;updateHUD();chime(b.hp===0?520:325);
+   if(prevY+BALL<=b.y||prevY-BALL>=b.y+b.h)ball.vy*=-1;
+   else if(prevX+BALL<=b.x||prevX-BALL>=b.x+b.w)ball.vx*=-1;
+   else ball.vy*=-1;
+   if(!bricks.some(x=>x.hp>0)){clear();}break;
+ }
+ if(ball.y>H+BALL&&state==="running")loseBall();
+}
+function rect(x,y,w,h,color){g.fillStyle=color;g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
+function draw(){
+ rect(0,0,W,H,"#09122e");
+ for(let x=0;x<W;x+=35)rect(x,0,1,H,"#1b2e5850");
+ for(let y=0;y<H;y+=35)rect(0,y,W,1,"#1b2e5850");
+ rect(0,53,W,2,"#5b6e9d50");
+ for(const b of bricks){if(b.hp<=0)continue;g.shadowColor=b.color;g.shadowBlur=9;
+ rect(b.x,b.y,b.w,b.h,b.hp===2?"#8b8caa":b.color);g.shadowBlur=0;
+ rect(b.x+4,b.y+3,b.w-8,3,"#ffffff65");
+ if(b.hp===2){g.fillStyle="#fff";g.font="900 14px system-ui";g.fillText("◆",b.x+b.w/2-5,b.y+17);}
+ }
+ g.shadowColor="#71f8ff";g.shadowBlur=20;rect(paddleX-PR,PY-11,PR*2,16,"#74f3fc");rect(paddleX-PR+6,PY-9,PR*2-12,3,"#edffff");g.shadowBlur=14;g.shadowColor="#ffe9a5";g.beginPath();g.arc(ball.x,ball.y,BALL,0,Math.PI*2);g.fillStyle="#ffe9a5";g.fill();g.shadowBlur=0;
+ if(serveDelay>0&&state==="running"){g.fillStyle="#e9efff";g.textAlign="center";g.font="900 20px system-ui";g.fillText("READY!",W/2,340);}
+}
+function frame(now){let dt=clamp((now-last)/1000,0,.05);last=now;if(state==="running"){stepCache+=dt;while(stepCache>=1/120&&state==="running"){sim(1/120);stepCache-=1/120;}}else stepCache=0;draw();requestAnimationFrame(frame);}
+const ptr=e=>{const b=c.getBoundingClientRect();return clamp(((e.clientX-b.left)/b.width)*W,PR+13,W-PR-13);};
+c.addEventListener("pointerdown",e=>{if(state==="running"){touchX=ptr(e);try{c.setPointerCapture(e.pointerId);}catch(_){}}});
+c.addEventListener("pointermove",e=>{if(state==="running"&&(e.pointerType==="mouse"||e.buttons||e.pointerType==="touch"))touchX=ptr(e);});
+c.addEventListener("pointerup",e=>{if(e.pointerType!=="mouse")touchX=null;});
+c.addEventListener("pointercancel",()=>touchX=null);
+c.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")touchX=null;});
+window.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","KeyA","KeyD"].includes(e.code)){if(state==="running")e.preventDefault();if(["ArrowLeft","KeyA"].includes(e.code))keyL=true;else keyR=true;touchX=null;}if(e.code==="Space"&&!e.repeat&&["running","paused"].includes(state)){e.preventDefault();$("pause").click();}});
+window.addEventListener("keyup",e=>{if(["ArrowLeft","KeyA"].includes(e.code))keyL=false;if(["ArrowRight","KeyD"].includes(e.code))keyR=false;});
+$("main-button").addEventListener("click",advance);
+$("pause").addEventListener("click",()=>state==="running"?pause():resume());
+$("reset").addEventListener("click",()=>{state="idle";levelRun++;$("pause").disabled=true;prepare();overlay("LEVEL "+level+" RESET","Bricks restored and all three lives returned.","▶ START LEVEL "+level);say("Level restarted. Account XP requires a fresh completed level.");});
+$("sound").addEventListener("click",()=>{muted=!muted;$("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";$("sound").setAttribute("aria-pressed",String(!muted));if(!muted)chime();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="running")pause();});
+window.addEventListener("blur",()=>{if(state==="running")pause();});
+window.addEventListener("retro-level-xp",e=>{
+ if(e.detail?.gameId!=="brick-blitz")return;
+ if(e.detail.type==="award"){
+   const amount=e.detail.amount||0;
+   say(amount?"★ "+amount+" XP earned! Added to your arcade account.":"Level complete! XP already earned for this level.");
+   $("overlay-copy").textContent=$("overlay-copy").textContent.replace(" Checking XP…",amount?" ★ +"+amount+" XP earned!":" • XP already claimed.");
+ }else if(e.detail.type==="guest")say("Level cleared. Sign in before starting to earn account XP.");
+ else if(e.detail.type==="error")say("Local progress saved; XP: "+(e.detail.message||"unavailable"));
+});
+prepare();overlay("READY TO BLITZ?","Break every brick to unlock the next level. Three lives per level.","▶ START LEVEL "+level);
+requestAnimationFrame(frame);
+try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(_){}
+})();
+</script>
+</body>
+</html>
