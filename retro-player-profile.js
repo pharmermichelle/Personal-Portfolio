@@ -39,7 +39,7 @@
   const byId = id => document.getElementById(id);
   const escapeAttr = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   let selected = avatars[0], client=null, user=null, equippedShirt=false, shirtOwned=false, equippedHat=false, hatOwned=false;
-  let gearOwned=new Set(),gearEquipped={},gearPending=false;
+  let gearOwned=new Set(),gearEquipped={},gearPending=false,levelShowAll=false,currentPlayerLevel=1,thanksgivingSeconds=0;
 
   const heads = {
     "chrome-byte": a => '<rect x="43" y="30" width="94" height="77" rx="18" fill="'+a.color+'" stroke="#34235c" stroke-width="6"/><rect x="51" y="57" width="78" height="34" rx="7" fill="#193255"/><rect x="61" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><rect x="99" y="66" width="19" height="13" rx="4" fill="#5af5eb"/><path d="M75 85h30" stroke="#fdb9e6" stroke-width="4"/><rect x="83" y="12" width="14" height="23" rx="5" fill="'+a.color+'"/><circle cx="90" cy="10" r="9" fill="#fff05f"/><rect x="34" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/><rect x="134" y="60" width="12" height="24" rx="5" fill="'+a.dark+'"/>',
@@ -87,7 +87,7 @@
     byId("mini-portrait").innerHTML=outfitAvatarSVG(selected, "small");
     byId("avatar-preview").setAttribute("aria-label", selected.name+", full-body "+selected.type+(equippedHat?" wearing a cheese wedge hat":""));
     byId("avatar-name").textContent=selected.name;
-    byId("avatar-type").textContent=selected.type+" / Level 1 look";
+    byId("avatar-type").textContent=selected.type+" / Level "+currentPlayerLevel+" look";
     byId("picked-label").textContent=selected.name;
     document.querySelectorAll(".avatar-option").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.avatar===selected.key)));
   }
@@ -252,13 +252,15 @@
     if(!client||!user)return;
     const account=user.id;
     try {
-      const [xp,badges,inventory,equipped]=await Promise.all([
+      const [xp,badges,inventory,equipped,thanksgiving]=await Promise.all([
         client.from("xp_ledger").select("amount,game_id").eq("user_id",account),
         client.from("earned_badges").select("badge_id,earned_at").eq("user_id",account),
         client.from("player_inventory").select("cosmetic_id,awarded_at").eq("user_id",account),
-        client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account)
+        client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account),
+        client.from("thanksgiving_2026_activity").select("eligible_seconds").eq("user_id",account).maybeSingle()
       ]);
       for(const v of [xp,badges,inventory,equipped])if(v.error)throw v.error;
+      if(thanksgiving.error)console.warn("Event progress unavailable:",thanksgiving.error.message);
       if(!user||user.id!==account)return;
       const total=(xp.data||[]).reduce((n,item)=>n+Number(item.amount||0),0);
       const acornXP=(xp.data||[]).filter(item=>item.game_id==="acorn-ascent")
@@ -266,6 +268,7 @@
       const cheeseXP=(xp.data||[]).filter(item=>item.game_id==="cut-the-cheese")
         .reduce((n,item)=>n+Number(item.amount||0),0);
       const level=Math.floor(Math.sqrt(total/50))+1;
+       currentPlayerLevel=level;
       const levelStart=50*(level-1)*(level-1),levelEnd=50*level*level;
       const earnedThisLevel=Math.max(0,total-levelStart),neededForNext=levelEnd-levelStart;
       byId("player-level").textContent=String(level);
@@ -277,7 +280,8 @@
       byId("badge-count").textContent=String((badges.data||[]).length);
       byId("badge-note").textContent="Official account badges";
       const earned=(badges.data||[]).some(x=>x.badge_id==="acorn-complete");
-      gearOwned=new Set((inventory.data||[]).map(x=>x.cosmetic_id).filter(id=>id.startsWith("gear-rush-l")));
+      gearOwned=new Set((inventory.data||[]).map(x=>x.cosmetic_id).filter(id=>window.RetroGearWearables?.get(id)));
+      thanksgivingSeconds=Number(thanksgiving.data?.eligible_seconds||0);
       gearEquipped={};
       for(const item of equipped.data||[]){
         if(gearOwned.has(item.cosmetic_id) && window.RetroGearWearables?.get(item.cosmetic_id)?.kind===item.slot){
@@ -323,39 +327,62 @@
       byId("cheese-badge-details").textContent=cheeseBadge?
         "Big Cheese earned! Your cheese wedge hat is now in the wardrobe.":
         cheeseClears+" / 10 distinct signed-in level clears toward Big Cheese.";
-      setRewardStatus("Account rewards loaded • "+acornXP+" Acorn XP • "+cheeseXP+" Cheese XP • "+gearOwned.size+" Gear Rush wearables");
+      setRewardStatus("Account rewards loaded • "+acornXP+" Acorn XP • "+cheeseXP+" Cheese XP • "+gearOwned.size+" progression cosmetics");
       renderAvatar();
     }catch(e){setRewardStatus("Rewards unavailable: "+(e.message||"Try again")); }
   }
   function renderGearWardrobe(){
-    const grid=byId("gear-wardrobe-grid"), summary=byId("gear-rewards-summary");
-    if(!grid)return;
-    grid.replaceChildren();
-    const items=window.RetroGearWearables?.items||[];
-    summary.textContent=user
-      ? gearOwned.size+" of 15 Gear Rush outfits earned — first clear each room in signed-in Rush mode"
-      : "Sign in to unlock and equip hockey outfits.";
-    for(const item of items){
+    const catalog=window.RetroGearWearables?.items||[];
+    const gameItems=catalog.filter(item=>item.category==="game"&&(item.active||gearOwned.has(item.id)));
+    const levelItems=catalog.filter(item=>item.category==="level");
+    const eventItems=catalog.filter(item=>item.category==="event");
+    const game=byId("gear-wardrobe-grid"),levels=byId("level-wardrobe-grid"),events=byId("event-wardrobe-grid");
+    if(!game||!levels||!events)return;
+    function card(item,description){
       const owned=gearOwned.has(item.id),worn=gearEquipped[item.kind]===item.id;
-      const card=document.createElement("div");
-      card.className="gear-reward-card"+(owned?" is-owned":" is-locked");
-      const art=document.createElement("div");art.className="gear-reward-art";
-      art.style.setProperty("--reward-color",item.color);
-      art.textContent=item.kind==="hat"?"◠":item.kind==="shirt"?"▣":item.kind==="pants"?"▥":"✦";
+      const el=document.createElement("article");
+      el.className="gear-reward-card"+(owned?" is-owned":" is-locked");
+      const art=document.createElement("div");
+      art.className="gear-reward-art";art.style.setProperty("--reward-color",item.color);
+      const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+      svg.setAttribute("viewBox","0 0 180 244");svg.setAttribute("aria-hidden","true");
+      svg.innerHTML=window.RetroGearWearables?.artwork(item.id)||"";
+      art.append(svg);
       const name=document.createElement("strong");name.textContent=item.title;
-      const level=document.createElement("span");level.textContent="Gear Rush Room "+item.level+" • "+item.kind;
-      const state=document.createElement("b");state.textContent=owned?(worn?"EQUIPPED ✓":"OWNED"):"LOCKED";
-      card.append(art,name,level,state);
+      const note=document.createElement("span");note.textContent=description;
+      const label=document.createElement("b");label.textContent=owned?(worn?"EQUIPPED ✓":"OWNED"):"LOCKED";
+      el.append(art,name,note,label);
       if(owned){
-        const button=document.createElement("button");
-        button.type="button";button.className="button primary";
-        button.textContent=worn?"Remove":"Wear";
-        button.disabled=gearPending;
+        const button=document.createElement("button");button.type="button";button.className="button primary";
+        button.textContent=worn?"Remove":"Wear";button.disabled=gearPending;
         button.addEventListener("click",()=>{void toggleGearWearable(item,button)});
-        card.append(button);
+        el.append(button);
       }
-      grid.append(card);
+      return el;
     }
+    byId("gear-rewards-summary").textContent=user
+      ? gameItems.filter(item=>item.active&&gearOwned.has(item.id)).length+" / 3 Gear Rush milestone rewards earned"
+      : "Sign in to unlock hockey rewards.";
+    game.replaceChildren(...gameItems.map(item=>card(item,
+      item.active?"First eligible Rush clear of Room "+item.level:"Previously earned legacy reward")));
+    const owned=levelItems.filter(item=>gearOwned.has(item.id)).length;
+    byId("level-outfits-count").textContent=owned+" shirts owned";
+    byId("level-outfits-summary").textContent=user
+      ? "Player Level "+currentPlayerLevel+" • "+owned+" of 49 level shirts unlocked"
+      : "Sign in to unlock new shirts with XP.";
+    const shown=levelShowAll?levelItems:levelItems.slice(0,Math.max(8,Math.min(49,currentPlayerLevel+3)));
+    levels.replaceChildren(...shown.map(item=>card(item,"Account Level "+item.level+" • "+(50*(item.level-1)*(item.level-1)).toLocaleString()+" total XP")));
+    const more=byId("level-wardrobe-more");
+    more.hidden=levelShowAll?false:shown.length>=levelItems.length;
+    more.textContent=levelShowAll?"Show Fewer Shirts":"Show All "+levelItems.length+" Level Shirts";
+    events.replaceChildren(...eventItems.map(item=>card(item,
+      item.kind==="hat"?"30 minutes on Thanksgiving":"Play on Thanksgiving")));
+    const eventProgress=byId("thanksgiving-progress");
+    const easternDate=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+    const minutes=Math.floor(thanksgivingSeconds/60);
+    if(!user)eventProgress.textContent="Sign in to track Thanksgiving rewards.";
+    else if(easternDate<"2026-11-26")eventProgress.textContent="Starts November 26 • 0 / 30 eligible minutes";
+    else eventProgress.textContent=(easternDate>"2026-11-26"?"Event ended • ":"Thanksgiving activity • ")+minutes+" / 30 eligible minutes across games.";
   }
   async function toggleGearWearable(item,button){
     if(!user||!client||gearPending||!gearOwned.has(item.id))return;
@@ -461,6 +488,7 @@
     byId("save-profile").addEventListener("click",()=>saveProfile("avatar"));
     byId("save-name").addEventListener("click",()=>saveProfile("name"));
     byId("equip-acorn-shirt").addEventListener("click",equipAcornShirt);
+     byId("level-wardrobe-more").addEventListener("click",()=>{levelShowAll=!levelShowAll;renderGearWardrobe();});
     byId("equip-cheese-hat").addEventListener("click",equipCheeseHat);
     window.addEventListener("focus",()=>{if(user)void loadGameStats(user.id);});
     document.addEventListener("visibilitychange",()=>{if(!document.hidden&&user)void loadGameStats(user.id);});
@@ -478,7 +506,7 @@
         user=next;updateAuthUI();
         if(user){void loadProfile().then(loadRewards);void loadGameStats(user.id);}
         else{
-          equippedShirt=false;shirtOwned=false;equippedHat=false;hatOwned=false;gearOwned=new Set();gearEquipped={};renderGearWardrobe();renderAvatar();clearGameStats();
+          equippedShirt=false;shirtOwned=false;equippedHat=false;hatOwned=false;gearOwned=new Set();gearEquipped={};currentPlayerLevel=1;thanksgivingSeconds=0;renderGearWardrobe();renderAvatar();clearGameStats();
           byId("player-level").textContent="—";byId("xp-text").textContent="Sign in for XP";
           byId("badge-count").textContent="—";setRewardStatus("Sign in to view your rewards");
           byId("equip-acorn-shirt").hidden=true;
