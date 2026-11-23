@@ -39,10 +39,18 @@
  // Load the same original avatars as the player profile across every game.
  if(!window.RetroHubAvatars){
    const avatarScript=document.createElement("script");
-   avatarScript.src=url("retro-player-avatar.js?v=20261121");
+   avatarScript.src=url("retro-player-avatar.js?v=20261123-gear15");
    avatarScript.async=true;
    avatarScript.onload=()=>{if(player)void refreshPlayer(player);};
    document.head.appendChild(avatarScript);
+ }
+ // Gear costumes live in the same authenticated inventory used by the profile.
+ if(!window.RetroGearWearables){
+   const gearScript=document.createElement("script");
+   gearScript.src=url("retro-gear-wearables.js?v=20261123-gear15");
+   gearScript.async=true;
+   gearScript.onload=()=>{if(player)void refreshPlayer(player);};
+   document.head.appendChild(gearScript);
  }
  if(script.dataset.layout==="viewport"){
    document.body.classList.add("retro-arcade-viewport");
@@ -184,11 +192,11 @@
    else if(displayedUserId!==player.id)txt.textContent=player.user_metadata?.username||player.email?.split("@")[0]||"Player";
    syncActivityTracker();
  }
- function paintAvatar(key){
+ function paintAvatar(key,gearWearables={}){
    avatar.textContent="🎮";
    if(!key)return;
    if(window.RetroHubAvatars&&typeof window.RetroHubAvatars.render==="function"){
-     try{avatar.innerHTML=window.RetroHubAvatars.render(key);}
+     try{avatar.innerHTML=window.RetroHubAvatars.render(key,{gearWearables});}
      catch(error){console.warn("Player avatar render failed",error);}
    }
  }
@@ -197,15 +205,23 @@
    const request=++profileRequest;
    const id=user.id;
    try{
-     const [p,x]=await Promise.all([
+     const [p,x,equipped,inventory]=await Promise.all([
        client.from("profiles").select("username,avatar_key").eq("id",id).maybeSingle(),
-       client.from("xp_ledger").select("amount").eq("user_id",id)
+       client.from("xp_ledger").select("amount").eq("user_id",id),
+       client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",id),
+       client.from("player_inventory").select("cosmetic_id").eq("user_id",id)
      ]);
      if(request!==profileRequest||player?.id!==id)return;
      if(p.error)console.warn("Player name/avatar unavailable:",p.error.code||p.error.message);
      const row=p.error?null:p.data;
      txt.textContent=row?.username||user.email?.split("@")[0]||"Player";
-     paintAvatar(row?.avatar_key);
+     const owned=new Set((inventory?.data||[]).map(item=>item.cosmetic_id));
+     const gear={};
+     for(const item of equipped?.data||[]){
+       if(owned.has(item.cosmetic_id)&&window.RetroGearWearables?.get(item.cosmetic_id)?.kind===item.slot)
+         gear[item.slot]=item.cosmetic_id;
+     }
+     paintAvatar(row?.avatar_key,gear);
      displayedUserId=id;
      if(x.error)throw x.error;
      const total=(x.data||[]).reduce((sum,item)=>sum+(Number(item.amount)||0),0);
