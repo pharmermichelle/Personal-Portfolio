@@ -54,3 +54,24 @@
 .gear-reward-card .button{width:100%;min-height:44px;margin-top:auto}
 #gear-rewards-summary{font-size:15px;font-weight:700;color:#c3f1d9}
 @media(max-width:420px){.gear-wardrobe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gear-reward-card{padding:11px 7px}}
+
+
+/* Closet categories: collapsible, keyboard accessible and easy to read on phones. */
+.wardrobe-category{margin:12px 0;border:1px solid #8679b9;border-radius:14px;background:#16182f;overflow:hidden}
+.wardrobe-category>summary{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:9px;cursor:pointer;padding:12px 14px;font-size:17px;font-weight:900;color:#f9f1ff;background:#252344}
+.wardrobe-category>summary small{font-size:12px;font-weight:750;color:#d3c6ea;text-align:right}
+.wardrobe-category[open]>summary{background:#38305c;border-bottom:1px solid #8c78bc}
+.wardrobe-category>summary:focus-visible{outline:3px solid #ffe58e;outline-offset:-3px}
+.wardrobe-category-body{padding:13px}
+.wardrobe-category-body h3{font-size:18px;color:#ffeeb0;margin:3px 0 7px}
+.wardrobe-category .gear-reward-card .gear-reward-art svg{width:68px;height:77px;display:block}
+.wardrobe-category .gear-reward-card .gear-reward-art{width:80px;height:88px;display:grid;place-items:center}
+#level-wardrobe-more{display:block;margin:13px auto 4px;min-height:48px}
+#level-wardrobe-more[hidden]{display:none}
+.wardrobe-leaderboard-link{display:flex;align-items:center;justify-content:center;margin:16px auto 0;min-height:48px;width:min(100%,350px)}
+@media(max-width:430px){
+ .wardrobe-category>summary{font-size:15px;padding:12px 10px}
+ .wardrobe-category>summary small{font-size:11px}
+ .wardrobe-category-body{padding:10px}
+ .wardrobe-category .gear-reward-card strong{font-size:14px}
+}
