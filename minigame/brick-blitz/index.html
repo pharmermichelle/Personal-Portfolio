@@ -17,9 +17,13 @@ button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-a
 .steering{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:700px;margin:12px auto 3px}.steering button{display:flex;align-items:center;justify-content:center;gap:12px;min-width:0;min-height:72px;border:2px solid #83b4e6;border-radius:13px;background:linear-gradient(#283e70,#1a2c52);box-shadow:0 4px 0 #080f20;color:#f0faff;font-size:20px;font-weight:950;letter-spacing:1px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.steering button .arrow{font-size:34px;line-height:1;color:#95fbff}.steering button:active,.steering button.pressed{background:linear-gradient(#416398,#24456f);transform:translateY(2px);box-shadow:0 2px 0 #080f20}.actions{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto 5px}.secondary{background:#1e2c4d;color:#f1f7ff;border:1px solid #7793bf;border-radius:9px;padding:8px 13px}.secondary:disabled{opacity:.5}
 .help{max-width:610px;margin:9px auto;font-size:14px;text-align:center;color:#d7e6ff}.xp-guide{max-width:640px;margin:12px auto 8px;background:#172342;border:1px solid #566f9b;border-radius:11px;padding:10px 12px}.xp-guide summary{font-size:15px;font-weight:900;cursor:pointer;color:var(--gold)}.xp-guide p{margin:7px 0 0;font-size:13px;color:#dbe8ff}.status{margin:9px auto;min-height:22px;text-align:center;font-size:14px;font-weight:750;color:#aff6d0}
 .ad{max-width:320px;margin:16px auto 0;text-align:center;min-height:67px}.ad span{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a9b6c7}.ad ins{display:block;width:100%;height:50px}
+.cloud-progress{max-width:650px;margin:8px auto 12px;padding:8px 11px;background:#172442;border:1px solid #5376a7;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center}
+.cloud-progress span{font-size:13px;color:#d5efff;flex:1 1 160px}
+.cloud-progress button{min-height:44px;padding:8px 12px;background:#263f65;color:#f4ffff;border:1px solid #83bcec;border-radius:8px;font-size:14px}
 @media(max-width:420px){.shell{padding:9px 8px 22px}.mast p,.help{font-size:12px}.stat span{font-size:9px}.stat b{font-size:19px}.stats{gap:5px}.overlay p{font-size:13px}.overlay{gap:8px;padding:12px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script src="../../retro-save-service.js?v=20261123-brick-cloud-v1"></script>
 <script src="../../retro-arcade-header.js?v=20261122-brick1" data-game-id="brick-blitz" data-layout="scroll" defer></script>
 <script src="../../retro-rewards.js?v=20261122-brick1"></script>
 <script src="../../retro-level-xp.js?v=20261122-brick1" data-game-id="brick-blitz"></script>
@@ -37,6 +41,7 @@ button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-a
 <p class="help">📱 Tap or hold the large LEFT / RIGHT buttons below the board, or drag on the playfield. 🖥️ Mouse or ← → / A D also work. Space pauses.</p>
 <details class="xp-guide" open><summary>★ HOW TO EARN XP</summary><p>Sign in before starting a level. The <strong>first clear of each level</strong> earns <strong>3 XP on Level 1, increasing by 1 XP per level</strong>, up to 12 XP. Replays don't give duplicate XP. Only successful clears earn XP. Play as a guest to save your level progress on this device.</p></details>
 <div class="status" id="status" role="status" aria-live="polite">Clear Level 1 to unlock Level 2. Sign in to collect arcade XP.</div>
+<div class="cloud-progress" aria-label="Progress backup"><span id="brick-cloud-status" role="status" aria-live="polite">Unlocked levels save on this device.</span><button id="brick-sync-options" type="button" hidden>Sync Options</button></div>
 <div class="ad"><span>Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
 </main>
 <script>
@@ -49,8 +54,56 @@ try{const data=JSON.parse(localStorage.getItem(localKey)||"null");if(data&&Numbe
 let level=progress.unlocked,state="idle",lives=3,score=0,bricks=[],ball={x:350,y:PY-24,vx:0,vy:0},paddleX=350,keyL=false,keyR=false,pressL=false,pressR=false,touchX=null,last=performance.now(),stepCache=0,muted=true,audio=null,serveDelay=0,levelRun=0;
 const colors=["#ff829d","#fdbf72","#ffe27a","#99f0c0","#78d5fb","#c7a5fc"];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-const save=()=>{try{localStorage.setItem(localKey,JSON.stringify(progress));}catch(_){}};
+let brickSaver=null,brickSaveStarted=false,brickSaveLoading=false;
+const save=()=>{
+ if(brickSaver&&!brickSaveLoading){
+   brickSaver.save(progress,"brick-level-clear");
+   if(!["guest","guest-only"].includes(brickSaver.mode))return;
+ }
+ try{localStorage.setItem(localKey,JSON.stringify(progress));}catch(_){}
+};
 const say=m=>{$("status").textContent=m};
+function validateBrickSave(raw){
+ if(!raw||typeof raw!=="object"||Array.isArray(raw)||
+    !Number.isInteger(raw.unlocked)||raw.unlocked<1||raw.unlocked>MAX||
+    !Number.isSafeInteger(raw.score)||raw.score<0||raw.score>1000000000)
+   throw Error("Invalid Brick Blitz progress");
+ return {unlocked:raw.unlocked,score:raw.score};
+}
+function applyBrickSave(raw){
+ const next=validateBrickSave(raw);
+ progress=next;
+ // A new player identity must never inherit the previous account's live round.
+ if(["running","paused","starting","clearing"].includes(state)){
+   state="idle";levelRun++;
+   $("pause").disabled=true;stopSteering();
+ }
+ level=progress.unlocked;prepare();
+ overlay("LEVEL "+level+" READY","Progress restored. Start a fresh level to earn account XP.","▶ START LEVEL "+level);
+}
+const brickCloudAdapter={
+ gameId:"brick-blitz",displayName:"Brick Blitz",schemaVersion:1,gameVersion:"v1",
+ emptyState:()=>({unlocked:1,score:0}),
+ validateSave:validateBrickSave,restoreState:applyBrickSave,
+ readLegacyLocal:()=>{try{return validateBrickSave(JSON.parse(localStorage.getItem(localKey)||"null"));}catch(_){return null;}},
+ meaningful:v=>v.unlocked>1||v.score>0,
+ summarizeSave:v=>"Level "+v.unlocked+" unlocked · "+v.score+" accumulated points"
+};
+async function startBrickCloud(){
+ if(brickSaveStarted||!window.RetroSaveService||!window.retroArcadeSupabaseClient)return;
+ if(["running","paused","starting","clearing"].includes(state))return;
+ brickSaveStarted=true;brickSaveLoading=true;$("main-button").disabled=true;
+ $("brick-cloud-status").textContent="Checking account save…";
+ try{
+   brickSaver=window.RetroSaveService.create(brickCloudAdapter,{statusId:"brick-cloud-status",optionsId:"brick-sync-options"});
+   const restored=await brickSaver.initialize();
+   if(restored)applyBrickSave(restored);
+ }catch(_){
+   brickSaver=null;$("brick-cloud-status").textContent="Device only • cloud save unavailable";
+ }finally{
+   brickSaveLoading=false;$("main-button").disabled=false;
+ }
+}
 function chime(freq=420){if(muted)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;if(!audio)audio=new A();const o=audio.createOscillator(),gain=audio.createGain();o.type="square";o.frequency.value=freq;gain.gain.setValueAtTime(.025,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.095);o.connect(gain);gain.connect(audio.destination);o.start();o.stop(audio.currentTime+.1)}catch(_){}}
 function overlay(title,message,button){$("overlay").hidden=false;$("overlay-title").textContent=title;$("overlay-copy").textContent=message;$("main-button").textContent=button;}
 function hideOverlay(){$("overlay").hidden=true}
@@ -76,7 +129,7 @@ function pause(){if(state!=="running")return;state="paused";$("pause").textConte
 function resume(){if(state!=="paused")return;state="running";last=performance.now();hideOverlay();$("pause").textContent="Ⅱ PAUSE";}
 function loseBall(){
  lives--;chime(175);updateHUD();
- if(lives<=0){state="over";$("pause").disabled=true;overlay("TRY AGAIN","No lives left. You can replay Level "+level+" without losing your unlocked levels.","↻ TRY AGAIN");say("Level not cleared. Your unlocked stages are saved.");return;}
+ if(lives<=0){state="over";void startBrickCloud();$("pause").disabled=true;overlay("TRY AGAIN","No lives left. You can replay Level "+level+" without losing your unlocked levels.","↻ TRY AGAIN");say("Level not cleared. Your unlocked stages are saved.");return;}
  resetBall();serve();say("Ball lost. "+lives+" "+(lives===1?"life":"lives")+" left.");
 }
 function clear(){
@@ -92,11 +145,12 @@ function clear(){
    if(result?.type==="guest")say("Level saved locally. Sign in before starting to earn account XP.");
    else if(result?.type==="unverified"||result?.type==="pending"||!result?.accepted)
      say("Level saved locally. Account XP not confirmed; check your status before retrying.");
+   void startBrickCloud();
  }).catch(()=>{if(run===levelRun)say("Level saved locally. Account XP could not be confirmed.");});
 }
 function advance(){
  if(state==="paused"){resume();return;}
- if(state==="clearing"){level=level===MAX?1:level+1;state="idle";overlay("LEVEL "+level,"Ready for the next challenge?","▶ START LEVEL "+level);updateHUD();return;}
+ if(state==="clearing"){level=level===MAX?1:level+1;state="idle";overlay("LEVEL "+level,"Ready for the next challenge?","▶ START LEVEL "+level);updateHUD();void startBrickCloud();return;}
  start();
 }
 function paddleContact(prevX,prevY,nextX,nextY,oldPaddleX,newPaddleX){
@@ -217,6 +271,8 @@ window.addEventListener("retro-level-xp",e=>{
  }else if(e.detail.type==="guest")say("Level cleared. Sign in before starting to earn account XP.");
  else if(e.detail.type==="error")say("Local progress saved; XP: "+(e.detail.message||"unavailable"));
 });
+window.addEventListener("retro-arcade-auth-ready",()=>{void startBrickCloud();});
+if(window.retroArcadeSupabaseClient)void startBrickCloud();
 prepare();overlay("READY TO BLITZ?","Break every brick to unlock the next level. Three lives per level.","▶ START LEVEL "+level);
 requestAnimationFrame(frame);
 try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(_){}
