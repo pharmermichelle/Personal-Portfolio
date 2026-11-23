@@ -68,12 +68,10 @@
   let chosenMode = "rush";
   let state = "ready"; // ready | running | paused | results
   let elapsed = 0, lastTick = 0, timer = null, total = 0, found = 0, assisted = false;
-  let targets = [], collected = new Set(), pieces = [], roundNo = 0;
-  let resultWasLate = false, campaignRound = true, lastResultMode = "rush";
-  let lastStatus = "";
+  let targets = [], collected = new Set(), pieces = [];
+  let resultWasLate = false;
 
   function status(message) {
-    lastStatus = message;
     $("status").textContent = message;
   }
   function config(n = level) {
@@ -282,9 +280,7 @@
   }
   function begin() {
     if (state === "running") return;
-    roundNo++;
     elapsed = 0; found = 0; assisted = false; resultWasLate = false;
-    campaignRound = chosenMode !== "cleanup"; lastResultMode = chosenMode;
     fillBoard();
     state = "running";
     hideOverlay();
