@@ -384,3 +384,163 @@ body {
   .target-item span { font-size: 13px; }
   .board-controls .btn { font-size: 13px; }
 }
+
+
+/* First-play guide — self-contained, legible on 320px screens, independent of game scroll. */
+.tutorial-modal[hidden], .tutorial-step[hidden], .tutorial-actions [hidden] { display: none !important; }
+.tutorial-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  margin: 9px 0 1px;
+  border: 1px solid #ffd6dc;
+  border-radius: 9px;
+  background: #8f213a;
+  color: #fff;
+  font: 800 15px/1.2 system-ui, sans-serif;
+}
+.tutorial-trigger:hover { background: #ad2845; }
+.tutorial-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: #12040de8;
+  overscroll-behavior: contain;
+}
+.tutorial-card {
+  width: min(100%, 420px);
+  min-width: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  color: #fff;
+  background: linear-gradient(155deg,#69182d 0%, #360d1c 100%);
+  border: 2px solid #f8a7b5;
+  border-radius: 18px;
+  padding: clamp(14px, 4vw, 22px);
+  box-shadow: 0 22px 55px #080006cc;
+}
+.tutorial-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 13px;
+}
+.tutorial-eyebrow {
+  color: #ffe6ec;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .055em;
+}
+.tutorial-count {
+  color: #fff0bd;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.tutorial-step h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(23px, 6vw, 29px);
+  line-height: 1.1;
+}
+.tutorial-step p {
+  margin: 0;
+  color: #fff1f3;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.tutorial-step strong { color: #fff0c2; }
+.tutorial-illustration, .tutorial-example {
+  display: grid;
+  align-items: center;
+  place-content: center;
+  min-height: 108px;
+  border: 1px solid #f3a4b3;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #ad2945, #63172d);
+  color: white;
+  text-align: center;
+}
+.tutorial-illustration--goal {
+  font-size: 43px;
+  font-weight: 900;
+}
+.tutorial-illustration--goal span {
+  display: block;
+  font-size: 20px;
+  letter-spacing: .05em;
+}
+.tutorial-illustration--stars { gap: 2px; }
+.tutorial-illustration--stars span {
+  color: #ffe8aa;
+  font-size: 43px;
+  letter-spacing: .08em;
+}
+.tutorial-illustration--stars small { font-size: 13px; letter-spacing: .14em; font-weight: 900; }
+.tutorial-example {
+  min-height: 112px;
+  padding: 10px;
+  gap: 9px;
+}
+.tutorial-example-label { font-size: 13px; letter-spacing: .075em; font-weight: 900; color: #ffe6ec; }
+.tutorial-sample-row, .tutorial-sample-items { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.tutorial-sample-row > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #371621;
+  border: 1px solid #e2a2ae;
+  border-radius: 9px;
+  padding: 5px;
+  font-size: 13px;
+  font-weight: 750;
+}
+.tutorial-sample-row img, .tutorial-sample-items img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+.tutorial-example--rink {
+  background: linear-gradient(#7b2336bf,#3c1126e0), url("locker-rink-board.svg") center / 100% 100% no-repeat;
+}
+.tutorial-sample-items > span {
+  display: grid;
+  place-items: center;
+  background: #542138;
+  border: 1px solid #f1b7c1;
+  border-radius: 9px;
+  width: 43px;
+  height: 43px;
+  font-size: 25px;
+}
+.tutorial-dots { display: flex; justify-content: center; gap: 8px; margin: 18px 0 14px; }
+.tutorial-dots span { width: 8px; height: 8px; border-radius: 50%; background: #b86f81; }
+.tutorial-dots .is-active { width: 23px; border-radius: 10px; background: #ffe7a6; }
+.tutorial-actions { display: grid; grid-template-columns: 1fr 1.3fr; gap: 9px; }
+.tutorial-actions .btn { min-width: 0; min-height: 48px; font-size: 16px; }
+.tutorial-actions #tutorial-next { grid-column: 2; }
+.tutorial-skip {
+  display: block;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: #ffe8ed;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 15px;
+  margin: 8px auto 0;
+  padding: 8px 16px;
+}
+.tutorial-skip:hover { color: #fff; }
+@media (max-width: 350px) {
+  .tutorial-card { padding: 13px 11px; }
+  .tutorial-step h2 { font-size: 23px; }
+  .tutorial-illustration, .tutorial-example { min-height: 90px; }
+}
