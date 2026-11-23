@@ -4,7 +4,7 @@
 const $=id=>document.getElementById(id);
 const metric=$("leaderboard-metric"),game=$("leaderboard-game"),rows=$("rank-rows");
 const checkbox=$("leaderboard-optin");
-let client=null,userId=null,available=[],request=0,connecting=false;
+let client=null,userId=null,available=[],request=0,connecting=false,subscribed=false;
 const format=(value,type)=>{
  const n=Number(value)||0;
  if(type==="xp")return n.toLocaleString()+" XP";
@@ -102,6 +102,14 @@ async function syncAccount(){
 async function connect(){
  const c=window.retroArcadeSupabaseClient;
  if(!c||connecting)return;connecting=true;client=c;
+ if(!subscribed){
+  subscribed=true;
+  // A signed-out browser must never keep showing a previous player's opt-in state.
+  client.auth.onAuthStateChange(()=>{
+   checkbox.checked=false;checkbox.disabled=true;
+   setTimeout(()=>{void syncAccount();},0);
+  });
+ }
  try{
   const {data,error}=await client.from("game_xp_rules").select("game_id,display_name,reward_type").eq("enabled",true);
   if(error)throw error;
