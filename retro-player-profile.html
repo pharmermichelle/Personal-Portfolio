@@ -7,9 +7,10 @@
   <meta name="description" content="Create your original retro arcade avatar, customize your player profile, and see what's coming for game achievements and rewards.">
   <title>My Arcade Profile | Michelle's Retro Game Hub</title>
   <link rel="icon" href="images/portfolio-icon.png">
-  <link rel="stylesheet" href="retro-player-profile.css?v=20261120-stats-2">
+  <link rel="stylesheet" href="retro-player-profile.css?v=20261123-gear-15">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-  <script defer src="retro-player-profile.js?v=20261121-cheesehat-1"></script>
+  <script defer src="retro-gear-wearables.js?v=20261123-gear-15"></script>
+  <script defer src="retro-player-profile.js?v=20261123-gear-15"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to profile</a>
@@ -151,9 +152,13 @@
         </div>
         <div class="outfit-card locked"><div class="item-symbol">🐾</div><strong>Claws vs. Paws Rival Pants</strong><span>Game-specific bottoms</span><b>LOCKED</b></div>
       </div>
+      <div class="outfit-section-label">HOCKEY GEAR RUSH <small>15 ROOMS • ONE WEARABLE PER VERIFIED ACCOUNT CLEAR</small></div>
+      <p class="help-text">Unlock fifteen unique hats, jerseys, pants and frames from signed-in Rush room clears. Each reward belongs to your account, and you can equip it here. Casual first-clear awards are timed, not replay-verified competitive scores.</p>
+      <p id="gear-rewards-summary" role="status" aria-live="polite">Sign in to view your hockey collection.</p>
+      <div id="gear-wardrobe-grid" class="gear-wardrobe-grid" aria-label="Hockey Gear Rush earned and locked wearables"></div>
     </section>
 
-    <section id="game-stats" class="panel game-stats" aria-labelledby="game-stats-heading">
+    <section id="game-stats' class="panel game-stats" aria-labelledby="game-stats-heading">
       <div class="panel-title teal"><span id="game-stats-heading">05 / GAME-BY-GAME RECORD</span><span>PERSONAL BESTS</span></div>
       <div class="stats-heading"><div><h2>Your games. Your glory.</h2><p>Your account visits, estimated focused game-page time, saved games, and verified XP appear here. Earlier time cannot be recovered. Scores and ranks remain blank until verification systems launch.</p></div><a class="button secondary" href="retro-game-hub.html">Play a Game ↗</a></div>
       <p id="game-stats-status" class="game-stats-status" role="status" aria-live="polite">Sign in to view your recorded game progress.</p>
