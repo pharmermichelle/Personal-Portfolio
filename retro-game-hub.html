@@ -7,7 +7,8 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-    <script src="retro-hub-avatars.js"></script>
+    <script src="retro-gear-wearables.js?v=20261123-gear15"></script>
+    <script src="retro-hub-avatars.js?v=20261123-gear15"></script>
     <title>Retro Games Hub — Free Retro Arcade Games</title>
     <meta name="description" content="Play free retro arcade games, track your XP, earn avatar rewards, and explore new challenges. Play as a guest or create an arcade profile.">
     <link rel="canonical" href="https://michellew.io/retro-game-hub.html">
@@ -1497,22 +1498,31 @@ async function refreshPlayerHeader(player){
  const fetchPlayerData=()=>Promise.all([
   supabaseClient.from("profiles").select("username,avatar_key").eq("id",player.id).maybeSingle(),
   supabaseClient.from("xp_ledger").select("amount,game_id").eq("user_id",player.id),
-   supabaseClient.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",player.id)
+   supabaseClient.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",player.id),
+  supabaseClient.from("player_inventory").select("cosmetic_id").eq("user_id",player.id)
  ]);
  try{
-  let [profile,xp,equipped]=await fetchPlayerData();
+  let [profile,xp,equipped,inventory]=await fetchPlayerData();
   if(request!==headerProfileRequest)return;
   // A cached or expired browser session can affect both table reads. Refresh once.
   if(profile.error&&xp.error&&[401,403].includes(Number(profile.status||xp.status))){
    const refreshed=await supabaseClient.auth.refreshSession();
-   if(!refreshed.error){[profile,xp,equipped]=await fetchPlayerData();}
+   if(!refreshed.error){[profile,xp,equipped,inventory]=await fetchPlayerData();}
   }
   if(request!==headerProfileRequest)return;
   if(profile.error)console.warn("Player profile request:",profile.error.code,profile.error.message);
   const p=profile.error?{}:(profile.data||{});
   name.textContent=p.username||player.email?.split("@")[0]||"Player";
   if(p.avatar_key&&window.RetroHubAvatars){
-   try{avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key,{
+   try{
+    const owned=new Set((inventory?.data||[]).map(item=>item.cosmetic_id));
+    const gear={};
+    for(const item of equipped?.data||[]){
+      if(owned.has(item.cosmetic_id)&&window.RetroGearWearables?.get(item.cosmetic_id)?.kind===item.slot)
+        gear[item.slot]=item.cosmetic_id;
+    }
+    avatar.innerHTML=window.RetroHubAvatars.render(p.avatar_key,{
+      gearWearables:gear,
       equippedShirt:!equipped.error&&(equipped.data||[]).some(x=>x.slot==="shirt"&&x.cosmetic_id==="shirt-acorn-ascent"),
       equippedHat:!equipped.error&&(equipped.data||[]).some(x=>x.slot==="hat"&&x.cosmetic_id==="hat-cheese-wedge")
     });}
