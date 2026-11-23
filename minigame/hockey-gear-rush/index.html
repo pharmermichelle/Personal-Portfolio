@@ -13,11 +13,11 @@
   <meta property="og:url" content="https://michellew.io/minigame/hockey-gear-rush/index.html">
   <meta property="og:image" content="https://michellew.io/images/portfolio-icon.png">
   <meta name="twitter:card" content="summary">
-  <link rel="stylesheet" href="gear-rush.css?v=20261123-red-rink1">
+  <link rel="stylesheet" href="gear-rush.css?v=20261123-red-rink2">
   <script src="../../retro-arcade-header.js?v=20261123-share" data-game-id="hockey-gear-rush" data-layout="scroll" defer></script>
   <script src="../../retro-rewards.js?v=20261122-brick1" defer></script>
   <script src="../../retro-level-xp.js?v=20261122-brick1" data-game-id="hockey-gear-rush" defer></script>
-  <script src="gear-rush.js?v=20261123-locker4" defer></script>
+  <script src="gear-rush.js?v=20261123-tutorial1" defer></script>
   <!-- Keep collapsible Google anchor ads at the bottom, never over the rink/header. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" data-overlays="collapsed-bottom" crossorigin="anonymous"></script>
 </head>
@@ -78,6 +78,7 @@
           <button class="mode-button" type="button" data-mode="relaxed" aria-pressed="false">☁ Relaxed</button>
           <button class="mode-button" type="button" data-mode="cleanup" aria-pressed="false">🧹 Cleanup</button>
         </div>
+        <button id="tutorial-open" class="tutorial-trigger" type="button" aria-haspopup="dialog">? How to Play</button>
         <p id="mode-help" class="mode-help">Beat the target time for more stars. You can still finish if the clock runs over.</p>
         <div class="level-selector" role="group" aria-label="Choose unlocked room">
           <button id="level-back" class="btn" type="button" aria-label="Previous room">‹</button>
@@ -112,5 +113,54 @@
     <ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins>
   </section>
 </main>
+
+<!-- First-play guide remains separate from the game so active controls can be inert. -->
+<div id="tutorial" class="tutorial-modal" hidden>
+  <section class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorial-heading">
+    <div class="tutorial-topline">
+      <span class="tutorial-eyebrow">🏒 NEW PLAYER GUIDE</span>
+      <span id="tutorial-count" class="tutorial-count" aria-live="polite">1 of 4</span>
+    </div>
+    <div class="tutorial-content">
+      <div class="tutorial-step" data-tutorial-step="0">
+        <div class="tutorial-illustration tutorial-illustration--goal" aria-hidden="true">🏒 <span>FACE OFF!</span></div>
+        <h2 id="tutorial-heading">Get to the rink!</h2>
+        <p>Your job is to find every piece of hockey equipment before heading onto the ice. Find everything on your list to finish the room and unlock the next one.</p>
+      </div>
+      <div class="tutorial-step" data-tutorial-step="1" hidden>
+        <div class="tutorial-example" aria-hidden="true">
+          <div class="tutorial-example-label">YOUR EQUIPMENT CHECKLIST</div>
+          <div class="tutorial-sample-row">
+            <span><img src="assets/gear/helmet.png" alt=""> Helmet ✓</span>
+            <span><img src="assets/gear/stick.png" alt=""> Hockey Stick</span>
+          </div>
+        </div>
+        <h2>Check your gear list.</h2>
+        <p>Look for the <strong>Equipment Checklist</strong> directly below the rink on your phone, or beside it on desktop. The pictures and names show exactly which items to find. Found items get a checkmark.</p>
+      </div>
+      <div class="tutorial-step" data-tutorial-step="2" hidden>
+        <div class="tutorial-example tutorial-example--rink" aria-hidden="true">
+          <div class="tutorial-example-label">SEARCH THE HOCKEY RINK BOARD</div>
+          <div class="tutorial-sample-items"><span>🧦</span><img src="assets/gear/helmet.png" alt=""><span>🎒</span><img src="assets/gear/puck.png" alt=""></div>
+        </div>
+        <h2>Find it. Tap it. Collect it.</h2>
+        <p>The hockey gear is scattered around the large rink board. <strong>Tap a matching gear picture</strong> to collect it. Tap other objects to clear clutter, or drag them aside. Keep going until every checklist item is checked.</p>
+      </div>
+      <div class="tutorial-step" data-tutorial-step="3" hidden>
+        <div class="tutorial-illustration tutorial-illustration--stars" aria-hidden="true"><span>★★★</span><small>ROOM COMPLETE</small></div>
+        <h2>Earn stars and unlock rooms.</h2>
+        <p><strong>Rush</strong> rewards fast finishes. <strong>Relaxed</strong> removes time pressure. <strong>Cleanup</strong> is an optional bonus. Pause whenever you need. The free <strong>Spotlight</strong> hint shows an item, but that assisted round won't earn account XP.</p>
+      </div>
+    </div>
+    <div class="tutorial-dots" aria-hidden="true">
+      <span class="is-active"></span><span></span><span></span><span></span>
+    </div>
+    <div class="tutorial-actions">
+      <button id="tutorial-back" type="button" class="btn btn--quiet" hidden>← Back</button>
+      <button id="tutorial-next" type="button" class="btn btn--primary">Next →</button>
+    </div>
+    <button id="tutorial-skip" type="button" class="tutorial-skip">Skip tutorial</button>
+  </section>
+</div>
 </body>
 </html>
