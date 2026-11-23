@@ -168,21 +168,23 @@ details.rules p { margin: 0; padding: 0 13px 13px; font-size: 13px; color: var(-
   .play-column { order: 3; }
   .side-column .collection-card { order: 4; }
   .side-column .rules { order: 5; }
-  .mode-card { padding: 9px 11px; }
-  .mode-help { font-size: 12px; margin-top: 4px; }
+  .mode-card { padding: 7px 10px; }
+  .mode-card .side-title { display: none; }
+  .mode-help { margin: 5px 0 0; font-size: 13px; }
+  .mode-button { min-height: 44px; font-size: 14px; }
   .level-selector { margin-top: 6px; }
   .targets-card { padding: 9px 10px; }
   .targets-card .side-title { margin-bottom: 6px; }
   .target-list { display: flex; overflow-x: auto; padding: 2px 1px 6px; gap: 7px; scrollbar-width: thin; }
-  .target-item { flex: 0 0 119px; min-height: 47px; padding: 4px; }
-  .target-item img { width: 31px; height: 31px; }
-  .target-item span { font-size: 12px; }
+  .target-item { flex: 0 0 140px; min-height: 51px; padding: 4px; }
+  .target-item img { width: 34px; height: 34px; }
+  .target-item span { font-size: 14px; }
   .targets-card .side-footnote { display: none; }
   .board-card { padding: 7px; }
   .playfield { height: clamp(225px, 38dvh, 410px); }
   .item { width: 52px; height: 52px; }
   .board-controls { margin-top: 7px; gap: 6px; }
-  .board-controls .btn { font-size: 13px; padding: 8px 5px; min-height: 48px; }
+  .board-controls .btn { font-size: 14px; padding: 8px 4px; min-height: 48px; }
   .collection-card { padding: 9px 11px; }
   .ad-slot { margin-top: 155px; }
 }
