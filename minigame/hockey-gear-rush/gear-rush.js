@@ -87,6 +87,12 @@
   function setMode(mode) {
     if (state === "running" || state === "paused") return;
     chosenMode = mode;
+    if (state === "results") {
+      state = "ready";
+      $("pause-button").disabled = true;
+      $("restart-button").disabled = true;
+      $("hint-button").disabled = true;
+    }
     elapsed = 0;
     document.querySelectorAll("[data-mode]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
