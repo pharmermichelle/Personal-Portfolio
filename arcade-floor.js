@@ -1,0 +1,202 @@
+/* Arcade Floor — solo, walkable CRT lobby (no multiplayer presence or chat). */
+(() => {
+"use strict";
+const GAMES=[{"name":"Brick Blitz","icon":"🧱","href":"minigame/brick-blitz/index.html"},{"name":"Neon Pong","icon":"🏓","href":"minigame/neon-pong/index.html"},{"name":"Grass Snake","icon":"🐍","href":"minigame/grass-snake/index.html"},{"name":"Claws vs. Paws","icon":"🐈","href":"minigame/claws-vs-paws/index.html"},{"name":"Cut the Cheese","icon":"🧀","href":"minigame/Cut-the-Cheese/index.html"},{"name":"Fallen Grid","icon":"🧩","href":"minigame/Tide-Tetris/index.html"},{"name":"Revive Nature","icon":"🌱","href":"minigame/Revive-nature/revive-index.html"},{"name":"Rink Putt","icon":"🏒","href":"minigame/hockey_shooter/index.html"},{"name":"Hockey Gear Rush","icon":"🥅","href":"minigame/hockey-gear-rush/index.html"},{"name":"Survive 2026","icon":"🌪️","href":"minigame/survive-2026/index.html"},{"name":"Acorn Ascent","icon":"🐿️","href":"minigame/acorn-ascent/index.html"},{"name":"Bugged Out!","icon":"🐞","href":"minigame/bugged-out/index.html"},{"name":"Coastline Cruiser","icon":"🚙","href":"minigame/coastline-cruiser/cruiser.html"},{"name":"Lemon Pound Cake","icon":"🍋","href":"minigame/pound_cake/index.html"},{"name":"Wizard's Mana Forge","icon":"🧙","href":"minigame/clickgame.html"},{"name":"Whack-a-Bug","icon":"🪲","href":"minigame/whackgame.html"},{"name":"Choose Your Adventure","icon":"📜","href":"minigame/game.html"},{"name":"Ferret Life (WIP)","icon":"🐾","href":"minigame/ferret-life/index.html"},{"name":"Inbox Hero","icon":"📥","href":"minigame/inbox-hero.html"},{"name":"Community Garden","icon":"🌻","href":"minigame/community-garden.html"}];
+const $=id=>document.getElementById(id);
+const viewport=$("room-window"),world=$("room-world"),grid=$("cabinet-grid");
+const avatar=$("floor-player"),avatarArt=$("floor-player-art");
+const player={x:665,y:1115};
+const bounds={w:1330,h:1200};
+const SPEED=250,INTERACT_DISTANCE=118,keys=new Set();
+let selected=null,autoTarget=null,last=performance.now(),active=true;
+let account=null,lastAccountRequest=0;
+const status=message=>{$("floor-status").textContent=message;};
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+function cabinetColor(index){return ["#ff65d4","#78e9ff","#ffe07a","#8ef8c8","#d2a5ff"][index%5];}
+const cabinets=GAMES.map((g,i)=>{
+ const col=i%5,row=Math.floor(i/5),x=175+col*245,y=166+row*239;
+ const button=document.createElement("button");
+ button.type="button";
+ button.className="arcade-cabinet";
+ button.style.left=(x-77)+"px";button.style.top=(y-15)+"px";
+ button.style.setProperty("--glow",cabinetColor(i));
+ button.setAttribute("aria-label","Arcade cabinet: "+g.name+". Select to walk over and play.");
+ const casing=document.createElement("span");casing.className="cabinet-case";
+ const screen=document.createElement("span");screen.className="cabinet-screen";
+ const icon=document.createElement("span");icon.className="cabinet-icon";icon.textContent=g.icon;
+ screen.append(icon);
+ const consoleRow=document.createElement("span");consoleRow.className="cabinet-console";
+ casing.append(screen,consoleRow);
+ const label=document.createElement("span");label.className="cabinet-label";label.textContent=g.name;
+ button.append(casing,label);grid.append(button);
+ const entry={...g,button,x,y,frontY:y+154};
+ button.addEventListener("click",()=>selectCabinet(entry,true));
+ return entry;
+});
+function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
+function nearestCabinet(){
+ let best=null,d=Infinity;
+ for(const c of cabinets){const current=distance(player,c);if(current<d){best=c;d=current;}}
+ return {cabinet:best,distance:d};
+}
+function selectCabinet(c,auto=false){
+ selected=c;
+ cabinets.forEach(g=>g.button.classList.toggle("is-selected",g===selected));
+ if(auto){autoTarget={x:c.x,y:Math.min(bounds.h-48,c.frontY+26)};}
+ updateAction();
+}
+function updateAction(){
+ const near=selected&&distance(player,selected)<=INTERACT_DISTANCE;
+ $("play-button").disabled=!near;
+ $("approach-button").disabled=!selected||!!autoTarget;
+ if(!selected){
+   const n=nearestCabinet();$("floor-location").textContent="Entrance";
+   status("Walk up to a cabinet, or tap one to travel there. "+(n.cabinet?.name||"")+" is nearby.");
+ }else{
+   $("floor-location").textContent=selected.name;
+   status(near
+     ? selected.name+" is ready! Press PLAY, E or Enter."
+     : "Heading to "+selected.name+". Walk closer to its glowing screen.");
+ }
+}
+$("approach-button").addEventListener("click",()=>{
+ if(selected){autoTarget={x:selected.x,y:Math.min(bounds.h-48,selected.frontY+26)};updateAction();}
+});
+function launchGame(){
+ const target=selected&&distance(player,selected)<=INTERACT_DISTANCE?selected:null;
+ if(!target)return;
+ // Each cabinet goes straight to its existing deployed game. Login/save
+ // remains the responsibility of the individual game page.
+ location.href=new URL(target.href,location.href).href;
+}
+$("play-button").addEventListener("click",launchGame);
+function setHeld(direction,yes,button){
+ if(yes){autoTarget=null;keys.add(direction);}else keys.delete(direction);
+ button?.classList.toggle("is-held",yes);
+}
+for(const button of document.querySelectorAll("[data-direction]")){
+ const dir=button.dataset.direction;
+ button.addEventListener("pointerdown",e=>{
+   if(e.button!==0)return;
+   e.preventDefault();try{button.setPointerCapture(e.pointerId);}catch(_){}
+   setHeld(dir,true,button);
+ });
+ const release=()=>setHeld(dir,false,button);
+ button.addEventListener("pointerup",release);
+ button.addEventListener("pointercancel",release);
+ button.addEventListener("lostpointercapture",release);
+ button.addEventListener("click",()=>{ // works for keyboard/switch users
+   if(keys.size)return;
+   autoTarget=null;
+   const dx=dir==="right"?45:dir==="left"?-45:0;
+   const dy=dir==="down"?45:dir==="up"?-45:0;
+   player.x=clamp(player.x+dx,45,bounds.w-45);
+   player.y=clamp(player.y+dy,120,bounds.h-45);
+   syncScene();
+ });
+}
+function keyDirection(key){
+ const k=key.toLowerCase();
+ if(k==="arrowup"||k==="w")return"up";
+ if(k==="arrowdown"||k==="s")return"down";
+ if(k==="arrowleft"||k==="a")return"left";
+ if(k==="arrowright"||k==="d")return"right";
+ return null;
+}
+window.addEventListener("keydown",event=>{
+ if(event.target instanceof HTMLInputElement||event.target instanceof HTMLTextAreaElement)return;
+ const dir=keyDirection(event.key);
+ if(dir){event.preventDefault();keys.add(dir);autoTarget=null;return;}
+ if((event.key==="e"||event.key==="E"||event.key==="Enter")&&!event.repeat){
+   if(event.target instanceof HTMLButtonElement && event.key==="Enter")return;
+   if(!selected||distance(player,selected)>INTERACT_DISTANCE){
+     const nearest=nearestCabinet();
+     if(nearest.distance<=INTERACT_DISTANCE)selectCabinet(nearest.cabinet);
+   }
+   launchGame();
+ }
+});
+window.addEventListener("keyup",event=>{const dir=keyDirection(event.key);if(dir)keys.delete(dir);});
+window.addEventListener("blur",()=>{keys.clear();active=false;last=performance.now();});
+window.addEventListener("focus",()=>{active=true;last=performance.now();});
+document.addEventListener("visibilitychange",()=>{active=!document.hidden;keys.clear();last=performance.now();});
+function syncScene(){
+ avatar.style.transform="translate3d("+(player.x-45)+"px,"+(player.y-116)+"px,0)";
+ const dx=viewport.clientWidth/2-player.x;
+ const dy=viewport.clientHeight/2-player.y;
+ const offsetX=clamp(dx,viewport.clientWidth-bounds.w,0);
+ const offsetY=clamp(dy,viewport.clientHeight-bounds.h,0);
+ world.style.transform="translate3d("+offsetX+"px,"+offsetY+"px,0)";
+ cabinets.forEach(c=>c.button.classList.toggle("is-near",distance(player,c)<=INTERACT_DISTANCE));
+ if(selected && distance(player,selected)<=INTERACT_DISTANCE)autoTarget=null;
+}
+let lastNear=false,lastSelected=null;
+function step(now){
+ const dt=clamp((now-last)/1000,0,.05);last=now;
+ if(active){
+   let x=0,y=0;
+   if(keys.has("left"))x--;if(keys.has("right"))x++;
+   if(keys.has("up"))y--;if(keys.has("down"))y++;
+   if(autoTarget && !x && !y){
+     const dx=autoTarget.x-player.x,dy=autoTarget.y-player.y;
+     if(Math.hypot(dx,dy)>3){x=dx;y=dy;}else autoTarget=null;
+   }
+   if(x||y){
+     const norm=Math.hypot(x,y);
+     const move=Math.min(SPEED*dt,autoTarget?Math.hypot(autoTarget.x-player.x,autoTarget.y-player.y):Infinity);
+     player.x=clamp(player.x+x/norm*move,45,bounds.w-45);
+     player.y=clamp(player.y+y/norm*move,120,bounds.h-45);
+     syncScene();
+   }
+   const near=selected&&distance(player,selected)<=INTERACT_DISTANCE;
+   if(near!==lastNear||lastSelected!==selected){
+     lastNear=near;lastSelected=selected;updateAction();
+   }
+ }
+ requestAnimationFrame(step);
+}
+function setAvatar(key,opts={},name="PLAYER 1"){
+ try{
+   const render=window.RetroHubAvatars?.render;
+   if(typeof render==="function")avatarArt.innerHTML=render(key,opts);
+   else avatarArt.textContent="🎮";
+ }catch(_){avatarArt.textContent="🎮";}
+ $("floor-player-name").textContent=(name||"PLAYER 1").slice(0,24);
+}
+async function fetchAvatar(){
+ const client=window.retroArcadeSupabaseClient;
+ if(!client)return;
+ const request=++lastAccountRequest;
+ try{
+   const {data:identity,error:authError}=await client.auth.getUser();
+   if(authError||!identity?.user){account=null;setAvatar("chrome-byte");return;}
+   account=identity.user.id;
+   const [profile,equipped,inventory]=await Promise.all([
+     client.from("profiles").select("username,avatar_key").eq("id",account).maybeSingle(),
+     client.from("equipped_cosmetics").select("slot,cosmetic_id").eq("user_id",account),
+     client.from("player_inventory").select("cosmetic_id").eq("user_id",account)
+   ]);
+   if(request!==lastAccountRequest||account!==identity.user.id)return;
+   const owned=new Set((inventory.data||[]).map(x=>x.cosmetic_id));
+   const gear={};
+   for(const row of equipped.data||[]){
+     if(owned.has(row.cosmetic_id)&&window.RetroGearWearables?.get(row.cosmetic_id)?.kind===row.slot)
+       gear[row.slot]=row.cosmetic_id;
+   }
+   const eq=(equipped.data||[]).map(x=>x.cosmetic_id);
+   setAvatar(profile.data?.avatar_key||"chrome-byte",{
+     equippedShirt:eq.includes("shirt-acorn-ascent"),
+     equippedHat:eq.includes("hat-cheese-wedge"),
+     gearWearables:gear
+   },profile.data?.username||"PLAYER 1");
+ }catch(_){setAvatar("chrome-byte");}
+}
+window.addEventListener("retro-arcade-auth-ready",()=>{void fetchAvatar();});
+window.addEventListener("retro-arcade-avatar-updated",()=>{void fetchAvatar();});
+window.addEventListener("retro-arcade-xp-updated",()=>{void fetchAvatar();});
+if(window.retroArcadeSupabaseClient)void fetchAvatar();
+setAvatar("chrome-byte");
+syncScene();
+updateAction();
+requestAnimationFrame(step);
+})();
