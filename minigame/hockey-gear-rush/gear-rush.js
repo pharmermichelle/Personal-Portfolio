@@ -147,7 +147,7 @@
         (chosenMode === "rush" ? "Aim for " + cfg.parTime + " seconds or less to earn your stars." : "Take your time; every piece counts."),
         "▶ Start Round");
     }
-    status(chosenMode === "rush" ? "Tap Start to begin. First five timed levels can earn signed-in account XP on eligible first clears." :
+    status(chosenMode === "rush" ? "Tap Start to begin. Every room can unlock a hockey wearable with an eligible signed-in first clear." :
       "Your progress is saved on this device. No account XP in this mode.");
     $("start-button").textContent = chosenMode === "cleanup" ? "🧹 Start Cleanup" : "▶ Start Round";
   }
@@ -327,7 +327,7 @@
     document.querySelectorAll("[data-mode]").forEach(b => b.disabled = true);
     updateScoreboard();
     startClock();
-    if (chosenMode === "rush" && level <= 5) window.RetroLevelXP?.begin(level);
+    if (chosenMode === "rush" && level <= 15) window.RetroLevelXP?.begin(level);
     status(chosenMode === "cleanup" ? "Tap the clutter to tidy the locker room." : "Find everything on the checklist. Tap to collect or drag items aside.");
   }
   function pause(auto = false) {
@@ -370,7 +370,7 @@
     if (level === progress.unlocked && level < MAX_LEVEL) progress.unlocked = level + 1;
     persist();
     updateScoreboard();
-    const eligible = chosenMode === "rush" && !assisted && level <= 5 && elapsed >= 6;
+    const eligible = chosenMode === "rush" && !assisted && level <= 15 && elapsed >= 6;
     if (eligible) {
       // The server checks first-clear dedupe and attempt timing. This is NOT
       // proof of independent gameplay and must not become a ranked score.
@@ -394,7 +394,7 @@
        chosenMode === "relaxed" ? "Relaxed mode has no account XP." :
        assisted ? "Spotlight-assisted runs have no account XP." :
        chosenMode === "rush" && elapsed < 6 ? "The server requires at least six seconds for account XP; stars are saved." :
-       "Official XP currently covers the first five timed levels."));
+       "Each room has a first-clear hockey wearable when claimed on your account."));
   }
 
   function collect(item, piece) {
