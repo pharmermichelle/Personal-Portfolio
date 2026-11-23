@@ -15,9 +15,13 @@ button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-a
 .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:4px 0 12px}.score{border:1px solid #606493;border-radius:12px;background:#161b3a;padding:8px;display:flex;gap:9px;align-items:center;justify-content:center;min-width:0}.score span{font-size:12px;color:#dbd8f9;text-transform:uppercase;font-weight:900}.score strong{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}.you strong{color:var(--cyan)}.cpu strong{color:var(--pink)}.scoreboard .middle{text-align:center;font-size:12px;color:var(--yellow);font-weight:900;max-width:100px}
 .field{position:relative;width:100%;max-width:720px;margin:auto;border:3px solid #7e82c5;border-radius:13px;overflow:hidden;box-shadow:0 0 0 2px #1a2350,0 0 26px #2ebeed36;background:#080e26}canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;touch-action:none}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:#090b22e8;padding:18px}.overlay h2{font-size:clamp(27px,6vw,44px);color:var(--yellow);margin:0;text-shadow:0 0 15px #e8ba4b55}.overlay p{font-size:15px;max-width:350px;margin:0;color:#e3ecfd}.primary{background:var(--yellow);color:#18142b;border:2px solid #fff4ae;border-radius:10px;padding:10px 22px;box-shadow:0 4px 0 #83653b}.actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px auto 8px}.secondary{border:1px solid #737bb9;border-radius:9px;padding:9px 15px;background:#222447;color:#f3ecff}.secondary[disabled]{opacity:.55}.hint{font-size:14px;color:#d4daf0;text-align:center;line-height:1.5;max-width:650px;margin:11px auto}.statline{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.pill{border:1px solid #5866a0;border-radius:30px;padding:5px 11px;font-size:12px;background:#1b2244;color:#e7eaff}.status{text-align:center;font-size:14px;min-height:25px;color:#bffadf;font-weight:800}.xp-guide{margin:12px auto 8px;max-width:650px;border:1px solid #6075ac;background:#151e3d;border-radius:12px;padding:11px 14px;color:#f0f5ff}.xp-guide summary{cursor:pointer;font-size:15px;font-weight:900;color:#ffe883;min-height:24px}.xp-guide p{font-size:13px;line-height:1.5;margin:8px 0 0;color:#d5e7ff}.xp-guide strong{color:#88fbff}.xp-guide .xp-table{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:9px 0;font-size:14px}.xp-guide .xp-table b{color:#a1ffb8}.adarea{text-align:center;max-width:320px;margin:15px auto 0;min-height:65px}.adarea small{display:block;color:#a6adc8;text-transform:uppercase;font-size:10px;letter-spacing:1px;margin:4px}.adarea ins{display:block;width:100%;height:50px}
+.cloud-progress{max-width:650px;margin:8px auto 12px;padding:8px 11px;background:#161d40;border:1px solid #5369a5;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center}
+.cloud-progress span{font-size:13px;color:#d5efff;flex:1 1 160px}
+.cloud-progress button{min-height:44px;padding:8px 12px;background:#223e61;color:#f3ffff;border:1px solid #7ed6eb;border-radius:8px;font-size:14px}
 @media(max-width:420px){.shell{padding:10px 9px 22px}.scoreboard{gap:5px}.score{padding:6px 3px;gap:5px}.score span{font-size:10px}.score strong{font-size:25px}.scoreboard .middle{font-size:10px}.overlay{gap:9px;padding:10px}.overlay p{font-size:13px}.primary{min-height:48px}.hint{font-size:13px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script src="../../retro-save-service.js?v=20261123-pong-cloud-v1"></script>
 <script src="../../retro-arcade-header.js?v=20261122-pong" data-game-id="neon-pong" data-layout="scroll" defer></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
 </head><body>
@@ -30,6 +34,7 @@ button{font:900 17px system-ui,sans-serif;cursor:pointer;min-height:46px;touch-a
 <div class="statline"><span class="pill">🏆 Wins: <b id="wins">0</b></span><span class="pill">🔥 Best Rally: <b id="record">0</b></span><span class="pill">✨ Match Rally: <b id="rally">0</b></span></div>
 <p class="hint">📱 Touch and drag up or down on the court. 🖥️ Move the mouse, or use ↑ / ↓ or W / S. Space pauses. The ball speeds up with longer rallies.</p>
 <details class="xp-guide" open><summary>★ HOW TO EARN PONG XP</summary><div class="xp-table"><span>Score 3 points in a match</span><b>+1 XP</b><span>Score 5 points in a match</span><b>+1 XP</b><span>Win the match (first to 7)</span><b>+3 XP</b><span>Beat your account-best rally</span><b>+1 XP</b></div><p><strong>Up to 6 XP per completed match.</strong> Sign in before starting to earn account XP. Scoring rewards are credited when the match ends, even if you lose. New rally records earn a bonus once per match. Guest wins and rally records save on this device.</p></details><div id="status" class="status" role="status" aria-live="polite">Sign in for account XP. Rookie CPU is selected to make your first matches easier.</div>
+<div class="cloud-progress" aria-label="Progress backup"><span id="pong-cloud-status" role="status" aria-live="polite">Your match stats save on this device.</span><button id="pong-sync-options" type="button" hidden>Sync Options</button></div>
 <div class="adarea"><small>Advertisement</small><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
 </main>
 <script>
@@ -41,9 +46,57 @@ let stats={wins:0,bestRally:0,matches:0};try{const v=JSON.parse(localStorage.get
 let state="idle",you=H/2,cpu=H/2,yourScore=0,cpuScore=0,rally=0,matchBest=0,mode=0,last=performance.now(),accum=0,keys=new Set(),pointerY=null,muted=true,sound=null,ball={x:W/2,y:H/2,vx:0,vy:0},trails=[],serveWait=0,match=0,rewardAttempt=null,rewardAccount=null,rewardPending=false;
 const modes=[{name:"ROOKIE",speed:105,error:100,lag:.5},{name:"EASY",speed:160,error:66,lag:.34},{name:"NORMAL",speed:245,error:28,lag:.2},{name:"HARD",speed:360,error:10,lag:.08}];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-const save=()=>{try{localStorage.setItem(saveKey,JSON.stringify(stats));}catch(_){}};
+let pongSaver=null,pongSaveStarted=false,pongSaveLoading=false;
+const save=()=>{
+ if(pongSaver&&!pongSaveLoading){
+   pongSaver.save(stats,"pong-record");
+   if(!["guest","guest-only"].includes(pongSaver.mode))return;
+ }
+ try{localStorage.setItem(saveKey,JSON.stringify(stats));}catch(_){}
+};
 function updateHud(){el("score-you").textContent=yourScore;el("score-cpu").textContent=cpuScore;el("rally").textContent=rally;el("wins").textContent=stats.wins;el("record").textContent=stats.bestRally;}
 function say(s){el("status").textContent=s;}
+const boundedPongInt=(n,max)=>Number.isInteger(n)&&n>=0&&n<=max;
+function validatePongSave(input){
+ if(!input||typeof input!=="object"||Array.isArray(input)||
+    !boundedPongInt(input.wins,1000000)||!boundedPongInt(input.matches,1000000)||
+    !boundedPongInt(input.bestRally,1000000)||input.wins>input.matches)
+   throw Error("Invalid Pong progress");
+ return {wins:input.wins,matches:input.matches,bestRally:input.bestRally};
+}
+function applyPongSave(input){
+ stats=validatePongSave(input);
+ // A changed account must not carry another account's in-progress match.
+ if(["running","paused","starting"].includes(state)){
+   state="over";rewardAttempt=null;rewardAccount=null;rewardPending=false;
+   el("pause").disabled=true;el("difficulty").disabled=false;
+   show("ACCOUNT CHANGED","Match stopped to protect account-specific progress. Start a fresh match.","▶ NEW MATCH");
+ }
+ updateHud();
+}
+const pongCloudAdapter={
+ gameId:"neon-pong",displayName:"Neon Pong",schemaVersion:1,gameVersion:"v1",
+ emptyState:()=>({wins:0,matches:0,bestRally:0}),
+ validateSave:validatePongSave,restoreState:applyPongSave,
+ readLegacyLocal:()=>{try{return validatePongSave(JSON.parse(localStorage.getItem(saveKey)||"null"));}catch(_){return null;}},
+ meaningful:v=>v.matches>0||v.wins>0||v.bestRally>0,
+ summarizeSave:v=>v.wins+" wins · "+v.matches+" matches · best rally "+v.bestRally
+};
+async function startPongCloud(){
+ if(pongSaveStarted||!window.RetroSaveService||!clientReady())return;
+ if(["running","paused","starting"].includes(state)||rewardPending)return;
+ pongSaveStarted=true;pongSaveLoading=true;el("start").disabled=true;
+ el("pong-cloud-status").textContent="Checking account save…";
+ try{
+   pongSaver=window.RetroSaveService.create(pongCloudAdapter,{statusId:"pong-cloud-status",optionsId:"pong-sync-options"});
+   const restored=await pongSaver.initialize();
+   if(restored)applyPongSave(restored);
+ }catch(_){
+   pongSaver=null;el("pong-cloud-status").textContent="Device only • cloud save unavailable";
+ }finally{
+   pongSaveLoading=false;el("start").disabled=false;
+ }
+}
 function tone(freq=380){if(muted)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;if(!sound)sound=new A();const o=sound.createOscillator(),g=sound.createGain();o.type="square";o.frequency.value=freq;g.gain.setValueAtTime(.035,sound.currentTime);g.gain.exponentialRampToValueAtTime(.001,sound.currentTime+.095);o.connect(g);g.connect(sound.destination);o.start();o.stop(sound.currentTime+.1);}catch(_){}}
 function show(title,copy,label){el("overlay").hidden=false;el("overlay-title").textContent=title;el("overlay-copy").textContent=copy;el("start").textContent=label;}
 function hide(){el("overlay").hidden=true;}
@@ -88,9 +141,10 @@ async function finalizeReward(result){
  }finally{
    rewardPending=false;rewardAttempt=null;rewardAccount=null;
    el("start").disabled=false;el("difficulty").disabled=false;el("start").textContent="↻ REMATCH";
+   void startPongCloud();
  }
 }
-function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=!!rewardAttempt;stats.matches++;if(won){stats.wins++;tone(740);}else{tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");if(rewardAttempt&&rewardAccount){say("Match finished • banking account XP…");void finalizeReward({you:yourScore,cpu:cpuScore,rally:matchBest});}else{say("Guest match saved on this device. Sign in before your next match for XP.");}}
+function finish(won){state="over";el("pause").disabled=true;el("difficulty").disabled=!!rewardAttempt;stats.matches++;if(won){stats.wins++;tone(740);}else{tone(200);}save();updateHud();show(won?"YOU WIN!":"CPU WINS",yourScore+" – "+cpuScore+" • Best rally "+stats.bestRally+". One more match?","↻ REMATCH");if(rewardAttempt&&rewardAccount){say("Match finished • banking account XP…");void finalizeReward({you:yourScore,cpu:cpuScore,rally:matchBest});}else{say("Guest match saved on this device. Sign in before your next match for XP.");}void startPongCloud();}
 function scorePoint(player){if(player)yourScore++;else cpuScore++;rally=0;updateHud();tone(player?580:225);if(yourScore>=7||cpuScore>=7){finish(yourScore>=7);return;}serve(player?-1:1);}
 function pause(){if(state==="running"){state="paused";el("pause").textContent="▶ RESUME";show("PAUSED","Your rally is safely paused.","▶ RESUME");}else if(state==="paused"){state="running";el("pause").textContent="Ⅱ PAUSE";hide();last=performance.now();}}
 function movement(dt){
@@ -142,6 +196,8 @@ el("difficulty").addEventListener("click",()=>{if(state==="running"||state==="pa
 el("sound").addEventListener("click",()=>{muted=!muted;el("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";el("sound").setAttribute("aria-pressed",String(!muted));tone();});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="running")pause();});
 window.addEventListener("blur",()=>{if(state==="running")pause();});
+window.addEventListener("retro-arcade-auth-ready",()=>{void startPongCloud();});
+if(clientReady())void startPongCloud();
 updateHud();serve(1);draw();requestAnimationFrame(frame);
 try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(_){}
 })();
