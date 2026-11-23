@@ -41,3 +41,16 @@
   .game-stats td:nth-child(4){max-width:none}
   .game-stats td:not(:first-child){text-align:right}
 }
+
+/* Account-backed Gear Rush rewards — compact visual closet. */
+.gear-wardrobe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px;margin-top:12px}
+.gear-reward-card{min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;padding:13px 10px;border:1px solid #7b66b9;border-radius:12px;background:#1d1740;color:#f8f2ff}
+.gear-reward-card.is-owned{border-color:#88e6c5;background:#1c3541}
+.gear-reward-card.is-locked{opacity:.76}
+.gear-reward-card .gear-reward-art{width:62px;height:62px;display:grid;place-items:center;border:2px solid #fff7;border-radius:16px;background:var(--reward-color,#bc4b63);font-weight:900;font-size:36px;color:white}
+.gear-reward-card strong{font-size:15px;line-height:1.2}
+.gear-reward-card span{font-size:13px;color:#d8cced}
+.gear-reward-card b{font-size:12px;color:#ffedaf}
+.gear-reward-card .button{width:100%;min-height:44px;margin-top:auto}
+#gear-rewards-summary{font-size:15px;font-weight:700;color:#c3f1d9}
+@media(max-width:420px){.gear-wardrobe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gear-reward-card{padding:11px 7px}}
