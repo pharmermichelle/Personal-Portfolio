@@ -546,13 +546,12 @@
   // First-visit instructions are local to the browser, not tied to account XP.
   let hasSeenTutorial = false;
   try { hasSeenTutorial = localStorage.getItem(TUTORIAL_KEY) === "seen"; } catch (_) {}
-  if (!hasSeenTutorial) openTutorial("first");
-
   setMode("rush");
   $("pause-button").disabled = true;
   $("restart-button").disabled = true;
   $("hint-button").disabled = true;
   updateScoreboard();
+  if (!hasSeenTutorial) openTutorial("first");
   // Reserve the display ad and never insert ad UI in the timed tapping surface.
   if (location.protocol === "https:") {
     try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (_) {}
