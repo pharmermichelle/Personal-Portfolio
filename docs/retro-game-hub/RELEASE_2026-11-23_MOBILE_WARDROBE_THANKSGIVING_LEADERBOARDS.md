@@ -51,6 +51,8 @@ All are migrations in the existing production Supabase project. No new Supabase 
 - All edited inline and external JS passed V8 parse tests (13 source pages/scripts). CSS rule braces checked. Profile JS-referenced IDs exist in the updated profile HTML. The wardrobe HTML section passed tag nesting checks.
 - Cosmetic module produced 66 items: 15 Gear Rush definitions (3 active), 49 level shirts, 2 events; all supplied SVG apparel art. Mocked layered outfit drawing combines Level 2 shirt, turkey hat, milestone pants and Thanksgiving frame.
 - Read-back verified the actual production RPC and the new 50-row leaderboard cap.
+- Mocked leaderboard browser initialization: authenticated account begins opt-out, can opt in and render a populated ranking row; user-facing status changes accordingly. Actual browser/API login is still unverified.
+- Security advisor flags the intentionally callable, opt-in-only public leaderboard `SECURITY DEFINER` RPC. Its server-side whitelist, row cap and opt-in filter were reviewed; do not broaden returned columns without a new security review. The older, deliberately protected private RLS tables and disabled leaked-password protection remain known warnings.
 
 ## IMPORTANT unverified / release gates
 
