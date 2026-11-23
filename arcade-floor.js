@@ -8,6 +8,7 @@ const avatar=$("floor-player"),avatarArt=$("floor-player-art");
 const player={x:665,y:1115};
 const bounds={w:1330,h:1200};
 const SPEED=250,INTERACT_DISTANCE=118,keys=new Set();
+const seats=[];let seatedAt=null;const tapIndicator=$("floor-tap-indicator");
 let selected=null,autoTarget=null,last=performance.now(),active=true;
 let account=null,lastAccountRequest=0;
 const status=message=>{$("floor-status").textContent=message;};
@@ -40,12 +41,14 @@ function nearestCabinet(){
  return {cabinet:best,distance:d};
 }
 function selectCabinet(c,auto=false){
+ leaveSeat();
  selected=c;
  cabinets.forEach(g=>g.button.classList.toggle("is-selected",g===selected));
  if(auto){autoTarget={x:c.x,y:Math.min(bounds.h-48,c.frontY+26)};}
  updateAction();
 }
 function updateAction(){
+ if(seatedAt){$("floor-location").textContent="Coffee lounge";status("Relaxing at "+seatedAt.tableName+". Tap the floor to get up and walk.");$("play-button").disabled=true;$("approach-button").disabled=!selected;return;}
  const near=selected&&distance(player,selected)<=INTERACT_DISTANCE;
  $("play-button").disabled=!near;
  $("approach-button").disabled=!selected||!!autoTarget;
@@ -70,8 +73,9 @@ function launchGame(){
  location.href=new URL(target.href,location.href).href;
 }
 $("play-button").addEventListener("click",launchGame);
+function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");}
 function setHeld(direction,yes,button){
- if(yes){autoTarget=null;keys.add(direction);}else keys.delete(direction);
+ if(yes){leaveSeat();autoTarget=null;keys.add(direction);}else keys.delete(direction);
  button?.classList.toggle("is-held",yes);
 }
 for(const button of document.querySelectorAll("[data-direction]")){
@@ -87,7 +91,7 @@ for(const button of document.querySelectorAll("[data-direction]")){
  button.addEventListener("lostpointercapture",release);
  button.addEventListener("click",()=>{ // works for keyboard/switch users
    if(keys.size)return;
-   autoTarget=null;
+   leaveSeat();autoTarget=null;
    const dx=dir==="right"?45:dir==="left"?-45:0;
    const dy=dir==="down"?45:dir==="up"?-45:0;
    player.x=clamp(player.x+dx,45,bounds.w-45);
@@ -106,7 +110,7 @@ function keyDirection(key){
 window.addEventListener("keydown",event=>{
  if(event.target instanceof HTMLInputElement||event.target instanceof HTMLTextAreaElement)return;
  const dir=keyDirection(event.key);
- if(dir){event.preventDefault();keys.add(dir);autoTarget=null;return;}
+ if(dir){event.preventDefault();leaveSeat();keys.add(dir);autoTarget=null;return;}
  if((event.key==="e"||event.key==="E"||event.key==="Enter")&&!event.repeat){
    if(event.target instanceof HTMLButtonElement && event.key==="Enter")return;
    if(!selected||distance(player,selected)>INTERACT_DISTANCE){
@@ -128,7 +132,7 @@ function syncScene(){
  const offsetY=clamp(dy,viewport.clientHeight-bounds.h,0);
  world.style.transform="translate3d("+offsetX+"px,"+offsetY+"px,0)";
  cabinets.forEach(c=>c.button.classList.toggle("is-near",distance(player,c)<=INTERACT_DISTANCE));
- if(selected && distance(player,selected)<=INTERACT_DISTANCE)autoTarget=null;
+ if(selected && distance(player,selected)<=INTERACT_DISTANCE && autoTarget && !autoTarget.seat)autoTarget=null;
 }
 let lastNear=false,lastSelected=null;
 function step(now){
@@ -139,9 +143,11 @@ function step(now){
    if(keys.has("up"))y--;if(keys.has("down"))y++;
    if(autoTarget && !x && !y){
      const dx=autoTarget.x-player.x,dy=autoTarget.y-player.y;
-     if(Math.hypot(dx,dy)>3){x=dx;y=dy;}else autoTarget=null;
+     if(Math.hypot(dx,dy)>3){x=dx;y=dy;}else {if(autoTarget.seat){seatedAt=autoTarget.seat;seatedAt.button.classList.add("is-occupied");avatar.classList.add("is-seated");selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));updateAction();}autoTarget=null;}
    }
+   avatar.classList.toggle("is-moving",!!(x||y));
    if(x||y){
+     avatar.dataset.facing=Math.abs(x)>Math.abs(y)?(x>0?"right":"left"):(y>0?"down":"up");
      const norm=Math.hypot(x,y);
      const move=Math.min(SPEED*dt,autoTarget?Math.hypot(autoTarget.x-player.x,autoTarget.y-player.y):Infinity);
      player.x=clamp(player.x+x/norm*move,45,bounds.w-45);
@@ -195,6 +201,34 @@ window.addEventListener("retro-arcade-auth-ready",()=>{void fetchAvatar();});
 window.addEventListener("retro-arcade-avatar-updated",()=>{void fetchAvatar();});
 window.addEventListener("retro-arcade-xp-updated",()=>{void fetchAvatar();});
 if(window.retroArcadeSupabaseClient)void fetchAvatar();
+
+/* Furniture is generated from stable ids to allow future authenticated room/seat presence. */
+const lounge=$("lounge-tables");
+for(const [tableId,x,y,label] of [["coffee-1",325,1083,"Coffee Table 1"],["coffee-2",1010,1083,"Coffee Table 2"]]){
+ const table=document.createElement("div");table.className="lounge-table";table.style.left=(x-68)+"px";table.style.top=(y-35)+"px";
+ const top=document.createElement("div");top.className="lounge-tabletop";top.textContent="☕";
+ table.append(top);
+ for(const [seatId,dx,dy,glyph] of [["west",-91,0,"🪑"],["east",91,0,"🪑"]]){
+  const b=document.createElement("button");b.type="button";b.className="lounge-seat";b.textContent=glyph;
+  b.style.left=(68+dx-24)+"px";b.style.top=(35+dy-23)+"px";b.setAttribute("aria-label","Sit at "+label+", "+seatId+" seat");
+  const seat={id:tableId+"-"+seatId,tableId,tableName:label,button:b,x:x+dx,y:y+dy};
+  seats.push(seat);
+  b.addEventListener("click",event=>{event.stopPropagation();leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));autoTarget={x:seat.x,y:seat.y,seat};status("Walking to "+label+"…");});
+  table.append(b);
+ }
+ lounge.append(table);
+}
+viewport.addEventListener("pointerup",event=>{
+ if(event.button!==0||event.target.closest("button,a"))return;
+ const rect=world.getBoundingClientRect();
+ const x=clamp(event.clientX-rect.left,45,bounds.w-45);
+ const y=clamp(event.clientY-rect.top,120,bounds.h-45);
+ leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));
+ autoTarget={x,y};tapIndicator.style.left=x+"px";tapIndicator.style.top=y+"px";
+ tapIndicator.classList.remove("is-active");void tapIndicator.offsetWidth;tapIndicator.classList.add("is-active");
+ $("floor-location").textContent="Exploring";status("Walking to your chosen spot…");
+});
+
 setAvatar("chrome-byte");
 syncScene();
 updateAction();
