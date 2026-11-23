@@ -8,6 +8,7 @@
     ["Cut the Cheese", "cut-the-cheese", "minigame/Cut-the-Cheese/index.html"],
     ["Grass Snake: Bug Hunt", "grass-snake", "minigame/grass-snake/index.html"],
     ["Neon Pong", "neon-pong", "minigame/neon-pong/index.html"],
+    ["Brick Blitz", "brick-blitz", "minigame/brick-blitz/index.html"],
     ["Fallen Grid", "fallen-grid", "minigame/Tide-Tetris/index.html"],
     ["Revive Nature", "revive-nature", "minigame/Revive-nature/revive-index.html"],
     ["Rink Putt", "rink-putt", "minigame/hockey_shooter/index.html"],
