@@ -131,6 +131,7 @@
     $("overlay-secondary").hidden = !secondary;
     if (secondary) $("overlay-secondary").textContent = secondary;
     $("overlay").hidden = false;
+    $("overlay-primary").focus({ preventScroll: true });
   }
   function hideOverlay() { $("overlay").hidden = true; }
   function setWelcome() {
