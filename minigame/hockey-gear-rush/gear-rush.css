@@ -564,10 +564,10 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 2px;
-  border-radius: 7px;
-  background: #f2e4e7; /* Opaque image backing, including transparent net art. */
-  filter: none;
+  padding: 0;
+  border-radius: 0;
+  background: transparent; /* Original transparent sprites, like nearby clutter. */
+  filter: drop-shadow(0 2px 2px #20091477);
 }
 .playfield .item--clutter { font-size: 27px; }
 .playfield .item.is-decoy-tap {
