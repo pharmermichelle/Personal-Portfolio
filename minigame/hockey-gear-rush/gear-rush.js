@@ -22,6 +22,7 @@
   const STORAGE_KEY = "retro:gear-rush:locker-progress:v2";
   const MAX_LEVEL = 15;
   const BASE_ITEM_SIZE = 52;
+  const CHAPTERS = ["Rookie Locker", "Team Bench", "Away Locker"];
   const blankSave = () => ({ version: 2, unlocked: 1, stars: {}, bestTimes: {}, matches: 0, cleanups: 0, collection: [] });
 
   function readSave() {
@@ -88,6 +89,7 @@
   function setMode(mode) {
     if (state === "running" || state === "paused") return;
     chosenMode = mode;
+    elapsed = 0;
     document.querySelectorAll("[data-mode]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
     });
@@ -108,7 +110,7 @@
     $("found-value").textContent = found + " / " + total;
     const best = progress.bestTimes[String(level)];
     $("best-value").textContent = best ? clock(best) : "—";
-    $("level-selector-value").textContent = "Room " + level + " of " + MAX_LEVEL;
+    $("level-selector-value").textContent = "Room " + level + " · " + CHAPTERS[config().chapter - 1];
     $("level-back").disabled = state === "running" || state === "paused" || level <= 1;
     $("level-forward").disabled = state === "running" || state === "paused" || level >= progress.unlocked;
     $("collection-count").textContent = progress.collection.length + " / " + GEAR.length;
@@ -129,6 +131,7 @@
   function hideOverlay() { $("overlay").hidden = true; }
   function setWelcome() {
     const cfg = config();
+    $("pile-area").dataset.chapter = String(cfg.chapter);
     if (chosenMode === "cleanup") {
       showOverlay("Locker Room Bonus", "Quick Cleanup", "Clear a small messy room. This is an optional mini-game with no XP or time pressure.", "🧹 Start Cleanup");
     } else {
@@ -240,6 +243,7 @@
     layer.replaceChildren(); // Keep the start/pause/results overlay and rink decoration intact.
     pieces = []; collected = new Set(); found = 0;
     const cfg = config();
+    board.dataset.chapter = String(cfg.chapter);
     const cleanup = chosenMode === "cleanup";
     const boardSize = Math.min(BASE_ITEM_SIZE, Math.max(44, Math.floor(board.clientWidth / 6.2)));
     const cells = makeCells(board.clientWidth, board.clientHeight, boardSize);
@@ -334,7 +338,7 @@
     if (level === progress.unlocked && level < MAX_LEVEL) progress.unlocked = level + 1;
     persist();
     updateScoreboard();
-    const eligible = chosenMode === "rush" && !assisted && level <= 5;
+    const eligible = chosenMode === "rush" && !assisted && level <= 5 && elapsed >= 6;
     if (eligible) {
       // The server checks first-clear dedupe and attempt timing. This is NOT
       // proof of independent gameplay and must not become a ranked score.
@@ -352,6 +356,7 @@
       (eligible ? "Checking your signed-in XP eligibility…" :
        chosenMode === "relaxed" ? "Relaxed mode has no account XP." :
        assisted ? "Spotlight-assisted runs have no account XP." :
+       chosenMode === "rush" && elapsed < 6 ? "The server requires at least six seconds for account XP; stars are saved." :
        "Official XP currently covers the first five timed levels."));
   }
 
@@ -433,6 +438,16 @@
     if (level < progress.unlocked && state !== "running" && state !== "paused") { level++; restart(); }
   });
   document.addEventListener("visibilitychange", () => { if (document.hidden) pause(true); });
+  window.addEventListener("resize", () => {
+    // An orientation change should never strand a collectible outside the board.
+    const board = $("pile-area");
+    for (const piece of pieces) {
+      piece.x = clamp(piece.x, 0, Math.max(0, board.clientWidth - piece.size));
+      piece.y = clamp(piece.y, 0, Math.max(0, board.clientHeight - piece.size));
+      piece.button.style.left = piece.x + "px";
+      piece.button.style.top = piece.y + "px";
+    }
+  }, { passive: true });
   window.addEventListener("blur", () => { if (state === "running") pause(true); });
   window.addEventListener("retro-level-xp", event => {
     if (event.detail?.gameId !== "hockey-gear-rush") return;
