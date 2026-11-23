@@ -792,6 +792,19 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 }
 
 
+.auth-recovery-actions {display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.auth-recovery-actions button {flex:1 1 150px;min-height:44px;padding:9px 10px;border:1px solid #7bd9e8;border-radius:9px;background:#172a4a;color:#eaf7ff;font:600 14px/1.35 system-ui,sans-serif;cursor:pointer}
+.auth-recovery-actions button:focus-visible {outline:3px solid #ffe87a;outline-offset:2px}
+.auth-recovery-actions button:disabled {opacity:.65;cursor:wait}
+.auth-modal[data-mode="recovery"] label[for="auth-email"],
+.auth-modal[data-mode="recovery"] #auth-email,
+.auth-modal[data-mode="recovery"] .auth-remember,
+.auth-modal[data-mode="recovery"] .auth-session-note,
+.auth-modal[data-mode="recovery"] #signup-btn,
+.auth-modal[data-mode="recovery"] .auth-recovery-actions,
+.auth-modal[data-mode="recovery"] .auth-social-divider,
+.auth-modal[data-mode="recovery"] .auth-social-actions,
+.auth-modal[data-mode="recovery"] .auth-social-note {display:none}
 /* Mobile layout repair: remove the legacy grid's large empty vertical track.
    Keep browse controls directly below the header, full-width and in reading order. */
 @media (max-width: 900px) {
@@ -1011,7 +1024,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
           <p class="auth-summary" id="auth-summary">Sign in to access your avatar and player profile.</p>
           <label for="auth-email">Email address</label>
           <input id="auth-email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="email" />
-          <label for="auth-password">Password</label>
+          <label for="auth-password" id="auth-password-label">Password</label>
           <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
           <label class="auth-remember"><input id="remember-email" type="checkbox" checked /> Remember my email on this device</label>
           <p class="auth-session-note">✓ Stay signed in is enabled by default on this device. Use Log Out to end your session.</p>
@@ -1019,6 +1032,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
             <button id="login-btn" class="btn" type="button">Log In</button>
             <button id="signup-btn" class="btn" type="button">Create Account</button>
           </div>
+          <div class="auth-recovery-actions"><button id="forgot-password-btn" type="button">Forgot password?</button><button id="resend-confirm-btn" type="button">Resend confirmation email</button></div>
           <div class="auth-social-divider">or continue with</div>
           <div class="auth-social-actions"><button id="google-auth-btn" type="button" class="btn auth-social-btn">Google</button><button id="facebook-auth-btn" type="button" class="btn auth-social-btn">Facebook</button></div>
           <p class="auth-social-note">Social sign-in requires provider setup. Existing players should link a provider to their account before using it to sign in.</p>
@@ -1403,6 +1417,10 @@ function setAuthMessage(message) {
 function openAuthModal(mode = "login") {
   const isSignup = mode === "signup";
   authMode = isSignup ? "signup" : "login";
+  authModal.dataset.mode = "normal";
+  document.getElementById("auth-password-label").textContent = "Password";
+  loginBtn.textContent = "Log In";
+  authPassword.minLength = 0;
   lastAuthTrigger = document.activeElement;
   authHeading.textContent = isSignup ? "Create Your Free Arcade ID" : "Log In to Your Arcade ID";
   authSummary.textContent = isSignup
@@ -1417,12 +1435,32 @@ function openAuthModal(mode = "login") {
 }
 function closeAuthModal() {
   authModal.hidden = true;
+  authMode = "login";
+  authModal.dataset.mode = "normal";
   authPassword.value = "";
   if (lastAuthTrigger && typeof lastAuthTrigger.focus === "function" && lastAuthTrigger.isConnected) {
     lastAuthTrigger.focus();
   }
 }
 
+function showRecoveryForm() {
+  // Supabase grants a temporary recovery session when the email link is valid.
+  // Only that authenticated session may call updateUser to set the password.
+  authMode = "recovery";
+  lastAuthTrigger = null;
+  authModal.dataset.mode = "recovery";
+  authHeading.textContent = "Set a New Password";
+  authSummary.textContent = "Your recovery link was accepted. Choose a new password (at least 8 characters).";
+  document.getElementById("auth-password-label").textContent = "New password";
+  authPassword.autocomplete = "new-password";
+  authPassword.minLength = 8;
+  authPassword.value = "";
+  loginBtn.textContent = "Save New Password";
+  loginBtn.classList.add("is-primary");
+  authModal.hidden = false;
+  setAuthMessage("");
+  authPassword.focus();
+}
 function clearGuestPrompt() {
   returnPrompt.hidden = true;
   try { sessionStorage.removeItem(GAME_PENDING_KEY); } catch (_error) {}
@@ -1574,6 +1612,21 @@ document.addEventListener("keydown", event => {
 });
 
 loginBtn.addEventListener("click", async () => {
+  if (authMode === "recovery") {
+    if (authPassword.value.length < 8) { setAuthMessage("Use a password with at least 8 characters."); return; }
+    loginBtn.disabled = true;
+    setAuthMessage("Updating password…");
+    try {
+      const { data, error } = await supabaseClient.auth.updateUser({ password: authPassword.value });
+      if (error) throw error;
+      closeAuthModal();
+      updateAuthUI(data?.user || currentPlayer);
+      authStatus.textContent = "Password updated successfully.";
+    } catch (error) {
+      setAuthMessage(error.message || "Could not update your password. Request a new reset link.");
+    } finally { loginBtn.disabled = false; }
+    return;
+  }
   if (!authEmail.value.trim() || !authPassword.value) { setAuthMessage("Enter your email and password."); return; }
   loginBtn.disabled = true; signupBtn.disabled = true;
   setAuthMessage("Logging in...");
@@ -1617,6 +1670,33 @@ signupBtn.addEventListener("click", async () => {
     setAuthMessage(error.message || "Couldn't create the account. Please try again.");
   } finally { signupBtn.disabled = false; loginBtn.disabled = false; }
 });
+async function requestAccountEmail(action) {
+  const email = authEmail.value.trim();
+  if (!email || !authEmail.checkValidity()) {
+    setAuthMessage("Enter a valid email address above first.");
+    authEmail.focus();
+    return;
+  }
+  const button = document.getElementById(action === "reset" ? "forgot-password-btn" : "resend-confirm-btn");
+  button.disabled = true;
+  setAuthMessage("Requesting an email…");
+  try {
+    let error;
+    if (action === "reset") {
+      ({ error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: AUTH_HUB_URL }));
+    } else {
+      ({ error } = await supabaseClient.auth.resend({
+        type: "signup", email, options: { emailRedirectTo: AUTH_PROFILE_URL }
+      }));
+    }
+    if (error) throw error;
+    setAuthMessage("If this email address is eligible, instructions have been sent. Check your inbox and spam folder.");
+  } catch (error) {
+    setAuthMessage("Email request could not be completed: " + (error.message || "Please try again later."));
+  } finally { button.disabled = false; }
+}
+document.getElementById("forgot-password-btn").addEventListener("click", () => requestAccountEmail("reset"));
+document.getElementById("resend-confirm-btn").addEventListener("click", () => requestAccountEmail("confirm"));
 async function startSocialLogin(provider){
  const btn=document.getElementById(provider+"-auth-btn");btn.disabled=true;
  setAuthMessage("Connecting to "+(provider==="google"?"Google":"Facebook")+"…");
@@ -1663,8 +1743,13 @@ supabaseClient.auth.getSession().then(({data,error}) => {
   updateAuthUI(null);
   inviteReturningGuest(true);
 });
-supabaseClient.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((event, session) => {
   updateAuthUI(session?.user || null);
+  if (event === "PASSWORD_RECOVERY") {
+    try { sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY); } catch (_error) {}
+    showRecoveryForm();
+    return;
+  }
   if (session?.user) resumeAfterSocialLogin(session.user);
 });
 
