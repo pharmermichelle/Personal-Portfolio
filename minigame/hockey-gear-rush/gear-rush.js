@@ -58,6 +58,7 @@
     }
     return copy;
   };
+  const randomItem = items => items[Math.floor(Math.random() * items.length)];
   const clock = sec => {
     const n = Math.max(0, Math.ceil(sec));
     return Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
@@ -151,18 +152,30 @@
     $("start-button").textContent = chosenMode === "cleanup" ? "🧹 Start Cleanup" : "▶ Start Round";
   }
 
-  function makeCells(boardWidth, boardHeight, size) {
-    const gap = Math.max(7, Math.round(size * 0.18));
-    const columns = Math.max(3, Math.floor((boardWidth - 14) / (size + gap)));
-    const rows = Math.max(3, Math.floor((boardHeight - 14) / (size + gap)));
-    const dx = (boardWidth - size - 16) / Math.max(1, columns - 1);
-    const dy = (boardHeight - size - 16) / Math.max(1, rows - 1);
-    const cells = [];
-    for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++)
-      cells.push({ x: 8 + x * dx, y: 8 + y * dy });
-    return shuffle(cells);
+  // Organic scatter rather than recognizable rows and columns. Each object gets
+  // a real position and modest overlap; important item centers remain tappable.
+  function scatterPositions(width, height, size, count) {
+    const edge = 7;
+    const maxX = Math.max(edge, width - size - edge);
+    const maxY = Math.max(edge, height - size - edge);
+    const placed = [];
+    const desiredSpacing = size * (count > 20 ? 0.73 : 0.84);
+    for (let i = 0; i < count; i++) {
+      let best = null;
+      for (let attempt = 0; attempt < 180; attempt++) {
+        const x = edge + Math.random() * (maxX - edge);
+        const y = edge + Math.random() * (maxY - edge);
+        const separation = placed.length
+          ? Math.min(...placed.map(p => Math.hypot(p.x - x, p.y - y)))
+          : Infinity;
+        if (!best || separation > best.separation) best = { x, y, separation };
+        if (separation >= desiredSpacing) break;
+      }
+      placed.push({ x: best.x, y: best.y });
+    }
+    return placed;
   }
-  function makePiece(item, cell, kind, size, index) {
+  function makePiece(item, cell, kind, size, index, isTarget = false) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "item item--" + kind;
@@ -171,9 +184,12 @@
     button.style.left = cell.x + "px";
     button.style.top = cell.y + "px";
     button.style.zIndex = String(index + 1);
+    button.style.setProperty("--tilt", (Math.random() * 20 - 10).toFixed(1) + "deg");
     button.dataset.kind = kind;
     if (kind === "gear") {
-      button.setAttribute("aria-label", "Collect " + item.name);
+      // Target and decoy hockey gear have identical appearance and labels.
+      // The checklist, not the tile color, tells players what they need.
+      button.setAttribute("aria-label", "Hockey equipment: " + item.name);
       const img = document.createElement("img");
       img.src = item.image;
       img.alt = "";
@@ -183,13 +199,19 @@
       button.setAttribute("aria-label", "Move or clear clutter");
       button.textContent = item;
     }
-    const piece = { button, item, kind, x: cell.x, y: cell.y, size };
+    const piece = { button, item, kind, isTarget, x: cell.x, y: cell.y, size };
     pieces.push(piece);
     button.addEventListener("click", event => {
       if (piece.suppressClick) { piece.suppressClick = false; return; }
       if (state !== "running") return;
-      if (kind === "gear") collect(item, piece);
-      else clearClutter(piece);
+      if (kind === "gear") {
+        if (piece.isTarget) collect(item, piece);
+        else {
+          button.classList.add("is-decoy-tap");
+          setTimeout(() => button.classList.remove("is-decoy-tap"), 330);
+          status(item.name + " isn't on your checklist. Check the pictures and keep searching.");
+        }
+      } else clearClutter(piece);
     });
     bindDrag(piece);
     return button;
@@ -251,18 +273,25 @@
     board.dataset.chapter = String(cfg.chapter);
     const cleanup = chosenMode === "cleanup";
     const boardSize = Math.min(BASE_ITEM_SIZE, Math.max(44, Math.floor(board.clientWidth / 6.2)));
-    const cells = makeCells(board.clientWidth, board.clientHeight, boardSize);
     targets = cleanup ? [] : shuffle(GEAR).slice(0, cfg.targets);
-    // Every target has a separate cell. No opaque pile can bury a needed item.
-    const clutterCount = cleanup ? Math.min(14, cells.length) : Math.min(cfg.clutter, cells.length - targets.length);
+    // Extra hockey equipment acts as visual decoys. All equipment uses the same
+    // sprite tile treatment, so players must actually consult the checklist.
+    const decoys = cleanup ? [] : shuffle(GEAR.filter(g => !targets.some(t => t.id === g.id)))
+      .slice(0, Math.min(GEAR.length - targets.length, level <= 3 ? 3 : 2));
+    const capacity = Math.max(targets.length + decoys.length + 4,
+      Math.floor(board.clientWidth * board.clientHeight / (boardSize * boardSize) * 0.66));
+    const clutterCount = cleanup ? Math.min(14, capacity)
+      : Math.min(cfg.clutter, Math.max(4, capacity - targets.length - decoys.length));
     const entries = cleanup
-      ? Array.from({ length: clutterCount }, () => ({ item: CLUTTER[Math.floor(Math.random() * CLUTTER.length)], kind: "cleanup" }))
-      : [...targets.map(item => ({ item, kind: "gear" })),
-         ...Array.from({ length: clutterCount }, () => ({ item: CLUTTER[Math.floor(Math.random() * CLUTTER.length)], kind: "clutter" }))];
-    // Draw in randomized order; overlap is deliberately minimized by the cell allocation.
+      ? Array.from({ length: clutterCount }, () => ({ item: randomItem(CLUTTER), kind: "cleanup" }))
+      : [...targets.map(item => ({ item, kind: "gear", isTarget: true })),
+         ...decoys.map(item => ({ item, kind: "gear", isTarget: false })),
+         ...Array.from({ length: clutterCount }, () => ({ item: randomItem(CLUTTER), kind: "clutter" }))];
+    const scattered = scatterPositions(board.clientWidth, board.clientHeight, boardSize, entries.length);
+    // No repeating grid and no special target coloring. Small edge overlaps
+    // make the locker room feel lived-in, while pieces stay inside the board.
     shuffle(entries).forEach((entry, i) => {
-      const node = makePiece(entry.item, cells[i], entry.kind, boardSize, i);
-      layer.append(node);
+      layer.append(makePiece(entry.item, scattered[i], entry.kind, boardSize, i, !!entry.isTarget));
     });
     total = cleanup ? entries.length : targets.length;
     renderTargets();
@@ -393,7 +422,7 @@
   }
   function spotlight() {
     if (state !== "running" || chosenMode === "cleanup" || assisted) return;
-    const remaining = pieces.find(p => p.kind === "gear" && !collected.has(p.item.id));
+    const remaining = pieces.find(p => p.kind === "gear" && p.isTarget && !collected.has(p.item.id));
     if (!remaining) return;
     assisted = true; $("hint-button").disabled = true;
     remaining.button.classList.add("is-spotlight");
