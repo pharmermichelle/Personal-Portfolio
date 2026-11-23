@@ -378,7 +378,9 @@
     events.replaceChildren(...eventItems.map(item=>card(item,
       item.kind==="hat"?"30 minutes on Thanksgiving":"Play on Thanksgiving")));
     const eventProgress=byId("thanksgiving-progress");
-    const easternDate=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+    const dateParts=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+    const datePart=type=>dateParts.find(part=>part.type===type)?.value||"";
+    const easternDate=datePart("year")+"-"+datePart("month")+"-"+datePart("day");
     const minutes=Math.floor(thanksgivingSeconds/60);
     if(!user)eventProgress.textContent="Sign in to track Thanksgiving rewards.";
     else if(easternDate<"2026-11-26")eventProgress.textContent="Starts November 26 • 0 / 30 eligible minutes";
