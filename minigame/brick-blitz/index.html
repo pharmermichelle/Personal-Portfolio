@@ -14,7 +14,7 @@ button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-a
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:8px 0 12px}.stat{min-width:0;background:linear-gradient(#1b2a50,#141d3b);border:1px solid var(--line);border-radius:10px;text-align:center;padding:6px 2px}.stat span{font-size:10px;display:block;color:#c0d3f2;letter-spacing:.5px;text-transform:uppercase}.stat b{display:block;font-size:clamp(17px,4vw,25px);font-weight:950;color:#ffeb9c;font-variant-numeric:tabular-nums}.stat.xp b{color:#a7ffcb}
 .stage{position:relative;width:100%;max-width:700px;margin:0 auto;border:3px solid #5c81ad;border-radius:12px;overflow:hidden;background:#090f27;box-shadow:0 0 21px #37daef2a}canvas{width:100%;height:auto;aspect-ratio:7/5;display:block;touch-action:none}.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:16px;background:#071126e5}.overlay h2{margin:0;color:var(--gold);font-size:clamp(27px,6vw,39px)}.overlay p{margin:0;max-width:350px;color:#e6efff;font-size:15px}
 .primary{background:var(--gold);color:#1b2146;border:2px solid #fff0ba;border-radius:10px;padding:10px 20px;box-shadow:0 3px #83692e}.primary:disabled{opacity:.6}
-.actions{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto 5px}.secondary{background:#1e2c4d;color:#f1f7ff;border:1px solid #7793bf;border-radius:9px;padding:8px 13px}.secondary:disabled{opacity:.5}
+.steering{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:700px;margin:12px auto 3px}.steering button{display:flex;align-items:center;justify-content:center;gap:12px;min-width:0;min-height:72px;border:2px solid #83b4e6;border-radius:13px;background:linear-gradient(#283e70,#1a2c52);box-shadow:0 4px 0 #080f20;color:#f0faff;font-size:20px;font-weight:950;letter-spacing:1px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.steering button .arrow{font-size:34px;line-height:1;color:#95fbff}.steering button:active,.steering button.pressed{background:linear-gradient(#416398,#24456f);transform:translateY(2px);box-shadow:0 2px 0 #080f20}.actions{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto 5px}.secondary{background:#1e2c4d;color:#f1f7ff;border:1px solid #7793bf;border-radius:9px;padding:8px 13px}.secondary:disabled{opacity:.5}
 .help{max-width:610px;margin:9px auto;font-size:14px;text-align:center;color:#d7e6ff}.xp-guide{max-width:640px;margin:12px auto 8px;background:#172342;border:1px solid #566f9b;border-radius:11px;padding:10px 12px}.xp-guide summary{font-size:15px;font-weight:900;cursor:pointer;color:var(--gold)}.xp-guide p{margin:7px 0 0;font-size:13px;color:#dbe8ff}.status{margin:9px auto;min-height:22px;text-align:center;font-size:14px;font-weight:750;color:#aff6d0}
 .ad{max-width:320px;margin:16px auto 0;text-align:center;min-height:67px}.ad span{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a9b6c7}.ad ins{display:block;width:100%;height:50px}
 @media(max-width:420px){.shell{padding:9px 8px 22px}.mast p,.help{font-size:12px}.stat span{font-size:9px}.stat b{font-size:19px}.stats{gap:5px}.overlay p{font-size:13px}.overlay{gap:8px;padding:12px}}
@@ -32,8 +32,9 @@ button{font:900 16px system-ui,sans-serif;min-height:44px;cursor:pointer;touch-a
 <div class="stat"><span>Level</span><b id="level">1 / 12</b></div><div class="stat"><span>Lives</span><b id="lives">♥ ♥ ♥</b></div><div class="stat"><span>Score</span><b id="score">0</b></div><div class="stat xp"><span>Level XP</span><b id="levelxp">+3</b></div></div>
 <div class="stage" id="game-stage"><canvas id="field" width="700" height="500" aria-label="Brick Blitz playfield. Drag horizontally to move the paddle. Use arrow keys or A and D on a keyboard." role="img"></canvas>
 <div id="overlay" class="overlay"><h2 id="overlay-title">READY TO BLITZ?</h2><p id="overlay-copy">Clear all the bricks! Drag your paddle to bounce the ball. Three lives per level.</p><button type="button" id="main-button" class="primary">▶ START LEVEL 1</button></div></div>
+<div class="steering" role="group" aria-label="Move the paddle"><button id="move-left" type="button" aria-label="Move paddle left, hold to keep moving"><span class="arrow" aria-hidden="true">◀</span> LEFT</button><button id="move-right" type="button" aria-label="Move paddle right, hold to keep moving">RIGHT <span class="arrow" aria-hidden="true">▶</span></button></div>
 <div class="actions"><button id="pause" class="secondary" type="button" disabled>Ⅱ PAUSE</button><button id="sound" class="secondary" type="button" aria-pressed="false">♫ SOUND OFF</button><button id="reset" class="secondary" type="button">↺ RESTART LEVEL</button></div>
-<p class="help">📱 Drag anywhere on the playfield to steer. 🖥️ Use mouse or ← → / A D. Press Space to pause. Catch the ball before it falls!</p>
+<p class="help">📱 Tap or hold the large LEFT / RIGHT buttons below the board, or drag on the playfield. 🖥️ Mouse or ← → / A D also work. Space pauses.</p>
 <details class="xp-guide" open><summary>★ HOW TO EARN XP</summary><p>Sign in before starting a level. The <strong>first clear of each level</strong> earns <strong>3 XP on Level 1, increasing by 1 XP per level</strong>, up to 12 XP. Replays don't give duplicate XP. Only successful clears earn XP. Play as a guest to save your level progress on this device.</p></details>
 <div class="status" id="status" role="status" aria-live="polite">Clear Level 1 to unlock Level 2. Sign in to collect arcade XP.</div>
 <div class="ad"><span>Advertisement</span><ins class="adsbygoogle" data-ad-client="ca-pub-9258275639543826" data-ad-slot="8767009395"></ins></div>
@@ -45,7 +46,7 @@ const c=document.getElementById("field"),g=c.getContext("2d"),$=id=>document.get
 const localKey="retro:brick-blitz:progress:v1";
 let progress={unlocked:1,score:0};
 try{const data=JSON.parse(localStorage.getItem(localKey)||"null");if(data&&Number.isInteger(data.unlocked)&&Number.isFinite(data.score))progress={unlocked:Math.max(1,Math.min(MAX,data.unlocked)),score:Math.max(0,data.score)};}catch(_){}
-let level=progress.unlocked,state="idle",lives=3,score=0,bricks=[],ball={x:350,y:PY-24,vx:0,vy:0},paddleX=350,keyL=false,keyR=false,touchX=null,last=performance.now(),stepCache=0,muted=true,audio=null,serveDelay=0,levelRun=0;
+let level=progress.unlocked,state="idle",lives=3,score=0,bricks=[],ball={x:350,y:PY-24,vx:0,vy:0},paddleX=350,keyL=false,keyR=false,pressL=false,pressR=false,touchX=null,last=performance.now(),stepCache=0,muted=true,audio=null,serveDelay=0,levelRun=0;
 const colors=["#ff829d","#fdbf72","#ffe27a","#99f0c0","#78d5fb","#c7a5fc"];
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const save=()=>{try{localStorage.setItem(localKey,JSON.stringify(progress));}catch(_){}};
@@ -97,7 +98,7 @@ function advance(){
 }
 function sim(dt){
  if(touchX!==null)paddleX=touchX;
- else paddleX+=((keyR?1:0)-(keyL?1:0))*520*dt;
+ else paddleX+=(((keyR||pressR)?1:0)-((keyL||pressL)?1:0))*520*dt;
  paddleX=clamp(paddleX,PR+13,W-PR-13);
  if(serveDelay>0){serveDelay-=dt;return;}
  const prevX=ball.x,prevY=ball.y;
@@ -141,14 +142,42 @@ c.addEventListener("pointermove",e=>{if(state==="running"&&(e.pointerType==="mou
 c.addEventListener("pointerup",e=>{if(e.pointerType!=="mouse")touchX=null;});
 c.addEventListener("pointercancel",()=>touchX=null);
 c.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")touchX=null;});
+// Large, press-and-hold controls for touchscreens; a short tap also nudges the paddle.
+function bindSteering(id,side){
+ const button=$(id);
+ const setDown=(on)=>{
+   if(side==="left")pressL=on;else pressR=on;
+   button.classList.toggle("pressed",on);
+ };
+ button.addEventListener("pointerdown",e=>{
+   if(state!=="running")return;
+   e.preventDefault();
+   touchX=null;
+   setDown(true);
+   paddleX=clamp(paddleX+(side==="left"?-32:32),PR+13,W-PR-13);
+   try{button.setPointerCapture(e.pointerId);}catch(_){}
+ });
+ const release=()=>setDown(false);
+ for(const name of ["pointerup","pointercancel","lostpointercapture"])button.addEventListener(name,release);
+ button.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse"&&e.buttons===0)release();});
+}
+bindSteering("move-left","left");
+bindSteering("move-right","right");
+function stopSteering(){
+ pressL=false;pressR=false;
+ $("move-left").classList.remove("pressed");
+ $("move-right").classList.remove("pressed");
+}
+window.addEventListener("pointerup",stopSteering);
+window.addEventListener("pointercancel",stopSteering);
 window.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","KeyA","KeyD"].includes(e.code)){if(state==="running")e.preventDefault();if(["ArrowLeft","KeyA"].includes(e.code))keyL=true;else keyR=true;touchX=null;}if(e.code==="Space"&&!e.repeat&&["running","paused"].includes(state)){e.preventDefault();$("pause").click();}});
 window.addEventListener("keyup",e=>{if(["ArrowLeft","KeyA"].includes(e.code))keyL=false;if(["ArrowRight","KeyD"].includes(e.code))keyR=false;});
 $("main-button").addEventListener("click",advance);
 $("pause").addEventListener("click",()=>state==="running"?pause():resume());
 $("reset").addEventListener("click",()=>{state="idle";levelRun++;$("pause").disabled=true;prepare();overlay("LEVEL "+level+" RESET","Bricks restored and all three lives returned.","▶ START LEVEL "+level);say("Level restarted. Account XP requires a fresh completed level.");});
 $("sound").addEventListener("click",()=>{muted=!muted;$("sound").textContent=muted?"♫ SOUND OFF":"♫ SOUND ON";$("sound").setAttribute("aria-pressed",String(!muted));if(!muted)chime();});
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="running")pause();});
-window.addEventListener("blur",()=>{if(state==="running")pause();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){stopSteering();if(state==="running")pause();}});
+window.addEventListener("blur",()=>{stopSteering();if(state==="running")pause();});
 window.addEventListener("retro-level-xp",e=>{
  if(e.detail?.gameId!=="brick-blitz")return;
  if(e.detail.type==="award"){
