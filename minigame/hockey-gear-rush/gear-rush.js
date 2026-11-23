@@ -236,7 +236,8 @@
   }
   function fillBoard() {
     const board = $("pile-area");
-    board.replaceChildren();
+    const layer = $("pieces-layer");
+    layer.replaceChildren(); // Keep the start/pause/results overlay and rink decoration intact.
     pieces = []; collected = new Set(); found = 0;
     const cfg = config();
     const cleanup = chosenMode === "cleanup";
@@ -252,7 +253,7 @@
     // Draw in randomized order; overlap is deliberately minimized by the cell allocation.
     shuffle(entries).forEach((entry, i) => {
       const node = makePiece(entry.item, cells[i], entry.kind, boardSize, i);
-      board.append(node);
+      layer.append(node);
     });
     total = cleanup ? entries.length : targets.length;
     renderTargets();
