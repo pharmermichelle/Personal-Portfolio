@@ -164,8 +164,8 @@ details.rules p { margin: 0; padding: 0 13px 13px; font-size: 13px; color: var(-
   .play-column, .side-column { width: 100%; }
   .side-column { display: contents; }
   .side-column .mode-card { order: 1; }
-  .side-column .targets-card { order: 2; }
-  .play-column { order: 3; }
+  .play-column { order: 2; }
+  .side-column .targets-card { order: 3; }
   .side-column .collection-card { order: 4; }
   .side-column .rules { order: 5; }
   .mode-card { padding: 7px 10px; }
@@ -200,4 +200,187 @@ details.rules p { margin: 0; padding: 0 13px 13px; font-size: 13px; color: var(-
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+
+/* 2026-11-23 — Hockey identity & narrow-phone fit.
+   Red and white evoke classic Detroit hockey, using original rink artwork,
+   without official team marks. */
+:root {
+  color-scheme: dark;
+  --ink: #fff9f9;
+  --muted: #f2cfd4;
+  --cyan: #fff3f3;
+  --gold: #ffebed;
+  --navy: #18070e;
+  --panel: #3b101b;
+  --panel-soft: #4b1725;
+  --line: #a94d61;
+  --success: #e8ffeb;
+}
+html {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: #16070c;
+}
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background:
+    linear-gradient(115deg, #17070ee8 0%, #300b19e9 55%, #14070cea 100%),
+    url("locker-hockey-pattern.svg") center 38px / 520px 320px repeat,
+    #1b080f;
+}
+.arcade-shell, .game-grid, .play-column, .side-column, .side-card, .card,
+.board-card, .scoreboard, .target-list, .target-item, .mode-card,
+.playfield, .pieces-layer, .level-selector, .board-controls {
+  min-width: 0;
+  max-width: 100%;
+}
+.arcade-shell { width: 100%; }
+.card {
+  border-color: #a34a5d;
+  background: linear-gradient(160deg, #491520, #300d18);
+  box-shadow: 0 7px 22px #1202075c;
+}
+.masthead { border-bottom: 1px solid #b15768; padding-bottom: 12px; }
+.eyebrow { color: #ffc0c9; }
+.mast-emblem {
+  background: linear-gradient(145deg,#c3193b,#740b23);
+  border-color: #ffb5c3;
+  box-shadow: 0 4px 0 #19040b;
+}
+.scorebox {
+  background: linear-gradient(180deg, #80203a, #4c1023);
+  border-color: #b65c70;
+}
+.scorebox span { color: #ffe0e5; }
+.scorebox.is-clock strong { color: #fff0b6; }
+.scorebox.is-progress strong { color: #d9ffd9; }
+.board-card { border-color: #b2556b; }
+.board-topline span { color: #ffe2e6; }
+.board-topline strong { color: #fff0be; }
+.playfield, .playfield[data-chapter="2"], .playfield[data-chapter="3"] {
+  background:
+    linear-gradient(#4a10239e, #230714c8),
+    url("locker-rink-board.svg") center / 100% 100% no-repeat,
+    linear-gradient(155deg, #83283b, #361020);
+  border-color: #df8a9e;
+  box-shadow: inset 0 0 26px #15050b99;
+}
+.playfield[data-chapter="2"] { background-color: #43152c; }
+.playfield[data-chapter="3"] { background-color: #5b1d32; }
+.playfield::before { border-color: #f9cdd34a; }
+.board-sticker { color: #ffe1e479; }
+.item {
+  border: 1px solid #f7bac5;
+  background: linear-gradient(145deg, #a52440ee, #68172bdd);
+  box-shadow: 0 3px 6px #1a0611a1;
+}
+.item--clutter, .item--cleanup {
+  background: #571b2dc9;
+  border-color: #c98e9d;
+}
+.item.is-spotlight {
+  border-color: #fff0ab;
+  box-shadow: 0 0 0 4px #ffdfad80, 0 0 25px #fff1af;
+}
+.overlay { background: #17060fe0; }
+.overlay-card {
+  background: linear-gradient(155deg, #5a1829f5, #2e0d19f7);
+  border-color: #ffc4cd;
+}
+.overlay-kicker { color: #ffd5dd; }
+.overlay-card h2 { color: #fff5ef; }
+.overlay-card p { color: #ffe3e6; }
+.btn {
+  color: #fff7f8;
+  border-color: #ca8495;
+  background: #72203a;
+}
+.btn:hover:not(:disabled) { background: #962643; }
+.btn--primary {
+  background: linear-gradient(180deg, #f62f55, #c71335);
+  border-color: #ff9baa;
+  color: #fff;
+  box-shadow: inset 0 1px #ffffff60;
+}
+.btn--primary:hover:not(:disabled) { background: #e82245; }
+.btn--quiet { background: #521426; }
+.mode-button { color: #fff2f4; background: #591a2c; border-color: #b46b7e; }
+.mode-button[aria-pressed="true"] {
+  background: #d71e43;
+  border-color: #ffe0e5;
+  box-shadow: inset 0 0 0 1px #ffccd5;
+}
+.mode-help, .side-footnote { color: #f4d4db; }
+.level-selector span { color: #ffe6eb; }
+.side-title span, .collection strong, details.rules summary { color: #ffe1b8; }
+.target-item { background: #611b30; border-color: #aa687a; }
+.target-item.is-found { background: #315747; border-color: #9ce0c3; }
+.target-item.is-found span { color: #e2ffec; }
+.progress-strip { background: #230b17; }
+.progress-strip > span { background: #fa879b; }
+.status { color: #ddf8e9; }
+.ad-slot { border-color: #864357; }
+/* Do not allow the canvas-like play area, menu, or checklist to widen the viewport. */
+@media (max-width: 760px) {
+  .arcade-shell {
+    width: 100%;
+    padding: 8px max(8px, env(safe-area-inset-right)) 20px max(8px, env(safe-area-inset-left));
+  }
+  .game-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    width: 100%;
+    overflow-x: clip;
+  }
+  .side-column { display: contents; }
+  .side-column .mode-card { order: 1; }
+  .play-column { order: 2; }
+  .side-column .targets-card { order: 3; }
+  .side-column .collection-card { order: 4; }
+  .side-column .rules { order: 5; }
+  .play-column, .side-column .card {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .mode-card { padding: 8px 10px; }
+  .mode-list, .board-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mode-button { min-width: 0; }
+  .target-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+    overflow: visible;
+    padding: 1px 0 3px;
+  }
+  .target-item {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    flex: initial;
+    min-height: 49px;
+    padding: 4px;
+  }
+  .target-item span { overflow-wrap: anywhere; }
+  .board-card { width: 100%; }
+  .playfield { width: 100%; height: clamp(245px, 40dvh, 360px); }
+  .overlay { padding: 10px; }
+  .overlay-card { max-width: min(100%, 330px); padding: 14px 12px; }
+  .board-controls .btn { min-width: 0; min-height: 48px; padding: 8px 3px; }
+  .ad-slot { margin-top: 160px; }
+}
+@media (max-width: 350px) {
+  .scorebox { padding-inline: 4px; }
+  .target-item img { width: 28px; height: 28px; }
+  .target-item span { font-size: 13px; }
+  .board-controls .btn { font-size: 13px; }
 }
