@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#100d26">
+ <meta name="description" content="Explore a retro arcade room, roam between classic CRT cabinets, and play twenty free browser games.">
+ <title>The Arcade Floor — Retro Games Hub</title>
+ <link rel="canonical" href="https://michellew.io/arcade-floor.html">
+ <meta property="og:type" content="website">
+ <meta property="og:title" content="The Arcade Floor | Retro Games Hub">
+ <meta property="og:description" content="Walk the arcade and choose a game from the retro cabinets.">
+ <meta property="og:url" content="https://michellew.io/arcade-floor.html">
+ <meta property="og:image" content="https://michellew.io/images/portfolio-icon.png">
+ <link rel="stylesheet" href="arcade-floor.css?v=20261123-floor1">
+ <script defer src="retro-gear-wearables.js?v=20261123-gear15"></script>
+ <script defer src="retro-player-avatar.js?v=20261123-gear15"></script>
+ <script defer src="retro-arcade-header.js?v=20261123-floor1" data-game-id="arcade-lobby" data-layout="scroll"></script>
+ <script defer src="arcade-floor.js?v=20261123-floor1"></script>
+</head>
+<body>
+ <main class="floor-shell">
+  <section class="floor-heading">
+   <div>
+    <p class="floor-eyebrow">✦ RETRO GAME HUB / FLOOR ONE</p>
+    <h1>Welcome to the Arcade</h1>
+    <p>Walk between glowing cabinets. Step up to a screen to play.</p>
+   </div>
+   <span class="floor-badge">SOLO PREVIEW • MULTIPLAYER PLANNED</span>
+  </section>
+  <section class="room-shell" aria-label="Interactive retro arcade floor">
+   <div class="room-topline">
+    <div><strong>THE MAIN ARCADE</strong><span>20 playable cabinets</span></div>
+    <span id="floor-location" aria-live="polite">Entrance</span>
+   </div>
+   <div class="room-window" id="room-window" role="region" aria-label="Move around the arcade using arrow keys, WASD, or the directional buttons">
+    <div class="room-world" id="room-world">
+     <div class="rear-sign" aria-hidden="true">✦ INSERT FUN • PRESS PLAY ✦</div>
+     <div class="floor-decor floor-decor--left" aria-hidden="true">★ PLAYER 1</div>
+     <div class="floor-decor floor-decor--right" aria-hidden="true">HIGH SCORES AHEAD ★</div>
+     <div class="cabinet-grid" id="cabinet-grid"></div>
+     <div id="floor-player" class="floor-player" aria-label="Your arcade avatar">
+      <div id="floor-player-art" class="floor-player-art" aria-hidden="true">🎮</div>
+      <span id="floor-player-name">PLAYER 1</span>
+     </div>
+    </div>
+    <div class="room-crosshair" aria-hidden="true"></div>
+   </div>
+   <div class="room-actionbar">
+    <div class="walk-pad" aria-label="Walk controls">
+     <button data-direction="up" type="button" aria-label="Walk up">▲</button>
+     <button data-direction="left" type="button" aria-label="Walk left">◀</button>
+     <button data-direction="down" type="button" aria-label="Walk down">▼</button>
+     <button data-direction="right" type="button" aria-label="Walk right">▶</button>
+    </div>
+    <div class="room-action-details">
+      <p id="floor-status" role="status" aria-live="polite">Use arrows, WASD, or tap a cabinet to approach it.</p>
+      <div class="floor-actions">
+       <button id="approach-button" type="button">Walk to Cabinet</button>
+       <button id="play-button" class="play-button" type="button" disabled>PLAY GAME ↗</button>
+      </div>
+    </div>
+   </div>
+  </section>
+  <section class="floor-guide">
+    <div>
+      <h2>How to explore</h2>
+      <p><strong>Mobile:</strong> Use the four arrows below the room, or tap a cabinet to walk toward it. Press Play when you reach it.</p>
+      <p><strong>Desktop:</strong> Move with arrow keys or WASD. Press E or Enter near a cabinet to open it.</p>
+    </div>
+    <div class="floor-legend">
+      <strong>Your Arcade Identity</strong>
+      <p>Signed-in players appear as their saved avatar, with equipped hockey wearables where available. Guest players get a starter character. Your game XP is awarded inside the games, not by walking around.</p>
+      <a href="retro-player-profile.html">Edit Avatar &amp; Outfits ↗</a>
+    </div>
+  </section>
+  <p class="floor-roadmap">This is a playable solo arcade-floor preview. Friend presence, parties, chat, and public multiplayer are not enabled yet; those features require account privacy, age-appropriate safeguards, blocking, reporting and moderation.</p>
+ </main>
+</body>
+</html>
