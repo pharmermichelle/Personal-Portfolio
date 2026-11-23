@@ -186,6 +186,18 @@ function resumeGame(){
  if(state!=="paused")return;state="running";last=performance.now();el("overlay").hidden=true;el("pause").textContent="Ⅱ PAUSE";
 }
 const clientReady=()=>window.retroArcadeSupabaseClient||null;
+function waitForAccountConnection(){
+ if(clientReady())return Promise.resolve();
+ // The shared header loads auth asynchronously; do not silently make a fast
+ // Start tap guest-only on slower mobile connections.
+ return new Promise(resolve=>{
+  let done=false;
+  const finish=()=>{if(done)return;done=true;clearTimeout(timer);window.removeEventListener("retro-arcade-auth-ready",finish);resolve();};
+  const timer=setTimeout(finish,2500);
+  window.addEventListener("retro-arcade-auth-ready",finish,{once:true});
+  if(clientReady())finish();
+ });
+}
 async function serverAction(action,data){
  const client=clientReady();if(!client)throw Error("Account connection not ready");
  const {data:sessionData}=await client.auth.getSession();
@@ -204,6 +216,8 @@ async function begin(){
  activeAccount=null;attempt=null;confirmedXp=0;checkpointedSecond=0;checkpointTask=null;claiming=false;checkpointRetryAt=0;
  previousBest=saved.bestSeconds;previousRuns=saved.runs;
  try {
+  await waitForAccountConnection();
+  if(currentRun!==runIndex)return;
   const {result,userId}=await serverAction("start",{});
   if(currentRun!==runIndex)return;
   activeAccount=userId;attempt=result.attempt_id;
