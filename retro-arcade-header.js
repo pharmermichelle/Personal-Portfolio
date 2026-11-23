@@ -22,8 +22,9 @@
  '.bar{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"brand player coffee links";gap:9px 14px;align-items:center;background:linear-gradient(110deg,#0c1529,#172641 60%,#0b1a30);border-bottom:2px solid #46cdd0;box-shadow:0 3px 12px #0005;padding:10px 14px;min-width:0}' +
  '.brand{grid-area:brand;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;color:#e9f7ff}.brand .star{color:#ffcf66;font-size:18px}.brand .wordmark{font-size:13px;font-weight:1000;letter-spacing:.75px;border:1px solid #5f89ac;padding:9px 10px;border-radius:8px;background:#11263f}' +
  '.player{grid-area:player;display:flex;gap:10px;align-items:center;min-width:0;color:inherit;text-decoration:none;border-radius:9px;padding:3px 5px}.player:hover{background:#273752}.avatar{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:12px;background:#332854;border:2px solid #75dce5;overflow:hidden;font-size:23px}.avatar svg{width:100%;height:100%;object-fit:contain}.identity{min-width:0;flex:1}.name{font-weight:950;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.details{display:flex;gap:10px;align-items:center;margin-top:3px;font-size:13px;color:#ffe7a9;font-weight:900;white-space:nowrap}.level{color:#a8eeff}.track{width:min(235px,100%);height:6px;background:#2d3a58;border-radius:20px;margin-top:6px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#7fdbf1,#f2cc69);transition:width .2s}' +
- '.links{grid-area:links;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px}.nav-link,.login,.logout,.coffee{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border:1px solid #63849f;border-radius:8px;background:#152b45;color:#f2f8ff;text-decoration:none;font-weight:900;font-size:12px;white-space:nowrap;cursor:pointer}.nav-link:hover,.login:hover,.logout:hover{background:#294660}.coffee{grid-area:coffee;background:#4d314c;border-color:#ecafcf;color:#ffe6f7}.coffee:hover{background:#66405c}.logout{background:#192439}.login{border-color:#f1d27b;color:#ffeab7}.nav-link:focus-visible,.coffee:focus-visible,.player:focus-visible,.logout:focus-visible,.login:focus-visible{outline:3px solid #ffdd7f;outline-offset:2px}' +
- '@media(max-width:1050px){.bar{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand coffee" "player player" "links links";gap:6px 9px;padding:8px 10px}.brand .wordmark{padding:6px 8px;font-size:12px}.coffee{grid-area:coffee;justify-self:end;min-height:34px;padding:5px 9px}.player{padding:4px 3px}.avatar{width:45px;height:45px}.details{margin-top:2px}.track{margin-top:4px}.links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:5px}.nav-link{min-height:39px;white-space:normal;text-align:center;padding:6px 5px}.logout,.login{grid-column:4}.links .profile-link{grid-column:3}.links .home-link{grid-column:1}.links .projects-link{grid-column:2}.links .coffee{display:none}.links .logout,.links .login{font-size:11px}}' +
+ '.share{border-color:#7edccb;color:#e8fffb;background:#163e47;min-height:44px}.share-panel{position:absolute;right:12px;top:calc(100% + 4px);max-width:min(390px,calc(100vw - 24px));width:100%;background:#152744;border:2px solid #83e5ed;border-radius:12px;box-shadow:0 12px 34px #000b;z-index:40;padding:14px;display:grid;gap:9px;font-size:14px}.share-panel strong{font-size:16px}.share-panel p{margin:0;color:#d1dfed;font-weight:500;font-size:13px}.share-panel .share-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.share-panel a,.share-panel button{display:flex;justify-content:center;align-items:center;min-height:44px;border:1px solid #6f9db5;border-radius:8px;background:#243b5f;color:#f4ffff;text-decoration:none;padding:8px;font:800 14px/1.2 system-ui,sans-serif;cursor:pointer}.share-panel input{min-height:44px;width:100%;border:1px solid #6f9db5;border-radius:7px;background:#0e1c32;color:#e6f9ff;padding:8px;font:500 13px system-ui,sans-serif}.share-panel .share-close{background:#362947;color:#f5e4f4}' +
+ '.links{grid-area:links;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px}.nav-link,.login,.logout,.coffee,.share{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border:1px solid #63849f;border-radius:8px;background:#152b45;color:#f2f8ff;text-decoration:none;font-weight:900;font-size:12px;white-space:nowrap;cursor:pointer}.nav-link:hover,.login:hover,.logout:hover,.share:hover{background:#294660}.coffee{grid-area:coffee;background:#4d314c;border-color:#ecafcf;color:#ffe6f7}.coffee:hover{background:#66405c}.logout{background:#192439}.login{border-color:#f1d27b;color:#ffeab7}.nav-link:focus-visible,.coffee:focus-visible,.player:focus-visible,.logout:focus-visible,.login:focus-visible,.share:focus-visible,.share-panel a:focus-visible,.share-panel button:focus-visible{outline:3px solid #ffdd7f;outline-offset:2px}' +
+ '@media(max-width:1050px){.bar{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand coffee" "player player" "links links";gap:6px 9px;padding:8px 10px}.brand .wordmark{padding:6px 8px;font-size:12px}.coffee{grid-area:coffee;justify-self:end;min-height:34px;padding:5px 9px}.player{padding:4px 3px}.avatar{width:45px;height:45px}.details{margin-top:2px}.track{margin-top:4px}.links{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:5px}.nav-link,.share{min-height:44px;white-space:normal;text-align:center;padding:6px 3px}.logout,.login{grid-column:5}.links .profile-link{grid-column:3}.links .share{grid-column:4}.links .home-link{grid-column:1}.links .projects-link{grid-column:2}.links .coffee{display:none}.links .logout,.links .login{font-size:11px}}' +
  '@media(max-width:400px){.name{font-size:14px}.details{font-size:12px}.nav-link{font-size:11px}.brand .wordmark{font-size:11px}.coffee{font-size:11px}.avatar{width:42px;height:42px}}' +
  '</style>';
  shadow.innerHTML = css +
@@ -31,8 +32,9 @@
  '<a class="brand" id="site-brand" href="'+arcade+'"><span class="star" aria-hidden="true">✦</span><span class="wordmark">RETRO GAMES HUB</span></a>' +
  '<a class="coffee" href="https://venmo.com/pharmermichelle" target="_blank" rel="noopener noreferrer" title="Buy Dev a Coffee with Venmo">☕ Buy Dev a Coffee</a>' +
  '<a class="player" id="player-card" href="'+profile+'" aria-label="View your arcade player profile"><span class="avatar" id="player-avatar">🎮</span><span class="identity"><span class="name" id="player-text" style="display:block">Checking player…</span><span class="details"><span class="level" id="player-level">LEVEL —</span><span id="xp-total">XP —</span></span><span class="track" role="progressbar" aria-label="XP toward next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="player-track" style="display:block"><span class="fill" id="player-fill" style="display:block"></span></span></span></a>' +
- '<nav class="links" aria-label="Arcade navigation"><a class="nav-link home-link" id="arcade-link" href="'+arcade+'">← Arcade Hub</a><a class="nav-link projects-link" href="'+projects+'">← Projects</a><a class="nav-link profile-link" href="'+profile+'">★ My Profile</a><a class="login" id="login-link" href="'+accountURL("login")+'" hidden>Log In</a><button class="logout" id="logout-button" type="button" hidden>Log Out</button></nav>' +
- '</div>';
+ '<nav class="links" aria-label="Arcade navigation"><a class="nav-link home-link" id="arcade-link" href="'+arcade+'">← Arcade Hub</a><a class="nav-link projects-link" href="'+projects+'">← Projects</a><a class="nav-link profile-link" href="'+profile+'">★ My Profile</a><button class="share" id="share-button" type="button" aria-expanded="false" aria-controls="retro-share-panel">↗ Share</button><a class="login" id="login-link" href="'+accountURL("login")+'" hidden>Log In</a><button class="logout" id="logout-button" type="button" hidden>Log Out</button></nav>' +
+ '</div>' +
+ '<div class="share-panel" id="retro-share-panel" hidden role="dialog" aria-label="Share this game"><strong>Share this game</strong><p>Choose where to share. Nothing is posted unless you choose to.</p><input id="share-link" aria-label="Shareable game link" readonly><div class="share-actions"><a id="share-facebook" target="_blank" rel="noopener noreferrer">Facebook</a><a id="share-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a><a id="share-reddit" target="_blank" rel="noopener noreferrer">Reddit</a><a id="share-x" target="_blank" rel="noopener noreferrer">X</a><button id="share-copy" type="button">Copy link</button><button id="share-close" class="share-close" type="button">Close</button></div><p id="share-feedback" role="status" aria-live="polite"></p></div>';
  document.body.prepend(host);
  // Load the same original avatars as the player profile across every game.
  if(!window.RetroHubAvatars){
@@ -113,6 +115,47 @@
  window.addEventListener("blur",()=>{presenceNeedsStart=true;});
  window.addEventListener("focus",()=>{void sendActivityHeartbeat();});
 
+ // Share only canonical game URLs, not account tokens, query parameters or fragments.
+ const shareButton=shadow.getElementById("share-button");
+ const sharePanel=shadow.getElementById("retro-share-panel");
+ const shareLink=shadow.getElementById("share-link");
+ const shareFeedback=shadow.getElementById("share-feedback");
+ const shareURL=new URL(location.pathname,location.origin).href;
+ const shareTitle=document.title||"Retro Games Hub";
+ shareLink.value=shareURL;
+ shadow.getElementById("share-facebook").href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(shareURL);
+ shadow.getElementById("share-whatsapp").href="https://api.whatsapp.com/send?text="+encodeURIComponent(shareTitle+" "+shareURL);
+ shadow.getElementById("share-reddit").href="https://www.reddit.com/submit?url="+encodeURIComponent(shareURL)+"&title="+encodeURIComponent(shareTitle);
+ shadow.getElementById("share-x").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareTitle)+"&url="+encodeURIComponent(shareURL);
+ function showShareChoices(){
+   sharePanel.hidden=false;shareButton.setAttribute("aria-expanded","true");
+   shareFeedback.textContent="";shadow.getElementById("share-copy").focus();
+ }
+ function closeShareChoices(){
+   sharePanel.hidden=true;shareButton.setAttribute("aria-expanded","false");shareButton.focus();
+ }
+ shareButton.addEventListener("click",()=>{
+   if(navigator.share){
+     // Must run directly inside the user's click to preserve transient activation.
+     try{Promise.resolve(navigator.share({title:shareTitle,url:shareURL})).catch(error=>{
+       if(error?.name!=="AbortError")showShareChoices();
+     });}catch(_){showShareChoices();}
+   }else showShareChoices();
+ });
+ shadow.getElementById("share-close").addEventListener("click",closeShareChoices);
+ shadow.addEventListener("keydown",event=>{
+   if(event.key==="Escape"&&!sharePanel.hidden){event.preventDefault();closeShareChoices();}
+ });
+ shadow.getElementById("share-copy").addEventListener("click",async()=>{
+   try{
+     if(!navigator.clipboard?.writeText)throw Error("Clipboard unavailable");
+     await navigator.clipboard.writeText(shareURL);
+     shareFeedback.textContent="Link copied. Send it whenever you like.";
+   }catch(_){
+     shareLink.focus();shareLink.select();
+     shareFeedback.textContent="Select and copy the link above to share it.";
+   }
+ });
  const txt=shadow.getElementById("player-text");
  const avatar=shadow.getElementById("player-avatar");
  const levelText=shadow.getElementById("player-level");
