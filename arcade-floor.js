@@ -13,6 +13,63 @@ let selected=null,autoTarget=null,last=performance.now(),active=true;
 let account=null,lastAccountRequest=0;
 const status=message=>{$("floor-status").textContent=message;};
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+
+/* Lightweight grid routing: avoid cabinet bases and lounge furniture.
+   All coordinates live in the room's logical world, so touch and keyboard
+   use exactly the same collision boundaries across mobile and desktop. */
+const NAV_STEP=34;
+function blocked(x,y){
+ if(x<42||x>bounds.w-42||y<118||y>bounds.h-42)return true;
+ for(const c of cabinets){
+  if(Math.abs(x-c.x)<84&&y>c.y-24&&y<c.y+110)return true;
+ }
+ if(x>471&&x<611&&y>1016&&y<1100)return true;
+ if(x>719&&x<859&&y>1016&&y<1100)return true;
+ for(const tx of [325,1010])if(Math.abs(x-tx)<72&&Math.abs(y-1083)<39)return true;
+ return false;
+}
+function nearestOpen(x,y){
+ x=clamp(x,44,bounds.w-44);y=clamp(y,120,bounds.h-44);
+ if(!blocked(x,y))return{x,y};
+ for(let r=16;r<210;r+=16){
+  for(let a=0;a<16;a++){
+   const px=clamp(x+Math.cos(a*Math.PI/8)*r,44,bounds.w-44);
+   const py=clamp(y+Math.sin(a*Math.PI/8)*r,120,bounds.h-44);
+   if(!blocked(px,py))return{x:px,y:py};
+  }
+ }
+ return {x:player.x,y:player.y};
+}
+function planRoute(from,to){
+ const step=NAV_STEP,cols=Math.ceil(bounds.w/step),rows=Math.ceil(bounds.h/step);
+ const node=(x,y)=>[clamp(Math.round(x/step),0,cols-1),clamp(Math.round(y/step),0,rows-1)];
+ const a=node(from.x,from.y),b=node(to.x,to.y),key=(x,y)=>y*cols+x;
+ const start=key(...a),goal=key(...b);
+ const queue=[a],parent=new Map([[start,null]]);
+ let found=start===goal;
+ const dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]];
+ for(let i=0;i<queue.length&&!found;i++){
+  const [cx,cy]=queue[i];
+  for(const [dx,dy] of dirs){
+   const nx=cx+dx,ny=cy+dy,k=key(nx,ny);
+   if(nx<0||ny<0||nx>=cols||ny>=rows||parent.has(k)||blocked(nx*step,ny*step))continue;
+   if(dx&&dy&&(blocked((cx+dx)*step,cy*step)||blocked(cx*step,(cy+dy)*step)))continue;
+   parent.set(k,key(cx,cy));queue.push([nx,ny]);
+   if(k===goal){found=true;break;}
+  }
+ }
+ if(!found)return [to];
+ const back=[];let k=goal;
+ while(k!==start&&k!==null){back.push({x:(k%cols)*step,y:Math.floor(k/cols)*step});k=parent.get(k);}
+ back.reverse();back.push(to);
+ // Avoid needless intermediate straight-line steps.
+ return back.filter((v,i)=>i===back.length-1||i%2===0);
+}
+function setDestination(target){
+ const goal=nearestOpen(target.x,target.y);
+ autoTarget={...goal,seat:target.seat||null,path:planRoute(player,goal)};
+}
+
 function cabinetColor(index){return ["#ff65d4","#78e9ff","#ffe07a","#8ef8c8","#d2a5ff"][index%5];}
 const cabinets=GAMES.map((g,i)=>{
  const col=i%5,row=Math.floor(i/5),x=175+col*245,y=166+row*239;
@@ -44,7 +101,7 @@ function selectCabinet(c,auto=false){
  leaveSeat();
  selected=c;
  cabinets.forEach(g=>g.button.classList.toggle("is-selected",g===selected));
- if(auto){autoTarget={x:c.x,y:Math.min(bounds.h-48,c.frontY+26)};}
+ if(auto){setDestination({x:c.x,y:Math.min(bounds.h-48,c.frontY+26)});}
  updateAction();
 }
 function updateAction(){
@@ -63,7 +120,7 @@ function updateAction(){
  }
 }
 $("approach-button").addEventListener("click",()=>{
- if(selected){autoTarget={x:selected.x,y:Math.min(bounds.h-48,selected.frontY+26)};updateAction();}
+ if(selected){setDestination({x:selected.x,y:Math.min(bounds.h-48,selected.frontY+26)});updateAction();}
 });
 function launchGame(){
  const target=selected&&distance(player,selected)<=INTERACT_DISTANCE?selected:null;
@@ -94,8 +151,9 @@ for(const button of document.querySelectorAll("[data-direction]")){
    leaveSeat();autoTarget=null;
    const dx=dir==="right"?45:dir==="left"?-45:0;
    const dy=dir==="down"?45:dir==="up"?-45:0;
-   player.x=clamp(player.x+dx,45,bounds.w-45);
-   player.y=clamp(player.y+dy,120,bounds.h-45);
+   const px=clamp(player.x+dx,45,bounds.w-45),py=clamp(player.y+dy,120,bounds.h-45);
+   if(!blocked(px,player.y))player.x=px;
+   if(!blocked(player.x,py))player.y=py;
    syncScene();
  });
 }
@@ -142,16 +200,19 @@ function step(now){
    if(keys.has("left"))x--;if(keys.has("right"))x++;
    if(keys.has("up"))y--;if(keys.has("down"))y++;
    if(autoTarget && !x && !y){
-     const dx=autoTarget.x-player.x,dy=autoTarget.y-player.y;
-     if(Math.hypot(dx,dy)>3){x=dx;y=dy;}else {if(autoTarget.seat){seatedAt=autoTarget.seat;seatedAt.button.classList.add("is-occupied");avatar.classList.add("is-seated");selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));updateAction();}autoTarget=null;}
+     const waypoint=autoTarget.path?.[0]||autoTarget;
+     const dx=waypoint.x-player.x,dy=waypoint.y-player.y;
+     if(Math.hypot(dx,dy)>5){x=dx;y=dy;}else if(autoTarget.path?.length>1){autoTarget.path.shift();}else {if(autoTarget.seat){seatedAt=autoTarget.seat;seatedAt.button.classList.add("is-occupied");avatar.classList.add("is-seated");selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));updateAction();}autoTarget=null;}
    }
    avatar.classList.toggle("is-moving",!!(x||y));
    if(x||y){
      avatar.dataset.facing=Math.abs(x)>Math.abs(y)?(x>0?"right":"left"):(y>0?"down":"up");
      const norm=Math.hypot(x,y);
      const move=Math.min(SPEED*dt,autoTarget?Math.hypot(autoTarget.x-player.x,autoTarget.y-player.y):Infinity);
-     player.x=clamp(player.x+x/norm*move,45,bounds.w-45);
-     player.y=clamp(player.y+y/norm*move,120,bounds.h-45);
+     const nx=clamp(player.x+x/norm*move,45,bounds.w-45);
+     const ny=clamp(player.y+y/norm*move,120,bounds.h-45);
+     if(!blocked(nx,player.y))player.x=nx;
+     if(!blocked(player.x,ny))player.y=ny;
      syncScene();
    }
    const near=selected&&distance(player,selected)<=INTERACT_DISTANCE;
@@ -213,7 +274,7 @@ for(const [tableId,x,y,label] of [["coffee-1",325,1083,"Coffee Table 1"],["coffe
   b.style.left=(68+dx-24)+"px";b.style.top=(35+dy-23)+"px";b.setAttribute("aria-label","Sit at "+label+", "+seatId+" seat");
   const seat={id:tableId+"-"+seatId,tableId,tableName:label,button:b,x:x+dx,y:y+dy};
   seats.push(seat);
-  b.addEventListener("click",event=>{event.stopPropagation();leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));autoTarget={x:seat.x,y:seat.y,seat};status("Walking to "+label+"…");});
+  b.addEventListener("click",event=>{event.stopPropagation();leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));setDestination({x:seat.x,y:seat.y,seat});status("Walking to "+label+"…");});
   table.append(b);
  }
  lounge.append(table);
@@ -224,7 +285,7 @@ viewport.addEventListener("pointerup",event=>{
  const x=clamp(event.clientX-rect.left,45,bounds.w-45);
  const y=clamp(event.clientY-rect.top,120,bounds.h-45);
  leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));
- autoTarget={x,y};tapIndicator.style.left=x+"px";tapIndicator.style.top=y+"px";
+ setDestination({x,y});tapIndicator.style.left=x+"px";tapIndicator.style.top=y+"px";
  tapIndicator.classList.remove("is-active");void tapIndicator.offsetWidth;tapIndicator.classList.add("is-active");
  $("floor-location").textContent="Exploring";status("Walking to your chosen spot…");
 });
