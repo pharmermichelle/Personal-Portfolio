@@ -12,11 +12,11 @@
  <meta property="og:description" content="Walk the arcade and choose a game from the retro cabinets.">
  <meta property="og:url" content="https://michellew.io/arcade-floor.html">
  <meta property="og:image" content="https://michellew.io/images/portfolio-icon.png">
- <link rel="stylesheet" href="arcade-floor.css?v=20261124-camera6">
+ <link rel="stylesheet" href="arcade-floor.css?v=20261124-lounge7">
  <script defer src="retro-gear-wearables.js?v=20261123-collection2"></script>
  <script defer src="retro-player-avatar.js?v=20261123-gear15"></script>
- <script defer src="retro-arcade-header.js?v=20261124-camera6" data-game-id="arcade-lobby" data-layout="scroll"></script>
- <script defer src="arcade-floor.js?v=20261124-camera6"></script>
+ <script defer src="retro-arcade-header.js?v=20261124-lounge7" data-game-id="arcade-lobby" data-layout="scroll"></script>
+ <script defer src="arcade-floor.js?v=20261124-lounge7"></script>
 </head>
 <body>
  <main class="floor-shell">
@@ -33,7 +33,7 @@
     <div><strong>THE MAIN ARCADE</strong><span>20 playable cabinets</span></div>
     <span id="floor-location" aria-live="polite">Entrance</span>
    </div>
-   <div class="room-window" id="room-window" role="region" aria-label="Tap the floor to walk or hop to that spot. Arrow keys, WASD and the directional buttons also work.">
+   <div class="room-window" id="room-window" role="region" aria-label="Tap the floor to walk or hop to that spot. Use keyboard arrow keys or WASD on desktop.">
     <div class="room-world" id="room-world">
      <div class="room-architecture" aria-hidden="true"><div class="neon-portal"><span class="portal-sunset"></span><span class="portal-skyline"></span></div><div class="ceiling-ring"></div><div class="architecture-light architecture-light--left"></div><div class="architecture-light architecture-light--right"></div><div class="room-plant room-plant--left">🌿</div><div class="room-plant room-plant--right">🌿</div></div><div class="rear-sign" aria-hidden="true">✦ RETRO GAME HUB ✦</div>
      <div class="floor-decor floor-decor--left" aria-hidden="true">★ PLAYER 1</div>
@@ -52,12 +52,6 @@
     <div class="room-crosshair" aria-hidden="true"></div>
    </div>
    <div class="room-actionbar">
-    <div class="walk-pad" aria-label="Walk controls">
-     <button data-direction="up" type="button" aria-label="Walk up">▲</button>
-     <button data-direction="left" type="button" aria-label="Walk left">◀</button>
-     <button data-direction="down" type="button" aria-label="Walk down">▼</button>
-     <button data-direction="right" type="button" aria-label="Walk right">▶</button>
-    </div>
     <div class="room-action-details">
       <label class="cabinet-picker-label" for="cabinet-picker">Find a game cabinet</label>
       <select id="cabinet-picker" aria-label="Choose an arcade game to walk toward"><option value="">Choose a game…</option></select>
@@ -73,7 +67,7 @@
   <section class="floor-guide">
     <div>
       <h2>How to explore</h2>
-      <p><strong>Mobile:</strong> Tap any open space to walk there, a chair to sit, or a cabinet to approach it. The arrows are optional.</p>
+      <p><strong>Mobile:</strong> Tap open space to move, a chair to sit, or a cabinet to approach it.</p>
       <p><strong>Desktop:</strong> Move with arrow keys or WASD. Press E or Enter near a cabinet to open it.</p>
     </div>
     <div class="floor-legend">
