@@ -212,3 +212,19 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
  .arcade-cabinet .cabinet-label{font-size:15px;padding:5px 6px}
  .floor-player>span{font-size:15px}
 }
+
+/* Arcade lounge v7 — unobstructed movement UI and polished furnishings. */
+.walk-pad{display:none!important}
+.room-actionbar{display:block;padding:12px 15px 14px}
+.room-action-details{width:100%;min-width:0;text-align:center}
+.floor-actions{justify-content:center}
+.cabinet-picker-label{text-align:left}
+#cabinet-picker{margin:0 auto 10px}
+.lounge-couch{width:208px!important;height:138px!important;top:998px!important;filter:drop-shadow(0 9px 7px #0703168a)}
+.lounge-couch--left{left:405px!important;transform:rotate(-7deg)!important}
+.lounge-couch--right{right:405px!important;transform:rotate(7deg)!important}
+.lounge-tabletop{inset:-38px -29px!important;filter:drop-shadow(0 8px 7px #07031677)}
+.lounge-seat{font-size:0!important;width:46px;height:46px;border-radius:50%!important;border:3px solid #b9f9ff!important;background:radial-gradient(circle at 30% 25%,#ffe3bb,#b67dce 51%,#4a2673 100%)!important;box-shadow:0 0 0 3px #311a4c,0 7px 9px #08031ba8,0 0 13px #7deaff78!important;transform:none!important}
+.lounge-seat::after{content:"";position:absolute;inset:9px;border-radius:50%;border:2px solid #ffffff62;pointer-events:none}
+.lounge-seat.is-occupied{background:radial-gradient(circle at 30% 25%,#ffe3ae,#ff80c1 48%,#a73e8a)!important}
+@media(max-width:700px){.room-actionbar{padding:11px}.room-action-details{text-align:center}.floor-actions{justify-content:center}}
