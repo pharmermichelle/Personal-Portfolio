@@ -196,3 +196,19 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
 .floor-player[data-facing="up"] .floor-player-art{filter:brightness(.8) drop-shadow(0 7px 4px #000b)}
 .floor-player[data-facing="down"] .floor-player-art{filter:drop-shadow(0 7px 4px #000b)}
 @media(max-width:700px){#cabinet-picker{width:100%;margin:0 auto 8px}.cabinet-picker-label{text-align:left}}
+
+/* Visual Standard v1: mobile 2.5D pullback and lower-thirds avatar framing.
+   The entire logical room zooms out uniformly, preserving game hit targets,
+   touch-to-world coordinates and collision geometry. */
+.room-world{transform-origin:top left;will-change:transform}
+.room-window{background:radial-gradient(ellipse at 50% 0%,#69349b72,transparent 65%),#17112c}
+.arcade-cabinet .cabinet-label{font-size:14px;line-height:1.16;letter-spacing:.005em}
+.floor-player-art{scale:1.12;transform-origin:50% 85%}
+.floor-player>span{font-size:14px;line-height:1.2}
+.room-world::before{background:linear-gradient(180deg,#874ca71e 0%,transparent 40%,#0b052650 100%);pointer-events:none}
+@media(max-width:700px){
+ .room-window{height:clamp(415px,65dvh,670px)}
+ .floor-player-art{scale:1.25}
+ .arcade-cabinet .cabinet-label{font-size:15px;padding:5px 6px}
+ .floor-player>span{font-size:15px}
+}
