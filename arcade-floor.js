@@ -62,8 +62,8 @@ function planRoute(from,to){
  const back=[];let k=goal;
  while(k!==start&&k!==null){back.push({x:(k%cols)*step,y:Math.floor(k/cols)*step});k=parent.get(k);}
  back.reverse();back.push(to);
- // Avoid needless intermediate straight-line steps.
- return back.filter((v,i)=>i===back.length-1||i%2===0);
+ // Keep adjacent grid steps so paths cannot cut corners through furniture.
+ return back;
 }
 function setDestination(target){
  const goal=nearestOpen(target.x,target.y);
