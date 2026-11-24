@@ -5,12 +5,12 @@ const GAMES=[{"name":"Brick Blitz","icon":"🧱","href":"minigame/brick-blitz/in
 const $=id=>document.getElementById(id);
 const viewport=$("room-window"),world=$("room-world"),grid=$("cabinet-grid");
 const avatar=$("floor-player"),avatarArt=$("floor-player-art");
-const player={x:665,y:1115};
+const player={x:665,y:1115};\ntry{const saved=JSON.parse(sessionStorage.getItem("rgh-arcade-position")||"null");if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){player.x=clampStart(saved.x,45,1285);player.y=clampStart(saved.y,120,1155);}}catch(_){ }\nfunction clampStart(v,min,max){return Math.min(max,Math.max(min,v));}
 const bounds={w:1330,h:1200};
 const SPEED=250,INTERACT_DISTANCE=118,keys=new Set();
 const seats=[];let seatedAt=null;const tapIndicator=$("floor-tap-indicator");
 let selected=null,autoTarget=null,last=performance.now(),active=true;
-let account=null,lastAccountRequest=0;
+let account=null,lastAccountRequest=0;\nlet lastPositionSave=0;
 const status=message=>{$("floor-status").textContent=message;};
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
@@ -18,58 +18,85 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
    All coordinates live in the room's logical world, so touch and keyboard
    use exactly the same collision boundaries across mobile and desktop. */
 const NAV_STEP=34;
+const WALK_MARGIN=12;
 function blocked(x,y){
  if(x<42||x>bounds.w-42||y<118||y>bounds.h-42)return true;
  for(const c of cabinets){
-  if(Math.abs(x-c.x)<84&&y>c.y-24&&y<c.y+110)return true;
+  if(Math.abs(x-c.x)<84+WALK_MARGIN&&y>c.y-24-WALK_MARGIN&&y<c.y+110+WALK_MARGIN)return true;
  }
- if(x>471&&x<611&&y>1016&&y<1100)return true;
- if(x>719&&x<859&&y>1016&&y<1100)return true;
- for(const tx of [325,1010])if(Math.abs(x-tx)<72&&Math.abs(y-1083)<39)return true;
+ // Couch footprints are solid, but nearby seats remain reachable.
+ if(x>417&&x<607&&y>1016&&y<1098)return true;
+ if(x>723&&x<913&&y>1016&&y<1098)return true;
+ for(const tx of [325,1010])if(Math.abs(x-tx)<73&&Math.abs(y-1083)<42)return true;
  return false;
 }
 function nearestOpen(x,y){
  x=clamp(x,44,bounds.w-44);y=clamp(y,120,bounds.h-44);
  if(!blocked(x,y))return{x,y};
- for(let r=16;r<210;r+=16){
-  for(let a=0;a<16;a++){
-   const px=clamp(x+Math.cos(a*Math.PI/8)*r,44,bounds.w-44);
-   const py=clamp(y+Math.sin(a*Math.PI/8)*r,120,bounds.h-44);
+ for(let r=14;r<250;r+=14){
+  for(let a=0;a<24;a++){
+   const px=clamp(x+Math.cos(a*Math.PI/12)*r,44,bounds.w-44);
+   const py=clamp(y+Math.sin(a*Math.PI/12)*r,120,bounds.h-44);
    if(!blocked(px,py))return{x:px,y:py};
   }
  }
  return {x:player.x,y:player.y};
 }
+function lineClear(a,b){
+ const n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/10);
+ for(let i=1;i<=n;i++){
+  const t=i/n;
+  if(blocked(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;
+ }
+ return true;
+}
 function planRoute(from,to){
- const step=NAV_STEP,cols=Math.ceil(bounds.w/step),rows=Math.ceil(bounds.h/step);
- const node=(x,y)=>[clamp(Math.round(x/step),0,cols-1),clamp(Math.round(y/step),0,rows-1)];
- const a=node(from.x,from.y),b=node(to.x,to.y),key=(x,y)=>y*cols+x;
- const start=key(...a),goal=key(...b);
+ if(lineClear(from,to))return [to];
+ const step=NAV_STEP,cols=Math.floor(bounds.w/step)+1,rows=Math.floor(bounds.h/step)+1;
+ const key=(x,y)=>y*cols+x;
+ const node=p=>[clamp(Math.round(p.x/step),0,cols-1),clamp(Math.round(p.y/step),0,rows-1)];
+ const a=node(from),b=node(to),start=key(...a);
  const queue=[a],parent=new Map([[start,null]]);
- let found=start===goal;
+ let goal=null;
  const dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]];
- for(let i=0;i<queue.length&&!found;i++){
-  const [cx,cy]=queue[i];
+ // Starting grid cell can overlap a collision edge; the exact player start is still valid.
+ for(let i=0;i<queue.length;i++){
+  const [cx,cy]=queue[i],here={x:cx*step,y:cy*step};
+  if(lineClear(here,to)){goal=key(cx,cy);break;}
   for(const [dx,dy] of dirs){
    const nx=cx+dx,ny=cy+dy,k=key(nx,ny);
    if(nx<0||ny<0||nx>=cols||ny>=rows||parent.has(k)||blocked(nx*step,ny*step))continue;
    if(dx&&dy&&(blocked((cx+dx)*step,cy*step)||blocked(cx*step,(cy+dy)*step)))continue;
    parent.set(k,key(cx,cy));queue.push([nx,ny]);
-   if(k===goal){found=true;break;}
   }
  }
- if(!found)return [to];
- const back=[];let k=goal;
- while(k!==start&&k!==null){back.push({x:(k%cols)*step,y:Math.floor(k/cols)*step});k=parent.get(k);}
- back.reverse();back.push(to);
- // Keep adjacent grid steps so paths cannot cut corners through furniture.
- return back;
+ if(goal===null)return null;
+ const path=[];let k=goal;
+ while(k!==start&&k!==null){
+  path.push({x:k%cols*step,y:Math.floor(k/cols)*step});k=parent.get(k);
+ }
+ path.reverse();
+ path.push(to);
+ // Smooth out the jagged grid route only where a straight segment is clear.
+ const smoothed=[];let cursor=from;
+ for(let i=0;i<path.length;){
+  let far=i;
+  for(let j=i+1;j<path.length;j++){if(lineClear(cursor,path[j]))far=j;}
+  smoothed.push(path[far]);cursor=path[far];i=far+1;
+ }
+ return smoothed;
 }
 function setDestination(target){
  const goal=nearestOpen(target.x,target.y);
- autoTarget={...goal,seat:target.seat||null,path:planRoute(player,goal)};
+ const path=planRoute(player,goal);
+ if(!path){
+  autoTarget=null;
+  status("That spot is blocked. Try another part of the floor.");
+  return false;
+ }
+ autoTarget={...goal,seat:target.seat||null,path};
+ return true;
 }
-
 function cabinetColor(index){return ["#ff65d4","#78e9ff","#ffe07a","#8ef8c8","#d2a5ff"][index%5];}
 const cabinets=GAMES.map((g,i)=>{
  const col=i%5,row=Math.floor(i/5),x=175+col*245,y=166+row*239;
@@ -91,7 +118,7 @@ const cabinets=GAMES.map((g,i)=>{
  button.addEventListener("click",()=>selectCabinet(entry,true));
  return entry;
 });
-function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
+const picker=$("cabinet-picker");\ncabinets.forEach((c,i)=>{const option=document.createElement("option");option.value=String(i);option.textContent=c.name;picker.append(option);});\npicker.addEventListener("change",()=>{if(picker.value!=="")selectCabinet(cabinets[Number(picker.value)],true);});\nfunction distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
 function nearestCabinet(){
  let best=null,d=Infinity;
  for(const c of cabinets){const current=distance(player,c);if(current<d){best=c;d=current;}}
@@ -105,7 +132,7 @@ function selectCabinet(c,auto=false){
  updateAction();
 }
 function updateAction(){
- if(seatedAt){$("floor-location").textContent="Coffee lounge";status("Relaxing at "+seatedAt.tableName+". Tap the floor to get up and walk.");$("play-button").disabled=true;$("approach-button").disabled=!selected;return;}
+ if(seatedAt){$("stand-button").hidden=false;$("floor-location").textContent="Coffee lounge";status("Relaxing at "+seatedAt.tableName+". Tap the floor to get up and walk.");$("play-button").disabled=true;$("approach-button").disabled=!selected;return;}
  const near=selected&&distance(player,selected)<=INTERACT_DISTANCE;
  $("play-button").disabled=!near;
  $("approach-button").disabled=!selected||!!autoTarget;
@@ -130,7 +157,7 @@ function launchGame(){
  location.href=new URL(target.href,location.href).href;
 }
 $("play-button").addEventListener("click",launchGame);
-function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");}
+function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");$("stand-button").hidden=true;}\n$("stand-button").addEventListener("click",()=>{leaveSeat();updateAction();});
 function setHeld(direction,yes,button){
  if(yes){leaveSeat();autoTarget=null;keys.add(direction);}else keys.delete(direction);
  button?.classList.toggle("is-held",yes);
@@ -182,7 +209,7 @@ window.addEventListener("keyup",event=>{const dir=keyDirection(event.key);if(dir
 window.addEventListener("blur",()=>{keys.clear();active=false;last=performance.now();});
 window.addEventListener("focus",()=>{active=true;last=performance.now();});
 document.addEventListener("visibilitychange",()=>{active=!document.hidden;keys.clear();last=performance.now();});
-function syncScene(){
+function syncScene(){\n const now=performance.now();if(now-lastPositionSave>1400&&!blocked(player.x,player.y)){lastPositionSave=now;try{sessionStorage.setItem("rgh-arcade-position",JSON.stringify(player));}catch(_){}}
  avatar.style.transform="translate3d("+(player.x-45)+"px,"+(player.y-116)+"px,0)";
  const dx=viewport.clientWidth/2-player.x;
  const dy=viewport.clientHeight/2-player.y;
@@ -202,13 +229,13 @@ function step(now){
    if(autoTarget && !x && !y){
      const waypoint=autoTarget.path?.[0]||autoTarget;
      const dx=waypoint.x-player.x,dy=waypoint.y-player.y;
-     if(Math.hypot(dx,dy)>5){x=dx;y=dy;}else if(autoTarget.path?.length>1){autoTarget.path.shift();}else {if(autoTarget.seat){seatedAt=autoTarget.seat;seatedAt.button.classList.add("is-occupied");avatar.classList.add("is-seated");selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));updateAction();}autoTarget=null;}
+     if(Math.hypot(dx,dy)>5){x=dx;y=dy;}else if(autoTarget.path?.length>1){autoTarget.path.shift();}else {if(autoTarget.seat){seatedAt=autoTarget.seat;seatedAt.button.classList.add("is-occupied");avatar.classList.add("is-seated");selected=null;picker.value="";cabinets.forEach(c=>c.button.classList.remove("is-selected"));updateAction();}autoTarget=null;}
    }
    avatar.classList.toggle("is-moving",!!(x||y));
    if(x||y){
      avatar.dataset.facing=Math.abs(x)>Math.abs(y)?(x>0?"right":"left"):(y>0?"down":"up");
      const norm=Math.hypot(x,y);
-     const move=Math.min(SPEED*dt,autoTarget?Math.hypot(autoTarget.x-player.x,autoTarget.y-player.y):Infinity);
+     const waypoint=autoTarget?.path?.[0]||autoTarget;\n     const move=Math.min(SPEED*dt,waypoint?Math.hypot(waypoint.x-player.x,waypoint.y-player.y):Infinity);
      const nx=clamp(player.x+x/norm*move,45,bounds.w-45);
      const ny=clamp(player.y+y/norm*move,120,bounds.h-45);
      if(!blocked(nx,player.y))player.x=nx;
