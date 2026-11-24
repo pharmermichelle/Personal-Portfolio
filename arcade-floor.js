@@ -172,6 +172,7 @@ function setHeld(direction,yes,button){
 }
 for(const button of document.querySelectorAll("[data-direction]")){
  const dir=button.dataset.direction;
+ let wasPointerHeld=false;
  button.addEventListener("pointerdown",e=>{
    if(e.button!==0)return;
    e.preventDefault();wasPointerHeld=true;try{button.setPointerCapture(e.pointerId);}catch(_){}
@@ -182,7 +183,7 @@ for(const button of document.querySelectorAll("[data-direction]")){
  button.addEventListener("pointercancel",release);
  button.addEventListener("lostpointercapture",release);
  button.addEventListener("click",()=>{ // works for keyboard/switch users
-   if(keys.size)return;
+   if(keys.size||wasPointerHeld){wasPointerHeld=false;return;}
    leaveSeat();autoTarget=null;
    const dx=dir==="right"?45:dir==="left"?-45:0;
    const dy=dir==="down"?45:dir==="up"?-45:0;
