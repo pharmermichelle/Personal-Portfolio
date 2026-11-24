@@ -114,3 +114,61 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
 .floor-ad-slot{max-width:820px;min-height:100px;margin:18px auto 0;padding:10px;border:1px dashed #8e7aa8;border-radius:12px;display:grid;place-items:center;text-align:center;color:#cdbdde;background:#1a152d}
 .floor-ad-slot span{font-size:11px;font-weight:900;letter-spacing:.14em}.floor-ad-slot div{font-size:14px}
 @media(prefers-reduced-motion:reduce){.floor-player.is-moving .floor-player-art{animation:none}.floor-tap-indicator.is-active{animation:none}}
+
+/* Arcade Art Direction v3 — rich layered neon 2.5D game scene.
+   The concept painting is bundled separately as a reference asset; this CSS
+   recreates its interactive geometry while keeping hit targets real DOM nodes. */
+.room-shell{border:1px solid #ae65dd;border-radius:23px;background:#1a1034;box-shadow:0 8px 30px #050310cc,0 0 35px #e73dec21}
+.room-topline{background:linear-gradient(100deg,#25113f 0%,#40205c 45%,#1d163d 100%);border-bottom:2px solid #fd83e2}
+.room-window{background:radial-gradient(ellipse at 50% 10%,#773bb84d,transparent 65%),#18112e;cursor:crosshair}
+.room-world{
+ background:
+  radial-gradient(ellipse 340px 160px at 50% 88%,#ae5add65,transparent 80%),
+  radial-gradient(ellipse 670px 270px at 50% 7%,#6229b270,transparent 90%),
+  linear-gradient(90deg,#1d103f 0 4%,transparent 4% 96%,#1d103f 96%),
+  repeating-linear-gradient(0deg,transparent 0 77px,#a047d64a 78px 80px),
+  repeating-linear-gradient(90deg,transparent 0 77px,#8e58d34a 78px 80px),
+  linear-gradient(145deg,#37235c,#241a4e 65%,#492364);
+ box-shadow:inset 0 0 0 20px #44215a,inset 0 0 0 25px #fc69d6,inset 0 0 0 31px #19203f,inset 0 0 100px #08051db5;
+}
+.room-world::before{inset:36px;border:3px solid #eb70e45e;box-shadow:0 0 19px #cf43d65e,inset 0 0 20px #9858f834;border-radius:28px}
+.room-world::after{width:640px;height:320px;left:345px;bottom:0;background:radial-gradient(ellipse at center,#ff64d34a,transparent 72%);z-index:0}
+.room-architecture{position:absolute;inset:0;pointer-events:none;z-index:1}
+.neon-portal{position:absolute;left:471px;top:23px;width:388px;height:136px;border:10px solid #ec66ed;border-bottom:0;border-radius:150px 150px 8px 8px;background:radial-gradient(ellipse at 50% 92%,#e55c86 0%,#703b92 43%,#241749 80%);box-shadow:0 0 0 7px #46eafb,0 0 32px #f457f4, inset 0 0 24px #0c1f3f;overflow:hidden}
+.neon-portal::after{content:"";position:absolute;inset:15px 20px 0;border:4px solid #fc9bdf;border-bottom:0;border-radius:160px 160px 0 0}
+.portal-sunset{position:absolute;left:119px;bottom:9px;width:140px;height:90px;border-radius:120px 120px 0 0;background:repeating-linear-gradient(to bottom,#ffb86f 0 10px,#f55c9d 11px 16px,#522e84 17px 21px);box-shadow:0 0 15px #f78ab9}
+.portal-skyline{position:absolute;left:25px;right:25px;bottom:0;height:55px;background:linear-gradient(90deg,#231a54 0 8%,transparent 8% 13%,#231a54 13% 18%,transparent 18% 25%,#231a54 25% 29%,transparent 29% 75%,#231a54 75% 83%,transparent 83% 90%,#231a54 90%)}
+.ceiling-ring{position:absolute;left:530px;top:3px;width:270px;height:45px;border:9px solid #f46bf6;border-radius:50%;background:#3c155f77;box-shadow:0 0 20px #e045ef,0 0 0 6px #5f32b1}
+.architecture-light{position:absolute;top:30px;width:16px;height:102px;background:linear-gradient(#fff5b4,#ff61b8);box-shadow:0 0 25px #fd8cf6}
+.architecture-light--left{left:105px}.architecture-light--right{right:105px}
+.room-plant{position:absolute;top:107px;font-size:65px;filter:drop-shadow(0 0 9px #4ef8db77)}
+.room-plant--left{left:90px}.room-plant--right{right:90px}
+.rear-sign{top:167px;left:405px;width:520px;height:48px;border:2px solid #66f7ff;background:linear-gradient(125deg,#291746,#57266e,#261c50);font-size:22px;color:#ffe8ac;box-shadow:0 0 22px #fd78e7}
+.floor-decor{font-size:15px;color:#ffb6ec93;text-shadow:0 0 10px #ab3ccd}
+.cabinet-grid{z-index:6}
+.arcade-cabinet{filter:drop-shadow(3px 12px 9px #08031cab)}
+.arcade-cabinet .cabinet-case{border:5px solid #241342;border-top:13px solid #4f276e;border-radius:22px 22px 11px 11px;background:linear-gradient(115deg,#8d4cb6 0 7%,#4f236f 8% 78%,#231134 79%);box-shadow:8px 8px 0 #1b0e31,10px 10px 0 #ee59e2aa,0 10px 18px #08041c,inset 0 0 0 2px var(--glow);transform:perspective(500px) rotateY(-7deg)}
+.arcade-cabinet .cabinet-case::after{content:"";position:absolute;right:-15px;top:6px;width:13px;height:111px;background:linear-gradient(90deg,#40205e,#170e2c);clip-path:polygon(0 0,100% 8%,100% 94%,0 100%);box-shadow:0 4px 8px #000}
+.arcade-cabinet .cabinet-screen{border-radius:11px 11px 20px 20px;background:radial-gradient(ellipse at 45% 25%,#245a96,#101633 72%);box-shadow:inset 0 3px 6px #000a,0 0 18px var(--glow)}
+.arcade-cabinet .cabinet-console{background:linear-gradient(100deg,#432a6e,#130e25);height:17px;bottom:6px}
+.arcade-cabinet .cabinet-label{border-radius:10px;background:linear-gradient(90deg,#28173eea,#492660ef);box-shadow:0 2px 10px #0007}
+.arcade-cabinet.is-near .cabinet-label{background:#fff0a5}
+.lounge-carpet{position:absolute;z-index:2;left:124px;top:1013px;width:1085px;height:157px;border-radius:50%;background:radial-gradient(ellipse at center,#623a98 0%,#5e3188 70%,#ef6dc5 72%,#311a5e 78%);box-shadow:0 15px 26px #0a0525b8,inset 0 0 16px #ef70d69c;pointer-events:none}
+.lounge-label{z-index:7;left:525px;top:1090px;font-size:18px;color:#fff1ae;text-shadow:0 0 10px #ee5ec1,0 3px 6px #000}
+.lounge-couch{position:absolute;z-index:7;top:1050px;width:126px;height:93px;border:4px solid #8bedff;border-radius:33px 35px 45px 46px;background:linear-gradient(140deg,#be83df,#6e3b9b);box-shadow:0 12px 0 #3c1f61,0 16px 15px #0008,inset 0 0 20px #dba8ff;display:grid;place-items:center;pointer-events:none}
+.lounge-couch span{font-size:50px;filter:drop-shadow(0 3px 3px #0b0731)}
+.lounge-couch--left{left:470px;transform:rotate(-13deg)}.lounge-couch--right{right:470px;transform:rotate(13deg)}
+.lounge-plant{position:absolute;z-index:8;top:1105px;font-size:56px;filter:drop-shadow(0 8px 8px #09031b)}
+.lounge-plant--one{left:102px}.lounge-plant--two{right:102px}
+.lounge-table{z-index:14}.lounge-tabletop{border-color:#65316c;background:radial-gradient(ellipse at 30% 22%,#fad4b1,#af719b 65%,#52315e);box-shadow:0 9px 0 #47295d,0 13px 0 #20e4f7,0 18px 16px #0008}
+.lounge-seat{font-size:28px;background:linear-gradient(145deg,#b47bc6,#42245f);border-color:#8aeffd;box-shadow:0 5px 0 #2a1645,0 9px 12px #000b;transform:rotate(-8deg)}
+.ad-wall{top:217px;border:4px solid #ac70ed;background:linear-gradient(135deg,#5441bd,#ca4bcc 70%,#5c3196);box-shadow:0 0 0 4px #331b59,0 0 17px #fe89ee,0 8px 8px #060318}
+.ad-wall--left{left:38px}.ad-wall--right{right:38px}
+.ad-wall small{color:#fff4ab;font-size:11px}.ad-wall strong{font-size:15px;color:#fff}
+.floor-player{z-index:30;filter:drop-shadow(0 2px 7px #f06cda63)}
+.floor-player-art{height:91px;filter:drop-shadow(0 7px 4px #000c)}
+.floor-player-art svg{filter:drop-shadow(0 1px 3px #55d6ffc0)}
+.room-actionbar{background:linear-gradient(120deg,#311e56,#21173e 55%,#31204e)}
+.floor-ad-slot{border:1px solid #9773c9;background:linear-gradient(110deg,#241939,#392051);min-height:90px;box-shadow:inset 0 0 20px #5f2a6d52}
+@media(min-width:1000px){.room-window{height:620px}}
+@media(prefers-reduced-motion:reduce){.floor-player.is-moving:not(.is-seated) .floor-player-art{animation:none}}
