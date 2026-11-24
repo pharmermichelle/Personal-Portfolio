@@ -167,33 +167,6 @@ function launchGame(){
 $("play-button").addEventListener("click",launchGame);
 function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");$("stand-button").hidden=true;}
 $("stand-button").addEventListener("click",()=>{leaveSeat();updateAction();});
-function setHeld(direction,yes,button){
- if(yes){leaveSeat();autoTarget=null;keys.add(direction);}else keys.delete(direction);
- button?.classList.toggle("is-held",yes);
-}
-for(const button of document.querySelectorAll("[data-direction]")){
- const dir=button.dataset.direction;
- let wasPointerHeld=false;
- button.addEventListener("pointerdown",e=>{
-   if(e.button!==0)return;
-   e.preventDefault();wasPointerHeld=true;try{button.setPointerCapture(e.pointerId);}catch(_){}
-   setHeld(dir,true,button);
- });
- const release=()=>setHeld(dir,false,button);
- button.addEventListener("pointerup",release);
- button.addEventListener("pointercancel",release);
- button.addEventListener("lostpointercapture",release);
- button.addEventListener("click",()=>{ // works for keyboard/switch users
-   if(keys.size||wasPointerHeld){wasPointerHeld=false;return;}
-   leaveSeat();autoTarget=null;
-   const dx=dir==="right"?45:dir==="left"?-45:0;
-   const dy=dir==="down"?45:dir==="up"?-45:0;
-   const px=clamp(player.x+dx,45,bounds.w-45),py=clamp(player.y+dy,120,bounds.h-45);
-   if(!blocked(px,player.y))player.x=px;
-   if(!blocked(player.x,py))player.y=py;
-   syncScene();
- });
-}
 function keyDirection(key){
  const k=key.toLowerCase();
  if(k==="arrowup"||k==="w")return"up";
