@@ -1,4 +1,4 @@
-/* Arcade Floor — solo, walkable CRT lobby (no multiplayer presence or chat). */
+/* Arcade Floor — neon 2.5D walkable social lobby; multiplayer not yet enabled. */
 (() => {
 "use strict";
 const GAMES=[{"name":"Brick Blitz","icon":"🧱","href":"minigame/brick-blitz/index.html"},{"name":"Neon Pong","icon":"🏓","href":"minigame/neon-pong/index.html"},{"name":"Grass Snake","icon":"🐍","href":"minigame/grass-snake/index.html"},{"name":"Claws vs. Paws","icon":"🐈","href":"minigame/claws-vs-paws/index.html"},{"name":"Cut the Cheese","icon":"🧀","href":"minigame/Cut-the-Cheese/index.html"},{"name":"Fallen Grid","icon":"🧩","href":"minigame/Tide-Tetris/index.html"},{"name":"Revive Nature","icon":"🌱","href":"minigame/Revive-nature/revive-index.html"},{"name":"Rink Putt","icon":"🏒","href":"minigame/hockey_shooter/index.html"},{"name":"Hockey Gear Rush","icon":"🥅","href":"minigame/hockey-gear-rush/index.html"},{"name":"Survive 2026","icon":"🌪️","href":"minigame/survive-2026/index.html"},{"name":"Acorn Ascent","icon":"🐿️","href":"minigame/acorn-ascent/index.html"},{"name":"Bugged Out!","icon":"🐞","href":"minigame/bugged-out/index.html"},{"name":"Coastline Cruiser","icon":"🚙","href":"minigame/coastline-cruiser/cruiser.html"},{"name":"Lemon Pound Cake","icon":"🍋","href":"minigame/pound_cake/index.html"},{"name":"Wizard's Mana Forge","icon":"🧙","href":"minigame/clickgame.html"},{"name":"Whack-a-Bug","icon":"🪲","href":"minigame/whackgame.html"},{"name":"Choose Your Adventure","icon":"📜","href":"minigame/game.html"},{"name":"Ferret Life (WIP)","icon":"🐾","href":"minigame/ferret-life/index.html"},{"name":"Inbox Hero","icon":"📥","href":"minigame/inbox-hero.html"},{"name":"Community Garden","icon":"🌻","href":"minigame/community-garden.html"}];
@@ -20,7 +20,7 @@ const cabinets=GAMES.map((g,i)=>{
  button.type="button";
  button.className="arcade-cabinet";
  button.style.left=(x-77)+"px";button.style.top=(y-15)+"px";
- button.style.setProperty("--glow",cabinetColor(i));
+ button.style.setProperty("--glow",cabinetColor(i));button.style.setProperty("--cabinet-depth",String(row));
  button.setAttribute("aria-label","Arcade cabinet: "+g.name+". Select to walk over and play.");
  const casing=document.createElement("span");casing.className="cabinet-case";
  const screen=document.createElement("span");screen.className="cabinet-screen";
@@ -128,8 +128,8 @@ function syncScene(){
  avatar.style.transform="translate3d("+(player.x-45)+"px,"+(player.y-116)+"px,0)";
  const dx=viewport.clientWidth/2-player.x;
  const dy=viewport.clientHeight/2-player.y;
- const offsetX=clamp(dx,viewport.clientWidth-bounds.w,0);
- const offsetY=clamp(dy,viewport.clientHeight-bounds.h,0);
+ const offsetX=viewport.clientWidth>=bounds.w?(viewport.clientWidth-bounds.w)/2:clamp(dx,viewport.clientWidth-bounds.w,0);
+ const offsetY=viewport.clientHeight>=bounds.h?(viewport.clientHeight-bounds.h)/2:clamp(dy,viewport.clientHeight-bounds.h,0);
  world.style.transform="translate3d("+offsetX+"px,"+offsetY+"px,0)";
  cabinets.forEach(c=>c.button.classList.toggle("is-near",distance(player,c)<=INTERACT_DISTANCE));
  if(selected && distance(player,selected)<=INTERACT_DISTANCE && autoTarget && !autoTarget.seat)autoTarget=null;
