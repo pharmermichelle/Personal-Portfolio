@@ -5,12 +5,15 @@ const GAMES=[{"name":"Brick Blitz","icon":"🧱","href":"minigame/brick-blitz/in
 const $=id=>document.getElementById(id);
 const viewport=$("room-window"),world=$("room-world"),grid=$("cabinet-grid");
 const avatar=$("floor-player"),avatarArt=$("floor-player-art");
-const player={x:665,y:1115};\ntry{const saved=JSON.parse(sessionStorage.getItem("rgh-arcade-position")||"null");if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){player.x=clampStart(saved.x,45,1285);player.y=clampStart(saved.y,120,1155);}}catch(_){ }\nfunction clampStart(v,min,max){return Math.min(max,Math.max(min,v));}
+const player={x:665,y:1115};
+try{const saved=JSON.parse(sessionStorage.getItem("rgh-arcade-position")||"null");if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){player.x=clampStart(saved.x,45,1285);player.y=clampStart(saved.y,120,1155);}}catch(_){ }
+function clampStart(v,min,max){return Math.min(max,Math.max(min,v));}
 const bounds={w:1330,h:1200};
 const SPEED=250,INTERACT_DISTANCE=118,keys=new Set();
 const seats=[];let seatedAt=null;const tapIndicator=$("floor-tap-indicator");
 let selected=null,autoTarget=null,last=performance.now(),active=true;
-let account=null,lastAccountRequest=0;\nlet lastPositionSave=0;
+let account=null,lastAccountRequest=0;
+let lastPositionSave=0;
 const status=message=>{$("floor-status").textContent=message;};
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
@@ -118,7 +121,10 @@ const cabinets=GAMES.map((g,i)=>{
  button.addEventListener("click",()=>selectCabinet(entry,true));
  return entry;
 });
-const picker=$("cabinet-picker");\ncabinets.forEach((c,i)=>{const option=document.createElement("option");option.value=String(i);option.textContent=c.name;picker.append(option);});\npicker.addEventListener("change",()=>{if(picker.value!=="")selectCabinet(cabinets[Number(picker.value)],true);});\nfunction distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
+const picker=$("cabinet-picker");
+cabinets.forEach((c,i)=>{const option=document.createElement("option");option.value=String(i);option.textContent=c.name;picker.append(option);});
+picker.addEventListener("change",()=>{if(picker.value!=="")selectCabinet(cabinets[Number(picker.value)],true);});
+function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
 function nearestCabinet(){
  let best=null,d=Infinity;
  for(const c of cabinets){const current=distance(player,c);if(current<d){best=c;d=current;}}
@@ -157,7 +163,8 @@ function launchGame(){
  location.href=new URL(target.href,location.href).href;
 }
 $("play-button").addEventListener("click",launchGame);
-function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");$("stand-button").hidden=true;}\n$("stand-button").addEventListener("click",()=>{leaveSeat();updateAction();});
+function leaveSeat(){if(!seatedAt)return;seatedAt.button.classList.remove("is-occupied");seatedAt=null;avatar.classList.remove("is-seated");$("stand-button").hidden=true;}
+$("stand-button").addEventListener("click",()=>{leaveSeat();updateAction();});
 function setHeld(direction,yes,button){
  if(yes){leaveSeat();autoTarget=null;keys.add(direction);}else keys.delete(direction);
  button?.classList.toggle("is-held",yes);
@@ -209,7 +216,8 @@ window.addEventListener("keyup",event=>{const dir=keyDirection(event.key);if(dir
 window.addEventListener("blur",()=>{keys.clear();active=false;last=performance.now();});
 window.addEventListener("focus",()=>{active=true;last=performance.now();});
 document.addEventListener("visibilitychange",()=>{active=!document.hidden;keys.clear();last=performance.now();});
-function syncScene(){\n const now=performance.now();if(now-lastPositionSave>1400&&!blocked(player.x,player.y)){lastPositionSave=now;try{sessionStorage.setItem("rgh-arcade-position",JSON.stringify(player));}catch(_){}}
+function syncScene(){
+ const now=performance.now();if(now-lastPositionSave>1400&&!blocked(player.x,player.y)){lastPositionSave=now;try{sessionStorage.setItem("rgh-arcade-position",JSON.stringify(player));}catch(_){}}
  avatar.style.transform="translate3d("+(player.x-45)+"px,"+(player.y-116)+"px,0)";
  const dx=viewport.clientWidth/2-player.x;
  const dy=viewport.clientHeight/2-player.y;
@@ -235,7 +243,8 @@ function step(now){
    if(x||y){
      avatar.dataset.facing=Math.abs(x)>Math.abs(y)?(x>0?"right":"left"):(y>0?"down":"up");
      const norm=Math.hypot(x,y);
-     const waypoint=autoTarget?.path?.[0]||autoTarget;\n     const move=Math.min(SPEED*dt,waypoint?Math.hypot(waypoint.x-player.x,waypoint.y-player.y):Infinity);
+     const waypoint=autoTarget?.path?.[0]||autoTarget;
+     const move=Math.min(SPEED*dt,waypoint?Math.hypot(waypoint.x-player.x,waypoint.y-player.y):Infinity);
      const nx=clamp(player.x+x/norm*move,45,bounds.w-45);
      const ny=clamp(player.y+y/norm*move,120,bounds.h-45);
      if(!blocked(nx,player.y))player.x=nx;
