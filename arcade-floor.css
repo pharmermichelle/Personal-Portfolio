@@ -172,3 +172,17 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
 .floor-ad-slot{border:1px solid #9773c9;background:linear-gradient(110deg,#241939,#392051);min-height:90px;box-shadow:inset 0 0 20px #5f2a6d52}
 @media(min-width:1000px){.room-window{height:620px}}
 @media(prefers-reduced-motion:reduce){.floor-player.is-moving:not(.is-seated) .floor-player-art{animation:none}}
+
+/* Actual reusable, lightweight scene art. Keep DOM hit boxes interactive. */
+.lounge-couch{border:0!important;border-radius:0!important;background:transparent url("assets/arcade-lounge-sofa.svg") center / contain no-repeat!important;box-shadow:none!important;width:186px;height:124px;top:1002px}
+.lounge-couch--left{left:424px;transform:rotate(-10deg)}
+.lounge-couch--right{right:424px;transform:rotate(10deg)}
+.lounge-plant{width:83px;height:117px;top:1035px;background:url("assets/arcade-neon-planter.svg") center / contain no-repeat;font-size:0!important}
+.lounge-tabletop{border:0!important;inset:-30px -23px!important;background:transparent url("assets/arcade-coffee-table.svg") center / contain no-repeat!important;box-shadow:none!important;font-size:0}
+.room-plant{width:68px;height:92px;background:url("assets/arcade-neon-planter.svg") center / contain no-repeat;font-size:0!important}
+.floor-player-art img{width:75px;height:91px;display:block;object-fit:contain}
+.floor-player-art{will-change:transform}
+.arcade-cabinet{transition:filter .16s ease}
+.arcade-cabinet:hover{filter:drop-shadow(0 0 13px var(--glow)) drop-shadow(3px 12px 9px #08031cab)}
+.lounge-tabletop::after{content:"";position:absolute;inset:0;pointer-events:none}
+@media(max-width:700px){.room-window{height:clamp(385px,58dvh,610px)}.floor-heading h1{font-size:clamp(27px,7vw,36px)}}
