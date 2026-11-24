@@ -165,8 +165,8 @@ function setAvatar(key,opts={},name="PLAYER 1"){
  try{
    const render=window.RetroHubAvatars?.render;
    if(typeof render==="function")avatarArt.innerHTML=render(key,opts);
-   else avatarArt.textContent="🎮";
- }catch(_){avatarArt.textContent="🎮";}
+   else avatarArt.innerHTML='<img src="assets/arcade-neon-robot.svg" alt="" width="75" height="91">';
+ }catch(_){avatarArt.innerHTML='<img src="assets/arcade-neon-robot.svg" alt="" width="75" height="91">';}
  $("floor-player-name").textContent=(name||"PLAYER 1").slice(0,24);
 }
 async function fetchAvatar(){
@@ -206,7 +206,7 @@ if(window.retroArcadeSupabaseClient)void fetchAvatar();
 const lounge=$("lounge-tables");
 for(const [tableId,x,y,label] of [["coffee-1",325,1083,"Coffee Table 1"],["coffee-2",1010,1083,"Coffee Table 2"]]){
  const table=document.createElement("div");table.className="lounge-table";table.style.left=(x-68)+"px";table.style.top=(y-35)+"px";
- const top=document.createElement("div");top.className="lounge-tabletop";top.textContent="☕";
+ const top=document.createElement("div");top.className="lounge-tabletop";
  table.append(top);
  for(const [seatId,dx,dy,glyph] of [["west",-91,0,"🪑"],["east",91,0,"🪑"]]){
   const b=document.createElement("button");b.type="button";b.className="lounge-seat";b.textContent=glyph;
