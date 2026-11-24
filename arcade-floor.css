@@ -186,3 +186,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #ffe67a;outline-offset:3p
 .arcade-cabinet:hover{filter:drop-shadow(0 0 13px var(--glow)) drop-shadow(3px 12px 9px #08031cab)}
 .lounge-tabletop::after{content:"";position:absolute;inset:0;pointer-events:none}
 @media(max-width:700px){.room-window{height:clamp(385px,58dvh,610px)}.floor-heading h1{font-size:clamp(27px,7vw,36px)}}
+
+/* Keyboard-accessible navigation, sitting controls, and purposeful movement. */
+.cabinet-picker-label{display:block;margin:0 0 4px;color:#b9f9ff;font-size:13px;font-weight:850}
+#cabinet-picker{display:block;width:min(100%,360px);min-height:46px;margin:0 0 10px;padding:9px 13px;background:#281945;border:2px solid #bb7df5;border-radius:12px;color:#fff5e8;font:700 15px system-ui}
+#cabinet-picker:focus-visible{outline:3px solid #ffef9b;outline-offset:2px}
+#stand-button:not([hidden]){background:#5d4384;color:#fff;display:inline-flex;align-items:center}
+.floor-actions button[hidden]{display:none!important}
+.floor-player[data-facing="up"] .floor-player-art{filter:brightness(.8) drop-shadow(0 7px 4px #000b)}
+.floor-player[data-facing="down"] .floor-player-art{filter:drop-shadow(0 7px 4px #000b)}
+@media(max-width:700px){#cabinet-picker{width:100%;margin:0 auto 8px}.cabinet-picker-label{text-align:left}}
