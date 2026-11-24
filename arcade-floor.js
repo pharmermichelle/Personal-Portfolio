@@ -124,6 +124,7 @@ const cabinets=GAMES.map((g,i)=>{
 const picker=$("cabinet-picker");
 cabinets.forEach((c,i)=>{const option=document.createElement("option");option.value=String(i);option.textContent=c.name;picker.append(option);});
 picker.addEventListener("change",()=>{if(picker.value!=="")selectCabinet(cabinets[Number(picker.value)],true);});
+if(blocked(player.x,player.y)){player.x=665;player.y=1115;}
 function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.frontY);}
 function nearestCabinet(){
  let best=null,d=Infinity;
@@ -173,7 +174,7 @@ for(const button of document.querySelectorAll("[data-direction]")){
  const dir=button.dataset.direction;
  button.addEventListener("pointerdown",e=>{
    if(e.button!==0)return;
-   e.preventDefault();try{button.setPointerCapture(e.pointerId);}catch(_){}
+   e.preventDefault();wasPointerHeld=true;try{button.setPointerCapture(e.pointerId);}catch(_){}
    setHeld(dir,true,button);
  });
  const release=()=>setHeld(dir,false,button);
