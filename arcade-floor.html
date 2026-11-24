@@ -58,10 +58,13 @@
      <button data-direction="down" type="button" aria-label="Walk down">▼</button>
      <button data-direction="right" type="button" aria-label="Walk right">▶</button>
     </div>
-    <div class="room-action-details">\n      <label class="cabinet-picker-label" for="cabinet-picker">Find a game cabinet</label>\n      <select id="cabinet-picker" aria-label="Choose an arcade game to walk toward"><option value="">Choose a game…</option></select>
+    <div class="room-action-details">
+      <label class="cabinet-picker-label" for="cabinet-picker">Find a game cabinet</label>
+      <select id="cabinet-picker" aria-label="Choose an arcade game to walk toward"><option value="">Choose a game…</option></select>
       <p id="floor-status" role="status" aria-live="polite">Tap the floor to move, a cabinet to play, or a chair to sit.</p>
       <div class="floor-actions">
-       <button id="approach-button" type="button">Walk to Cabinet</button>\n       <button id="stand-button" type="button" hidden>Stand Up</button>
+       <button id="approach-button" type="button">Walk to Cabinet</button>
+       <button id="stand-button" type="button" hidden>Stand Up</button>
        <button id="play-button" class="play-button" type="button" disabled>PLAY GAME ↗</button>
       </div>
     </div>
