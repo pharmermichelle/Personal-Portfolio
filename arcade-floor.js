@@ -10,6 +10,7 @@ try{const saved=JSON.parse(sessionStorage.getItem("rgh-arcade-position")||"null"
 function clampStart(v,min,max){return Math.min(max,Math.max(min,v));}
 const bounds={w:1330,h:1200};
 const SPEED=250,INTERACT_DISTANCE=118,keys=new Set();
+const cameraScale=()=>viewport.clientWidth<=700?0.80:0.90;
 const seats=[];let seatedAt=null;const tapIndicator=$("floor-tap-indicator");
 let selected=null,autoTarget=null,last=performance.now(),active=true;
 let account=null,lastAccountRequest=0;
@@ -217,15 +218,19 @@ window.addEventListener("keydown",event=>{
 window.addEventListener("keyup",event=>{const dir=keyDirection(event.key);if(dir)keys.delete(dir);});
 window.addEventListener("blur",()=>{keys.clear();active=false;last=performance.now();});
 window.addEventListener("focus",()=>{active=true;last=performance.now();});
+window.addEventListener("resize",syncScene,{passive:true});
 document.addEventListener("visibilitychange",()=>{active=!document.hidden;keys.clear();last=performance.now();});
 function syncScene(){
  const now=performance.now();if(now-lastPositionSave>1400&&!blocked(player.x,player.y)){lastPositionSave=now;try{sessionStorage.setItem("rgh-arcade-position",JSON.stringify(player));}catch(_){}}
  avatar.style.transform="translate3d("+(player.x-45)+"px,"+(player.y-116)+"px,0)";
- const dx=viewport.clientWidth/2-player.x;
- const dy=viewport.clientHeight/2-player.y;
- const offsetX=viewport.clientWidth>=bounds.w?(viewport.clientWidth-bounds.w)/2:clamp(dx,viewport.clientWidth-bounds.w,0);
- const offsetY=viewport.clientHeight>=bounds.h?(viewport.clientHeight-bounds.h)/2:clamp(dy,viewport.clientHeight-bounds.h,0);
- world.style.transform="translate3d("+offsetX+"px,"+offsetY+"px,0)";
+ // Mobile-first 2.5D camera standard: 20% wider view, avatar at 64% height.
+ const scale=cameraScale();
+ const visibleW=viewport.clientWidth/scale,visibleH=viewport.clientHeight/scale;
+ const targetX=player.x-visibleW*.5;
+ const targetY=player.y-visibleH*.64;
+ const scrollX=visibleW>=bounds.w?(bounds.w-visibleW)/2:clamp(targetX,0,bounds.w-visibleW);
+ const scrollY=visibleH>=bounds.h?(bounds.h-visibleH)/2:clamp(targetY,0,bounds.h-visibleH);
+ world.style.transform="translate3d("+(-scrollX*scale)+"px,"+(-scrollY*scale)+"px,0) scale("+scale+")";
  cabinets.forEach(c=>c.button.classList.toggle("is-near",distance(player,c)<=INTERACT_DISTANCE));
  if(selected && distance(player,selected)<=INTERACT_DISTANCE && autoTarget && !autoTarget.seat)autoTarget=null;
 }
@@ -320,8 +325,9 @@ for(const [tableId,x,y,label] of [["coffee-1",325,1083,"Coffee Table 1"],["coffe
 viewport.addEventListener("pointerup",event=>{
  if(event.button!==0||event.target.closest("button,a"))return;
  const rect=world.getBoundingClientRect();
- const x=clamp(event.clientX-rect.left,45,bounds.w-45);
- const y=clamp(event.clientY-rect.top,120,bounds.h-45);
+ const scale=cameraScale();
+ const x=clamp((event.clientX-rect.left)/scale,45,bounds.w-45);
+ const y=clamp((event.clientY-rect.top)/scale,120,bounds.h-45);
  leaveSeat();selected=null;cabinets.forEach(c=>c.button.classList.remove("is-selected"));
  setDestination({x,y});tapIndicator.style.left=x+"px";tapIndicator.style.top=y+"px";
  tapIndicator.classList.remove("is-active");void tapIndicator.offsetWidth;tapIndicator.classList.add("is-active");
