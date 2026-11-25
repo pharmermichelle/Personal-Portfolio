@@ -361,10 +361,10 @@
       return el;
     }
     byId("gear-rewards-summary").textContent=user
-      ? gameItems.filter(item=>item.active&&gearOwned.has(item.id)).length+" / 3 Gear Rush milestone rewards earned"
-      : "Sign in to unlock hockey rewards.";
+      ? gameItems.filter(item=>item.active&&gearOwned.has(item.id)).length+" / "+gameItems.filter(item=>item.active).length+" game milestone rewards earned"
+      : "Sign in to unlock game rewards.";
     game.replaceChildren(...gameItems.map(item=>card(item,
-      item.active?"First eligible Rush clear of Room "+item.level:"Previously earned legacy reward")));
+      item.unlockText||(item.active?"First eligible Rush clear of Room "+item.level:"Previously earned legacy reward"))));
     const owned=levelItems.filter(item=>gearOwned.has(item.id)).length;
     byId("level-outfits-count").textContent=owned+" shirts owned";
     byId("level-outfits-summary").textContent=user
