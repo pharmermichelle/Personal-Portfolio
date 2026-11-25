@@ -68,7 +68,7 @@
    "claws-vs-paws","cut-the-cheese","fallen-grid","revive-nature","rink-putt",
    "hockey-gear-rush","survive-2026","acorn-ascent","bugged-out",
    "coastline-cruiser","lemon-pound-cake","wizards-mana","whack-a-bug",
-   "choose-adventure","ferret-life","inbox-hero","community-garden","grass-snake","neon-pong","brick-blitz"
+   "choose-adventure","ferret-life","inbox-hero","community-garden","grass-snake","neon-pong","brick-blitz","heads-or-tails","higher-or-lower","rock-paper-scissors","tic-tac-toe","backyard-cornhole","five-dice-challenge","memory-match","four-in-a-row","simon-says","2048","minesweeper","word-scramble","hangman","reaction-time"
  ]);
  // Personal estimated time only; never used for XP or public leaderboard scores.
  // A 'start' presence event resets the server cursor on initial load or resume
