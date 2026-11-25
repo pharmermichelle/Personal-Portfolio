@@ -959,6 +959,9 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
             </div>
             <h2>Filter by genre</h2>
             <div class="filters" id="f-genre">
+              <button class="chip" data-key="genre" data-val="word" aria-pressed="false"><span class="dot"></span><span class="tag">Word</span></button>
+              <button class="chip" data-key="genre" data-val="memory" aria-pressed="false"><span class="dot"></span><span class="tag">Memory</span></button>
+              <button class="chip" data-key="genre" data-val="reflex" aria-pressed="false"><span class="dot"></span><span class="tag">Reflex</span></button>
               <button class="chip" data-key="genre" data-val="dice" aria-pressed="false"><span class="dot"></span><span class="tag">Dice</span></button>
               <button class="chip" data-key="genre" data-val="classics" aria-pressed="false"><span class="dot"></span><span class="tag">Classics</span></button>
               <button class="chip" data-key="genre" data-val="cards" aria-pressed="false"><span class="dot"></span><span class="tag">Cards</span></button>
@@ -1081,6 +1084,12 @@ const supabaseClient = supabase.createClient(
 
     // --- Data (pulled from projects.html) ---
       const GAMES = [
+        {"id":"simon-says","icon":"🎵","title":"Simon Says","href":"minigame/retro-classics/index.html?game=simon","img":"","desc":"Repeat growing color sequences.","genre":["memory","puzzle","classics"],"platform":["desktop","mobile"]},
+        {"id":"2048","icon":"🔢","title":"2048","href":"minigame/retro-classics/index.html?game=2048","img":"","desc":"Merge numbered tiles to reach 2048.","genre":["puzzle","classics"],"platform":["desktop","mobile"]},
+        {"id":"minesweeper","icon":"💣","title":"Minesweeper","href":"minigame/retro-classics/index.html?game=mines","img":"","desc":"Clear the safe squares and flag mines.","genre":["puzzle","classics"],"platform":["desktop","mobile"]},
+        {"id":"word-scramble","icon":"🔤","title":"Word Scramble","href":"minigame/retro-classics/index.html?game=scramble","img":"","desc":"Unscramble five words.","genre":["word","puzzle"],"platform":["desktop","mobile"]},
+        {"id":"hangman","icon":"✏️","title":"Hangman","href":"minigame/retro-classics/index.html?game=hangman","img":"","desc":"Guess the hidden word one letter at a time.","genre":["word","classics"],"platform":["desktop","mobile"]},
+        {"id":"reaction-time","icon":"⚡","title":"Reaction Time","href":"minigame/retro-classics/index.html?game=reaction","img":"","desc":"Tap when green across five attempts.","genre":["reflex","arcade"],"platform":["desktop","mobile"]},
         {"id":"five-dice-challenge","icon":"🎲","title":"Five Dice Challenge","desc":"Roll, hold and choose five scoring categories.","genre":["dice","classics","puzzle"],"href":"minigame/retro-classics/index.html?game=dice","img":"","platform":["desktop","mobile"]},
         {"id":"memory-match","icon":"🧠","title":"Memory Match","desc":"Match eight hidden pairs in the fewest attempts.","genre":["puzzle","cards","classics"],"href":"minigame/retro-classics/index.html?game=memory","img":"","platform":["desktop","mobile"]},
         {"id":"four-in-a-row","icon":"🔴","title":"Four in a Row","desc":"Drop discs and connect four against the computer.","genre":["board","classics"],"href":"minigame/retro-classics/index.html?game=four","img":"","platform":["desktop","mobile"]},
