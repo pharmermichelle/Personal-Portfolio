@@ -131,6 +131,7 @@ ITEMS.push({
  id:"event-thanksgiving-2026-hat",title:"Thanksgiving Turkey Hat",level:0,
  kind:"hat",category:"event",active:true,color:"#c77f42"
 });
+ITEMS.push({id:"cornhole-25-holes-pants",title:"Bullseye Shorts",level:25,kind:"pants",category:"game",active:true,color:"#287e71",unlockText:"Land 25 lifetime Cornhole holes"},{id:"cornhole-champion-shirt",title:"Backyard Champion Tee",level:5,kind:"shirt",category:"game",active:true,color:"#c98529",unlockText:"Win the full Cornhole tournament"});
 const byId=new Map(ITEMS.map(item=>[item.id,item]));
 const esc=v=>String(v).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 function artwork(id){
@@ -145,6 +146,8 @@ function artwork(id){
     +'<path d="M91 27l-9 7h18Z" fill="#f2c864"/>'
     +'</g>';
  }
+ if(id==="cornhole-25-holes-pants")return '<g stroke="#2e1b3a" stroke-width="4" stroke-linejoin="round"><path d="M62 180H89V209H60Z M92 180H120L122 209H92Z" fill="#287e71"/><circle cx="76" cy="194" r="9" fill="#ffdd61"/><circle cx="76" cy="194" r="4" fill="#2e1b3a"/><text x="108" y="200" fill="white" stroke="none" font-size="13" font-weight="bold" text-anchor="middle">25</text></g>';
+ if(id==="cornhole-champion-shirt")return '<g stroke="#2e1b3a" stroke-width="4" stroke-linejoin="round"><path d="M62 115L75 109H104L119 115L130 151L119 184H62L50 151Z" fill="#c98529"/><path d="M78 135H102V145Q102 157 90 158Q78 157 78 145Z" fill="#ffed8a"/><path d="M78 138H71V144Q71 150 80 150M102 138H109V144Q109 150 100 150M90 158V166M80 166H100" stroke="#ffed8a" fill="none"/><text x="90" y="178" font-size="10" text-anchor="middle" fill="white" stroke="none" font-weight="bold">CHAMPION</text></g>';
  switch(item.kind){
   case "hat":
    return '<g><path d="M39 36Q90 -12 141 36L138 47Q91 60 42 46Z" fill="'+c+'" stroke="'+dark+'" stroke-width="5"/><path d="M46 39Q90 26 135 39L152 49Q91 67 29 49Z" fill="'+c+'" stroke="'+dark+'" stroke-width="4"/><path d="M62 26Q89 15 118 26" stroke="'+white+'" fill="none" stroke-width="5"/><text x="90" y="39" font-size="15" text-anchor="middle" fill="'+dark+'" font-weight="900">'+item.level+'</text></g>';
