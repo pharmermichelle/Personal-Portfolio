@@ -47,7 +47,7 @@
  // Gear costumes live in the same authenticated inventory used by the profile.
  if(!window.RetroGearWearables){
    const gearScript=document.createElement("script");
-   gearScript.src=url("retro-gear-wearables.js?v=20261123-collection2");
+   gearScript.src=url("retro-gear-wearables.js?v=20261125-cornhole1");
    gearScript.async=true;
    gearScript.onload=()=>{if(player)void refreshPlayer(player);};
    document.head.appendChild(gearScript);
