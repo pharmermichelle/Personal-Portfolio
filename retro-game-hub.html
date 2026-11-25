@@ -621,13 +621,14 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 .account-intro .hub-action.outline{background:#2b2058;border-color:#9180cb}
 .content{
  display:grid;grid-template-columns:minmax(235px,290px) minmax(0,1fr);
- grid-template-areas:"filters search" "filters gallery";
- grid-template-rows:auto minmax(0,1fr);align-items:start;
+ grid-template-areas:"filters library";
+ grid-template-rows:auto;align-items:start;align-content:start;min-height:0;
  gap:14px 18px;max-width:1360px;margin:0 auto;padding:18px 20px 55px;
 }
 .left{grid-area:filters;min-width:0}
-.right{grid-area:gallery;min-width:0}
-.browse-search{grid-area:search;min-width:0;background:linear-gradient(120deg,#29194d,#19163d);border:2px solid #7756ac;border-radius:13px;padding:17px 20px;box-shadow:6px 6px 0 #09061b55}
+.browse-library{grid-area:library;display:flex;flex-direction:column;gap:14px;min-width:0;min-height:0}
+.right{min-width:0}
+.browse-search{min-width:0;background:linear-gradient(120deg,#29194d,#19163d);border:2px solid #7756ac;border-radius:13px;padding:17px 20px;box-shadow:6px 6px 0 #09061b55}
 .browse-heading-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:14px}
 .browse-kicker{font-size:11px;letter-spacing:1.5px;font-weight:950;color:#4eeaff;margin:0 0 6px}
 .browse-heading-row h2{margin:0;font-size:clamp(21px,2.6vw,31px);line-height:1.15;color:#fff8ff}
@@ -674,7 +675,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 #reset-game-browse{min-height:46px;padding:11px 17px;background:#ffed56;color:#26143e;border:0;border-radius:8px;font-weight:950;cursor:pointer}
 @media(min-width:901px){.filter-disclosure:not([open]) .filter-contents{display:block!important}.filter-disclosure .filter-chevron{display:none}}
 @media(max-width:900px){
- .content{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"search" "filters" "gallery";grid-template-rows:auto;gap:12px;padding:14px 12px 45px}
+ .content{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"library" "filters";grid-template-rows:auto;gap:12px;padding:14px 12px 45px}
  .browse-search{padding:14px 13px}
  .left,.right{width:100%;min-width:0}
  .filter-contents{padding:7px 11px 12px}
@@ -836,12 +837,13 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
     min-height: 0;
     margin: 0;
     padding: 12px 12px 36px;
-    gap: 12px;
+    gap: 8px;
   }
   .page > .account-intro { order: 2; flex: 0 0 auto; }
-  .content > .browse-search,
+  .content > .browse-library { display: contents; }
+  .browse-library > .browse-search,
   .content > .left,
-  .content > .right {
+  .browse-library > .right {
     display: block;
     flex: 0 0 auto;
     width: 100%;
@@ -850,9 +852,9 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
     min-height: 0;
     margin: 0;
   }
-  .content > .browse-search { order: 0; }
+  .browse-library > .browse-search { order: 0; }
   .content > .left { order: 1; }
-  .content > .right { order: 2; }
+  .browse-library > .right { order: 2; }
 }
 
     </style>
@@ -909,23 +911,6 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
         </div>
       </section>
       <div class="content">
-        <section class="browse-search" aria-labelledby="browse-heading">
-          <div class="browse-heading-row">
-            <div>
-              <p class="browse-kicker">✦ THE GAME LIBRARY</p>
-              <h2 id="browse-heading">Find your next game</h2>
-            </div>
-            <span class="browse-results" id="game-result-count" role="status" aria-live="polite">17 games</span>
-          </div>
-          <div class="search-field">
-            <label for="game-search">SEARCH BY GAME NAME</label>
-            <div class="search-input-row">
-              <span class="search-icon" aria-hidden="true">⌕</span>
-              <input id="game-search" type="search" placeholder="Find a game, e.g. Fallen Grid" autocomplete="off" spellcheck="false" aria-controls="gallery">
-              <button class="search-clear" id="game-search-clear" type="button" hidden aria-label="Clear game search">Clear</button>
-            </div>
-          </div>
-        </section>
         <!-- Mobile: collapsible filters; desktop: open filter rail. -->
         <aside class="left" aria-label="Browse filters">
           <details class="panel filter-disclosure" id="filter-disclosure">
@@ -1021,6 +1006,24 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
           </details>
         </aside>
 
+        <div class="browse-library">
+        <section class="browse-search" aria-labelledby="browse-heading">
+          <div class="browse-heading-row">
+            <div>
+              <p class="browse-kicker">✦ THE GAME LIBRARY</p>
+              <h2 id="browse-heading">Find your next game</h2>
+            </div>
+            <span class="browse-results" id="game-result-count" role="status" aria-live="polite">17 games</span>
+          </div>
+          <div class="search-field">
+            <label for="game-search">SEARCH BY GAME NAME</label>
+            <div class="search-input-row">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input id="game-search" type="search" placeholder="Find a game, e.g. Fallen Grid" autocomplete="off" spellcheck="false" aria-controls="gallery">
+              <button class="search-clear" id="game-search-clear" type="button" hidden aria-label="Clear game search">Clear</button>
+            </div>
+          </div>
+        </section>
         <!-- Responsive gallery: search and tags filter the same cards. -->
         <main class="right" id="game-results">
           <div id="gallery" class="grid compact-game-grid" aria-label="Browse games"></div>
@@ -1031,6 +1034,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
             <button id="reset-game-browse" type="button">Show all games</button>
           </div>
         </main>
+        </div>
       </div>
     </div>
 
