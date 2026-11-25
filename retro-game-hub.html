@@ -959,6 +959,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
             </div>
             <h2>Filter by genre</h2>
             <div class="filters" id="f-genre">
+              <button class="chip" data-key="genre" data-val="dice" aria-pressed="false"><span class="dot"></span><span class="tag">Dice</span></button>
               <button class="chip" data-key="genre" data-val="classics" aria-pressed="false"><span class="dot"></span><span class="tag">Classics</span></button>
               <button class="chip" data-key="genre" data-val="cards" aria-pressed="false"><span class="dot"></span><span class="tag">Cards</span></button>
               <button class="chip" data-key="genre" data-val="board" aria-pressed="false"><span class="dot"></span><span class="tag">Board</span></button>
@@ -1080,6 +1081,9 @@ const supabaseClient = supabase.createClient(
 
     // --- Data (pulled from projects.html) ---
       const GAMES = [
+        {"id":"five-dice-challenge","icon":"🎲","title":"Five Dice Challenge","desc":"Roll, hold and choose five scoring categories.","genre":["dice","classics","puzzle"],"href":"minigame/retro-classics/index.html?game=dice","img":"","platform":["desktop","mobile"]},
+        {"id":"memory-match","icon":"🧠","title":"Memory Match","desc":"Match eight hidden pairs in the fewest attempts.","genre":["puzzle","cards","classics"],"href":"minigame/retro-classics/index.html?game=memory","img":"","platform":["desktop","mobile"]},
+        {"id":"four-in-a-row","icon":"🔴","title":"Four in a Row","desc":"Drop discs and connect four against the computer.","genre":["board","classics"],"href":"minigame/retro-classics/index.html?game=four","img":"","platform":["desktop","mobile"]},
         {"id":"heads-or-tails","icon":"🪙","title":"Heads or Tails","href":"minigame/retro-classics/index.html?game=coin","img":"","desc":"Predict ten independent coin flips.","genre":["chance","classics"],"platform":["desktop","mobile"]},
         {"id":"higher-or-lower","icon":"🃏","title":"Higher or Lower","href":"minigame/retro-classics/index.html?game=cards","img":"","desc":"Guess the next card from a shuffled 52-card deck.","genre":["cards","classics"],"platform":["desktop","mobile"]},
         {"id":"rock-paper-scissors","icon":"✊","title":"Rock Paper Scissors","href":"minigame/retro-classics/index.html?game=rps","img":"","desc":"Play ten rounds against a random computer opponent.","genre":["classics"],"platform":["desktop","mobile"]},
