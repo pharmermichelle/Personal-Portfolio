@@ -270,26 +270,28 @@
    setAccount(user);
    if(!alreadyReady)void refreshPlayer(user);
  }
+ let authRevision=0;
+ function restoreAccount(){
+   if(!client)return;
+   const revision=authRevision;
+   client.auth.getSession().then(({data,error})=>{
+     if(revision!==authRevision)return;
+     if(error){console.warn("Player session restoration:",error.code||error.message);if(!player)txt.textContent="Account connection unavailable";return}
+     void showUser(data?.session?.user||null);
+   }).catch(error=>{if(revision===authRevision&&!player)txt.textContent="Account connection unavailable";console.warn("Player restoration:",error?.message)});
+ }
  function beginAuth(){
    if(!window.supabase||!window.supabase.createClient){setAccount(null);return;}
    try{
-     client=window.supabase.createClient(
-       "https://dxemotgroklcjsbunspg.supabase.co",
-       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo"
-     );
+     client=window.supabase.createClient("https://dxemotgroklcjsbunspg.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo",{auth:{storageKey:"sb-dxemotgroklcjsbunspg-auth-token",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
      window.retroArcadeSupabaseClient=client;
-     window.dispatchEvent(new Event("retro-arcade-auth-ready"));
-     // Use the cached Supabase session first, then verify it without holding the UI in loading.
-     client.auth.getSession().then(({data})=>showUser(data?.session?.user||null))
-       .catch(()=>setAccount(null));
-     client.auth.onAuthStateChange((_event,session)=>{
-       void showUser(session?.user||null);
+     client.auth.onAuthStateChange((event,session)=>{
+       const revision=++authRevision;
+       setTimeout(()=>{if(revision!==authRevision)return;if(event==="INITIAL_SESSION"&&!session?.user&&player)return;void showUser(session?.user||null)},0);
      });
-     client.auth.getUser().then(({data,error})=>{
-       if(error){console.warn("Player session verification:",error.message);return;}
-       if((data?.user?.id||null)!==(player?.id||null))void showUser(data?.user||null);
-     }).catch(error=>console.warn("Player verification unavailable",error?.message||error));
-   }catch(_error){setAccount(null);}
+     window.dispatchEvent(new Event("retro-arcade-auth-ready"));
+     restoreAccount();
+   }catch(error){console.warn("Arcade account initialization:",error?.message);if(!player)txt.textContent="Account connection unavailable";}
  }
  if(window.supabase&&window.supabase.createClient)beginAuth();
  else{
@@ -300,6 +302,6 @@
    document.head.append(loaderEl);
  }
  window.addEventListener("pageshow",function(event){
-   if(event.persisted&&client)client.auth.getUser().then(function(result){return showUser(result.data&&result.data.user);}).catch(function(){});
+   if(event.persisted&&client)restoreAccount();
  });
 })();
