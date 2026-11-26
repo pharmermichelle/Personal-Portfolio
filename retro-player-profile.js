@@ -496,13 +496,17 @@
     document.addEventListener("visibilitychange",()=>{if(!document.hidden&&user)void loadGameStats(user.id);});
     if(!window.supabase || !window.supabase.createClient){status("Account connection is unavailable right now. Character preview still works.","error");return;}
     try{
-      client=window.supabase.createClient(PROJECT_URL,ANON_KEY);
-      const {data,error}=await client.auth.getUser();
+      client=window.supabase.createClient(PROJECT_URL,ANON_KEY,{auth:{storageKey:"sb-dxemotgroklcjsbunspg-auth-token",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      const {data,error}=await client.auth.getSession();
       if(error && !/session missing|auth session missing/i.test(error.message||""))status("Account connection issue: "+error.message,"error");
-      user=data?.user||null;
+      user=data?.session?.user||null;
       updateAuthUI();
-      if(user){await Promise.all([loadProfile(),loadRewards(),loadGameStats(user.id)]);}
-      client.auth.onAuthStateChange((_event,session)=>{
+      
+      let revision=0;
+      client.auth.onAuthStateChange((event,session)=>{
+        const current=++revision;
+        setTimeout(()=>{
+        if(current!==revision||event==="INITIAL_SESSION"&&!session?.user&&user)return;
         const next=session?.user||null;
         if(next?.id===user?.id)return;
         user=next;updateAuthUI();
@@ -516,7 +520,9 @@
           byId("cheese-earned-badge").hidden=true;
           byId("acorn-earned-badge").hidden=true;
         }
+        },0);
       });
+      if(user){await Promise.all([loadProfile(),loadRewards(),loadGameStats(user.id)]);}
     }catch(e){status("Account service unavailable. You can still preview every avatar.","error");}
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start,{once:true}); else void start();
