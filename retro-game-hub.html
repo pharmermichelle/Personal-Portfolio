@@ -879,6 +879,7 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 </div>
       </header>
 
+      <p id="session-storage-notice" role="status" hidden style="margin:8px 14px;padding:12px;border:1px solid #ffed56;border-radius:9px;color:#fff1ba;background:#302147;font-size:15px"></p>
       <section class="account-intro" id="account-intro" aria-labelledby="intro-title">
         <div>
           <p class="account-eyebrow">★ PLAYER ACCOUNTS ARE OPEN</p>
@@ -1072,10 +1073,15 @@ header.hub-player-header{background:linear-gradient(110deg,#180c38,#251748 65%,#
 const SUPABASE_URL = "https://dxemotgroklcjsbunspg.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZW1vdGdyb2tsY2pzYnVuc3BnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjcyMjgsImV4cCI6MjA5MjkwMzIyOH0.3129v6Uc_XFv-XPfJv99jlQ9mYTuj492hM07TZdpnDo";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const ARCADE_AUTH_KEY="sb-dxemotgroklcjsbunspg-auth-token";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{storageKey:ARCADE_AUTH_KEY,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+function reportSessionStorage(user){
+ const notice=document.getElementById("session-storage-notice");if(!notice)return;
+ let available=true,stored=false;
+ try{const probe=ARCADE_AUTH_KEY+"-probe";localStorage.setItem(probe,"1");available=localStorage.getItem(probe)==="1";localStorage.removeItem(probe);stored=!!localStorage.getItem(ARCADE_AUTH_KEY)}catch(_){available=false}
+ notice.hidden=available&&(!user||stored);
+ if(!notice.hidden)notice.textContent=available?"Your login is active, but the browser has not saved the session. Try opening the arcade in your regular browser.":"Browser storage is unavailable. Sign-in may not survive a reload. Use a regular browser with site storage enabled.";
+}
 
     // --- Data (pulled from projects.html) ---
       const GAMES = [
@@ -1527,7 +1533,7 @@ async function refreshPlayerHeader(player){
   if(request!==headerProfileRequest)return;
   // A cached or expired browser session can affect both table reads. Refresh once.
   if(profile.error&&xp.error&&[401,403].includes(Number(profile.status||xp.status))){
-   const refreshed=await supabaseClient.auth.refreshSession();
+   const refreshed=await supabaseClient.auth.getSession();
    if(!refreshed.error){[profile,xp,equipped,inventory]=await fetchPlayerData();}
   }
   if(request!==headerProfileRequest)return;
@@ -1685,7 +1691,10 @@ loginBtn.addEventListener("click", async () => {
     });
     if (error) throw error;
     storeRememberedEmail();
-    updateAuthUI(data.user);
+    const restored=await supabaseClient.auth.getSession();
+    if(restored.error||!restored.data?.session?.user){setAuthMessage("Sign-in succeeded, but session restoration failed. Please try your regular browser.");reportSessionStorage(data.user);return;}
+    updateAuthUI(restored.data.session.user);
+    reportSessionStorage(restored.data.session.user);
     closeAuthModal();
     if (returnGameAfterLogin) {
       window.location.assign(returnGameAfterLogin);
@@ -1775,31 +1784,27 @@ logoutBtn.addEventListener("click", async () => {
   logoutBtn.disabled = false;
 });
 
-// Wait for the first session lookup before treating a returning player as a guest.
-supabaseClient.auth.getSession().then(({data,error}) => {
-  updateAuthUI(data?.session?.user || null);
-  if (data?.session?.user) resumeAfterSocialLogin(data.session.user);
-  if (error) console.warn("Session status could not be loaded.");
-  if (!data?.session?.user) {
-    if (requestedAccountMode === "login" || requestedAccountMode === "signup") {
-      openAuthModal(requestedAccountMode);
-    } else {
-      inviteReturningGuest(true);
-    }
-  }
-}).catch(() => {
-  updateAuthUI(null);
-  inviteReturningGuest(true);
+// Defer auth callback work until the SDK releases its auth lock.
+let authRevision=0;
+function applyRestoredSession(user){updateAuthUI(user);reportSessionStorage(user);if(user)resumeAfterSocialLogin(user);}
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+ const revision=++authRevision;
+ setTimeout(()=>{
+   if(revision!==authRevision)return;
+   const user=session?.user||null;
+   if(event==="PASSWORD_RECOVERY"){updateAuthUI(user);reportSessionStorage(user);try{sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY)}catch(_){}showRecoveryForm();return}
+   if(event==="INITIAL_SESSION"&&!user&&currentPlayer)return;
+   applyRestoredSession(user);
+ },0);
 });
-supabaseClient.auth.onAuthStateChange((event, session) => {
-  updateAuthUI(session?.user || null);
-  if (event === "PASSWORD_RECOVERY") {
-    try { sessionStorage.removeItem(OAUTH_GAME_RETURN_KEY); } catch (_error) {}
-    showRecoveryForm();
-    return;
-  }
-  if (session?.user) resumeAfterSocialLogin(session.user);
-});
+const initialAuthRevision=authRevision;
+supabaseClient.auth.getSession().then(({data,error})=>{
+ if(error){reportSessionStorage(currentPlayer);console.warn("Session restoration:",error.code||error.message);return}
+ const user=data?.session?.user||null;
+ if(initialAuthRevision===authRevision)applyRestoredSession(user);
+ if(!user&&!currentPlayer){if(requestedAccountMode==="login"||requestedAccountMode==="signup")openAuthModal(requestedAccountMode);else inviteReturningGuest(true)}
+}).catch(error=>{reportSessionStorage(currentPlayer);console.warn("Session restoration unavailable:",error?.message)});
+window.addEventListener("pageshow",event=>{if(!event.persisted)return;const revision=authRevision;supabaseClient.auth.getSession().then(({data,error})=>{if(!error&&revision===authRevision)applyRestoredSession(data?.session?.user||null)}).catch(()=>{})});
 
       renderGallery();
       bindFilters();
