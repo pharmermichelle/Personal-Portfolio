@@ -566,7 +566,7 @@ header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#
 /* Compact mobile header: two deliberate rows */
 @media(max-width:900px){
  header.hub-player-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px 12px;padding:12px 14px}
- .hub-player-header .brand{grid-column:1;grid-row:1;min-width:0;display:flex;flex-wrap:nowrap;gap:8px}
+ .hub-player-header .brand{grid-column:1;grid-row:1;min-width:0;display:flex;flex-wrap:wrap;gap:8px}
  .hub-player-header .crt{font-size:clamp(12px,3.4vw,17px);white-space:nowrap;padding:7px 8px}
  .hub-player-header .suggestion-link{font-size:clamp(11px,3vw,14px);padding:8px 10px;white-space:nowrap}
  .hub-player-header .player-header-card,.hub-player-header .guest-header-copy{grid-column:1;grid-row:2;order:initial;flex-basis:auto;min-width:0}
@@ -584,7 +584,7 @@ header.hub-player-header{background:linear-gradient(110deg,#0c1529,#172641 60%,#
  header.hub-player-header{grid-template-columns:minmax(0,1fr) 102px;gap:9px 8px}
  .hub-player-header .brand{gap:5px}
  .hub-player-header .crt{font-size:11px;letter-spacing:0;padding:8px 5px}
- .hub-player-header .suggestion-link{font-size:11px;padding:8px 6px}
+ .hub-player-header .suggestion-link{font-size:11px;padding:8px 6px;max-width:100%;white-space:normal}
  .hub-player-header .hub-coffee{font-size:10px;max-width:102px;text-align:center;white-space:normal}
  .hub-player-header .player-header-avatar{width:40px;height:40px}
  .hub-player-header .player-header-name{font-size:13px}
