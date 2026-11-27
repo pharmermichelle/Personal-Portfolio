@@ -11,7 +11,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-J+PQmYtzTHfTK1JACo19fg4vOyZnmK9NfjXQhInK8i8='; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dPxIaUr+jLmS1BgOguY/b3BDKJ2Z57BSk5HwH9+eCSE='; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'">
 <title>Captain's Book — Offline PNG Viewer</title>
 <style>
   :root{color-scheme:light;--paper:#f6f2eb;--ink:#25343b;--muted:#67747a;--line:#ded9d0;--sea:#286b78;--sea-dark:#17525c;--white:#fff;--shadow:0 16px 45px rgba(24,35,40,.12)}
@@ -25,8 +25,15 @@
   .brand{min-width:0;flex:1;display:flex;align-items:center;gap:9px}
   .brand-icon{font-size:25px}
   .brand-text{min-width:0}
+  .brand{background:none;border:0;padding:0;color:inherit;text-align:left;min-height:44px}
+  .brand:focus-visible{outline:3px solid #57a1b0;outline-offset:2px}
+  .brand small{font-size:12px;font-weight:650}
+  .book-list{display:grid;gap:8px;margin:14px 0}
+  .book-list .btn{text-align:left;overflow-wrap:anywhere;min-height:44px}
+  .tile-buttons button.delete{font-size:13px;font-weight:650;flex:2;min-height:40px}
+  .tile-buttons button{min-height:40px}
   .brand strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Georgia,serif;font-size:18px}
-  .brand small{display:block;font-size:11px;color:var(--muted)}
+  .brand small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .toolbar{display:flex;gap:6px;align-items:center}
   .btn{min-height:40px;border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:white;color:var(--ink);font-size:14px;font-weight:650}
   .btn.primary{background:var(--sea);border-color:var(--sea);color:white}
@@ -88,11 +95,11 @@
 <body>
 <div class="app">
   <header>
-    <div class="brand"><span class="brand-icon" aria-hidden="true">⚓</span><div class="brand-text"><strong id="title">Captain's Book</strong><small id="subtitle">Private pages • saved on this device</small></div></div>
+    <button class="brand" id="booksBtn" aria-label="My books: switch or create a book" disabled><span class="brand-icon" aria-hidden="true">⚓</span><span class="brand-text"><strong id="title">Captain's Book</strong><small id="subtitle">My books ▾</small></span></button>
     <div class="toolbar">
-      <button class="btn primary" id="addBtn" title="Add images">＋ Add</button>
-      <button class="btn icon" id="galleryBtn" title="Page overview" aria-label="Page overview">▦</button>
-      <button class="btn icon" id="moreBtn" title="More options" aria-label="More options">⋯</button>
+      <button class="btn primary" id="addBtn" title="Add images" disabled>＋ Add</button>
+      <button class="btn icon" id="galleryBtn" disabled title="Page overview" aria-label="Page overview">▦</button>
+      <button class="btn icon" id="moreBtn" disabled title="More options" aria-label="More options">⋯</button>
     </div>
   </header>
   <main id="main"></main>
@@ -110,13 +117,17 @@
 <dialog id="menuDialog"><div class="dialog-body"><h2>Book tools</h2><div class="dialog-actions">
   <button class="btn primary" id="installBtn">⇩ Install as app</button>
   <button class="btn" id="storageBtn">⛨ Protect local storage</button>
+  <button class="btn" id="libraryMenuBtn">▤ My books / Create book</button>
+  <button class="btn" id="removeBtn">Remove page…</button>
   <button class="btn" id="renameBtn">✎ Rename book</button>
   <button class="btn" id="spreadBtn">▣ Two-page spread: Off</button>
   <button class="btn" id="pdfBtn">↓ Export book as PDF</button>
   <button class="btn" id="backupBtn">↓ Back up pages (.zip)</button>
   <button class="btn" id="restoreBtn">↑ Restore backup (.zip)</button>
   <button class="btn" data-close="menuDialog">Close</button>
-</div><p class="menu-footnote"><strong>Private on this device:</strong> Imported images are saved in this browser’s local IndexedDB storage, never uploaded by this app. Other visitors to your website get an empty book. This copy does not automatically sync with another device.</p><p class="menu-footnote">Backups contain original image files, page order, and book title. Keep one somewhere safe; clearing browser/site data may delete local pages.</p></div></dialog>
+</div><p class="menu-footnote"><strong>Private on this device:</strong> Imported images are saved in this browser’s local IndexedDB storage, never uploaded by this app. Other visitors to your website get an empty book. This copy does not automatically sync with another device.</p><p class="menu-footnote">Each backup contains the open book’s original image files, page order, and title. Back up each book separately. Keep one somewhere safe; clearing browser/site data may delete local pages.</p></div></dialog>
+<dialog id="booksDialog"><div class="dialog-body"><h2>My books</h2><p>Each book has its own pages, reading position and settings, saved privately on this device.</p><div class="book-list" id="bookList"></div><div class="dialog-actions"><button class="btn primary" id="newBookBtn">＋ Create new book</button><button class="btn" data-close="booksDialog">Close</button></div></div></dialog>
+<dialog id="removeDialog"><div class="dialog-body"><h2>Remove a page</h2><p>Choose the page to remove from this book.</p><div class="dialog-actions" id="removeList"></div><div class="dialog-actions"><button class="btn" data-close="removeDialog">Cancel</button></div></div></dialog>
 <dialog id="installDialog"><div class="dialog-body"><h2>Install Captain’s Book</h2><p id="installHelp">On Android in Chrome, open the ⋮ browser menu and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>. Launch Captain’s Book from its icon afterward.</p><p>This needs HTTPS and a first online visit. Your PNGs will stay local after installation; the reader also works offline once the app files have been cached.</p><div class="dialog-actions"><button class="btn primary" data-close="installDialog">Got it</button></div></div></dialog>
 <dialog id="zoomDialog" class="zoom-dialog"><div class="zoom-controls"><button class="btn" id="zoomClose">Done</button><label for="zoomRange">Zoom</label><input id="zoomRange" type="range" min="100" max="300" value="150" step="25"><span id="zoomValue">150%</span></div><div class="zoom-wrap" id="zoomWrap"><img id="zoomImage" alt="Enlarged book page"></div></dialog>
 <div class="busy-overlay" id="busy" role="status" aria-live="polite"><div class="spinner"></div><strong id="busyText">Working…</strong><p id="busySub">Your book is being prepared.</p></div>
@@ -126,7 +137,11 @@
 const $ = id => document.getElementById(id);
 const DB_NAME = 'captains-book-reader-v1';
 const DB_VERSION = 1;
-let db, pages = [], current = 0, title = "Captain's Book", mode = 'reader', spread = false;
+let db, libraryDB, activeBook = 'original', bookIDs = ['original'], pages = [], current = 0, title = "Captain's Book", mode = 'reader', spread = false;
+const LIBRARY_KEY = 'book-library-v2';
+const dbNameFor = id => id === 'original' ? DB_NAME : DB_NAME + '-' + id;
+let switching = false;
+let pageMutation = false;
 let importPlacement = 'end';
 const fullURLs = new Map(), thumbURLs = new Map();
 const encoder = new TextEncoder();
@@ -144,18 +159,18 @@ function safeName(s) { return (s || 'Book').replace(/[^a-z0-9 _.-]/gi,'_').trim(
 function makeID() { return globalThis.crypto?.randomUUID?.() || ('p_' + Date.now() + '_' + Math.random().toString(36).slice(2)); }
 function txDone(tx) { return new Promise((resolve,reject) => { tx.oncomplete = resolve; tx.onerror = () => reject(tx.error || new Error('Database transaction failed')); tx.onabort = () => reject(tx.error || new Error('Database transaction aborted')); }); }
 function getReq(request) { return new Promise((resolve,reject) => { request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }
-function openDB() {
+function openDB(name=DB_NAME) {
   return new Promise((resolve,reject) => {
     if (!('indexedDB' in window)) return reject(new Error('This browser does not offer IndexedDB.'));
-    const request = indexedDB.open(DB_NAME,DB_VERSION);
+    const request = indexedDB.open(name,DB_VERSION);
     request.onupgradeneeded = () => { const d = request.result; if (!d.objectStoreNames.contains('pages')) d.createObjectStore('pages',{keyPath:'id'}); if (!d.objectStoreNames.contains('settings')) d.createObjectStore('settings',{keyPath:'key'}); };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error || new Error('Could not open local storage'));
     request.onblocked = () => reject(new Error('Another browser tab is blocking book storage. Close other tabs for this book.'));
   });
 }
-async function loadBook() {
-  const tx = db.transaction(['pages','settings'],'readonly');
+async function readBook(bookDB, id) {
+  const tx = bookDB.transaction(['pages','settings'],'readonly');
   const all = await getReq(tx.objectStore('pages').getAll());
   const orderRow = await getReq(tx.objectStore('settings').get('order'));
   const titleRow = await getReq(tx.objectStore('settings').get('title'));
@@ -163,11 +178,92 @@ async function loadBook() {
   const currentRow = await getReq(tx.objectStore('settings').get('current'));
   const order = orderRow?.value || [];
   const indices = new Map(order.map((id,i)=>[id,i]));
-  pages = all.sort((a,b)=>(indices.get(a.id) ?? Number.MAX_SAFE_INTEGER)-(indices.get(b.id) ?? Number.MAX_SAFE_INTEGER));
-  title = titleRow?.value || title;
-  spread = !!spreadRow?.value;
-  current = Math.max(0,Math.min(Number(currentRow?.value)||0,pages.length-1));
+  const ordered = all.sort((a,b)=>(indices.get(a.id) ?? Number.MAX_SAFE_INTEGER)-(indices.get(b.id) ?? Number.MAX_SAFE_INTEGER));
+  return {pages:ordered,title:titleRow?.value || (id==='original'?"Captain's Book":'My Book'),spread:!!spreadRow?.value,current:Math.max(0,Math.min(Number(currentRow?.value)||0,ordered.length-1))};
+}
+function applyBook(data) {
+  ({pages,title,spread,current}=data);
   render();
+}
+async function loadBook() { applyBook(await readBook(db,activeBook)); }
+function setBookControls(disabled) {
+  for(const id of ['booksBtn','addBtn','galleryBtn','moreBtn']) $(id).disabled=disabled;
+}
+async function readLibrary() {
+  const tx=libraryDB.transaction('settings','readonly');
+  const row=await getReq(tx.objectStore('settings').get(LIBRARY_KEY));
+  const saved=row?.value;
+  const ids=Array.isArray(saved?.ids)?saved.ids.filter(id=>typeof id==='string'&&/^[a-zA-Z0-9_-]+$/.test(id)):[];
+  return {ids:[...new Set(['original',...ids])],active:saved?.active};
+}
+async function saveLibrary(id, add=false) {
+  const tx=libraryDB.transaction('settings','readwrite');
+  const store=tx.objectStore('settings');
+  const row=await getReq(store.get(LIBRARY_KEY));
+  const ids=[...new Set(['original',...(Array.isArray(row?.value?.ids)?row.value.ids:[]),...(add?[id]:[])])];
+  if(!ids.includes(id)){tx.abort();throw new Error('Book not found');}
+  store.put({key:LIBRARY_KEY,value:{ids,active:id}});
+  await txDone(tx);
+  bookIDs=ids;
+}
+async function switchBook(id, newTitle=null) {
+  if(switching||pageMutation||$('busy').classList.contains('on'))return;
+  if(id===activeBook&&newTitle===null){$('booksDialog').close();return;}
+  switching=true;setBookControls(true);busy(newTitle===null?'Opening book…':'Creating book…');
+  let target;
+  try{
+    target=id==='original'?libraryDB:await openDB(dbNameFor(id));
+    if(newTitle!==null){
+      const tx=target.transaction('settings','readwrite');
+      tx.objectStore('settings').put({key:'title',value:newTitle});
+      await txDone(tx);
+    }
+    const data=await readBook(target,id);
+    await saveLibrary(id,newTitle!==null);
+    const previous=db;
+    clearURLs();db=target;activeBook=id;mode='reader';importPlacement='end';
+    if(previous!==libraryDB&&previous!==target)previous.close();
+    if($('booksDialog').open)$('booksDialog').close();
+    applyBook(data);
+  }catch(err){
+    if(target&&target!==db&&target!==libraryDB)target.close();
+    notice('Could not open book: '+err.message);
+  }finally{switching=false;setBookControls(false);unbusy();}
+}
+async function showBooks() {
+  if(switching||pageMutation||$('busy').classList.contains('on'))return;
+  if($('menuDialog').open)$('menuDialog').close();
+  const list=$('bookList');list.replaceChildren();$('newBookBtn').disabled=true;
+  $('booksDialog').showModal();
+  try{
+    bookIDs=(await readLibrary()).ids;
+    for(const id of bookIDs){
+      if(!$('booksDialog').open)break;
+      let handle, bookTitle, count;
+      try{
+        handle=id===activeBook?db:id==='original'?libraryDB:await openDB(dbNameFor(id));
+        const tx=handle.transaction(['settings','pages'],'readonly');
+        const [row,total]=await Promise.all([getReq(tx.objectStore('settings').get('title')),getReq(tx.objectStore('pages').count())]);
+        bookTitle=row?.value||(id==='original'?"Captain's Book":'My Book');count=total;
+      }finally{if(handle&&handle!==db&&handle!==libraryDB)handle.close();}
+      const b=document.createElement('button');b.className='btn'+(id===activeBook?' primary':'');
+      b.textContent=bookTitle+' — '+count+(count===1?' page':' pages')+(id===activeBook?' • Open':'');
+      if(id===activeBook)b.setAttribute('aria-current','true');
+      b.onclick=()=>switchBook(id);list.append(b);
+    }
+  }catch(err){notice('Could not list books: '+err.message);}
+  finally{$('newBookBtn').disabled=false;}
+}
+function showRemove() {
+  $('menuDialog').close();
+  if(!pages.length)return;
+  const list=$('removeList');list.replaceChildren();
+  const visible=pageIndices();
+  for(const i of visible){
+    const b=document.createElement('button');b.className='btn';b.textContent='Remove page '+(i+1);
+    b.onclick=()=>{$('removeDialog').close();deletePage(i);};list.append(b);
+  }
+  $('removeDialog').showModal();
 }
 function setSetting(key,value) {
   const tx = db.transaction('settings','readwrite');
@@ -205,12 +301,16 @@ function clearURLs() {
   fullURLs.clear();thumbURLs.clear();
 }
 function goTo(index) {
+  if(switching||pageMutation||$('busy').classList.contains('on'))return;
   if(index<0||index>=pages.length) return;
   current=index;saveLocation();render();
 }
 function render() {
   $('title').textContent=title;
-  $('subtitle').textContent=pages.length + (pages.length===1?' page • saved on this device':' pages • saved on this device');
+  $('subtitle').textContent='My books ▾ • '+pages.length+(pages.length===1?' page':' pages');
+  $('removeBtn').disabled=!pages.length;
+  $('pdfBtn').disabled=!pages.length;
+  $('backupBtn').disabled=!pages.length;
   $('galleryBtn').textContent=mode==='gallery'?'▤':'▦';
   $('galleryBtn').title=mode==='gallery'?'Return to reader':'Page overview';
   $('spreadBtn').textContent='▣ Two-page spread: '+(spread?'On':'Off');
@@ -256,32 +356,38 @@ function renderGallery() {
     const actions=document.createElement('div');actions.className='tile-buttons';
     const up=document.createElement('button');up.textContent='←';up.title='Move earlier';up.disabled=i===0;up.onclick=()=>movePage(i,-1);
     const down=document.createElement('button');down.textContent='→';down.title='Move later';down.disabled=i===pages.length-1;down.onclick=()=>movePage(i,1);
-    const del=document.createElement('button');del.textContent='✕';del.title='Delete this page';del.className='delete';del.onclick=()=>deletePage(i);
+    const del=document.createElement('button');del.textContent='Remove';del.title='Remove page '+(i+1);del.setAttribute('aria-label','Remove page '+(i+1));del.className='delete';del.onclick=()=>deletePage(i);
     actions.append(up,down,del);tile.append(thumb,info,actions);grid.append(tile);
   });
   main.append(grid);
-  const note=document.createElement('p');note.className='notice';note.textContent='Use ← and → to rearrange pages. Tap any thumbnail to read it. ✕ removes a page from this book.';main.append(note);
+  const note=document.createElement('p');note.className='notice';note.textContent='Use ← and → to rearrange pages. Tap any thumbnail to read it. Remove deletes a page from this book.';main.append(note);
   trimFullURLs();
 }
 async function movePage(i,delta) {
-  const j=i+delta;if(j<0||j>=pages.length)return;
+  const j=i+delta;if(pageMutation||switching||j<0||j>=pages.length)return;
+  pageMutation=true;
   [pages[i],pages[j]]=[pages[j],pages[i]];
   if(current===i)current=j;else if(current===j)current=i;
-  try{await saveOrder();await saveLocation();render();}catch(e){notice('Could not save order: '+e.message);await loadBook();}
+  try{await saveOrder();await saveLocation();render();}catch(e){notice('Could not save order: '+e.message);await loadBook();}finally{pageMutation=false;}
 }
 async function deletePage(i) {
+  if(pageMutation||switching||!pages[i])return;
   const p=pages[i];if(!confirm('Remove page '+(i+1)+' ("'+p.name+'") from this book?\n\nKeep a backup if you need the original later.'))return;
+  pageMutation=true;
   const updated=pages.filter(x=>x.id!==p.id);
+  const nextCurrent=Math.max(0,Math.min(current-(i<current?1:0),updated.length-1));
   try {
     const tx=db.transaction(['pages','settings'],'readwrite');
     tx.objectStore('pages').delete(p.id);
     tx.objectStore('settings').put({key:'order',value:updated.map(x=>x.id)});
+    tx.objectStore('settings').put({key:'current',value:nextCurrent});
     await txDone(tx);
-    pages=updated;current=Math.max(0,Math.min(current,pages.length-1));
+    pages=updated;current=nextCurrent;
     if(fullURLs.has(p.id)){URL.revokeObjectURL(fullURLs.get(p.id));fullURLs.delete(p.id);}
     if(thumbURLs.has(p.id)){URL.revokeObjectURL(thumbURLs.get(p.id));thumbURLs.delete(p.id);}
-    saveLocation();render();
+    render();
   }catch(e){notice('Could not delete page: '+e.message);}
+  finally{pageMutation=false;}
 }
 function blobForFile(file) { return file.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(file.name); }
 async function makeThumbnail(blob) {
@@ -289,7 +395,7 @@ async function makeThumbnail(blob) {
   try {
     const scale=Math.min(1,240/bmp.width,360/bmp.height);
     const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));
-    canvas.getContext('2d').drawImage(bmp,0,0,canvas.width,canvas.height);
+    canvas.getContext('2d').drawImage(bmp.drawImage||bmp,0,0,canvas.width,canvas.height);
     return await canvasBlob(canvas,'image/jpeg',.75);
   } finally { bmp.close?.(); }
 }
@@ -517,6 +623,10 @@ $('appendBtn').onclick=()=>{importPlacement='end';$('addDialog').close();$('imag
 $('insertBtn').onclick=()=>{importPlacement='after';$('addDialog').close();$('imageInput').click();};
 $('imageInput').onchange=async e=>{await importFiles(e.target.files);e.target.value='';};
 $('moreBtn').onclick=()=> $('menuDialog').showModal();
+$('booksBtn').onclick=showBooks;
+$('libraryMenuBtn').onclick=showBooks;
+$('removeBtn').onclick=showRemove;
+$('newBookBtn').onclick=()=>{const n=prompt('New book title:','My New Book');if(n?.trim())switchBook(makeID(),n.trim().slice(0,120));};
 $('galleryBtn').onclick=()=>{mode=mode==='gallery'?'reader':'gallery';render();};
 $('prevBtn').onclick=()=>goTo(prevIndex());
 $('nextBtn').onclick=()=>goTo(nextIndex());
@@ -528,7 +638,7 @@ $('spreadBtn').onclick=async()=>{spread=!spread;await setSetting('spread',spread
 $('pdfBtn').onclick=()=>{$('menuDialog').close();exportPDF();};
 $('backupBtn').onclick=()=>{$('menuDialog').close();exportBackup();};
 $('restoreBtn').onclick=()=>{$('menuDialog').close();$('restoreInput').click();};
-$('restoreInput').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&confirm('RESTORE BACKUP?\n\nThis replaces every page currently stored in this book. Export a backup of your current book first if you want to keep it.'))await restoreBackup(f);};
+$('restoreInput').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&confirm('RESTORE BACKUP?\n\nThis replaces every page in the open book only. Other books are not affected. Export a backup first if you want to keep these pages.'))await restoreBackup(f);};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
 $('zoomDialog').addEventListener('close',()=>{$('zoomImage').removeAttribute('src');trimFullURLs();});
 let touchStart=null;
@@ -537,7 +647,13 @@ $('main').addEventListener('touchend',e=>{if(!touchStart||mode!=='reader'||e.cha
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||mode!=='reader')return;if(e.key==='ArrowRight')goTo(nextIndex());if(e.key==='ArrowLeft')goTo(prevIndex());});
 window.addEventListener('pagehide',clearURLs);
 (async function start(){
-  try {db=await openDB();await loadBook();}
+  try {
+    libraryDB=await openDB();
+    const library=await readLibrary();bookIDs=library.ids;
+    activeBook=bookIDs.includes(library.active)?library.active:'original';
+    db=activeBook==='original'?libraryDB:await openDB(dbNameFor(activeBook));
+    await loadBook();setBookControls(false);
+  }
   catch(err){console.error(err);$('main').innerHTML='<section class="empty"><div class="big">⚠️</div><h2>Offline storage unavailable</h2><p>Your browser is not allowing this HTML file to save images. Open the app at its HTTPS address using Chrome (not private/incognito browsing). Do not import pages until storage works.</p></section>';$('addBtn').disabled=true;notice('Cannot start saved book: '+err.message);}
 })();
 </script>
