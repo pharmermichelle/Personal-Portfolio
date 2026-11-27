@@ -9,3 +9,4 @@ Start with [the project index](docs/retro-game-hub/README.md) and [the prioritiz
 - Run relevant checks and document the commit, scope and result. Live service availability, ad delivery and production data policies need independent verification.
 - Jira project `GH` uses To Do for pending work, In Progress during implementation, In Review while awaiting owner testing, and Done only after the owner approves. Never transition an issue to Done on the owner's behalf.
 - Update arcade documentation alongside changes to shared contracts, player-facing rules or test procedures.
+- Start new games from [the game template and acceptance checklist](docs/retro-game-hub/new-game.md).

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arcade game template</title>
+  <style>
+    body { margin: 0; background: #12213a; color: #f3f6ff; font: 1rem/1.55 system-ui, sans-serif; }
+    main { max-width: 42rem; margin: auto; padding: 1rem; }
+    a { color: #95eaff; }
+    button, summary { min-height: 44px; padding: .4rem .75rem; font: inherit; cursor: pointer; }
+    :focus-visible { outline: 3px solid #ffd36c; outline-offset: 3px; }
+  </style>
+  <script defer src="game.js"></script>
+  <script defer src="../../retro-arcade-header.js" data-game-id="game-template" data-layout="scroll"></script>
+</head>
+<body>
+  <main>
+    <h1>Arcade game template</h1>
+    <details><summary>How to play</summary><p>Start a practice round, then use the game action to finish. Buttons work with touch and keyboard.</p></details>
+    <p id="game-status" role="status">Ready.</p>
+    <button id="start" type="button">Start round</button>
+    <button id="action" type="button" disabled>Finish practice round</button>
+    <button id="restart" type="button" disabled>Restart</button>
+    <p><a href="../../retro-player-profile.html">Player profile</a> · <a href="../../retro-leaderboards.html">Leaderboards</a></p>
+    <section id="advertisement" aria-label="Advertisement" hidden></section>
+  </main>
+</body>
+</html>
