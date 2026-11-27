@@ -9,6 +9,7 @@ Audit baseline `f804a0a6` on main, inspected 2026-11-27. Engineering changes on 
 - [XP, cloud saves and backend security](backend-and-rewards.md)
 - [UI, accessibility and monetization](ui-and-monetization.md)
 - [Testing procedures](testing.md)
+- [New game template and acceptance checklist](new-game.md)
 - [Prioritized development backlog](backlog.md)
 
 ## Existing handoffs
