@@ -10,13 +10,87 @@ let score = 0;
 let timeLeft = 20;
 let lastHole;
 let gameTimer;
+let bugTimer;
+let saveService;
+let deviceSaver;
 let bugCount = 6; // Start with 6 bugs
 let gameStarted = false;
 let featureCreepActive = false;
 let bugs = [];
 
-const highScore = localStorage.getItem("highScore") || 0;
+function validateSave(state) {
+  if (!Number.isSafeInteger(state?.highScore) || state.highScore < 0) {
+    throw new Error("Invalid high score");
+  }
+  return { highScore: state.highScore };
+}
+
+function legacySave() {
+  try {
+    return validateSave({ highScore: Number(localStorage.getItem("highScore")) });
+  } catch {
+    return { highScore: 0 };
+  }
+}
+
+let highScore = legacySave().highScore;
 highScoreEl.textContent = highScore;
+
+function restoreScore(state) {
+  if (gameStarted) resetGame();
+  highScore = state.highScore;
+  highScoreEl.textContent = highScore;
+}
+
+const scoreAdapter = {
+  gameId: "whack-a-bug",
+  displayName: "Whack-a-Bug",
+  schemaVersion: 1,
+  gameVersion: "v1",
+  emptyState: () => ({ highScore: 0 }),
+  validateSave,
+  readLegacyLocal: legacySave,
+  restoreState: restoreScore,
+  meaningful: state => state.highScore > 0,
+  summarizeSave: state => `High score: ${state.highScore}`,
+};
+
+async function initializeCloudSave() {
+  if (saveService || !window.RetroSaveService || !window.retroArcadeSupabaseClient) return;
+  startBtn.disabled = true;
+  try {
+    saveService = window.RetroSaveService.create(scoreAdapter, {
+      statusId: "whack-save-status",
+      optionsId: "whack-sync-options",
+    });
+    restoreScore(await saveService.initialize() || scoreAdapter.emptyState());
+  } catch {
+    saveService = null;
+    document.getElementById("whack-save-status").textContent = "Device only • cloud save unavailable";
+  } finally {
+    startBtn.disabled = false;
+  }
+}
+
+window.addEventListener("retro-arcade-auth-ready", initializeCloudSave);
+document.addEventListener("DOMContentLoaded", async () => {
+  if (saveService || !window.RetroSaveService) return;
+  deviceSaver = window.RetroSaveService.create(scoreAdapter, { statusId: "whack-save-status" });
+  const restored = await deviceSaver.initialize();
+  if (!saveService && restored) restoreScore(restored);
+});
+
+function recordHighScore() {
+  if (score <= highScore) return;
+  highScore = score;
+  highScoreEl.textContent = highScore;
+  const saver = saveService || deviceSaver;
+  if (saver) {
+    saver.save({ highScore });
+  } else {
+    try { localStorage.setItem("highScore", String(highScore)); } catch {}
+  }
+}
 
 function randomTime(min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -41,7 +115,7 @@ function showBug() {
   }</div>`;
 
   // Handle bug disappearing after some time
-  setTimeout(() => {
+  bugTimer = setTimeout(() => {
     hole.innerHTML = ""; // Remove the bug
     if (timeLeft > 0 && !featureCreepActive) showBug(); // Continue showing bugs unless feature creep is active
   }, time);
@@ -61,10 +135,7 @@ function startGame() {
     timeEl.textContent = timeLeft;
     if (timeLeft <= 0) {
       clearInterval(gameTimer);
-      if (score > highScore) {
-        localStorage.setItem("highScore", score);
-        highScoreEl.textContent = score;
-      }
+      recordHighScore();
       alert("Game Over!");
     }
   }, 1000);
@@ -74,6 +145,7 @@ function startGame() {
 
 function resetGame() {
   clearInterval(gameTimer);
+  clearTimeout(bugTimer);
   gameStarted = false;
   score = 0;
   timeLeft = 20;
