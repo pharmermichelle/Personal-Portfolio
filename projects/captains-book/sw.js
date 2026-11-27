@@ -1,5 +1,5 @@
 /* Captain's Book app-shell cache ONLY. Never caches or uploads user PNGs. */
-const CACHE = 'captains-book-shell-v1';
+const CACHE = 'captains-book-shell-v2';
 const SHELL = [
   './index.html',
   './manifest.webmanifest',
@@ -28,7 +28,13 @@ self.addEventListener('fetch', event => {
   const indexURL = new URL('./index.html', self.registration.scope).href;
   const shellURLs = new Set(SHELL.map(item => new URL(item, self.registration.scope).href));
   if (event.request.mode === 'navigate' && requestURL.href.startsWith(self.registration.scope)) {
-    event.respondWith(caches.match(indexURL).then(hit => hit || fetch(indexURL)));
+    event.respondWith(
+      fetch(indexURL, {cache: 'no-cache'}).then(response => {
+        if (!response.ok) throw new Error('Book app unavailable');
+        const copy = response.clone();
+        return caches.open(CACHE).then(cache => cache.put(indexURL, copy)).catch(() => {}).then(() => response);
+      }).catch(() => caches.match(indexURL).then(hit => hit || Response.error()))
+    );
     return;
   }
   if (shellURLs.has(requestURL.href)) {
