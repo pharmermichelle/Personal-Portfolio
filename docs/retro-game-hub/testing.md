@@ -29,3 +29,7 @@ The mocks verify client behavior. Verify real auth providers, deployed Row Level
 Review integration and monetization changes with ads blocked, provider test mode, or local placeholders. Track manual QA in Jira In Review until the project owner approves it.
 
 Run `npm run test:browser -- classics-functional.spec.js` for deterministic Classics mechanics. The fixture controls the browser random source only during the test. Use Playwright's clock for timed cues and drive game actions through their visible controls.
+
+## GitHub regression check
+
+Arcade pull requests run the save unit suite and Chromium browser suite in the `Retro arcade regression` workflow. The workflow uses a read-only token and browser fixtures. Local Supabase integration remains a separate test because it needs an isolated database and synthetic accounts. Review workflow results before setting a required branch check.

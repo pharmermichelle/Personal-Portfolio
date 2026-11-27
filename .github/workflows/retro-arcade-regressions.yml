@@ -1,0 +1,33 @@
+name: Retro arcade regression
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/retro-arcade-regressions.yml'
+      - 'arcade-floor.*'
+      - 'minigame/**'
+      - 'retro-*'
+      - 'style.css'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'playwright.config.js'
+      - 'supabase/**'
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/retro-save-auth.test.cjs
+      - run: npm run test:browser -- --workers=2
