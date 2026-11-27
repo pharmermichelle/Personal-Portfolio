@@ -1,10 +1,11 @@
--- Deployed in Supabase as migration 20261121172141_cut_cheese_guarded_level_xp.
--- Only the service role can execute; local cloud saves cannot award XP.
-CREATE OR REPLACE FUNCTION public.claim_cheese_level(p_user uuid, p_attempt uuid, p_level integer)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public'
+
+-- Account XP for Cut the Cheese. Fixed, bounded, once-per-level rewards.
+-- This is server-gated but NOT a simulation-verified score; don't list as verified leaderboard score.
+CREATE OR REPLACE FUNCTION public.claim_cheese_level(p_user uuid,p_attempt uuid,p_level integer)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'pg_catalog','public'
 AS $function$
 DECLARE
   a public.reward_attempts%ROWTYPE;
@@ -39,8 +40,8 @@ BEGIN
   RETURN jsonb_build_object('awarded_xp',award,'game_xp_total',total_game,
     'overall_xp_total',total,'level',p_level,'already_earned',award=0);
 END
-$function$
-
+$function$;
 REVOKE ALL ON FUNCTION public.claim_cheese_level(uuid,uuid,integer) FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.claim_cheese_level(uuid,uuid,integer) TO service_role;
-COMMENT ON FUNCTION public.claim_cheese_level(uuid,uuid,integer) IS 'Time-gated account level XP, once per user and level. Not replay-verified or eligible as leaderboard score.';
+COMMENT ON FUNCTION public.claim_cheese_level(uuid,uuid,integer) IS
+ 'Server-gated level XP; once per user/level, server timing validated, no physics replay. Not leaderboard verified.';
