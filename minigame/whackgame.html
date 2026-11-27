@@ -24,6 +24,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9258275639543826" crossorigin="anonymous"></script>
   
   <!-- Shared Retro Games Hub navigation -->
+  <script src="../retro-save-service.js?v=20261127-auth-transition" defer></script>
   <script src="../retro-arcade-header.js?v=20261121-player-2" data-game-id="whack-a-bug" data-layout="normal" defer></script>
   <!-- Google-supported fixed-height ad slot; never crop or resize a filled ad. -->
   <style id="retro-compact-ad-sizes">
@@ -76,7 +77,9 @@
       <button id="start-btn">Start</button>
       <button id="reset-btn">Reset</button>
     </div>
-    <script src="whackgame.js"></script>
+    <p id="whack-save-status" role="status">Device save only</p>
+    <button id="whack-sync-options" type="button" hidden>Sync Options</button>
+    <script src="whackgame.js?v=20261127-cloud"></script>
   
     <!-- Responsive ad below gameplay; never overlays game controls. -->
     <section aria-label="Advertisement" style="box-sizing:border-box;width:100%;max-width:980px;margin:32px auto 24px;padding:14px 12px 20px;text-align:center;clear:both;flex-shrink:0;min-height:110px;border-top:1px solid rgba(128,128,128,.35);">

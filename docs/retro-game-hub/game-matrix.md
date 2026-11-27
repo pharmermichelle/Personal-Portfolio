@@ -44,7 +44,7 @@ Cloud indicates a game-specific `RetroSaveService` adapter in the normal entry p
 | Coastline Cruiser | `coastline-cruiser/cruiser.html` | Desktop, mobile | — | Device high scores |
 | Lemon Pound Cake Double Take | `pound_cake/index.html` | Desktop, mobile | — | — |
 | Wizard's Mana Forge | `clickgame.html` | Desktop, mobile | — | — |
-| Whack-a-Bug | `whackgame.html` | Desktop, mobile | — | Device high score |
+| Whack-a-Bug | `whackgame.html` | Desktop, mobile | — | Guest high score and optional account save. Existing local score can be imported with confirmation. |
 | Choose Your Adventure | `game.html` | Desktop, mobile | — | Discovered endings on device |
 | Ferret Life (WIP) | `ferret-life/index.html` | Desktop | — | Catalog labels this a work in progress |
 | Inbox Hero | `inbox-hero.html` | Desktop, mobile | — | — |

@@ -112,3 +112,33 @@ test('choose the device progress and sync it to the account', async ({ page }) =
   await page.reload();
   await expect(page.locator('#level')).toHaveText('7 / 12');
 });
+
+test('restore Whack-a-Bug account scores without replacing a guest score', async ({ page }) => {
+  await signIn(page);
+  await page.evaluate(() => localStorage.setItem('highScore', '17'));
+  await page.goto('/minigame/whackgame.html');
+  const conflict = page.getByRole('dialog', { name: 'Choose Whack-a-Bug progress' });
+  await expect(conflict).toContainText('High score: 17');
+  await expect(conflict).toContainText('High score: 23');
+  await conflict.getByRole('button', { name: 'Use account save' }).click();
+  await expect(page.locator('#high-score-value')).toHaveText('23');
+  await expect(page.locator('#whack-save-status')).toHaveText('Saved to account');
+
+  await page.reload();
+  await expect(page.locator('#high-score-value')).toHaveText('23');
+  await page.getByRole('button', { name: 'Log Out', exact: true }).click();
+  await expect(page.locator('#high-score-value')).toHaveText('17');
+  await expect(page.locator('#whack-sync-options')).toBeHidden();
+});
+
+test('explicitly import a Whack-a-Bug device score and restore the synced copy', async ({ page }) => {
+  await signIn(page);
+  await page.evaluate(() => localStorage.setItem('highScore', '31'));
+  await page.goto('/minigame/whackgame.html');
+  const conflict = page.getByRole('dialog', { name: 'Choose Whack-a-Bug progress' });
+  await conflict.getByRole('button', { name: 'Use device save (replace account)', exact: true }).click();
+  await expect(page.locator('#whack-save-status')).toHaveText('Saved to account');
+  await page.reload();
+  await expect(page.locator('#high-score-value')).toHaveText('31');
+  await expect(page.locator('#whack-save-status')).toHaveText('Saved to account');
+});

@@ -20,7 +20,7 @@
       save_data: { schemaVersion: 1, payload: { unlocked: 4, score: 250 } },
     },
   };
-  const cloudKey = 'retro-browser-test-cloud';
+  const whackSave = { revision: 1, save_data: { schemaVersion: 1, payload: { highScore: 23 } } };
   let completedRuns = 0;
 
   window.supabase = {
@@ -54,10 +54,12 @@
             update(fields) { update = fields; return this; },
             async maybeSingle() {
               if (table !== 'game_saves') return ok(data[table]);
-              if (filters.get('user_id') !== account.id || filters.get('game_id') !== 'brick-blitz') {
+              const gameId = filters.get('game_id');
+              if (filters.get('user_id') !== account.id || !['brick-blitz', 'whack-a-bug'].includes(gameId)) {
                 throw new Error('Unexpected cloud save scope');
               }
-              const saved = JSON.parse(localStorage.getItem(cloudKey)) ?? data.game_saves;
+              const cloudKey = 'retro-browser-test-cloud:' + gameId;
+              const saved = JSON.parse(localStorage.getItem(cloudKey)) ?? (gameId === 'whack-a-bug' ? whackSave : data.game_saves);
               if (!update) return ok(saved);
               if (filters.get('revision') !== saved.revision || update.revision !== saved.revision + 1) {
                 throw new Error('Expected cloud save revision check');

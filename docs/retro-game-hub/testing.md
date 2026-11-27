@@ -12,7 +12,7 @@ With a compatible system Chromium, you can skip the browser download and run `RE
 
 ## Browser coverage
 
-Each test runs in desktop Chromium and a Pixel 7 Chromium device profile. The suite checks catalog search and filters, game launch, shared navigation and sharing controls, sign-in and logout across reloads, two completed Heads or Tails runs with distinct reward responses, device-best persistence, Brick Blitz account save restoration, and a device-to-account conflict resolution and write.
+Each test runs in desktop Chromium and a Pixel 7 Chromium device profile. The suite checks catalog search and filters, game launch, shared navigation and sharing controls, sign-in and logout across reloads, two completed Heads or Tails runs with distinct reward responses, device-best persistence, Brick Blitz account save restoration, a device-to-account conflict resolution and write, and Whack-a-Bug account and guest score isolation.
 
 Import `test` and `expect` from `tests/browser/fixtures.js` in all browser specs. The automatic fixture intercepts external requests before navigation. It serves the local Supabase SDK fixture for supported pages and blocks ads, analytics, WebSockets, and outbound services, including when a game opens in a new tab. Use fictitious accounts and keep new external service fixtures behind request interception. Keep selectors tied to visible roles or stable page IDs, use assertions that wait for UI state, and make random game outcomes deterministic at an appropriate boundary.
 
