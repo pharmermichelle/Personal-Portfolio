@@ -1,7 +1,6 @@
--- Supabase migration 202611211845xx: retro_universal_game_xp_rules_and_server_claims
--- Actual deployed catalog & claim; archived for source-controlled replay.
--- Claims are server-timed and idempotent, NOT game-physics/replay-verified.
-CREATE TABLE IF NOT EXISTS public.game_xp_rules (
+
+-- Common XP rule catalog. No direct browser writes, no automatic awards for unverified games.
+CREATE TABLE IF NOT EXISTS public.game_xp_rules(
  game_id text PRIMARY KEY,
  display_name text NOT NULL,
  reward_type text NOT NULL CHECK (reward_type IN ('level','wave','ending','round','milestone','run','other')),
@@ -18,40 +17,43 @@ CREATE TABLE IF NOT EXISTS public.game_xp_rules (
 ALTER TABLE public.game_xp_rules ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS game_xp_rules_public_read ON public.game_xp_rules;
 CREATE POLICY game_xp_rules_public_read ON public.game_xp_rules
- FOR SELECT TO anon,authenticated USING (true);
+ FOR SELECT TO anon, authenticated USING (true);
 REVOKE ALL ON public.game_xp_rules FROM PUBLIC,anon,authenticated;
 GRANT SELECT ON public.game_xp_rules TO anon,authenticated;
 INSERT INTO public.game_xp_rules (game_id,display_name,reward_type,max_level,base_xp,step_xp,cap_xp,min_seconds,enabled,verification_tier,notes)
 VALUES
-('acorn-ascent','Acorn Ascent','level',10,2,2,20,1,false,'replay_verified_existing','Existing dedicated verified Acorn verifier; do not double award via catalog'),
-('bugged-out','Bugged Out!','wave',0,0,0,0,0,false,'pending_verifier','Spawn timers permit premature wave-complete detection; repair before XP'),
-('choose-adventure','Choose Your Adventure','ending',0,0,0,0,0,false,'pending_verifier','Reward unique endings using canonical ending id'),
-('claws-vs-paws','Claws vs. Paws','level',0,0,0,0,0,false,'pending_verifier','Cats-versus-dogs victories/bosses; needs authenticated battle replay/state checks'),
-('coastline-cruiser','Coastline Cruiser','run',0,0,0,0,0,false,'pending_verifier','Endurance milestones; needs server-validated run'),
-('community-garden','Community Garden','milestone',0,0,0,0,0,false,'pending_verifier','Grow/harvest milestones with abuse limits'),
-('cut-the-cheese','Cut the Cheese','level',200,4,2,25,3,false,'server_timed_existing','Existing dedicated guarded level path; do not double award via catalog'),
 ('fallen-grid','Fallen Grid','level',30,4,1,18,8,true,'server_timed','Thirty falling-grid sectors; script emits level-clear only after required cleared lines; client completion is not replay validated'),
-('ferret-life','Ferret Life','level',2,0,0,0,0,false,'pending_verifier','WIP 2 rooms; require proof of stash goals and progress save'),
-('hockey-gear-rush','Hockey Gear Rush','level',5,5,2,15,6,true,'server_timed','Only successful timed target finds count; cleanup recovery does not grant XP; five defined levels'),
-('inbox-hero','Inbox Hero','ending',0,0,0,0,0,false,'pending_verifier','Milestones/ending outcomes'),
-('lemon-pound-cake','Lemon Pound Cake','ending',0,0,0,0,0,false,'pending_verifier','Single 100% victory; repeatable upgrades not levels'),
-('revive-nature','Revive Nature','milestone',0,0,0,0,0,false,'pending_verifier','Restoration and land milestone proofs needed; no discrete numbered levels'),
 ('rink-putt','Rink Putt','level',10,5,1,15,6,true,'server_timed','Ten goal levels; award at actual goal event, not keyboard next-level cheat; client completion not physics-replay validated'),
-('survive-2026','Survive 2026','run',0,0,0,0,0,false,'pending_verifier','Survival milestones; separate assisted runs'),
+('hockey-gear-rush','Hockey Gear Rush','level',5,5,2,15,6,true,'server_timed','Only successful timed target finds count; cleanup recovery does not grant XP; five defined levels'),
+('revive-nature','Revive Nature','milestone',0,0,0,0,0,false,'pending_verifier','Restoration and land milestone proofs needed; no discrete numbered levels'),
+('claws-vs-paws','Claws vs. Paws','level',0,0,0,0,0,false,'pending_verifier','Cats-versus-dogs victories/bosses; needs authenticated battle replay/state checks'),
+('acorn-ascent','Acorn Ascent','level',10,2,2,20,1,false,'replay_verified_existing','Existing dedicated verified Acorn verifier; do not double award via catalog'),
+('cut-the-cheese','Cut the Cheese','level',200,4,2,25,3,false,'server_timed_existing','Existing dedicated guarded level path; do not double award via catalog'),
+('bugged-out','Bugged Out!','wave',0,0,0,0,0,false,'pending_verifier','Spawn timers permit premature wave-complete detection; repair before XP'),
+('ferret-life','Ferret Life','level',2,0,0,0,0,false,'pending_verifier','WIP 2 rooms; require proof of stash goals and progress save'),
+('choose-adventure','Choose Your Adventure','ending',0,0,0,0,0,false,'pending_verifier','Reward unique endings using canonical ending id'),
+('coastline-cruiser','Coastline Cruiser','run',0,0,0,0,0,false,'pending_verifier','Endurance milestones; needs server-validated run'),
 ('whack-a-bug','Whack-a-Bug','round',0,0,0,0,0,false,'pending_verifier','Bound round achievements, avoid raw tap XP'),
-('wizards-mana','Wizard’s Mana Forge','milestone',0,0,0,0,0,false,'pending_verifier','Earn mana milestones with integrity checks')
+('lemon-pound-cake','Lemon Pound Cake','ending',0,0,0,0,0,false,'pending_verifier','Single 100% victory; repeatable upgrades not levels'),
+('wizards-mana','Wizard’s Mana Forge','milestone',0,0,0,0,0,false,'pending_verifier','Earn mana milestones with integrity checks'),
+('inbox-hero','Inbox Hero','ending',0,0,0,0,0,false,'pending_verifier','Milestones/ending outcomes'),
+('community-garden','Community Garden','milestone',0,0,0,0,0,false,'pending_verifier','Grow/harvest milestones with abuse limits'),
+('survive-2026','Survive 2026','run',0,0,0,0,0,false,'pending_verifier','Survival milestones; separate assisted runs')
 ON CONFLICT (game_id) DO UPDATE SET
-display_name=EXCLUDED.display_name,reward_type=EXCLUDED.reward_type,
-max_level=EXCLUDED.max_level,base_xp=EXCLUDED.base_xp,step_xp=EXCLUDED.step_xp,
-cap_xp=EXCLUDED.cap_xp,min_seconds=EXCLUDED.min_seconds,
-enabled=EXCLUDED.enabled,verification_tier=EXCLUDED.verification_tier,
-notes=EXCLUDED.notes;
-CREATE OR REPLACE FUNCTION public.claim_catalog_level(p_user uuid, p_attempt uuid, p_game text, p_level integer)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'pg_catalog', 'public'
-AS $function$
+ display_name=excluded.display_name,reward_type=excluded.reward_type,
+ max_level=excluded.max_level,base_xp=excluded.base_xp,step_xp=excluded.step_xp,
+ cap_xp=excluded.cap_xp,min_seconds=excluded.min_seconds,
+ enabled=excluded.enabled,verification_tier=excluded.verification_tier,
+ notes=excluded.notes;
+
+-- One claim per user/level, regardless of repeated plays or overlapping requests.
+CREATE OR REPLACE FUNCTION public.claim_catalog_level(
+ p_user uuid,p_attempt uuid,p_game text,p_level integer)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'pg_catalog','public'
+AS $body$
 DECLARE a public.reward_attempts%ROWTYPE;
  r public.game_xp_rules%ROWTYPE;
  gained integer:=0;
@@ -85,7 +87,8 @@ BEGIN
  RETURN jsonb_build_object('awarded_xp',gained,'game_xp_total',game_total,
   'overall_xp_total',total,'level',p_level,'verification','server-timed-not-replay-verified');
 END
-$function$
-
+$body$;
 REVOKE ALL ON FUNCTION public.claim_catalog_level(uuid,uuid,text,integer) FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.claim_catalog_level(uuid,uuid,text,integer) TO service_role;
+COMMENT ON FUNCTION public.claim_catalog_level(uuid,uuid,text,integer) IS
+ 'Protected catalog-level account XP; authenticated server edge issues bound attempts and rate limits. NOT game-physics verification.';
