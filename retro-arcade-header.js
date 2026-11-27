@@ -130,7 +130,9 @@
  const sharePanel=shadow.getElementById("retro-share-panel");
  const shareLink=shadow.getElementById("share-link");
  const shareFeedback=shadow.getElementById("share-feedback");
- const shareURL=new URL(location.pathname,location.origin).href;
+ const shareTarget=new URL(location.pathname,location.origin);
+ if(script.dataset.shareGame)shareTarget.searchParams.set("game",script.dataset.shareGame);
+ const shareURL=shareTarget.href;
  const shareTitle=document.title||"Retro Games Hub";
  shareLink.value=shareURL;
  shadow.getElementById("share-facebook").href="https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(shareURL);
