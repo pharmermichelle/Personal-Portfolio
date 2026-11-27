@@ -53,3 +53,7 @@ Cloud indicates a game-specific `RetroSaveService` adapter in the normal entry p
 The catalog excludes other checked-in projects. `arcade-floor.html` is a hub destination with the shared player header and a separate `arcade-lobby` activity ID. The literal HTML fallback “17 games” is stale. The rendering code replaces it with the actual count.
 
 Survive 2026 retains a thumbnail path in catalog metadata that has no matching tracked file. The current tile renderer uses icons and does not read thumbnail metadata.
+
+## Automated entry coverage
+
+The catalog smoke suite opens all 34 entries in desktop Chromium and a Pixel 7 emulation. It checks each page and its shared arcade navigation, plus the selected mode on Classics routes. See [testing procedures](testing.md). Per-game mechanics and backend contracts require their own tests.
