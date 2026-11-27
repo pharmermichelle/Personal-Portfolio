@@ -52,8 +52,12 @@ function tryStartGame() {
 }
 
 function loadImage(img, src, targetArray = null) {
-  img.src = src;
   img.onload = tryStartGame;
+  img.onerror = () => {
+    img.onerror = null;
+    img.src = src;
+  };
+  img.src = src.replace(/\.png$/, ".webp");
   if (targetArray) {
     targetArray.push(img);
   }
