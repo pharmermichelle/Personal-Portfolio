@@ -83,3 +83,33 @@ test('local Auth, save ownership, revision conflicts and daily XP deduplication'
   assert.deepEqual(awards.filter(row => row.game_id === 'memory-match').map(row => row.amount), [2]);
   assert.deepEqual(await request(ledger, { token: other }), []);
 });
+
+test('concurrent unique coin runs only award progress beyond the daily best', { timeout: 60_000 }, async () => {
+  const { session: { access_token: token } } = await newAccount();
+  const runs = await Promise.all(Array.from({ length: 6 }, async () => {
+    const id = randomUUID();
+    const call = (action, args) => rpc('retro_coin_daily_xp', token, { p_run_id: id, p_action: action, ...args });
+    assert.equal((await call('start')).status, 'started');
+    let score = 0;
+    for (let turn = 1; turn <= 10; turn++) {
+      const result = await call('flip', { p_seq: turn, p_guess: 0 });
+      assert.equal(result.status, 'ok');
+      if (result.hit === 0) score++;
+    }
+    return { score, complete: () => call('complete') };
+  }));
+  const [baseline, tieOrImprovement, ...others] = runs.sort((a, b) => a.score - b.score);
+  await new Promise(resolve => setTimeout(resolve, 10_100));
+
+  assert.equal((await baseline.complete()).awarded_xp, 2);
+  assert.equal((await tieOrImprovement.complete()).awarded_xp, tieOrImprovement.score - baseline.score);
+  const claims = await Promise.all(others.map(run => run.complete()));
+  assert.ok(claims.every(claim => claim.status === 'complete'));
+  const best = Math.max(...runs.map(run => run.score));
+  const ledger = '/rest/v1/xp_ledger?game_id=eq.heads-or-tails&select=amount';
+  const getTotal = async () => (await request(ledger, { token })).reduce((sum, row) => sum + row.amount, 0);
+  assert.equal(await getTotal(), 2 + best - baseline.score);
+
+  await Promise.all(runs.map(run => run.complete()));
+  assert.equal(await getTotal(), 2 + best - baseline.score);
+});
