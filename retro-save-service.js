@@ -19,8 +19,11 @@
       this.status=document.getElementById(opts.statusId);
       this.options=document.getElementById(opts.optionsId);
       this.client=null;this.user=null;this.current=null;this.pending=null;this.cloud=null;
-      this.revision=null;this.mode="guest";this.epoch=0;this.busy=false;this.timer=null;
+      this.revision=null;this.mode="guest";this.epoch=0;this.busyEpoch=null;this.timer=null;
       this.initializing=true;this.closeDialog=null;
+      this.authUser=undefined;this.authActivation=null;
+      this.authRevision=0;this.authActivationRevision=-1;
+      this.supersedeAuthActivation=null;
       this.setStatus("Checking saved progress…");
     }
     setStatus(text) { if(this.status)this.status.textContent=text; }
@@ -76,24 +79,50 @@
       this.client=global.retroArcadeSupabaseClient||null;
       if(this.options)this.options.addEventListener("click",()=>{void this.openSyncOptions();});
       if(!this.client){this.initializing=false;return this.activate(null);}
-      this.client.auth.onAuthStateChange((_event,session)=>{
-        if(this.initializing)return;
-        const user=session&&session.user||null;
-        if((user&&user.id)!==(this.user&&this.user.id)) {
-          setTimeout(()=>{void this.activate(user).then(state=>this.adapter.restoreState(state||this.adapter.emptyState()));},0);
-        }
+      this.client.auth.onAuthStateChange((event,session)=>{
+        // getSession supplies the initial snapshot. Track newer transitions
+        // synchronously, but call Supabase outside its auth callback.
+        if(event==="INITIAL_SESSION")return;
+        const user=session?.user||null;
+        if(this.authUser!==undefined&&user?.id===this.authUser?.id)return;
+        this.authUser=user;
+        const revision=++this.authRevision;
+        this.supersedeAuthActivation?.();
+        setTimeout(()=>{
+          if(revision!==this.authRevision||revision===this.authActivationRevision)return;
+          void this.restoreActive(this.activateAuthUser());
+        },0);
       });
       let user=null;
-      try {const r=await this.client.auth.getSession();user=r.data&&r.data.session&&r.data.session.user||null;}catch(_){}
+      try {const r=await this.client.auth.getSession();user=r.data?.session?.user||null;}catch(_){}
+      if(this.authUser===undefined)this.authUser=user;
+      let state;
+      do {
+        const activation=this.activateAuthUser();
+        state=await activation;
+        if(activation===this.authActivation&&this.authActivationRevision===this.authRevision)break;
+      }while(true);
       this.initializing=false;
-      let state=await this.activate(user);
-      try {
-        const r=await this.client.auth.getSession();const actual=r.data&&r.data.session&&r.data.session.user||null;
-        if((actual&&actual.id)!==(this.user&&this.user.id))state=await this.activate(actual);
-      }catch(_){}
-      global.addEventListener("online",()=>{if(this.mode==="deferred")void this.activate(this.user).then(state=>this.adapter.restoreState(state||this.adapter.emptyState()));else if(this.mode==="account")void this.flush();});
+      global.addEventListener("online",()=>{if(this.mode==="deferred"&&this.isCurrent(this.epoch))void this.restoreActive(this.activate(this.user));else if(this.mode==="account")void this.flush();});
       document.addEventListener("visibilitychange",()=>{if(!document.hidden&&this.mode==="account")void this.flush();});
       return state;
+    }
+    activateAuthUser() {
+      if(this.authActivationRevision!==this.authRevision) {
+        this.authActivationRevision=this.authRevision;
+        const superseded=new Promise(resolve=>{this.supersedeAuthActivation=()=>resolve(null);});
+        this.authActivation=Promise.race([this.activate(this.authUser),superseded]);
+      }
+      return this.authActivation;
+    }
+    async restoreActive(activation) {
+      const epoch=this.epoch;
+      const startedDuringInitialization=this.initializing;
+      const state=await activation;
+      if(!startedDuringInitialization&&this.isCurrent(epoch))this.adapter.restoreState(state||this.adapter.emptyState());
+    }
+    isCurrent(epoch) {
+      return epoch===this.epoch&&this.authActivationRevision===this.authRevision;
     }
     async fetchCloud(user) {
       const r=await this.client.from("game_saves").select("save_data,revision,updated_at").eq("user_id",user.id).eq("game_id",this.gameId).maybeSingle();
@@ -112,7 +141,7 @@
       this.modeTo("loading");this.setStatus("Loading account save…");
       let cloud=null;
       try {cloud=await this.fetchCloud(user);}catch(_){
-        if(epoch!==this.epoch)return null;
+        if(!this.isCurrent(epoch))return null;
         const pending=get(this.key("pending"));
         if(pending&&pending.envelope){
           try {
@@ -123,7 +152,7 @@
         this.modeTo("deferred");this.current=guest;
         this.setStatus("Cloud unavailable • device-only save");return guest;
       }
-      if(epoch!==this.epoch)return null;
+      if(!this.isCurrent(epoch))return null;
       this.cloud=cloud;this.revision=cloud?cloud.revision:null;
       const pending=get(this.key("pending"));
       if(pending&&pending.envelope) {
@@ -153,7 +182,7 @@
         {text:cloud?"Use device save (replace account)":"Import device save to account",value:"device"},
         {text:"Not now — device only",value:"later"}
       ]);
-      if(epoch!==this.epoch)return null;
+      if(!this.isCurrent(epoch))return null;
       if(choice==="account") {
         this.pending=null;del(this.key("pending"));this.revision=cloud?cloud.revision:null;
         this.current=cloud?cloud.state:this.adapter.emptyState();
@@ -172,6 +201,7 @@
       this.adapter.restoreState(device);return device;
     }
     save(value,origin) {
+      if(this.client&&!this.isCurrent(this.epoch))return;
       let state;
       try{state=this.validate(value);}catch(_){this.setStatus("Save invalid • not synced");return;}
       this.current=state;
@@ -192,15 +222,15 @@
       if(this.mode==="account"){clearTimeout(this.timer);this.timer=setTimeout(()=>{void this.flush();},650);}
     }
     async flush() {
-      if(this.busy||this.mode!=="account"||!this.user||!this.pending||!this.client)return;
+      if(this.busyEpoch===this.epoch||!this.isCurrent(this.epoch)||this.mode!=="account"||!this.user||!this.pending||!this.client)return;
       const epoch=this.epoch,user=this.user,pending=this.pending;
-      this.busy=true;
+      this.busyEpoch=epoch;
       try {
         const query=pending.baseRevision===null
           ? this.client.from("game_saves").insert({user_id:user.id,game_id:this.gameId,save_data:pending.envelope,revision:1}).select("revision").single()
           : this.client.from("game_saves").update({save_data:pending.envelope,revision:pending.baseRevision+1}).eq("user_id",user.id).eq("game_id",this.gameId).eq("revision",pending.baseRevision).select("revision").maybeSingle();
         const result=await query;
-        if(epoch!==this.epoch)return;
+        if(!this.isCurrent(epoch))return;
         if(result.error) {
           if(result.error.code==="23505")return await this.refreshConflict(pending);
           throw result.error;
@@ -213,30 +243,38 @@
         } else if(this.pending){
           this.pending.baseRevision=this.revision;put(this.key("pending"),this.pending);
         }
-      }catch(_){if(epoch===this.epoch)this.setStatus("Saved on device • cloud retry pending");}
+      }catch(_){if(this.isCurrent(epoch))this.setStatus("Saved on device • cloud retry pending");}
       finally{
-        this.busy=false;
-        if(epoch===this.epoch&&this.pending&&this.mode==="account"){
+        if(this.busyEpoch===epoch)this.busyEpoch=null;
+        if(this.isCurrent(epoch)&&this.pending&&this.mode==="account"){
           clearTimeout(this.timer);this.timer=setTimeout(()=>{void this.flush();},4000);
         }
       }
     }
     async refreshConflict(pending) {
+      const epoch=this.epoch;
       try {
         const cloud=await this.fetchCloud(this.user);
+        if(!this.isCurrent(epoch))return;
         if(!cloud)throw Error("No cloud row");
         this.cloud=cloud;this.revision=cloud.revision;
         await this.resolve(this.unwrap(pending.envelope),cloud,"Another device updated this game. Select which save to keep.");
-      }catch(_){this.modeTo("conflict");this.setStatus("Save conflict • open Sync Options");}
+      }catch(_){if(this.isCurrent(epoch)){this.modeTo("conflict");this.setStatus("Save conflict • open Sync Options");}}
     }
     async openSyncOptions() {
-      if(!this.user)return;
+      if(!this.user||!this.isCurrent(this.epoch))return;
       if(this.mode==="conflict") {
-        const cloud=await this.fetchCloud(this.user).catch(()=>null);
+        const epoch=this.epoch;
+        let cloud;
+        try { cloud=await this.fetchCloud(this.user); }
+        catch(_){
+          if(this.isCurrent(epoch))this.setStatus("Cloud unavailable • try Sync Options again");
+          return;
+        }
+        if(!this.isCurrent(epoch))return;
         await this.resolve(this.current||this.adapter.emptyState(),cloud,"Resolve the device/account save difference.");
       }else if(this.mode==="deferred"||this.mode==="guest-only"){
-        const state=await this.activate(this.user);
-        this.adapter.restoreState(state||this.adapter.emptyState());
+        await this.restoreActive(this.activate(this.user));
       }else if(this.mode==="account"){
         if(this.pending)void this.flush();else this.setStatus("Saved to account");
       }
