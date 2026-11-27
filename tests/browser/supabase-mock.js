@@ -11,8 +11,12 @@
   };
   const ok = (data) => ({ data, error: null });
   const data = {
+    earned_badges: [],
+    game_activity: [],
+    game_scores: [],
+    thanksgiving_2026_activity: null,
     profiles: { username: 'Test Player', avatar_key: null },
-    xp_ledger: [{ amount: 2, game_id: 'heads-or-tails' }],
+    xp_ledger: [{ id: '0001', amount: 2, game_id: 'heads-or-tails' }],
     equipped_cosmetics: [],
     player_inventory: [],
     game_saves: {
@@ -48,9 +52,14 @@
           if (!Object.hasOwn(data, table)) throw new Error(`Unexpected test table: ${table}`);
           const filters = new Map();
           let update;
+          let nextId = null;
+          let limit;
           return {
             select() { return this; },
             eq(column, value) { filters.set(column, value); return this; },
+            order() { return this; },
+            limit(value) { limit = value; return this; },
+            gt(column, value) { if (column === 'id') nextId = value; return this; },
             update(fields) { update = fields; return this; },
             async maybeSingle() {
               if (table !== 'game_saves') return ok(data[table]);
@@ -65,7 +74,19 @@
               localStorage.setItem(cloudKey, JSON.stringify(update));
               return ok({ revision: update.revision });
             },
-            then(resolve, reject) { return Promise.resolve(ok(data[table])).then(resolve, reject); },
+            then(resolve, reject) {
+              let rows = table === 'game_saves' ? [] : data[table];
+              const ledgerSize = Number(localStorage.getItem('retro-test-ledger-size'));
+              if (table === 'xp_ledger' && ledgerSize > 0) {
+                rows = Array.from({length: ledgerSize}, (_, i) => ({
+                  id: String(i + 1).padStart(4, '0'), amount: 2, game_id: 'heads-or-tails',
+                }));
+              }
+              if (table === 'xp_ledger') {
+                rows = rows.filter(row => nextId === null || row.id > nextId).slice(0, Math.min(limit ?? 100, 100));
+              }
+              return Promise.resolve(ok(rows)).then(resolve, reject);
+            },
           };
         },
         async rpc(name, args) {

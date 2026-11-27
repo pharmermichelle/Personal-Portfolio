@@ -23,7 +23,21 @@
     ["Choose Your Adventure", "choose-adventure", "minigame/game.html"],
     ["Ferret Life", "ferret-life", "minigame/ferret-life/index.html"],
     ["Inbox Hero", "inbox-hero", "minigame/inbox-hero.html"],
-    ["Community Garden", "community-garden", "minigame/community-garden.html"]
+    ["Community Garden", "community-garden", "minigame/community-garden.html"],
+    ["Simon Says", "simon-says", "minigame/retro-classics/index.html?game=simon"],
+    ["2048", "2048", "minigame/retro-classics/index.html?game=2048"],
+    ["Minesweeper", "minesweeper", "minigame/retro-classics/index.html?game=mines"],
+    ["Word Scramble", "word-scramble", "minigame/retro-classics/index.html?game=scramble"],
+    ["Hangman", "hangman", "minigame/retro-classics/index.html?game=hangman"],
+    ["Reaction Time", "reaction-time", "minigame/retro-classics/index.html?game=reaction"],
+    ["Five Dice Challenge", "five-dice-challenge", "minigame/retro-classics/index.html?game=dice"],
+    ["Memory Match", "memory-match", "minigame/retro-classics/index.html?game=memory"],
+    ["Four in a Row", "four-in-a-row", "minigame/retro-classics/index.html?game=four"],
+    ["Heads or Tails", "heads-or-tails", "minigame/retro-classics/index.html?game=coin"],
+    ["Higher or Lower", "higher-or-lower", "minigame/retro-classics/index.html?game=cards"],
+    ["Rock Paper Scissors", "rock-paper-scissors", "minigame/retro-classics/index.html?game=rps"],
+    ["Tic-Tac-Toe", "tic-tac-toe", "minigame/retro-classics/index.html?game=ttt"],
+    ["Backyard Cornhole", "backyard-cornhole", "minigame/retro-classics/index.html?game=cornhole"]
   ];
   const avatars = [
     {key:"chrome-byte", name:"Chrome Byte", type:"Friendly robot", color:"#b6e5fa", dark:"#5583b2", eyes:"#101b46"},
@@ -174,6 +188,20 @@
       body.append(tr);
     }
   }
+  async function loadAccountXP(account) {
+    const rows=[];
+    let afterId=null;
+    while(user?.id===account){
+      let query=client.from("xp_ledger").select("id,game_id,amount").eq("user_id",account).order("id").limit(250);
+      if(afterId!==null)query=query.gt("id",afterId);
+      const {data,error}=await query;
+      if(error)throw error;
+      if(!data?.length)return {data:rows};
+      rows.push(...data);
+      afterId=data[data.length-1].id;
+    }
+    return {data:[]};
+  }
   async function loadGameStats(account){
     if(!client||!account)return;
     const request=++statsRequest;
@@ -182,7 +210,7 @@
     const queries=[
       client.from("game_activity").select("game_id,active_seconds,visits,last_seen_at").eq("user_id",account),
       client.from("game_saves").select("game_id,save_data,updated_at").eq("user_id",account),
-      client.from("xp_ledger").select("game_id,amount").eq("user_id",account),
+      loadAccountXP(account),
       client.from("game_scores").select("game_id,score,is_verified").eq("user_id",account).eq("is_verified",true)
     ];
     const outcomes=await Promise.allSettled(queries);
@@ -253,7 +281,7 @@
     const account=user.id;
     try {
       const [xp,badges,inventory,equipped,thanksgiving]=await Promise.all([
-        client.from("xp_ledger").select("amount,game_id").eq("user_id",account),
+        loadAccountXP(account),
         client.from("earned_badges").select("badge_id,earned_at").eq("user_id",account),
         client.from("player_inventory").select("cosmetic_id,awarded_at").eq("user_id",account),
         client.from("equipped_cosmetics").select("cosmetic_id,slot").eq("user_id",account),
