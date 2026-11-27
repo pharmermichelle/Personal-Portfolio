@@ -53,3 +53,7 @@ Cloud indicates a game-specific `RetroSaveService` adapter in the normal entry p
 The catalog excludes other checked-in projects. `arcade-floor.html` is a hub destination with the shared player header and a separate `arcade-lobby` activity ID. The literal HTML fallback “17 games” is stale. The rendering code replaces it with the actual count.
 
 Survive 2026 retains a thumbnail path in catalog metadata that has no matching tracked file. The current tile renderer uses icons and does not read thumbnail metadata.
+
+## Functional browser coverage
+
+Playwright exercises Memory Match completion, replay and device bests, 2048 keyboard and touch merges and device bests, Simon Says sequence growth and failure, Reaction Time early taps and completion, and Rock Paper Scissors ties, wins and replay. The existing Heads or Tails browser case exercises completion and client reward presentation. Start with these specs when extending functional coverage to the remaining entries.
