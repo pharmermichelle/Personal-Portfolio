@@ -27,3 +27,7 @@ Run `node tests/retro-save-auth.test.cjs` to exercise the service with synthetic
 The mocks verify client behavior. Verify real auth providers, deployed Row Level Security, XP transaction and concurrent replay behavior, and real save writes/conflict recovery separately in an isolated Supabase environment with synthetic users. Exercise a second device for conflicting writes and login persistence. Test OAuth redirects, email confirmation, recovery and sign-out before promoting auth changes. Use browser emulation for responsive regression tests and real phones for touch, keyboard and screen-reader checks. For performance, capture loading and interaction traces on a throttled mobile profile before and after changes with the same ad test configuration.
 
 Review integration and monetization changes with ads blocked, provider test mode, or local placeholders. Track manual QA in Jira In Review until the project owner approves it.
+
+## Catalog smoke coverage
+
+Run `npm run test:browser -- catalog.spec.js` to open every catalog entry on desktop and mobile, check that the route loads and shared navigation appears, and confirm that Classics URLs open the selected mode. These checks cover game entry and navigation. The game matrix tracks deeper gameplay and progression coverage.
